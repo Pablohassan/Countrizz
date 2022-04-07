@@ -1,0 +1,15 @@
+.playGame {
+  background-color: #d4e6f1;
+  display: flex;
+  cursor: pointer;
+  border-radius: 10px;
+  justify-content: center;
+  width: 40%;
+  border: 2px solid;
+  border-color: #f7dc6f;
+  font-size: 36px;
+  font-family: "chango";
+  color: #212121;
+  text-decoration: none;
+  padding: 20px;
+}

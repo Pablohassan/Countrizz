@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Chango&family=Nunito:wght@200&display=swap");
+
+header {
+  background-color: #16173a;
+  font-family: "Chango", cursive;
+  color: rgb(255, 203, 61);
+  font-size: x-large;
+  text-align: center;
+}
+#ombreH1 {
+  background-color: #16173a;
+  font-family: "Chango", cursive;
+  display: block;
+  justify-content: center;
+  text-align: center;
+  margin-top: 100px;
+  font-size: 2rem;
+  color: rgb(255, 203, 61);
+  text-shadow: -6px 4px 2px rgb(11, 13, 15);
+}
+footer {
+  background-color: #16173a;
+  font-family: "Chango", cursive;
+  color: rgb(255, 203, 61);
+  font-size: x-large;
+  text-align: center;
+}
+.Importe-de-appjsx {
+  color: rgb(255, 203, 61);
+  font-size: x-large;
+  text-align: center;
+}

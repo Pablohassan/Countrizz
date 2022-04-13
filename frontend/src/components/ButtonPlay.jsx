@@ -4,7 +4,7 @@ export default function ButtonPlay() {
   return (
     <div className="wrapper">
       <a className="cta" href="https://www.youtube.com/watch?v=cLjMJTcXtl0">
-        <span>LETS GOOOO</span>
+        <span className="BtnPlay">LETS GOOOO</span>
         <span>
           <svg width="66px" height="43px" viewBox="0 0 66 43" version="1.1">
             <g

@@ -5106,7 +5106,34 @@ const countries = [
   ],
 ];
 
-export const getRandomCountry = () => {
-  return countries[Math.floor(Math.random() * (countries.length + 1))];
+import axios from "axios";
+
+// URL de l'API des pays
+const COUNTRY_API_URL = "https://restcountries.com/v3.1";
+
+// Stocke la liste complète des pays en mémoire
+let countryList;
+
+/**
+ * Retourne la liste complète des pays
+ *
+ * @returns {Promise<Array>}
+ */
+export const getAllCountries = async () => {
+  if (!countryList) {
+    countryList = (await axios(`${COUNTRY_API_URL}/all`)).data;
+  }
+
+  return countryList;
 };
-console.log(getRandomCountry());
+
+/**
+ * Retourne un pays aléatoire
+ *
+ * @returns {Promise<Object>}
+ */
+export const getRandomCountry = async () => {
+  await getAllCountries();
+  // return countryList.find(c => c.translations.fra.common === "France")
+  return countryList[Math.floor(Math.random() * (countryList.length + 1))];
+};

@@ -1,0 +1,8 @@
+.champsQst {
+  font-size: 25px;
+  font-family: "chango";
+  color: var(--Main-Font-Color);
+  max-width: 390px;
+  margin: 10px;
+  text-align: center;
+}

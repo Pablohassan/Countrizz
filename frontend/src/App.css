@@ -5,8 +5,14 @@
   --Main-Font-Color: #f7dc6f;
   --Button-backgroud-color: #d4e6f1;
   --Button-font-color: #212121;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
+.div {
+  display: flex;
+  justify-content: center;
+}
 body {
   background-color: var(--background-color);
   display: flex;

@@ -1,10 +1,12 @@
-import Home from "@pages/Home";
+import Jeu from "@pages/jeu";
+// import GlobeTest from "@pages/GlobeTest";
+
 import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <Home />
+      <Jeu />
     </div>
   );
 }

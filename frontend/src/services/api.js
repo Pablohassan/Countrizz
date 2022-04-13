@@ -1,4 +1,3 @@
-
 const countries = [
   [
     {
@@ -5107,8 +5106,7 @@ const countries = [
   ],
 ];
 
- export const getRandomCountry = () => {
+export const getRandomCountry = () => {
   return countries[Math.floor(Math.random() * (countries.length + 1))];
-  
 };
-console.log(getRandomCountry())
+console.log(getRandomCountry());

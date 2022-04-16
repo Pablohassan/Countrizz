@@ -77,7 +77,7 @@ export default function GlobeTest() {
         width={390}
         ref={globeRef}
         globeImageUrl="../src/assets/Images/laterre8k.jpeg"
-        backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
+        backgroundImageUrl="../src/assets/Images/night-sky.png"
         lineHoverPrecision={0}
         polygonsData={countries.features.filter(
           (d) => d.properties.ISO_A2 !== "AQ"

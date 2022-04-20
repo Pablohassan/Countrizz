@@ -6,7 +6,7 @@ import Countdown from "@components/Countdown";
 
 function Jeu() {
   return (
-    <div className="Jeu">
+    <div className="Jeu to-delete">
       <GlobeTest />
       <Questions />
       <ButtonReponse />

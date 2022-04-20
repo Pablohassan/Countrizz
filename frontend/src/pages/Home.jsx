@@ -7,6 +7,7 @@ export default function Home() {
       <header className="App-header"> Un Header</header>
       <body>
         <h1 className="titre">Countrizz</h1>
+        <h2>Enter Your Name</h2>
         <ButtonPlay />
       </body>
       <Footer />

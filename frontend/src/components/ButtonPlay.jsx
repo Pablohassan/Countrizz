@@ -1,9 +1,11 @@
+import { Link } from "react-router-dom";
+
 import "@components/ButtonPlay.css";
 
 export default function ButtonPlay() {
   return (
     <div className="wrapper">
-      <a className="cta" href="/pages/Jeu">
+      <Link className="cta" to="/jeu">
         <span className="BtnPlay">LETS GOOOO</span>
         <span>
           <svg width="66px" height="43px" viewBox="0 0 66 43" version="1.1">
@@ -32,7 +34,7 @@ export default function ButtonPlay() {
             </g>
           </svg>
         </span>
-      </a>
+      </Link>
     </div>
   );
 }

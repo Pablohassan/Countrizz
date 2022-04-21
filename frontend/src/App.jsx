@@ -13,14 +13,13 @@ function App() {
         <nav>
           <ul>
             <li>
-              <Link to="pages/Home">Home</Link>
+              <Link to="/">Home</Link>
             </li>
           </ul>
         </nav>
         <Routes>
-          <Route path="/pages/Jeu" element={<Jeu />} />
-          <Route path="/pages/Home" element={<Home />} />
           <Route path="/" element={<Home />} />
+          <Route path="/jeu" element={<Jeu />} />
         </Routes>
       </div>
     </Router>

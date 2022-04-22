@@ -1,3 +1,5 @@
 .footer {
-  margin: 1em;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }

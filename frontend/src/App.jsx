@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import Jeu from "@pages/Jeu";
 import Home from "@pages/Home";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -7,6 +9,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 
 function App() {
+  const [playerName, setPlayerName] = useState("");
+
   return (
     <Router>
       <div className="App">
@@ -18,8 +22,21 @@ function App() {
           </ul>
         </nav>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/jeu" element={<Jeu />} />
+          <Route
+            path="/"
+            element={
+              <Home
+                playerName={playerName}
+                onPlayerNameChange={setPlayerName}
+              />
+            }
+          />
+          <Route
+            path="/jeu"
+            element={
+              <Jeu playerName={playerName} onPlayerNameChange={setPlayerName} />
+            }
+          />
         </Routes>
       </div>
     </Router>

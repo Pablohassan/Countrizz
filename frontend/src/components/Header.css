@@ -1,0 +1,8 @@
+.Header {
+  background-color: var(--background-color);
+  font-family: "Chango", cursive;
+  color: var(--Main-Font-Color);
+  font-size: x-large;
+  display: flex;
+  justify-content: space-between;
+}

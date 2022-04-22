@@ -19,13 +19,6 @@ body {
   flex-direction: column;
 }
 
-header {
-  background-color: var(--background-color);
-  font-family: "Chango", cursive;
-  color: var(--Main-Font-Color);
-  font-size: x-large;
-  text-align: center;
-}
 .titre {
   background-color: var(--background-color);
   font-family: "Chango", cursive;

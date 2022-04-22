@@ -4,8 +4,9 @@ import ButtonReponse from "@components/ButtonReponse";
 import Footer from "@components/footer";
 import Questions from "@components/Questions";
 import Countdown from "@components/Countdown";
+import Header from "@components/Header";
 
-function Jeu() {
+function Jeu({ playerName }) {
   async function fetchRandomCountries() {
     console.error(await getRandomCountries(4));
   }
@@ -15,6 +16,7 @@ function Jeu() {
       <button type="button" onClick={fetchRandomCountries}>
         CLICK
       </button>
+      <Header playerName={playerName} />
       <GlobeTest />
       <Questions />
       <ButtonReponse />

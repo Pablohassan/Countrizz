@@ -1,15 +1,16 @@
 import ButtonPlay from "@components/ButtonPlay";
 import Footer from "@components/footer";
+import NomDuJoueur from "@components/NomDuJoueur";
 
-export default function Home() {
+export default function Home({ playerName, onPlayerNameChange }) {
   return (
     <>
-      <header className="App-header"> Un Header</header>
-      <body>
+      <div>
         <h1 className="titre">Countrizz</h1>
-        <h2>Enter Your Name</h2>
+        <NomDuJoueur playerName={playerName} onChange={onPlayerNameChange} />
         <ButtonPlay />
-      </body>
+      </div>
+
       <Footer />
     </>
   );

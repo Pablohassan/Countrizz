@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 // import GlobeTest from "@pages/GlobeTest";
 
 import "./App.css";
+import UseDecrement from "@components/Countdown";
 
 function App() {
   const [playerName, setPlayerName] = useState("");
@@ -31,6 +32,7 @@ function App() {
               />
             }
           />
+          <Route path="/countdown" element={<UseDecrement />} />
           <Route
             path="/jeu"
             element={

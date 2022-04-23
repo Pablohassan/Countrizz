@@ -5,7 +5,7 @@ import "@components/ButtonPlay.css";
 export default function ButtonPlay() {
   return (
     <div className="wrapper">
-      <Link className="cta" to="/jeu">
+      <Link className="cta" to="/countdown">
         <span className="BtnPlay">LETS GOOOO</span>
         <span>
           <svg width="66px" height="43px" viewBox="0 0 66 43" version="1.1">

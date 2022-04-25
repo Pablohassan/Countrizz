@@ -5,21 +5,34 @@ import Footer from "@components/footer";
 import Questions from "@components/Questions";
 import Countdown from "@components/Countdown";
 import Header from "@components/Header";
+import { useState, useEffect } from "react";
 
 function Jeu({ playerName }) {
+  const [countryRandom, setCountryRandom] = useState([]);
+
   async function fetchRandomCountries() {
-    console.error(await getRandomCountries(4));
+    setCountryRandom(await getRandomCountries(4));
   }
+
+  useEffect(() => {
+    fetchRandomCountries();
+  }, []);
 
   return (
     <div className="Jeu">
-      <button type="button" onClick={fetchRandomCountries}>
-        CLICK
-      </button>
       <Header playerName={playerName} />
       <GlobeTest />
       <Questions />
-      <ButtonReponse />
+      {countryRandom.map((country) => (
+        <ButtonReponse
+          flag={country.flag}
+          cname={country.translations.fra.common}
+          // onCountry={fetchRandomCountries}
+          onCountry={(countryflag) =>
+            alert(`Tu as appuié sur ${countryflag} Bravo a toi`)
+          }
+        />
+      ))}
       <Footer />
       <Countdown />
     </div>

@@ -4,22 +4,26 @@
 }
 
 .ctaRep {
-  display: flex;
-  padding: 10px 45px;
+  display: block;
+  padding: 10px 20px;
   text-decoration: none;
   font-family: "chango";
-  font-size: 40px;
+  text-shadow: 2px 1px 5px black;
+  font-size: 22px;
   color: white;
   background: #6225e6;
   transition: 1s;
   box-shadow: 6px 6px 0 black;
   border-radius: 10px;
+  min-width: 380px;
+  max-width: 380px;
 }
 
 .wrapperRep {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
+
 /* .cta:focus {
     outline: none;
   }

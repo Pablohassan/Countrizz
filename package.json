@@ -19,7 +19,12 @@
     "husky": "^7.0.0"
   },
   "dependencies": {
+    "axios": "^0.26.1",
+    "d3": "^7.4.4",
+    "globe.gl": "^2.26.1",
     "react": "^18.0.0",
+    "react-kapsule": "^2.2.3",
+    "react-router-dom": "^6.3.0",
     "router-dom": "^2.2.9"
   }
 }

@@ -6,7 +6,6 @@ import Globe from "@components/Globe";
 import ButtonReponse from "@components/ButtonReponse";
 import Footer from "@components/footer";
 import Questions from "@components/Questions";
-import Countdown from "@components/Countdown";
 import Header from "@components/Header";
 
 const getAltitudeFromArea = (area) => {
@@ -66,10 +65,6 @@ function Jeu({ playerName }) {
     <div className="Jeu">
       <Header playerName={playerName} />
 
-      <button type="button" onClick={nextRound}>
-        NEXT ROUND
-      </button>
-
       <Globe
         height={400}
         width={390}
@@ -98,16 +93,15 @@ function Jeu({ playerName }) {
       {countryRandom.map((country) => (
         <ButtonReponse
           flag={country.flags.png}
-          // cname={country.translations.fra.common}
-          // onCountry={fetchRandomCountries}
-          onCountry={(countryflag) =>
-            alert(`Tu as appuié sur ${countryflag} Bravo a toi`)
+          onCountry={() =>
+            country.name.common === countryToGuess.name.common
+              ? (alert("Good job"), nextRound())
+              : alert("bad choice")
           }
         />
       ))}
 
       <Footer />
-      <Countdown />
     </div>
   );
 }

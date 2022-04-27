@@ -43,3 +43,9 @@ export const getRandomCountries = async (countriesCount = 4) => {
 
   return randomCountries;
 };
+
+export const randomCountryQuestion = (randomCountries) => {
+  const rand = Math.floor(Math.random() * randomCountries.length);
+  const randomQuestion = randomCountries[rand];
+  return randomQuestion;
+};

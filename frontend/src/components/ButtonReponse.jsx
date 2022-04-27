@@ -8,7 +8,9 @@ export default function ButtonReponse({ cname, flag, onCountry }) {
         className="ctaRep"
         onClick={() => onCountry && onCountry(cname)}
       >
-        {cname} <span>{flag}</span>
+        <span>
+          <img src={flag} alt="Drapeau du pays" height="50" />
+        </span>
       </button>
     </div>
   );

@@ -40,9 +40,11 @@ function Jeu({ playerName }) {
   const globeRef = useRef();
   const [countryRandom, setCountryRandom] = useState([]);
   const [countryToGuess, setCountryToGuess] = useState();
+  const [isGoodResponse, setIsGoodResponse] = useState(false);
   const [score, setScore] = useState(0);
 
   async function nextRound() {
+    setIsGoodResponse(false);
     const countries = await getRandomCountries(4);
     const randomCountry = randomCountryQuestion(countries);
 
@@ -62,6 +64,21 @@ function Jeu({ playerName }) {
     nextRound();
     globeRef.current.controls().enabled = false;
   }, []);
+
+  function onResponse(country) {
+    let message = "Bad choice";
+
+    if (country.name.common === countryToGuess.name.common) {
+      message = "Good job";
+      setIsGoodResponse(true);
+      setScore(score + 10);
+      setTimeout(() => nextRound(), 2000);
+    } else {
+      setIsGoodResponse(false);
+    }
+
+    alert(message);
+  }
 
   return (
     <div className="Jeu">
@@ -101,12 +118,11 @@ function Jeu({ playerName }) {
 
       {countryRandom.map((country) => (
         <ButtonReponse
-          flag={country.flags.png}
-          onCountry={() =>
-            country.name.common === countryToGuess.name.common
-              ? (alert("Good job"), setScore(() => score + 10), nextRound())
-              : alert("bad choice")
+          success={
+            isGoodResponse && country.name.common === countryToGuess.name.common
           }
+          flag={country.flags.png}
+          onClick={() => onResponse(country)}
         />
       ))}
 

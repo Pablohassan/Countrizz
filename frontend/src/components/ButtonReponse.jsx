@@ -1,9 +1,13 @@
 import "@components/Reponse.css";
 
-export default function ButtonReponse({ flag, onCountry }) {
+export default function ButtonReponse({ success, flag, onClick }) {
   return (
     <div className="wrapperRep">
-      <button type="button" className="ctaRep" onClick={onCountry}>
+      <button
+        type="button"
+        className={`ctaRep ${success ? "greenBtn" : ""}`}
+        onClick={onClick}
+      >
         <span>
           <img src={flag} alt="Drapeau du pays" height="50" />
         </span>

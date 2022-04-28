@@ -42,3 +42,19 @@
     transition: 0.5s;
     margin-right: 45px;
   } */
+
+.greenBtn {
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-family: "chango";
+  text-shadow: 2px 1px 5px black;
+  font-size: 22px;
+  color: white;
+  background: green;
+  transition: 1s;
+  box-shadow: 6px 6px 0 black;
+  border-radius: 10px;
+  min-width: 380px;
+  max-width: 380px;
+}

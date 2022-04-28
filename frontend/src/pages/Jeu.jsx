@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import { randomCountryQuestion, getRandomCountries } from "@services/api";
 import allcountries from "@assets/allcountries.js";
@@ -39,6 +40,7 @@ function Jeu({ playerName }) {
   const globeRef = useRef();
   const [countryRandom, setCountryRandom] = useState([]);
   const [countryToGuess, setCountryToGuess] = useState();
+  const [score, setScore] = useState(0);
 
   async function nextRound() {
     const countries = await getRandomCountries(4);
@@ -63,7 +65,14 @@ function Jeu({ playerName }) {
 
   return (
     <div className="Jeu">
-      <Header playerName={playerName} />
+      <nav>
+        <ul>
+          <li className="homeLink">
+            <Link to="/"> Home </Link>
+          </li>
+        </ul>
+      </nav>
+      <Header playerName={playerName} score={score} />
 
       <Globe
         height={400}
@@ -87,7 +96,7 @@ function Jeu({ playerName }) {
       />
 
       {countryToGuess && (
-        <Questions countryQuestion={countryToGuess.name.common} />
+        <Questions countryQuestion={countryToGuess.translations.fra.common} />
       )}
 
       {countryRandom.map((country) => (
@@ -95,7 +104,7 @@ function Jeu({ playerName }) {
           flag={country.flags.png}
           onCountry={() =>
             country.name.common === countryToGuess.name.common
-              ? (alert("Good job"), nextRound())
+              ? (alert("Good job"), setScore(() => score + 10), nextRound())
               : alert("bad choice")
           }
         />

@@ -6,3 +6,11 @@
   display: flex;
   justify-content: space-between;
 }
+
+.homeLink {
+  display: flex;
+  font-size: large;
+  width: 100%;
+  font-family: "Chango";
+  list-style-type: none;
+}

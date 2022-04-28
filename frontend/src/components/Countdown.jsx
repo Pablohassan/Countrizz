@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "@components/Countdown.css";
 
 function UseDecrement() {
   const navigate = useNavigate();
   let timer;
-  const [count, setCount] = useState(5);
+  const [count, setCount] = useState(3);
 
   useEffect(() => {
     timer = setInterval(() => {
       setCount((prevCount) => {
-        if (prevCount <= 0) {
+        if (prevCount <= 1) {
           clearInterval(timer);
           navigate("/jeu");
         } else {
@@ -19,12 +20,7 @@ function UseDecrement() {
     }, 1000);
   }, []);
 
-  return (
-    <>
-      <div>Countdown</div>
-      <button type="button"> count {count}</button>
-    </>
-  );
+  return <div className="BtnCountdown">{count}</div>;
 }
 
 export default UseDecrement;

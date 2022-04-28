@@ -9,14 +9,18 @@
   align-items: center;
   justify-content: center;
 }
+
 .div {
   display: flex;
   justify-content: center;
 }
+
 body {
   background-color: var(--background-color);
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .titre {
@@ -30,6 +34,7 @@ body {
   color: var(--Main-Font-Color);
   text-shadow: -6px 4px 2px rgb(11, 13, 15);
 }
+
 footer {
   background-color: var(--background-color);
   font-family: "Chango", cursive;
@@ -37,6 +42,7 @@ footer {
   font-size: x-large;
   text-align: center;
 }
+
 .Importe-de-appjsx {
   color: var(--Main-Font-Color);
   font-size: x-large;
@@ -51,6 +57,7 @@ body {
 h2 {
   color: var(--Main-Font-Color);
 }
+
 a {
   color: var(--Main-Font-Color);
   text-decoration: none;

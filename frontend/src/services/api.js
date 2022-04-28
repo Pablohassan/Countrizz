@@ -38,7 +38,9 @@ export const getRandomCountries = async (countriesCount = 4) => {
   const randomCountries = [];
 
   for (let i = 0; i < countriesCount; i++) {
-    randomCountries.push(await getRandomCountry());
+    let country = await getRandomCountry();
+    randomCountries.find((country) => !randomCountries.includes(country));
+    randomCountries.push(country);
   }
 
   return randomCountries;

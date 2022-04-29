@@ -1,11 +1,11 @@
 import "@components/Reponse.css";
 
-export default function ButtonReponse({ success, flag, onClick }) {
+export default function ButtonReponse({ success, flag, onClick, fail }) {
   return (
     <div className="wrapperRep">
       <button
         type="button"
-        className={`ctaRep ${success ? "greenBtn" : ""}`}
+        className={`ctaRep ${success ? "greenBtn" : ""}${fail ? "redBtn" : ""}`}
         onClick={onClick}
       >
         <span>

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { randomCountryQuestion, getRandomCountries } from "@services/api";
 import allcountries from "@assets/allcountries.js";
@@ -41,10 +41,14 @@ function Jeu({ playerName }) {
   const [countryRandom, setCountryRandom] = useState([]);
   const [countryToGuess, setCountryToGuess] = useState();
   const [isGoodResponse, setIsGoodResponse] = useState(false);
+  const [isBadResponse, setIsBadResponse] = useState(false);
   const [score, setScore] = useState(0);
+  const [turn, setTurn] = useState(0);
+  const navigate = useNavigate();
 
   async function nextRound() {
     setIsGoodResponse(false);
+    setIsBadResponse(false);
     const countries = await getRandomCountries(4);
     const randomCountry = randomCountryQuestion(countries);
 
@@ -65,19 +69,23 @@ function Jeu({ playerName }) {
     globeRef.current.controls().enabled = false;
   }, []);
 
-  function onResponse(country) {
-    let message = "Bad choice";
+  useEffect(() => {
+    if (turn > 9) {
+      setTimeout(() => navigate("/"), 1500);
+    }
+  }, [turn]);
 
+  function onResponse(country) {
     if (country.name.common === countryToGuess.name.common) {
-      message = "Good job";
       setIsGoodResponse(true);
+      setTurn(turn + 1);
       setScore(score + 10);
       setTimeout(() => nextRound(), 2000);
     } else {
-      setIsGoodResponse(false);
+      setIsBadResponse(true);
+      setTurn(turn + 1);
+      setTimeout(() => nextRound(), 2000);
     }
-
-    alert(message);
   }
 
   return (
@@ -121,11 +129,13 @@ function Jeu({ playerName }) {
           success={
             isGoodResponse && country.name.common === countryToGuess.name.common
           }
+          fail={
+            isBadResponse && country.name.common !== countryToGuess.name.common
+          }
           flag={country.flags.png}
           onClick={() => onResponse(country)}
         />
       ))}
-
       <Footer />
     </div>
   );

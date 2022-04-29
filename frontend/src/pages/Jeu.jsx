@@ -11,29 +11,45 @@ import Header from "@components/Header";
 
 const getAltitudeFromArea = (area) => {
   if (area > 10000000) {
-    return 2;
+    return 1.2;
+  }
+  if (area > 5000000) {
+    return 1.1;
   }
 
   if (area > 1000000) {
-    return 1.6;
-  }
-
-  if (area > 1000000) {
-    return 1.4;
-  }
-
-  if (area > 500000) {
     return 1;
   }
-
-  if (area > 100000) {
-    return 0.8;
+  if (area > 500000) {
+    return 0.7;
   }
-  if (area > 50000) {
+
+  if (area > 1000000) {
     return 0.6;
   }
 
-  return 0.2;
+  if (area > 500000) {
+    return 0.5;
+  }
+
+  if (area > 100000) {
+    return 0.4;
+  }
+
+  if (area > 50000) {
+    return 0.3;
+  }
+  if (area > 25000) {
+    return 0.2;
+  }
+  if (area > 1500) {
+    return 0.1;
+  }
+  if (area > 1000) {
+    return 0.09;
+  }
+
+  return 0.07;
 };
 
 function Jeu({ playerName }) {
@@ -58,10 +74,19 @@ function Jeu({ playerName }) {
       altitude: getAltitudeFromArea(randomCountry.area),
     };
 
-    globeRef.current.pointOfView(countryLocation, 4000);
+    const franceLocation = {
+      lat: 46.0,
+      lng: 2.0,
+      altitude: 1,
+    };
 
-    setCountryRandom(countries);
-    setCountryToGuess(randomCountry);
+    globeRef.current.pointOfView(franceLocation, 3000);
+
+    setTimeout(() => {
+      globeRef.current.pointOfView(countryLocation, 3000);
+      setCountryRandom(countries);
+      setCountryToGuess(randomCountry);
+    }, 3200);
   }
 
   useEffect(() => {
@@ -101,17 +126,15 @@ function Jeu({ playerName }) {
 
       <Globe
         height={400}
-        width={390}
+        width={1100}
         ref={globeRef}
         globeImageUrl="../src/assets/Images/laterre8k.jpeg"
         backgroundImageUrl="../src/assets/Images/night-sky.png"
         lineHoverPrecision={0}
-        polygonsData={allcountries.features.filter(
-          (d) => d.properties.ISO_A2 !== "AQ"
-        )}
+        polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
         polygonAltitude={0.004}
         polygonCapColor={(d) =>
-          countryToGuess && countryToGuess.cca2 === d.properties.ISO_A2
+          countryToGuess && countryToGuess.cca3 === d.id
             ? "yellow"
             : "transparent"
         }
@@ -124,18 +147,22 @@ function Jeu({ playerName }) {
         <Questions countryQuestion={countryToGuess.translations.fra.common} />
       )}
 
-      {countryRandom.map((country) => (
-        <ButtonReponse
-          success={
-            isGoodResponse && country.name.common === countryToGuess.name.common
-          }
-          fail={
-            isBadResponse && country.name.common !== countryToGuess.name.common
-          }
-          flag={country.flags.png}
-          onClick={() => onResponse(country)}
-        />
-      ))}
+      <div className="responses">
+        {countryRandom.map((country) => (
+          <ButtonReponse
+            success={
+              isGoodResponse &&
+              country.name.common === countryToGuess.name.common
+            }
+            fail={
+              isBadResponse &&
+              country.name.common !== countryToGuess.name.common
+            }
+            flag={country.flags.png}
+            onClick={() => onResponse(country)}
+          />
+        ))}
+      </div>
       <Footer />
     </div>
   );

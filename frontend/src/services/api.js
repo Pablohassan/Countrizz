@@ -26,13 +26,13 @@ export const getAllCountries = async () => {
  */
 export const getRandomCountry = async () => {
   await getAllCountries();
-  // return countryList.find(c => c.translations.fra.common === "France")
+  //  return countryList.find(c => c.translations.fra.common === "Guyane")
   return countryList[Math.floor(Math.random() * (countryList.length + 1))];
 };
 
 //Boucle qui s'appuie sur la function getRandomCountry pour alimentee un tableau avec 4 noms de pays issues de country
 
-export const getRandomCountries = async (countriesCount = 4) => {
+export const getRandomCountries = async (countriesCount = 1) => {
   await getAllCountries();
 
   const randomCountries = [];

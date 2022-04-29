@@ -1,6 +1,16 @@
+.responses {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  margin-left: 15%;
+  margin-right: 15%;
+}
 .wrapperRep {
   display: flex;
   justify-content: center;
+  margin-top: 10px;
 }
 
 .ctaRep {
@@ -15,8 +25,8 @@
   transition: 1s;
   box-shadow: 6px 6px 0 black;
   border-radius: 10px;
-  min-width: 380px;
-  max-width: 380px;
+  min-width: 300px;
+  max-width: 300px;
 }
 
 .wrapperRep {

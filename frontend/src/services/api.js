@@ -26,7 +26,7 @@ export const getAllCountries = async () => {
  */
 export const getRandomCountry = async () => {
   await getAllCountries();
-  //  return countryList.find(c => c.translations.fra.common === "Guyane")
+  //  return countryList.find(c => c.translations.fra.common === "Saint-Martin")
   return countryList[Math.floor(Math.random() * (countryList.length + 1))];
 };
 

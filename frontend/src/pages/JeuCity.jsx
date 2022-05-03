@@ -20,31 +20,24 @@ const getAltitudeFromArea = (area) => {
     return 1;
   }
   if (area > 500000) {
-    return 0.7;
-  }
-
-  if (area > 1000000) {
-    return 0.6;
-  }
-  if (area > 500000) {
-    return 0.5;
+    return 0.8;
   }
 
   if (area > 100000) {
-    return 0.4;
+    return 0.6;
   }
 
   if (area > 50000) {
-    return 0.3;
+    return 0.5;
   }
   if (area > 25000) {
-    return 0.2;
+    return 0.4;
   }
   if (area > 1500) {
-    return 0.1;
+    return 0.3;
   }
   if (area > 1000) {
-    return 0.09;
+    return 0.2;
   }
 
   return 0.07;
@@ -135,7 +128,7 @@ function Jeu({ playerName }) {
         ref={globeRef}
         globeImageUrl="../src/assets/Images/laterre8k.jpeg"
         backgroundImageUrl="../src/assets/Images/night-sky.png"
-        lineHoverPrecision={0}
+        lineHoverPrecision={1}
         polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
         polygonAltitude={0.004}
         polygonCapColor={(d) =>
@@ -149,13 +142,17 @@ function Jeu({ playerName }) {
       />
 
       {countryToGuess && (
-        <Questions countryQuestion={countryToGuess.translations.fra.common} />
+        <Questions
+          countryQuestion="Trouve la capitale de "
+          name={countryToGuess.translations.fra.common}
+        />
       )}
 
       <div className="responses">
         {countryRandom.map((country) => (
           <ButtonReponse
             key={country.cca3}
+            disabled={!canRespond}
             success={
               isGoodResponse &&
               country.name.common === countryToGuess.name.common
@@ -164,11 +161,9 @@ function Jeu({ playerName }) {
               isBadResponse &&
               country.name.common !== countryToGuess.name.common
             }
-            image={country.flags.svg}
-            disabled={!canRespond}
             onClick={() => onResponse(country)}
           >
-            <img src={country.flags.svg} alt="name" width="50" />
+            {country.capital}
           </ButtonReponse>
         ))}
       </div>

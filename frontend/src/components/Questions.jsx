@@ -1,8 +1,13 @@
 import React from "react";
 import "@components/Questions.css";
 
-export default function Questions({ countryQuestion }) {
+export default function Questions({ countryQuestion, name, flag }) {
   return (
-    <div className="champsQst">Quel est le drapeau de {countryQuestion} ?</div>
+    <div className="champsQst">
+      {countryQuestion}
+
+      {name}
+      {flag}
+    </div>
   );
 }

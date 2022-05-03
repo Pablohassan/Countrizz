@@ -23,10 +23,11 @@
     "d3": "^7.4.4",
     "globe.gl": "^2.26.1",
     "nodemon": "^2.0.15",
-    "react": "^18.0.0",
+    "react": "^18.1.0",
     "react-kapsule": "^2.2.3",
     "react-responsive": "^9.0.0-beta.6",
     "react-router-dom": "^6.3.0",
-    "router-dom": "^2.2.9"
+    "router-dom": "^2.2.9",
+    "spring": "^0.0.0"
   }
 }

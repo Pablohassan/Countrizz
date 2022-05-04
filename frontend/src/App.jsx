@@ -11,9 +11,14 @@ import "./App.css";
 import UseDecrement from "@components/Countdown";
 import UseDecrementPays from "@components/CountdownPays";
 import UseDecrementCity from "@components/ContdownCity";
+import TableauScores from "@pages/TableauScores";
 
 function App() {
   const [playerName, setPlayerName] = useState("");
+  const [score, setScore] = useState(0);
+  const onGameEnd = (resultat) => {
+    setScore(resultat);
+  };
 
   return (
     <Router>
@@ -37,7 +42,11 @@ function App() {
           <Route
             path="/jeu"
             element={
-              <Jeu playerName={playerName} onPlayerNameChange={setPlayerName} />
+              <Jeu
+                playerName={playerName}
+                onPlayerNameChange={setPlayerName}
+                onFinished={onGameEnd}
+              />
             }
           />
 
@@ -47,6 +56,7 @@ function App() {
               <JeuPays
                 playerName={playerName}
                 onPlayerNameChange={setPlayerName}
+                onFinished={onGameEnd}
               />
             }
           />
@@ -56,8 +66,13 @@ function App() {
               <JeuCity
                 playerName={playerName}
                 onPlayerNameChange={setPlayerName}
+                onFinished={onGameEnd}
               />
             }
+          />
+          <Route
+            path="/scores"
+            element={<TableauScores playerName={playerName} score={score} />}
           />
         </Routes>
       </div>

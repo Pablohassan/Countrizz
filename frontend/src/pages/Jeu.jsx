@@ -47,9 +47,9 @@ const getAltitudeFromArea = (area) => {
     return 0.09;
   }
 
-  return 0.04;
+  return 0.07;
 };
-function Jeu({ playerName }) {
+function Jeu({ playerName, onFinished }) {
   const globeRef = useRef();
   const [countryRandom, setCountryRandom] = useState([]);
   const [countryToGuess, setCountryToGuess] = useState();
@@ -97,7 +97,8 @@ function Jeu({ playerName }) {
 
   useEffect(() => {
     if (turn > 9) {
-      setTimeout(() => navigate("/"), 1000);
+      onFinished(score);
+      setTimeout(() => navigate("/scores"), 1000);
     }
   }, [turn]);
 
@@ -149,7 +150,10 @@ function Jeu({ playerName }) {
       />
 
       {countryToGuess && (
-        <Questions countryQuestion={countryToGuess.translations.fra.common} />
+        <Questions
+          countryQuestion="Quel est le drapeau de ce pays : "
+          name={countryToGuess.translations.fra.common}
+        />
       )}
 
       <div className="responses">

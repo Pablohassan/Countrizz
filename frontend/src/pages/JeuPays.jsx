@@ -42,7 +42,7 @@ const getAltitudeFromArea = (area) => {
 
   return 0.07;
 };
-function Jeu({ playerName }) {
+function Jeu({ playerName, onFinished }) {
   const globeRef = useRef();
   const [countryRandom, setCountryRandom] = useState([]);
   const [countryToGuess, setCountryToGuess] = useState();
@@ -90,6 +90,7 @@ function Jeu({ playerName }) {
 
   useEffect(() => {
     if (turn > 9) {
+      onFinished(score);
       setTimeout(() => navigate("/"), 1000);
     }
   }, [turn]);

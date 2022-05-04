@@ -6,7 +6,6 @@ export default function ButtonReponse({
   onClick,
   fail,
   name,
-
   capital,
   children,
   disabled,

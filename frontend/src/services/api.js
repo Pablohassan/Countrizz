@@ -1,4 +1,5 @@
 import axios from "axios";
+import { greatest } from "d3";
 
 // URL de l'API des pays
 const COUNTRY_API_URL = "https://restcountries.com/v3.1";
@@ -26,7 +27,7 @@ export const getAllCountries = async () => {
  */
 export const getRandomCountry = async () => {
   await getAllCountries();
-  //  return countryList.find(c => c.translations.fra.common === "Saint-Martin")
+  //  return countryList.find(c => c.translations.fra.common === "Palaos")
   return countryList[Math.floor(Math.random() * (countryList.length + 1))];
 };
 
@@ -39,7 +40,9 @@ export const getRandomCountries = async (countriesCount = 1) => {
 
   for (let i = 0; i < countriesCount; i++) {
     let country = await getRandomCountry();
-    randomCountries.find((country) => !randomCountries.includes(country));
+    while (randomCountries.includes(country)) {
+      await getRandomCountry();
+    }
     randomCountries.push(country);
   }
 

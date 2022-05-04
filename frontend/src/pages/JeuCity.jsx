@@ -126,7 +126,7 @@ function Jeu({ playerName }) {
         height={400}
         width={1100}
         ref={globeRef}
-        globeImageUrl="../src/assets/Images/laterre8k.jpeg"
+        globeImageUrl="../src/assets/Images/terre216k.jpeg"
         backgroundImageUrl="../src/assets/Images/night-sky.png"
         lineHoverPrecision={1}
         polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}

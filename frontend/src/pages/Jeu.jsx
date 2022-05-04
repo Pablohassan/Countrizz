@@ -47,7 +47,7 @@ const getAltitudeFromArea = (area) => {
     return 0.09;
   }
 
-  return 0.07;
+  return 0.04;
 };
 function Jeu({ playerName }) {
   const globeRef = useRef();
@@ -133,7 +133,7 @@ function Jeu({ playerName }) {
         height={400}
         width={1100}
         ref={globeRef}
-        globeImageUrl="../src/assets/Images/laterre8k.jpeg"
+        globeImageUrl="../src/assets/Images/terre216k.jpeg"
         backgroundImageUrl="../src/assets/Images/night-sky.png"
         lineHoverPrecision={0}
         polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}

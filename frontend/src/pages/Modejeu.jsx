@@ -1,11 +1,8 @@
 import { Link } from "react-router-dom";
-
 import Footer from "@components/footer";
 import "@pages/modejeu.css";
 import Header from "@components/Header";
-import ButtonPlayFlag from "@components/ButtonPlayFlag";
-import ButtonPlayPays from "@components/ButtonPlayPays";
-import ButtonPlayCity from "@components/ButtonPlayCity";
+import ButtonPlay from "@components/ButtonPlay";
 
 export default function ModeJeu({ playerName }) {
   return (
@@ -20,9 +17,9 @@ export default function ModeJeu({ playerName }) {
       <Header playerName={playerName} />
       <div>
         <h1 className="titreModejeu">Pret a Relever le défi?</h1>
-        <ButtonPlayFlag name="Trouve Le Drapeau" />
-        <ButtonPlayPays name="Trouve Le Pays" />
-        <ButtonPlayCity name="Trouve La Capitale" />
+        <ButtonPlay name="Trouve Le Drapeau" to="/countdown" />
+        <ButtonPlay name="Trouve Le Pays" to="to=/countdownPays" />
+        <ButtonPlay name="Trouve La Capitale" to="/countdowncity" />
       </div>
 
       <Footer />

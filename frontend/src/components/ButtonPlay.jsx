@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 
 import "@components/ButtonPlay.css";
 
-export default function ButtonPlay({ name }) {
+export default function ButtonPlay({ name, to }) {
   return (
     <div className="wrapper">
-      <Link className="cta" to="/modejeu">
+      {/* Modif lienbtnplay a la place du lien to="/modejeu" */}
+      <Link className="cta" to={to}>
         <span className="BtnPlay">{name}</span>
         <span>
           <svg width="66px" height="43px" viewBox="0 0 66 43" version="1.1">

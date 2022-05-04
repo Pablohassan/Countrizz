@@ -5929,7 +5929,7 @@ export default {
         name: "Cook Islands",
       },
       geometry: {
-        type: "Polygon",
+        type: "MultiPolygon",
         coordinates: [
           [
             [
@@ -9693,7 +9693,7 @@ export default {
         name: "British Indian Ocean Territory",
       },
       geometry: {
-        type: "MULTIPolygon",
+        type: "MultiPolygon",
         coordinates: [
           [
             [

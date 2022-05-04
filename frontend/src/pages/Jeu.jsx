@@ -137,7 +137,7 @@ function Jeu({ playerName }) {
         backgroundImageUrl="../src/assets/Images/night-sky.png"
         lineHoverPrecision={0}
         polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
-        polygonAltitude={0.004}
+        polygonAltitude={0.003}
         polygonCapColor={(d) =>
           countryToGuess && countryToGuess.cca3 === d.id
             ? "yellow"

@@ -7197,6 +7197,8 @@ export default {
       },
     },
 
+    
+
     {
       type: "Feature",
       id: "COM",
@@ -13913,7 +13915,7 @@ export default {
         name: "Mocao S.A.R",
       },
       geometry: {
-        type: "Polygon",
+        type: "MultiPolygon",
         coordinates: [
           [
             [
@@ -30478,7 +30480,7 @@ export default {
         name: "Palau",
       },
       geometry: {
-        type: "Polygon",
+        type: "MultiPolygon",
         coordinates: [
           [
             [

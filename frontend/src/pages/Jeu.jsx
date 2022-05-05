@@ -78,10 +78,10 @@ function Jeu({ playerName, onFinished, gameCount }) {
       altitude: 1,
     };
 
-    globeRef.current.pointOfView(franceLocation, 1000);
+    globeRef.current.pointOfView(franceLocation, 600);
 
     setTimeout(() => {
-      globeRef.current.pointOfView(countryLocation, 2500);
+      globeRef.current.pointOfView(countryLocation, 1500);
       setCountryRandom(countries);
       setCountryToGuess(randomCountry);
 
@@ -99,7 +99,7 @@ function Jeu({ playerName, onFinished, gameCount }) {
   useEffect(() => {
     if (turn > 9) {
       onFinished(score);
-      setTimeout(() => navigate("/scores"), 1000);
+      setTimeout(() => navigate("/scores"), 5000);
     }
   }, [turn]);
 

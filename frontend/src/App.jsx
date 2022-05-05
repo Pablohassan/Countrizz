@@ -19,6 +19,7 @@ function App() {
   const onGameEnd = (resultat) => {
     setScore(resultat);
   };
+  const [gameCount, setGameCount] = useState(60);
 
   return (
     <Router>
@@ -46,6 +47,8 @@ function App() {
                 playerName={playerName}
                 onPlayerNameChange={setPlayerName}
                 onFinished={onGameEnd}
+                gameCount={gameCount}
+                setGameCount={setGameCount}
               />
             }
           />
@@ -57,6 +60,8 @@ function App() {
                 playerName={playerName}
                 onPlayerNameChange={setPlayerName}
                 onFinished={onGameEnd}
+                gameCount={gameCount}
+                setGameCount={setGameCount}
               />
             }
           />
@@ -67,6 +72,8 @@ function App() {
                 playerName={playerName}
                 onPlayerNameChange={setPlayerName}
                 onFinished={onGameEnd}
+                gameCount={gameCount}
+                setGameCount={setGameCount}
               />
             }
           />

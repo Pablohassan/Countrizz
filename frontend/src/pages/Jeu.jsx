@@ -7,6 +7,7 @@ import ButtonReponse from "@components/ButtonReponse";
 import Footer from "@components/footer";
 import Questions from "@components/Questions";
 import Header from "@components/Header";
+import GameCountdown from "@components/GameCountdown";
 
 const getAltitudeFromArea = (area) => {
   if (area > 10000000) {
@@ -49,7 +50,7 @@ const getAltitudeFromArea = (area) => {
 
   return 0.07;
 };
-function Jeu({ playerName, onFinished }) {
+function Jeu({ playerName, onFinished, gameCount }) {
   const globeRef = useRef();
   const [countryRandom, setCountryRandom] = useState([]);
   const [countryToGuess, setCountryToGuess] = useState();
@@ -129,6 +130,7 @@ function Jeu({ playerName, onFinished }) {
         </ul>
       </nav>
       <Header playerName={playerName} score={score} />
+      <GameCountdown gameCount={gameCount} />
 
       <Globe
         height={400}

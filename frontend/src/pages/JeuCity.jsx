@@ -58,7 +58,14 @@ function JeuCity({ playerName, onFinished, gameCount }) {
   async function nextRound() {
     setIsGoodResponse(false);
     setIsBadResponse(false);
-    const countries = await getRandomCountries(4);
+    const countries = await getRandomCountries(
+      4,
+      (country) =>
+        country.capital !== undefined &&
+        country.capital !== null &&
+        country.capital !== "anonymous" &&
+        country.capital !== ""
+    );
     const randomCountry = randomCountryQuestion(countries);
 
     const countryLocation = {
@@ -90,7 +97,7 @@ function JeuCity({ playerName, onFinished, gameCount }) {
   }, []);
 
   useEffect(() => {
-    if (turn > 9) {
+    if (turn > 49) {
       onFinished(score);
       setTimeout(() => navigate("/"), 1000);
     }

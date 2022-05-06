@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 function GameCountdown() {
   const navigate = useNavigate();
   let timer;
+
   const [gameCount, setGameCount] = useState(60);
 
   useEffect(() => {

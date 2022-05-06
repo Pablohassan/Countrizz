@@ -1,5 +1,4 @@
 import axios from "axios";
-import { greatest } from "d3";
 
 // URL de l'API des pays
 const COUNTRY_API_URL = "https://restcountries.com/v3.1";
@@ -12,9 +11,13 @@ let countryList;
  *
  * @returns {Promise<Array>}
  */
-export const getAllCountries = async () => {
+export const getAllCountries = async (filter) => {
   if (!countryList) {
     countryList = (await axios(`${COUNTRY_API_URL}/all`)).data;
+  }
+
+  if (filter) {
+    return countryList.filter(filter);
   }
 
   return countryList;
@@ -25,24 +28,24 @@ export const getAllCountries = async () => {
  *
  * @returns {Promise<Object>}
  */
-export const getRandomCountry = async () => {
-  await getAllCountries();
+export const getRandomCountry = async (filter) => {
+  const countries = await getAllCountries(filter);
   //  return countryList.find(c => c.translations.fra.common === "Palaos")
-  return countryList[Math.floor(Math.random() * (countryList.length + 1))];
+  return countries[Math.floor(Math.random() * (countries.length + 1))];
 };
 
 //Boucle qui s'appuie sur la function getRandomCountry pour alimentee un tableau avec 4 noms de pays issues de country
 
-export const getRandomCountries = async (countriesCount = 1) => {
-  await getAllCountries();
-
+export const getRandomCountries = async (countriesCount = 4, filter) => {
   const randomCountries = [];
 
   for (let i = 0; i < countriesCount; i++) {
-    let country = await getRandomCountry();
-    while (randomCountries.includes(country)) {
-      await getRandomCountry();
+    let country = await getRandomCountry(filter);
+
+    while (randomCountries.includes(country) || !country) {
+      country = await getRandomCountry(filter);
     }
+
     randomCountries.push(country);
   }
 

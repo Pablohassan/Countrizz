@@ -1,19 +1,19 @@
 const AbstractManager = require("./AbstractManager");
 
 class ScoreManager extends AbstractManager {
-  static table = "table_des_scores";
+  static table = "score";
 
-  insert(score) {
+  insert(name, score) {
     return this.connection.query(
-      `insert into ${ScoreManager.table} (title) values (?)`,
-      [score.title]
+      `insert into ${ScoreManager.table} (name, score) values (?, ?)`,
+      [name, score]
     );
   }
 
   update(score) {
     return this.connection.query(
-      `update ${ScoreManager.table} set title = ? where id = ?`,
-      [score.title, score.id]
+      `update ${ScoreManager.table} set name = ?, score = ? where id = ?`,
+      [score.name, score.score, score.id]
     );
   }
 }

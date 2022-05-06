@@ -1,12 +1,26 @@
-import Header from "@components/Header";
-import React from "react";
+import { useEffect, useState } from "react";
 
-export default function TableauScores({ playerName, score }) {
+import { getScores } from "@services/api";
+import Header from "@components/Header";
+
+export default function TableauScores({ playerName, playerScore }) {
+  const [scores, setScores] = useState([]);
+
+  useEffect(async () => {
+    setScores(await getScores());
+  }, []);
+
   return (
     <div className="finalScore">
-      <Header playerName={playerName} score={score} />
+      <Header playerName={playerName} score={playerScore} />
 
-      <h1>TableauScores</h1>
+      <div>Tableau Scores</div>
+
+      {scores.map((score) => (
+        <p>
+          {score.name} : {score.score}
+        </p>
+      ))}
     </div>
   );
 }

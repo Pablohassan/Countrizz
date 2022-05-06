@@ -2,7 +2,7 @@ const models = require("../models");
 
 class ScoreController {
   static browse = (req, res) => {
-    models.table_des_scores
+    models.score
       .findAll()
       .then(([rows]) => {
         res.send(rows);
@@ -14,7 +14,7 @@ class ScoreController {
   };
 
   static read = (req, res) => {
-    models.table_des_scores
+    models.score
       .find(req.params.id)
       .then(([rows]) => {
         if (rows[0] == null) {
@@ -36,7 +36,7 @@ class ScoreController {
 
     score.id = parseInt(req.params.id, 10);
 
-    models.table_des_scores
+    models.score
       .update(score)
       .then(([result]) => {
         if (result.affectedRows === 0) {
@@ -52,12 +52,12 @@ class ScoreController {
   };
 
   static add = (req, res) => {
-    const score = req.body;
+    const { score, name } = req.body;
 
     // TODO validations (length, format...)
 
-    models.table_des_scores
-      .insert(score)
+    models.score
+      .insert(name, score)
       .then(([result]) => {
         res.status(201).send({ ...score, id: result.insertId });
       })
@@ -68,7 +68,7 @@ class ScoreController {
   };
 
   static delete = (req, res) => {
-    models.table_des_scores
+    models.score
       .delete(req.params.id)
       .then(() => {
         res.sendStatus(204);

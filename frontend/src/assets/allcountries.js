@@ -7197,8 +7197,6 @@ export default {
       },
     },
 
-    
-
     {
       type: "Feature",
       id: "COM",

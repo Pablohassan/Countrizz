@@ -3,6 +3,9 @@ import axios from "axios";
 // URL de l'API des pays
 const COUNTRY_API_URL = "https://restcountries.com/v3.1";
 
+// URL de l'API Express
+const LOCAL_API = "http://localhost:5000";
+
 // Stocke la liste complète des pays en mémoire
 let countryList;
 
@@ -56,4 +59,15 @@ export const randomCountryQuestion = (randomCountries) => {
   const rand = Math.floor(Math.random() * randomCountries.length);
   const randomQuestion = randomCountries[rand];
   return randomQuestion;
+};
+
+/**
+ * Renvoie le tableau des scores
+ */
+export const getScores = async () => {
+  return (await axios.get(`${LOCAL_API}/scores`)).data;
+};
+
+export const addScores = async (name, score) => {
+  return (await axios.post(`${LOCAL_API}/scores`, { name, score })).data;
 };

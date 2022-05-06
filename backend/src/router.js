@@ -8,6 +8,6 @@ router.get("/scores", ScoreController.browse);
 router.get("/scores/:id", ScoreController.read);
 router.put("/scores/:id", ScoreController.edit);
 router.post("/scores", ScoreController.add);
-router.delete("/sicores/:id", ScoreController.delete);
+router.delete("/scores/:id", ScoreController.delete);
 
 module.exports = router;

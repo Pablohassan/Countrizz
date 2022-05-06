@@ -97,7 +97,7 @@ function Jeu({ playerName, onFinished, gameCount }) {
   }, []);
 
   useEffect(() => {
-    if (turn > 9) {
+    if (turn > 2) {
       onFinished(score);
       setTimeout(() => navigate("/scores"), 5000);
     }

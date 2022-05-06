@@ -5,6 +5,7 @@ import JeuPays from "@pages/JeuPays";
 import JeuCity from "@pages/JeuCity";
 import Home from "@pages/Home";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { addScores } from "@services/api";
 
 import "./App.css";
 
@@ -16,10 +17,12 @@ import TableauScores from "@pages/TableauScores";
 function App() {
   const [playerName, setPlayerName] = useState("");
   const [score, setScore] = useState(0);
+  const [gameCount, setGameCount] = useState(60);
+
   const onGameEnd = (resultat) => {
     setScore(resultat);
+    addScores(playerName, resultat);
   };
-  const [gameCount, setGameCount] = useState(60);
 
   return (
     <Router>
@@ -79,7 +82,9 @@ function App() {
           />
           <Route
             path="/scores"
-            element={<TableauScores playerName={playerName} score={score} />}
+            element={
+              <TableauScores playerName={playerName} playerScore={score} />
+            }
           />
         </Routes>
       </div>

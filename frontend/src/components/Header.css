@@ -16,3 +16,12 @@ header {
   font-family: "Chango";
   list-style-type: none;
 }
+
+.finalScore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  font-family: "Chango";
+  color: var(--Main-Font-Color);
+}

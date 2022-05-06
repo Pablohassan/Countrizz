@@ -5,14 +5,14 @@ function GameCountdown() {
   const navigate = useNavigate();
   let timer;
 
-  const [gameCount, setGameCount] = useState(60);
+  const [gameCount, setGameCount] = useState(30);
 
   useEffect(() => {
     timer = setInterval(() => {
       setGameCount((prevCount) => {
         if (prevCount <= 1) {
           clearInterval(timer);
-          navigate("/");
+          navigate("/scores");
         } else {
           setGameCount(prevCount - 1);
         }

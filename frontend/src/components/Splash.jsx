@@ -6,8 +6,8 @@ import data from "@assets/Images/velo.json";
 
 function Splash() {
   const container = useRef(null);
-  const container1 = useRef(null);
-  const container2 = useRef(null);
+  const boucleterre = useRef(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +23,7 @@ function Splash() {
 
   useEffect(() => {
     lottie.loadAnimation({
-      container: container1.current,
+      container: boucleterre.current,
       render: "svg",
       loop: true,
       autoplay: true,
@@ -31,15 +31,16 @@ function Splash() {
     });
   }, []);
 
-  useEffect(() => {
-    lottie.loadAnimation({
-      container: container2.current,
-      render: "svg",
-      loop: true,
-      autoplay: true,
-      animationData: data,
-    });
-  }, []);
+  // useEffect(() => {
+  //   lottie.loadAnimation({
+
+  //     container: velo.current,
+  //     render: "svg",
+  //     loop: true,
+  //     autoplay: true,
+  //     animationData: data,
+  //   });
+  // }, []);
 
   setTimeout(() => {
     navigate("/home");
@@ -47,11 +48,10 @@ function Splash() {
 
   return (
     <div>
-      <div className="containersplash" ref={container1} />
+      <div className="containersplash" ref={boucleterre} />
       <h1 className="titre-splash">Countrizz </h1>
       <div className="container2" ref={container} />
-      {/* <div className="container3"  ref={container2} />  */}
-
+      {/* <div className="container3"  ref={velo} />  */}
       <h2 className="slide-in-left"> Le Groupetto vous presente </h2>
     </div>
   );

@@ -35,7 +35,6 @@ body {
   text-shadow: -6px 4px 2px rgb(11, 13, 15);
 }
 .titre-splash {
- 
   font-family: "Chango", cursive;
   justify-content: center;
   text-align: center;
@@ -126,6 +125,9 @@ a {
 .ChooseName {
   align-items: center;
 }
+
+/******************** Animations   *******************/
+/******************** SPLASH   *******************/
 
 .slide-in-left {
   font-family: "Chango", cursive;
@@ -298,14 +300,13 @@ a {
 .container3 {
   -webkit-animation: container3 2s cubic-bezier(0.2, 0.46, 0.45, 1.14) 3s both;
   animation: container3 2s cubic-bezier(0.25, 0.46, 0.45, 1.14) 3s both;
-  
 }
 
 
 @-webkit-keyframes container3 {
   0% {
     -webkit-transform: translateX(-1000px);
-    transform: translate3D(-1000px);
+    transform: translateX(-1000px);
     opacity: 1;
   }
   50% {
@@ -313,11 +314,7 @@ a {
     transform: translateX(100px);
     opacity: 1;
   }
-  25% {
-    -webkit-transform: translateX(100px);
-    transform: translateX(-50px);
-    opacity: 1;
-  }
+  
 
   75% {
     -webkit-transform: translateX(300px);
@@ -334,31 +331,25 @@ a {
 @keyframes container3 {
   0% {
     -webkit-transform: translateX(-1000px);
-    transform: translate3D(-1000px);
-    -webkit-transform: translateY(-200px);
-    transform: translateY(-200);
+    transform: translateX(-1000px);
+    -webkit-transform: translate(0, -200, 0);
+
     opacity: 1;
   }
   50% {
     -webkit-transform: translateX(100px);
     transform: translateX(100px);
-    -webkit-transform: translateY(-200px);
-    transform: translateY(-200);
+    -webkit-transform: translateY(-200px); 
+    
     opacity: 1;
   }
-  25% {
-    -webkit-transform: translateX(100px);
-    transform: translateX(-50px);
-    -webkit-transform: translateY(-200px);
-    transform: translateY(-200);
-    opacity: 1;
-  }
+  
 
   75% {
     -webkit-transform: translateX(300px);
     transform: translateX(200px);
     -webkit-transform: translateY(-200px);
-    transform: translateY(-200);
+
     opacity: 1;
   }
 
@@ -366,7 +357,7 @@ a {
     -webkit-transform: translateX(1000px);
     transform: translateX(1000px);
     -webkit-transform: translateY(-200px);
-    transform: translateY(-200);
+
     opacity: 1;
   }
 } */
@@ -439,8 +430,6 @@ a {
   -webkit-animation: titre-splash 1s cubic-bezier(0.25, 0.46, 0.45, 1.14) 4s
     both;
   animation: titre-splash 1s cubic-bezier(0.25, 0.46, 0.45, 1.14) 4s both;
-  
-
 }
 
 @-webkit-keyframes titre-splash {
@@ -513,6 +502,67 @@ a {
     transform-origin: 130% 30%;
     -webkit-filter: blur(0);
     filter: blur(0);
+    opacity: 1;
+  }
+}
+/* Animations Mode jeu */
+
+.titreModejeu {
+  -webkit-animation: titreModejeu 0.7s cubic-bezier(0.25, 0.46, 0.45, 1.24) both;
+  animation: titreModejeu 0.7s cubic-bezier(0.25, 0.46, 0.45, 1.24) both;
+}
+
+@-webkit-keyframes titreModejeu {
+  0% {
+    -webkit-transform: translateZ(700px) translateY(-300px);
+    transform: translateZ(700px) translateY(-300px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateZ(0) translateY(0);
+    transform: translateZ(0) translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes titreModejeu {
+  0% {
+    -webkit-transform: translateZ(700px) translateY(-300px);
+    transform: translateZ(700px) translateY(-300px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateZ(0) translateY(0);
+    transform: translateZ(0) translateY(0);
+    opacity: 1;
+  }
+}
+
+.wrapper {
+  -webkit-animation: titreModejeu 0.7s cubic-bezier(0.25, 0.46, 0.45, 1.24) both;
+  animation: titreModejeu 0.7s cubic-bezier(0.25, 0.46, 0.45, 1.24) both;
+}
+
+@-webkit-keyframes wrapper {
+  0% {
+    -webkit-transform: translateZ(700px) translateY(300px);
+    transform: translateZ(700px) translateY(300px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateZ(0) translateY(0);
+    transform: translateZ(0) translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes wrapper {
+  0% {
+    -webkit-transform: translateZ(700px) translateY(300px);
+    transform: translateZ(700px) translateY(300px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateZ(0) translateY(0);
+    transform: translateZ(0) translateY(0);
     opacity: 1;
   }
 }

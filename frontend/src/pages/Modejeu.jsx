@@ -17,9 +17,18 @@ export default function ModeJeu({ playerName }) {
       <Header playerName={playerName} />
       <div>
         <h1 className="titreModejeu">Pret a Relever le défi?</h1>
-        <ButtonPlay name="Trouve Le Drapeau" to="/countdown" />
-        <ButtonPlay name="Trouve Le Pays" to="/countdownPays" />
-        <ButtonPlay name="Trouve La Capitale" to="/countdowncity" />
+        <div className="drapeau">
+          {" "}
+          <ButtonPlay name="Trouve Le Drapeau" to="/countdown" />{" "}
+        </div>
+        <div className="pays">
+          {" "}
+          <ButtonPlay name="Trouve Le Pays" to="/countdownPays" />{" "}
+        </div>
+        <div className="city">
+          {" "}
+          <ButtonPlay name="Trouve La Capitale" to="/countdowncity" />{" "}
+        </div>
       </div>
 
       <Footer />

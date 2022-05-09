@@ -3,11 +3,13 @@ import "@components/Questions.css";
 
 export default function Questions({ countryQuestion, name, flag }) {
   return (
-    <div className="champsQst">
-      {countryQuestion}
+    <div>
+      <div className="champsQst">
+        {countryQuestion}
 
-      {name}
-      {flag}
+        {name}
+        {flag}
+      </div>
     </div>
   );
 }

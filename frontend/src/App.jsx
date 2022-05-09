@@ -13,6 +13,7 @@ import UseDecrement from "@components/Countdown";
 import UseDecrementPays from "@components/CountdownPays";
 import UseDecrementCity from "@components/ContdownCity";
 import TableauScores from "@pages/TableauScores";
+import Splash from "@components/Splash";
 
 function App() {
   const [playerName, setPlayerName] = useState("");
@@ -29,7 +30,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route
-            path="/"
+            path="/home"
             element={
               <Home
                 playerName={playerName}
@@ -37,6 +38,8 @@ function App() {
               />
             }
           />
+
+          <Route path="/" element={<Splash />} />
           <Route path="/modejeu" element={<ModeJeu />} />
 
           <Route path="/countdown" element={<UseDecrement />} />

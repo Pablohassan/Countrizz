@@ -87,8 +87,8 @@ function Jeu({ playerName, onFinished, gameCount }) {
 
       setTimeout(() => {
         setCanRespond(true);
-      }, 2500);
-    }, 1010);
+      }, 500);
+    }, 510);
   }
 
   useEffect(() => {

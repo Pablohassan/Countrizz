@@ -21,9 +21,9 @@ function App() {
   const [score, setScore] = useState(0);
   const [gameCount, setGameCount] = useState(60);
 
-  const onGameEnd = (resultat) => {
+  const onGameEnd = async (resultat) => {
     setScore(resultat);
-    addScores(playerName, resultat);
+    await addScores(playerName, resultat);
   };
 
   return (
@@ -58,8 +58,6 @@ function App() {
                 playerName={playerName}
                 onPlayerNameChange={setPlayerName}
                 onFinished={onGameEnd}
-                gameCount={gameCount}
-                setGameCount={setGameCount}
               />
             }
           />

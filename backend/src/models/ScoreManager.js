@@ -16,6 +16,12 @@ class ScoreManager extends AbstractManager {
       [score.name, score.score, score.id]
     );
   }
+
+  findAll() {
+    return this.connection.query(
+      `select * from ${this.table} order by score desc limit 10`
+    );
+  }
 }
 
 module.exports = ScoreManager;

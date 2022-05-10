@@ -25,4 +25,4 @@ CREATE TABLE `score` (
   `score` int NOT NULL DEFAULT 0 
 );
 
-INSERT INTO `score` (`name`, `score`) VALUES ('Arno', 280);
+INSERT INTO `score` (`name`, `score`) VALUES ('Boooooob', 380);

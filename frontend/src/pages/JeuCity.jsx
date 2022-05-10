@@ -97,7 +97,7 @@ function JeuCity({ playerName, onFinished, gameCount }) {
   }, []);
 
   useEffect(() => {
-    if (turn > 49) {
+    if (turn > 50) {
       onFinished(score);
       setTimeout(() => navigate("/"), 1000);
     }

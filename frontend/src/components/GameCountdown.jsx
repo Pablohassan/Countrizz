@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
-function GameCountdown() {
-  const navigate = useNavigate();
+function GameCountdown({ onFinished }) {
   let timer;
 
   const [gameCount, setGameCount] = useState(30);
@@ -12,7 +10,7 @@ function GameCountdown() {
       setGameCount((prevCount) => {
         if (prevCount <= 1) {
           clearInterval(timer);
-          navigate("/congrate");
+          onFinished();
         } else {
           setGameCount(prevCount - 1);
         }

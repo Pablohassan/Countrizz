@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { randomCountryQuestion, getRandomCountries } from "@services/api";
 import allcountries from "@assets/allcountries.js";
 import Globe from "@components/Globe";
@@ -60,8 +60,6 @@ function Jeu({ playerName, onFinished, gameCount }) {
   const [score, setScore] = useState(0);
   const [turn, setTurn] = useState(0);
 
-  const navigate = useNavigate();
-
   async function nextRound() {
     setIsGoodResponse(false);
     setIsBadResponse(false);
@@ -96,13 +94,6 @@ function Jeu({ playerName, onFinished, gameCount }) {
     globeRef.current.controls().enabled = false;
   }, []);
 
-  useEffect(() => {
-    if (turn > 2) {
-      onFinished(score);
-      setTimeout(() => navigate("/congrate"), 5000);
-    }
-  }, [turn]);
-
   function onResponse(country) {
     setCanRespond(false);
 
@@ -130,7 +121,10 @@ function Jeu({ playerName, onFinished, gameCount }) {
         </ul>
       </nav>
       <Header playerName={playerName} score={score} />
-      <GameCountdown gameCount={gameCount} />
+      <GameCountdown
+        onFinished={() => onFinished(score)}
+        gameCount={gameCount}
+      />
       <MediaQuery minWidth={800}>
         <Globe
           height={400}

@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { randomCountryQuestion, getRandomCountries } from "@services/api";
 import allcountries from "@assets/allcountries.js";
 import Globe from "@components/Globe";
@@ -65,7 +64,6 @@ function Jeu({ playerName, onFinished, gameCount }) {
     setIsBadResponse(false);
     const countries = await getRandomCountries(4);
     const randomCountry = randomCountryQuestion(countries);
-
     const countryLocation = {
       lat: randomCountry.latlng[0],
       lng: randomCountry.latlng[1],
@@ -88,7 +86,6 @@ function Jeu({ playerName, onFinished, gameCount }) {
       }, 500);
     }, 510);
   }
-
   useEffect(() => {
     nextRound();
     globeRef.current.controls().enabled = false;
@@ -99,27 +96,17 @@ function Jeu({ playerName, onFinished, gameCount }) {
 
     if (country.name.common === countryToGuess.name.common) {
       setIsGoodResponse(true);
-
       setTurn(turn + 1);
       setScore(score + 10);
       setTimeout(() => nextRound(), 500);
     } else {
       setIsBadResponse(true);
-
       setTurn(turn + 1);
       setTimeout(() => nextRound(), 500);
     }
   }
-
   return (
     <div className="Jeu">
-      <nav>
-        <ul>
-          <li className="homeLink">
-            <Link to="/"> Home </Link>
-          </li>
-        </ul>
-      </nav>
       <Header playerName={playerName} score={score} />
       <GameCountdown
         onFinished={() => onFinished(score)}
@@ -131,8 +118,7 @@ function Jeu({ playerName, onFinished, gameCount }) {
           width={1200}
           ref={globeRef}
           globeImageUrl="../src/assets/Images/terre216k.jpeg"
-          backgroundImageUrl="../src/assets/Images/night-sky.png"
-          lineHoverPrecision={0}
+          backgroundImageUrl="../src/assets/Images/fondbleu.png"
           polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
           polygonAltitude={0.003}
           polygonCapColor={(d) =>

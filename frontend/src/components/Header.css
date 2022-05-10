@@ -9,7 +9,7 @@ header {
   margin-bottom: 0px;
   padding-right: 10%;
   margin-left: 300px;
-  transform: translateY(-20px);
+  transform: translateY(20px);
 }
 
 .homeLink {
@@ -19,7 +19,7 @@ header {
   width: 100%;
   font-family: "Chango";
   list-style-type: none;
-  transform: translateY(-80px);
+  transform: translateY(-35px);
   margin-right: 350px;
 }
 a {

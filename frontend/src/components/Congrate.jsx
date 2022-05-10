@@ -35,7 +35,7 @@ function Congrate({ playerName, playerScore }) {
 
   setTimeout(() => {
     navigate("/scores");
-  }, 8000);
+  }, 7000);
 
   return (
     <div>

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 function GameCountdown({ onFinished }) {
   let timer;
 
-  const [gameCount, setGameCount] = useState(60);
+  const [gameCount, setGameCount] = useState(10);
 
   useEffect(() => {
     timer = setInterval(() => {

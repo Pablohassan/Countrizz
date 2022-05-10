@@ -1,17 +1,19 @@
 import { useState, useRef, useEffect } from "react";
+import MediaQuery from "react-responsive";
+
 import { randomCountryQuestion, getRandomCountries } from "@services/api";
 import allcountries from "@assets/allcountries.js";
 import Globe from "@components/Globe";
-import ButtonReponse from "@components/ButtonReponse";
-import Questions from "@components/Questions";
+import Responses from "@components/Reponses";
+import Footer from "@components/footer";
 import Header from "@components/Header";
 import GameCountdown from "@components/GameCountdown";
-import MediaQuery from "react-responsive";
 
 const getAltitudeFromArea = (area) => {
   if (area > 10000000) {
     return 1.2;
   }
+
   if (area > 5000000) {
     return 1.1;
   }
@@ -49,14 +51,20 @@ const getAltitudeFromArea = (area) => {
 
   return 0.07;
 };
-function Jeu({ playerName, onFinished, gameCount }) {
+function Jeu({
+  score,
+  setScore,
+  playerName,
+  onFinished,
+  renderQuestion,
+  renderResponse,
+}) {
   const globeRef = useRef();
   const [countryRandom, setCountryRandom] = useState([]);
   const [countryToGuess, setCountryToGuess] = useState();
   const [isGoodResponse, setIsGoodResponse] = useState(false);
   const [isBadResponse, setIsBadResponse] = useState(false);
   const [canRespond, setCanRespond] = useState(false);
-  const [score, setScore] = useState(0);
   const [turn, setTurn] = useState(0);
 
   async function nextRound() {
@@ -108,14 +116,34 @@ function Jeu({ playerName, onFinished, gameCount }) {
   return (
     <div className="Jeu">
       <Header playerName={playerName} score={score} />
-      <GameCountdown
-        onFinished={() => onFinished(score)}
-        gameCount={gameCount}
-      />
+
+      <GameCountdown onFinished={onFinished} />
+
       <MediaQuery minWidth={800}>
         <Globe
           height={400}
           width={1200}
+          ref={globeRef}
+          globeImageUrl="../src/assets/Images/terre216K.jpeg"
+          backgroundImageUrl="../src/assets/Images/night-sky.png"
+          lineHoverPrecision={0}
+          polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
+          polygonAltitude={0.003}
+          polygonCapColor={(d) =>
+            countryToGuess && countryToGuess.cca3 === d.id
+              ? "yellow"
+              : "transparent"
+          }
+          polygonSideColor={() => "rgba(0, 100, 0, 0.15)"}
+          polygonStrokeColor={() => "#111"}
+          polygonsTransitionDuration={300}
+        />
+      </MediaQuery>
+
+      <MediaQuery maxWidth={800}>
+        <Globe
+          height={500}
+          width={400}
           ref={globeRef}
           globeImageUrl="../src/assets/Images/terre216k.jpeg"
           backgroundImageUrl="../src/assets/Images/fondbleu.png"
@@ -153,56 +181,35 @@ function Jeu({ playerName, onFinished, gameCount }) {
         />
       </MediaQuery>
 
-      {countryToGuess && (
-        <Questions
-          countryQuestion="Quel est le drapeau de ce pays : "
-          name={countryToGuess.translations.fra.common}
-        />
-      )}
+      {countryToGuess && renderQuestion(countryToGuess)}
+
       <MediaQuery minWidth={800}>
-        <div className="responses">
-          {countryRandom.map((country) => (
-            <ButtonReponse
-              key={country.cca3}
-              success={
-                isGoodResponse &&
-                country.name.common === countryToGuess.name.common
-              }
-              fail={
-                isBadResponse &&
-                country.name.common !== countryToGuess.name.common
-              }
-              image={country.flags.svg}
-              disabled={!canRespond}
-              onClick={() => onResponse(country)}
-            >
-              <img src={country.flags.svg} alt="name" width="50" />
-            </ButtonReponse>
-          ))}
-        </div>
+        <Responses
+          className="responses"
+          countryRandom={countryRandom}
+          countryToGuess={countryToGuess}
+          isGoodResponse={isGoodResponse}
+          isBadResponse={isBadResponse}
+          canRespond={canRespond}
+          renderResponse={renderResponse}
+          onResponse={onResponse}
+        />
       </MediaQuery>
+
       <MediaQuery maxWidth={800}>
-        <div className="responses-mobile">
-          {countryRandom.map((country) => (
-            <ButtonReponse
-              key={country.cca3}
-              success={
-                isGoodResponse &&
-                country.name.common === countryToGuess.name.common
-              }
-              fail={
-                isBadResponse &&
-                country.name.common !== countryToGuess.name.common
-              }
-              image={country.flags.svg}
-              disabled={!canRespond}
-              onClick={() => onResponse(country)}
-            >
-              <img src={country.flags.svg} alt="name" width="50" />
-            </ButtonReponse>
-          ))}
-        </div>
+        <Responses
+          className="responses-mobile"
+          countryRandom={countryRandom}
+          countryToGuess={countryToGuess}
+          isGoodResponse={isGoodResponse}
+          isBadResponse={isBadResponse}
+          canRespond={canRespond}
+          renderResponse={renderResponse}
+          onResponse={onResponse}
+        />
       </MediaQuery>
+
+      <Footer />
     </div>
   );
 }

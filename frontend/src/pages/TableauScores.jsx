@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 
 import { getScores } from "@services/api";
-import Header from "@components/Header";
 import { Link } from "react-router-dom";
 import Footer from "../components/footer";
 
-export default function TableauScores({ playerName, playerScore }) {
+export default function TableauScores() {
   const [scores, setScores] = useState([]);
 
   useEffect(async () => {
@@ -21,15 +20,20 @@ export default function TableauScores({ playerName, playerScore }) {
           </li>
         </ul>
       </nav>
-      <Header playerName={playerName} score={playerScore} />
 
-      <div>Tableau Scores</div>
+      <h1>Top Scores</h1>
 
-      {scores.map((score) => (
-        <p>
-          {score.name} : {score.score}
-        </p>
-      ))}
+      <table>
+        <tbody>
+          {scores.map(({ name, score }) => (
+            <tr>
+              <td>{name}</td>
+              <td>{score}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
       <Footer />
     </div>
   );

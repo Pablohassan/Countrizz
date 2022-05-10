@@ -8,6 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  max-height: 100vh;
 }
 
 .div {
@@ -69,7 +70,10 @@ h2 {
 a {
   color: var(--Main-Font-Color);
   text-decoration: none;
+  display: flex;
+  justify-content: flex-start;
 }
+
 .Jeu {
   display: flex;
   flex-direction: column;
@@ -125,6 +129,15 @@ a {
 .ChooseName {
   align-items: center;
 }
+nav {
+  transform: translateY(68px);
+  display: flex;
+  justify-content: flex-start;
+  max-height: 1px;
+}
+ul {
+  max-height: 1px;
+}
 
 /******************** Animations   *******************/
 /******************** SPLASH   *******************/
@@ -141,6 +154,7 @@ a {
     both;
   animation: slide-in-left 1s cubic-bezier(0.25, 0.46, 0.45, 1.14) 1s both;
   padding: 20px;
+  margin-bottom: 80px;
 }
 
 @-webkit-keyframes slide-in-left {
@@ -288,79 +302,6 @@ a {
     opacity: 0;
   }
 }
-
-/* .container3 {
-  height: 200px;
-  font-family: "Chango", cursive;
-  font-size: 30px;
-  margin: 0;
-  padding: 0;
-}
-
-.container3 {
-  -webkit-animation: container3 2s cubic-bezier(0.2, 0.46, 0.45, 1.14) 3s both;
-  animation: container3 2s cubic-bezier(0.25, 0.46, 0.45, 1.14) 3s both;
-}
-
-
-@-webkit-keyframes container3 {
-  0% {
-    -webkit-transform: translateX(-1000px);
-    transform: translateX(-1000px);
-    opacity: 1;
-  }
-  50% {
-    -webkit-transform: translateX(100px);
-    transform: translateX(100px);
-    opacity: 1;
-  }
-  
-
-  75% {
-    -webkit-transform: translateX(300px);
-    transform: translateX(200px);
-    opacity: 1;
-  }
-
-  100% {
-    -webkit-transform: translateX(1000px);
-    transform: translateX(1000px);
-    opacity: 1;
-  }
-}
-@keyframes container3 {
-  0% {
-    -webkit-transform: translateX(-1000px);
-    transform: translateX(-1000px);
-    -webkit-transform: translate(0, -200, 0);
-
-    opacity: 1;
-  }
-  50% {
-    -webkit-transform: translateX(100px);
-    transform: translateX(100px);
-    -webkit-transform: translateY(-200px); 
-    
-    opacity: 1;
-  }
-  
-
-  75% {
-    -webkit-transform: translateX(300px);
-    transform: translateX(200px);
-    -webkit-transform: translateY(-200px);
-
-    opacity: 1;
-  }
-
-  100% {
-    -webkit-transform: translateX(1000px);
-    transform: translateX(1000px);
-    -webkit-transform: translateY(-200px);
-
-    opacity: 1;
-  }
-} */
 
 .Playername-splash {
   -webkit-animation: titre 1s cubic-bezier(0.25, 0.46, 0.45, 1.34) 1.2s both;
@@ -565,4 +506,58 @@ a {
     transform: translateZ(0) translateY(0);
     opacity: 1;
   }
+}
+
+/*  Animation Congrate */
+
+.mortydance {
+  height: 250px;
+  font-family: "Chango", cursive;
+  font-size: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.mortydance {
+  -webkit-animation: mortydance 3,
+    20s cubic-bezier(0.2, 0.46, 0.45, 1.14) 1s both;
+  animation: mortydance 20s cubic-bezier(0.1, 0.46, 0.45, 1.14) 1s both;
+  transform: translateX(1000px);
+}
+
+@-webkit-keyframes mortydance {
+  0% {
+    -webkit-transform: translateX(-1000px);
+
+    transform: translateX(-1000px);
+
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateX(1000px);
+
+    transform: translateX(1000px);
+
+    opacity: 1;
+  }
+}
+@keyframes mortydance {
+  0% {
+    -webkit-transform: translateX(-900px);
+    transform: translate3D(-1000px);
+
+    opacity: 1;
+  }
+
+  100% {
+    -webkit-transform: translateX(900px);
+    transform: translateX(1000px);
+
+    opacity: 1;
+  }
+}
+
+.congratulations {
+  height: 500px;
+  transform: translateY(-180px);
 }

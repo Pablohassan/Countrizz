@@ -3,9 +3,13 @@
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
   grid-column-gap: 10px;
-  grid-row-gap: 10px;
-  margin-left: 15%;
-  margin-right: 15%;
+  grid-row-gap: 2px;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-bottom: 5%;
+  min-width: 250px;
+  min-height: 100px;
+  justify-content: center;
 }
 .wrapperRep {
   display: flex;
@@ -15,11 +19,11 @@
 
 .ctaRep {
   display: block;
-  padding: 10px 20px;
+  padding: 10px 10px;
   text-decoration: none;
   font-family: "chango";
   text-shadow: 2px 1px 5px black;
-  font-size: 22px;
+  font-size: 20px;
   color: white;
   background: #6225e6;
   transition: 1s;
@@ -65,8 +69,8 @@
   transition: 1s;
   box-shadow: 6px 6px 0 black;
   border-radius: 10px;
-  min-width: 380px;
-  max-width: 380px;
+  min-width: 300px;
+  max-width: 300px;
 }
 
 .redBtn {
@@ -81,6 +85,6 @@
   transition: 1s;
   box-shadow: 6px 6px 0 black;
   border-radius: 10px;
-  min-width: 380px;
-  max-width: 380px;
+  min-width: 300px;
+  max-width: 300px;
 }

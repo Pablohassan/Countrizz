@@ -1,10 +1,9 @@
 import ButtonPlay from "@components/ButtonPlay";
-import Footer from "@components/footer";
 import NomDuJoueur from "@components/NomDuJoueur";
 import lottie from "lottie-web";
 import data from "@assets/Images/boucleterre.json";
-
 import { useEffect, useRef } from "react";
+import Footer from "../components/footer";
 
 // import SpringDemo from "@components/SpringDemo";
 

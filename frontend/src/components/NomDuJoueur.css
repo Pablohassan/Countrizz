@@ -4,6 +4,8 @@
   align-items: center;
   width: 100%;
   font-family: "Chango";
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 .ChooseName {

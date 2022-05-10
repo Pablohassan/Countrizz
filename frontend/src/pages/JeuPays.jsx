@@ -4,10 +4,10 @@ import { randomCountryQuestion, getRandomCountries } from "@services/api";
 import allcountries from "@assets/allcountries.js";
 import Globe from "@components/Globe";
 import ButtonReponse from "@components/ButtonReponse";
-import Footer from "@components/footer";
 import Questions from "@components/Questions";
 import Header from "@components/Header";
 import GameCountdown from "@components/GameCountdown";
+import Footer from "../components/footer";
 
 const getAltitudeFromArea = (area) => {
   if (area > 10000000) {

@@ -4,7 +4,6 @@ import { randomCountryQuestion, getRandomCountries } from "@services/api";
 import allcountries from "@assets/allcountries.js";
 import Globe from "@components/Globe";
 import ButtonReponse from "@components/ButtonReponse";
-import Footer from "@components/footer";
 import Questions from "@components/Questions";
 import Header from "@components/Header";
 import GameCountdown from "@components/GameCountdown";
@@ -100,7 +99,7 @@ function Jeu({ playerName, onFinished, gameCount }) {
   useEffect(() => {
     if (turn > 2) {
       onFinished(score);
-      setTimeout(() => navigate("/scores"), 5000);
+      setTimeout(() => navigate("/congrate"), 5000);
     }
   }, [turn]);
 
@@ -135,7 +134,7 @@ function Jeu({ playerName, onFinished, gameCount }) {
       <MediaQuery minWidth={800}>
         <Globe
           height={400}
-          width={1100}
+          width={1200}
           ref={globeRef}
           globeImageUrl="../src/assets/Images/terre216k.jpeg"
           backgroundImageUrl="../src/assets/Images/night-sky.png"
@@ -224,7 +223,6 @@ function Jeu({ playerName, onFinished, gameCount }) {
           ))}
         </div>
       </MediaQuery>
-      <Footer />
     </div>
   );
 }

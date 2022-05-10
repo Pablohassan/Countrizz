@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import Footer from "@components/footer";
 import "@pages/modejeu.css";
 import Header from "@components/Header";
 import ButtonPlay from "@components/ButtonPlay";
+import Footer from "../components/footer";
 
 export default function ModeJeu({ playerName }) {
   return (

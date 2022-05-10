@@ -3,6 +3,7 @@ import lottie from "lottie-web";
 import { useNavigate } from "react-router-dom";
 import data1 from "@assets/Images/boucleterre.json";
 import data from "@assets/Images/velo.json";
+import "../App.css";
 
 function Splash() {
   const container = useRef(null);
@@ -30,17 +31,6 @@ function Splash() {
       animationData: data1,
     });
   }, []);
-
-  // useEffect(() => {
-  //   lottie.loadAnimation({
-
-  //     container: velo.current,
-  //     render: "svg",
-  //     loop: true,
-  //     autoplay: true,
-  //     animationData: data,
-  //   });
-  // }, []);
 
   setTimeout(() => {
     navigate("/home");

@@ -1,20 +1,30 @@
 header {
   background-color: var(--background-color);
+  justify-content: flex-end;
   font-family: "Chango", cursive;
   color: var(--Main-Font-Color);
   font-size: x-large;
   display: flex;
-  justify-content: space-between;
-  padding: 0;
-  margin: 0;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  padding-right: 10%;
+  margin-left: 300px;
+  transform: translateY(-20px);
 }
 
 .homeLink {
   display: flex;
-  font-size: large;
+  justify-content: flex-start;
+  font-size: x-large;
   width: 100%;
   font-family: "Chango";
   list-style-type: none;
+  transform: translateY(-80px);
+  margin-right: 350px;
+}
+a {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .finalScore {
@@ -22,6 +32,10 @@ header {
   flex-direction: column;
   align-items: center;
   width: 100%;
+  margin-left: 20px;
   font-family: "Chango";
   color: var(--Main-Font-Color);
+}
+.playerScore {
+  margin-left: 20px;
 }

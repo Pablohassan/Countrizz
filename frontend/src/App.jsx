@@ -14,6 +14,7 @@ import UseDecrementPays from "@components/CountdownPays";
 import UseDecrementCity from "@components/ContdownCity";
 import TableauScores from "@pages/TableauScores";
 import Splash from "@components/Splash";
+import Congrate from "@components/Congrate";
 
 function App() {
   const [playerName, setPlayerName] = useState("");
@@ -41,6 +42,10 @@ function App() {
 
           <Route path="/" element={<Splash />} />
           <Route path="/modejeu" element={<ModeJeu />} />
+          <Route
+            path="/congrate"
+            element={<Congrate playerName={playerName} playerScore={score} />}
+          />
 
           <Route path="/countdown" element={<UseDecrement />} />
           <Route path="/countdownPays" element={<UseDecrementPays />} />

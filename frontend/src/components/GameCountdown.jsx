@@ -12,7 +12,7 @@ function GameCountdown() {
       setGameCount((prevCount) => {
         if (prevCount <= 1) {
           clearInterval(timer);
-          navigate("/scores");
+          navigate("/congrate");
         } else {
           setGameCount(prevCount - 1);
         }

@@ -148,8 +148,8 @@ function Jeu({
           height={500}
           width={400}
           ref={globeRef}
-          globeImageUrl="../src/assets/Images/terre216k.jpeg"
-          backgroundImageUrl="../src/assets/Images/fondbleu.png"
+          globeImageUrl={earthImage}
+          backgroundImageUrl={spaceImage}
           polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
           polygonAltitude={0.003}
           polygonCapColor={(d) =>

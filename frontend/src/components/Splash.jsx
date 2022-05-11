@@ -42,7 +42,7 @@ function Splash() {
       <h1 className="titre-splash">Countrizz </h1>
       <div className="container2" ref={container} />
       {/* <div className="container3"  ref={velo} />  */}
-      <h2 className="slide-in-left"> Le Groupetto vous presente </h2>
+      <h2 className="slide-in-left"> Le Grupetto vous presente </h2>
     </div>
   );
 }

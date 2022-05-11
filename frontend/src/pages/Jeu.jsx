@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import MediaQuery from "react-responsive";
+import { useMediaQuery } from "react-responsive";
 
 import { randomCountryQuestion, getRandomCountries } from "@services/api";
 import allcountries from "@assets/allcountries.js";
@@ -54,6 +54,7 @@ const getAltitudeFromArea = (area) => {
 
   return 0.07;
 };
+
 function Jeu({
   score,
   setScore,
@@ -69,6 +70,8 @@ function Jeu({
   const [isBadResponse, setIsBadResponse] = useState(false);
   const [canRespond, setCanRespond] = useState(false);
   const [turn, setTurn] = useState(0);
+
+  const isMobile = useMediaQuery({ query: "(max-width: 800px)" });
 
   async function nextRound() {
     setIsGoodResponse(false);
@@ -122,95 +125,37 @@ function Jeu({
 
       <GameCountdown onFinished={onFinished} />
 
-      <MediaQuery minWidth={800}>
-        <Globe
-          height={400}
-          width={1200}
-          ref={globeRef}
-          globeImageUrl={earthImage}
-          backgroundImageUrl={spaceImage}
-          lineHoverPrecision={0}
-          polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
-          polygonAltitude={0.003}
-          polygonCapColor={(d) =>
-            countryToGuess && countryToGuess.cca3 === d.id
-              ? "yellow"
-              : "transparent"
-          }
-          polygonSideColor={() => "rgba(0, 100, 0, 0.15)"}
-          polygonStrokeColor={() => "#111"}
-          polygonsTransitionDuration={300}
-        />
-      </MediaQuery>
-
-      <MediaQuery maxWidth={800}>
-        <Globe
-          height={500}
-          width={400}
-          ref={globeRef}
-          globeImageUrl={earthImage}
-          backgroundImageUrl={spaceImage}
-          polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
-          polygonAltitude={0.003}
-          polygonCapColor={(d) =>
-            countryToGuess && countryToGuess.cca3 === d.id
-              ? "yellow"
-              : "transparent"
-          }
-          polygonSideColor={() => "rgba(0, 100, 0, 0.15)"}
-          polygonStrokeColor={() => "#111"}
-          polygonsTransitionDuration={300}
-        />
-      </MediaQuery>
-
-      <MediaQuery maxWidth={800}>
-        <Globe
-          height={500}
-          width={400}
-          ref={globeRef}
-          globeImageUrl="../src/assets/Images/terre216k.jpeg"
-          backgroundImageUrl="../src/assets/Images/night-sky.png"
-          lineHoverPrecision={0}
-          polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
-          polygonAltitude={0.003}
-          polygonCapColor={(d) =>
-            countryToGuess && countryToGuess.cca3 === d.id
-              ? "yellow"
-              : "transparent"
-          }
-          polygonSideColor={() => "rgba(0, 100, 0, 0.15)"}
-          polygonStrokeColor={() => "#111"}
-          polygonsTransitionDuration={300}
-        />
-      </MediaQuery>
+      <Globe
+        height={isMobile ? 500 : 400}
+        width={isMobile ? 400 : 1200}
+        ref={globeRef}
+        globeImageUrl={earthImage}
+        backgroundImageUrl={spaceImage}
+        lineHoverPrecision={0}
+        polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
+        polygonAltitude={0.003}
+        polygonCapColor={(d) =>
+          countryToGuess && countryToGuess.cca3 === d.id
+            ? "yellow"
+            : "transparent"
+        }
+        polygonSideColor={() => "rgba(0, 100, 0, 0.15)"}
+        polygonStrokeColor={() => "#111"}
+        polygonsTransitionDuration={300}
+      />
 
       {countryToGuess && renderQuestion(countryToGuess)}
 
-      <MediaQuery minWidth={800}>
-        <Responses
-          className="responses"
-          countryRandom={countryRandom}
-          countryToGuess={countryToGuess}
-          isGoodResponse={isGoodResponse}
-          isBadResponse={isBadResponse}
-          canRespond={canRespond}
-          renderResponse={renderResponse}
-          onResponse={onResponse}
-        />
-      </MediaQuery>
-
-      <MediaQuery maxWidth={800}>
-        <Responses
-          className="responses-mobile"
-          countryRandom={countryRandom}
-          countryToGuess={countryToGuess}
-          isGoodResponse={isGoodResponse}
-          isBadResponse={isBadResponse}
-          canRespond={canRespond}
-          renderResponse={renderResponse}
-          onResponse={onResponse}
-        />
-      </MediaQuery>
+      <Responses
+        className={`responses${isMobile ? "-mobile" : ""}`}
+        countryRandom={countryRandom}
+        countryToGuess={countryToGuess}
+        isGoodResponse={isGoodResponse}
+        isBadResponse={isBadResponse}
+        canRespond={canRespond}
+        renderResponse={renderResponse}
+        onResponse={onResponse}
+      />
 
       <Footer />
     </div>

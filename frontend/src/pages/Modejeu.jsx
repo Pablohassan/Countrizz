@@ -15,7 +15,7 @@ export default function ModeJeu() {
         </ul>
       </nav>
       <div>
-        <h1 className="titreModejeu">Choisis ton niveau de difficulté !</h1>
+        <h1 className="titreModejeu">Choisis ton mode de jeu!</h1>
         <div className="BtnContainer">
           <div className="BtnDrapeau">
             {" "}

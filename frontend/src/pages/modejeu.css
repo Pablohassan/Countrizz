@@ -1,4 +1,5 @@
 .titreModejeu {
+
   font-size: 55px;
   background-color: var(--background-color);
   font-family: "Chango", cursive;
@@ -17,4 +18,5 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 20px;
 }

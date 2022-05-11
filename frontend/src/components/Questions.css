@@ -6,3 +6,14 @@
   margin: 15px;
   text-align: center;
 }
+
+@media (max-width: 400px) {
+  .champsQst {
+    font-size: 18px;
+    font-family: "chango";
+    color: var(--Main-Font-Color);
+    max-width: 350px;
+    margin: 2px;
+    text-align: center;
+  }
+}

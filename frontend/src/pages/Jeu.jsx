@@ -1,11 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
-
 import { randomCountryQuestion, getRandomCountries } from "@services/api";
 import allcountries from "@assets/allcountries.js";
 import Globe from "@components/Globe";
 import Responses from "@components/Reponses";
-import Footer from "@components/footer";
 import Header from "@components/Header";
 import GameCountdown from "@components/GameCountdown";
 
@@ -126,8 +124,8 @@ function Jeu({
       <GameCountdown onFinished={onFinished} />
 
       <Globe
-        height={isMobile ? 500 : 400}
-        width={isMobile ? 400 : 1200}
+        height={isMobile ? 300 : 400}
+        width={isMobile ? 400 : 1100}
         ref={globeRef}
         globeImageUrl={earthImage}
         backgroundImageUrl={spaceImage}
@@ -156,8 +154,6 @@ function Jeu({
         renderResponse={renderResponse}
         onResponse={onResponse}
       />
-
-      <Footer />
     </div>
   );
 }

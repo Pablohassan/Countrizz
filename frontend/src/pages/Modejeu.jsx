@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import "@pages/modejeu.css";
 import ButtonPlay from "@components/ButtonPlay";
 import Footer from "../components/footer";
+import "@components/ButtonPlay.css";
 
 export default function ModeJeu() {
   return (

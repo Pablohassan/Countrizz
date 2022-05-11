@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import lottie from "lottie-web";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import data1 from "../assets/Images/congratulations.json";
 import data from "../assets/Images/mortydance.json";
 import Header from "./Header";
@@ -39,14 +39,10 @@ function Congrate({ playerName, playerScore }) {
 
   return (
     <div>
-      <nav>
-        <ul>
-          <li className="homeLink">
-            <Link to="/"> Home </Link>
-          </li>
-        </ul>
-      </nav>
+      <br />
+      <div />
       <Header playerName={playerName} score={playerScore} />
+      <br />
       <div className="mortydance" ref={mortydance} />
       <div className="congratulations" ref={congratulations} />
       <Footer />

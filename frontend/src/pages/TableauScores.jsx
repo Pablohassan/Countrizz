@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-
 import { getScores } from "@services/api";
-import { Link } from "react-router-dom";
+import ButtonPlay from "@components/ButtonPlay";
 import Footer from "../components/footer";
 
 export default function TableauScores() {
@@ -13,14 +12,6 @@ export default function TableauScores() {
 
   return (
     <div className="finalScore">
-      <nav>
-        <ul>
-          <li className="homeLink">
-            <Link to="/"> Home </Link>
-          </li>
-        </ul>
-      </nav>
-
       <h1>Top Scores</h1>
 
       <table>
@@ -33,7 +24,7 @@ export default function TableauScores() {
           ))}
         </tbody>
       </table>
-
+      <ButtonPlay name="Rejouer" to="/modejeu" />
       <Footer />
     </div>
   );

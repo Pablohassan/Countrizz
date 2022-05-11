@@ -31,7 +31,7 @@ body {
   justify-content: center;
   text-align: center;
 
-  font-size: 5rem;
+  font-size: 4rem;
   color: var(--Main-Font-Color);
   text-shadow: -6px 4px 2px rgb(11, 13, 15);
 }
@@ -81,7 +81,7 @@ a {
 }
 
 .titreModejeu {
-  font-size: 55px;
+  font-size: 45px;
   background-color: var(--background-color);
   font-family: "Chango", cursive;
   display: block;
@@ -186,7 +186,7 @@ ul {
   height: 150px;
   -webkit-animation: container 2.2s cubic-bezier(0.43, 1.2, 0.32, 1.1) both;
   animation: container 2.2s cubic-bezier(0.43, 1, 0.52, 1.1) both;
-  transform: translate(-250px, 330px);
+  transform: translate(-250px, 280px);
 }
 
 @-webkit-keyframes container {
@@ -562,9 +562,11 @@ ul {
   transform: translateY(-180px);
 }
 
+
 .container3 {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 200px;
 }
+

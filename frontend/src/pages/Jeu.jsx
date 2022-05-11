@@ -9,6 +9,9 @@ import Footer from "@components/footer";
 import Header from "@components/Header";
 import GameCountdown from "@components/GameCountdown";
 
+import earthImage from "@assets/Images/terre216K.jpeg";
+import spaceImage from "@assets/Images/night-sky.png";
+
 const getAltitudeFromArea = (area) => {
   if (area > 10000000) {
     return 1.2;
@@ -124,8 +127,8 @@ function Jeu({
           height={400}
           width={1200}
           ref={globeRef}
-          globeImageUrl="../src/assets/Images/terre216K.jpeg"
-          backgroundImageUrl="../src/assets/Images/night-sky.png"
+          globeImageUrl={earthImage}
+          backgroundImageUrl={spaceImage}
           lineHoverPrecision={0}
           polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
           polygonAltitude={0.003}

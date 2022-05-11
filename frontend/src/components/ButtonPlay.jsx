@@ -5,7 +5,6 @@ import "@components/ButtonPlay.css";
 export default function ButtonPlay({ name, to }) {
   return (
     <div className="wrapper">
-      {/* Modif lienbtnplay a la place du lien to="/modejeu" */}
       <Link className="cta" to={to}>
         <span className="BtnPlay">{name}</span>
         <span>

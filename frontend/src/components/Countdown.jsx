@@ -1,30 +1,34 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useRef } from "react";
+import lottie from "lottie-web";
 import { useNavigate } from "react-router-dom";
-import "@components/Countdown.css";
+import data2 from "../assets/Images/CountdownAnimation.json";
+import "../App.css";
 
 function UseDecrement() {
+  const container3 = useRef(null);
+
   const navigate = useNavigate();
-  let timer;
-  const [count, setCount] = useState(3);
 
   useEffect(() => {
-    timer = setInterval(() => {
-      setCount((prevCount) => {
-        if (prevCount <= 1) {
-          clearInterval(timer);
-          navigate("/jeu");
-        } else {
-          setCount(prevCount - 1);
-        }
-      });
-    }, 1000);
+    lottie.loadAnimation({
+      container: container3.current,
 
-    return () => {
-      clearInterval(timer);
-    };
+      render: "svg",
+      loop: false,
+      autoplay: true,
+      animationData: data2,
+    });
   }, []);
 
-  return <div className="BtnCountdown">{count}</div>;
+  setTimeout(() => {
+    navigate("/jeu");
+  }, 4250);
+
+  return (
+    <div>
+      <div className="container3" ref={container3} />
+    </div>
+  );
 }
 
 export default UseDecrement;

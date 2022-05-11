@@ -1,25 +1,36 @@
+import { Link } from "react-router-dom";
 import "@pages/modejeu.css";
-import Header from "@components/Header";
 import ButtonPlay from "@components/ButtonPlay";
 import Footer from "../components/footer";
 
-export default function ModeJeu({ playerName }) {
+export default function ModeJeu() {
   return (
     <div className="ModeJeu">
-      <Header playerName={playerName} />
+      <nav>
+        <ul>
+          <li className="homeLink">
+            <Link to="/"> Home </Link>
+          </li>
+        </ul>
+      </nav>
       <div>
-        <h1 className="titreModejeu">Pret a Relever le défi?</h1>
-        <div className="drapeau">
-          {" "}
-          <ButtonPlay name="Trouve Le Drapeau" to="/countdown" />{" "}
-        </div>
-        <div className="pays">
-          {" "}
-          <ButtonPlay name="Trouve Le Pays" to="/countdownPays" />{" "}
-        </div>
-        <div className="city">
-          {" "}
-          <ButtonPlay name="Trouve La Capitale" to="/countdowncity" />{" "}
+        <h1 className="titreModejeu">Choisi ton niveau de difficulté !</h1>
+        <div className="BtnContainer">
+          <div className="BtnDrapeau">
+            {" "}
+            <ButtonPlay name="Niv 1 ⭐: Le Drapeau " to="/countdown" />{" "}
+          </div>
+          <div className="BtnPays">
+            {" "}
+            <ButtonPlay name="Niv 2 ⭐⭐: Le Pays" to="/countdownPays" />{" "}
+          </div>
+          <div className="BtnCity">
+            {" "}
+            <ButtonPlay
+              name="Niv 3 ⭐⭐⭐: La Capitale"
+              to="/countdowncity"
+            />{" "}
+          </div>
         </div>
       </div>
 

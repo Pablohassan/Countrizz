@@ -561,3 +561,10 @@ ul {
   height: 500px;
   transform: translateY(-180px);
 }
+
+.container3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 200px;
+}

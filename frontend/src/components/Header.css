@@ -32,12 +32,12 @@ a {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-left: 20px;
+  margin-left: 25px;
   font-family: "Chango";
   color: var(--Main-Font-Color);
 }
 .playerScore {
-  margin-left: 20px;
+  margin-left: 25px;
 }
 @media (max-width: 400px) {
   header {

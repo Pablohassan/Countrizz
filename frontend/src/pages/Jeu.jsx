@@ -13,7 +13,7 @@ import earthImageM from "@assets/Images/earth4K.jpg";
 import spaceImage from "@assets/Images/night-sky.png";
 import * as THREE from "three";
 import ocean from "@assets/Images/ocean10kM.jpg";
-import earthImage from "../assets/Images/terre216k.jpeg";
+import earthImage from "../assets/Images/laterre4k.jpeg";
 
 const globeMaterial = new THREE.MeshPhongMaterial();
 globeMaterial.bumpScale = 3;

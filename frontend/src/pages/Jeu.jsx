@@ -9,11 +9,11 @@ import Header from "@components/Header";
 import GameCountdown from "@components/GameCountdown";
 import bumpimg from "@assets/Images/bump4k.jpg";
 import bumpd from "@assets/Images/bump4kD.jpg";
-import earthImage from "@assets/Images/terre216k.jpeg";
 import earthImageM from "@assets/Images/earth4K.jpg";
 import spaceImage from "@assets/Images/night-sky.png";
 import * as THREE from "three";
 import ocean from "@assets/Images/ocean10kM.jpg";
+import earthImage from "../assets/Images/terre216k.jpeg";
 
 const globeMaterial = new THREE.MeshPhongMaterial();
 globeMaterial.bumpScale = 3;

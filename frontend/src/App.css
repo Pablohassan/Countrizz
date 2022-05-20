@@ -789,7 +789,6 @@ tr {
     left: 2%;
     padding: 14px 18px;
 
- 
     font-family: "chango";
     text-shadow: 2px 1px 5px black;
     font-size: 25px;
@@ -797,7 +796,7 @@ tr {
     background: #ff5722;
     transition: 1s;
     box-shadow: 6px 6px 2px black;
-   
+
     width: 25px;
     height: 25px;
     border-radius: 100%;

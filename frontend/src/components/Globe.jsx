@@ -4,6 +4,12 @@ import GlobeKapsule from "globe.gl";
 const Globe = fromKapsule(GlobeKapsule, {
   methodNames: [
     "pauseAnimation",
+    "geometry",
+    "radius",
+    "roughness",
+    "bumpMap",
+    "bumpScale",
+    "imageUtils",
     "resumeAnimation",
     "pointOfView",
     "scene",

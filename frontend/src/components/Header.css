@@ -10,6 +10,8 @@ header {
   padding-right: 10%;
   margin-left: 300px;
   transform: translateY(20px);
+  z-index: 20;
+  background-color: transparent;
 }
 
 .homeLink {
@@ -21,10 +23,12 @@ header {
   list-style-type: none;
   transform: translateY(-35px);
   margin-right: 350px;
+  background-color: transparent;
 }
 a {
   display: flex;
   justify-content: flex-start;
+  background-color: transparent;
 }
 
 .finalScore {
@@ -35,11 +39,16 @@ a {
   margin-left: 25px;
   font-family: "Chango";
   color: var(--Main-Font-Color);
+  background-color: transparent;
+  text-shadow: 5px 2px 1px black;
 }
 .playerScore {
   margin-left: 25px;
+  z-index: 20;
+  background-color: transparent;
+  text-shadow: 5px 2px 1px black;
 }
-@media (max-width: 400px) {
+@media (max-width: 600px) {
   header {
     background-color: var(--background-color);
     justify-content: flex-end;
@@ -49,10 +58,11 @@ a {
     display: flex;
     padding-bottom: 0px;
     margin-bottom: 0px;
-    margin-top: 10px;
+    text-shadow: 5px 2px 1px black;
     padding-right: 10%;
     margin-left: 50px;
     transform: translateY(20px);
+    background-color: transparent;
   }
 
   .homeLink {
@@ -64,10 +74,12 @@ a {
     list-style-type: none;
     transform: translateY(-35px);
     margin-right: 50px;
+    background-color: transparent;
   }
   a {
     display: flex;
     justify-content: flex-start;
+    background-color: transparent;
   }
 
   .finalScore {
@@ -78,8 +90,11 @@ a {
     margin-left: 20px;
     font-family: "Chango";
     color: var(--Main-Font-Color);
+    background-color: transparent;
   }
   .playerScore {
-    margin-left: 20px;
+    margin-left: 2px;
+    background-color: transparent;
+    min-width: 150px;
   }
 }

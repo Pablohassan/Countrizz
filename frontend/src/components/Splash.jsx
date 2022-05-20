@@ -34,7 +34,7 @@ function Splash() {
 
   setTimeout(() => {
     navigate("/home");
-  }, 9000);
+  }, 8000);
 
   return (
     <div>

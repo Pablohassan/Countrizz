@@ -24,7 +24,7 @@ export default function TableauScores() {
           ))}
         </tbody>
       </table>
-      <ButtonPlay name="Rejouer" to="/modejeu" />
+      <ButtonPlay name="Rejouer" to="/home" />
       <Footer />
     </div>
   );

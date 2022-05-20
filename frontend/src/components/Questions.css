@@ -1,19 +1,27 @@
 .champsQst {
-  font-size: 28px;
+  font-size: 30px;
   font-family: "chango";
   color: var(--Main-Font-Color);
   max-width: 1100px;
-  margin: 5px;
+  margin: 10px;
+  transition: 2s;
   text-align: center;
+  transform: translateY(-260px);
+  text-shadow: 5px 2px 1px black;
+
+  animation-duration: 1000;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 500px) {
   .champsQst {
-    font-size: 18px;
+    font-size: 25px;
     font-family: "chango";
     color: var(--Main-Font-Color);
-    max-width: 350px;
+    max-width: 380px;
     margin: 2px;
     text-align: center;
+
+    text-shadow: 5px 2px 1px black;
+    transform: translateY(-295px);
   }
 }

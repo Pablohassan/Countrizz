@@ -1,0 +1,22 @@
+.titreModejeu {
+  font-size: 55px;
+  background-color: var(--background-color);
+  font-family: "Chango", cursive;
+  display: block;
+  justify-content: center;
+  text-align: center;
+  margin-top: 100px;
+
+  color: var(--Main-Font-Color);
+  text-shadow: -6px 4px 2px rgb(11, 13, 15);
+}
+
+.BtnContainer {
+  width: 95%;
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-left: 5px;
+}

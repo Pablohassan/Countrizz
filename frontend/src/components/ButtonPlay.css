@@ -87,7 +87,7 @@ path.two {
     fill: white;
   }
 }
-@media (max-width: 400px) {
+@media (max-width: 500px) {
   wrapper {
     display: flex;
     justify-content: center;
@@ -95,16 +95,16 @@ path.two {
 
   .cta {
     display: flex;
-    padding: 5px 5px;
+    padding: 10px 25px;
     text-decoration: none;
     font-family: "chango";
-    font-size: 15px;
+    font-size: 25px;
     color: white;
     background: #6225e6;
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     transform: skewX(-15deg);
-    margin: 5px;
+    margin: 10px;
   }
 
   .cta:focus {
@@ -132,9 +132,9 @@ path.two {
 
   span:nth-child(2) {
     width: 20px;
-    margin-left: 30px;
+    margin-left: 20px;
     position: relative;
-    top: 12%;
+    top: 5%;
   }
 
   path.one {

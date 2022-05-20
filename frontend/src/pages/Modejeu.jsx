@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "@pages/modejeu.css";
+import "@components/modejeu.css";
 import ButtonPlay from "@components/ButtonPlay";
 import Footer from "../components/footer";
 import "@components/ButtonPlay.css";
@@ -18,25 +18,16 @@ export default function ModeJeu() {
         <h1 className="titreModejeu">Choisis ton mode de jeu!</h1>
         <div className="BtnContainer">
           <div className="BtnDrapeau">
-            {" "}
-            <ButtonPlay
-              name="Niv 1 ⭐: Trouve le Drapeau "
-              to="/countdown"
-            />{" "}
+            <ButtonPlay name="Niv 1 Trouve le  Drapeau ⭐" to="/countdown" />
           </div>
           <div className="BtnPays">
-            {" "}
-            <ButtonPlay
-              name="Niv 2 ⭐⭐: Trouve le Pays"
-              to="/countdownPays"
-            />{" "}
+            <ButtonPlay name="Niv 2 Trouve le Pays ⭐⭐" to="/countdownPays" />
           </div>
           <div className="BtnCity">
-            {" "}
             <ButtonPlay
-              name="Niv 3 ⭐⭐⭐: Trouve la Capitale"
+              name="Niv 3 trouve la capitale ⭐⭐⭐"
               to="/countdowncity"
-            />{" "}
+            />
           </div>
         </div>
       </div>

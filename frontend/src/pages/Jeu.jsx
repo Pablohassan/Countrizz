@@ -26,33 +26,33 @@ new THREE.TextureLoader().load(ocean, (texture) => {
 
 const getAltitudeFromArea = (area) => {
   if (area > 10000000) {
-    return 1.4;
+    return 1.5;
   }
 
   if (area > 5000000) {
-    return 1.2;
+    return 1.3;
   }
 
   if (area > 1000000) {
-    return 1;
+    return 1.1;
   }
   if (area > 500000) {
-    return 0.9;
+    return 1;
   }
 
   if (area > 100000) {
-    return 0.85;
+    return 0.95;
   }
   if (area > 50000) {
-    return 0.7;
+    return 0.8;
   }
 
   if (area > 10000) {
-    return 0.6;
+    return 0.7;
   }
 
   if (area > 5000) {
-    return 0.55;
+    return 0.6;
   }
   if (area > 2500) {
     return 0.5;
@@ -103,7 +103,7 @@ function Jeu({
     };
 
     const franceLocation = {
-      altitude: 1.4,
+      altitude: 1.6,
     };
 
     globeRef.current.pointOfView(franceLocation, 700);
@@ -145,17 +145,13 @@ function Jeu({
       <GameCountdown onFinished={onFinished} />
 
       <Globe
-        height={isMobile ? 850 : 700}
+        height={isMobile ? 820 : 700}
         width={isMobile ? 400 : 1200}
         ref={globeRef}
         globeMaterial={globeMaterial}
         globeImageUrl={isMobile ? earthImage : earthImageM}
         backgroundImageUrl={spaceImage}
         bumpImageUrl={isMobile ? bumpimg : bumpd}
-        bumpMap
-        clouds
-        bumpAltitude
-        showAtmosphere
         lineHoverPrecision={0}
         polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
         polygonAltitude={0.004}

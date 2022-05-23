@@ -1,11 +1,11 @@
 export default function NomDuJoueur({ playerName = "", onChange }) {
   return (
     <div className="PlayerName">
-      <h2 className="Playername-splash">Entrez votre Nom</h2>
       <input
         className="ChooseName"
         value={playerName}
         type="text"
+        placeholder="Entrez votre nom"
         onChange={(event) => onChange(event.target.value)}
       />
     </div>

@@ -20,7 +20,7 @@ export default function JeuDrapeaux({
         />
       )}
       renderResponse={(country) => (
-        <img src={country.flags.svg} alt="name" width="50" />
+        <img src={country.flags.svg} alt="name" height={70} />
       )}
     />
   );

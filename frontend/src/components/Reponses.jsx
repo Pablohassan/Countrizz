@@ -21,7 +21,7 @@ export default function Reponses({
           fail={
             isBadResponse && country.name.common !== countryToGuess.name.common
           }
-          image={country.flags.svg}
+          image={country.flags.png}
           disabled={!canRespond}
           onClick={() => onResponse(country)}
         >

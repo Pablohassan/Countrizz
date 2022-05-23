@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-
+import JeuDrapeaux from "@pages/JeuDrapeaux";
 import ModeJeu from "@pages/Modejeu";
 import JeuPays from "@pages/JeuPays";
 import JeuCity from "@pages/JeuCity";
@@ -14,12 +14,11 @@ import UseDecrementPays from "@components/CountdownPays";
 import UseDecrementCity from "@components/ContdownCity";
 import TableauScores from "@pages/TableauScores";
 import Splash from "@components/Splash";
-import Congrate from "@components/Congrate";
-import JeuDrapeaux from "@pages/JeuDrapeaux";
+import Congrate from "@pages/Congrate";
 
 function App() {
   const navigate = useNavigate();
-  const [playerName, setPlayerName] = useState("");
+  const [playerName, setPlayerName] = useState(" > Entrez votre nom < ");
   const [score, setScore] = useState(0);
   const scoreRef = useRef(score);
 
@@ -29,6 +28,7 @@ function App() {
 
   const onGameEnd = async () => {
     await addScores(playerName, scoreRef.current);
+    setScore(0);
     navigate("/congrate");
   };
 

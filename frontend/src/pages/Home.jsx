@@ -5,8 +5,6 @@ import data from "@assets/Images/boucleterre.json";
 import { useEffect, useRef } from "react";
 import Footer from "../components/footer";
 
-// import SpringDemo from "@components/SpringDemo";
-
 export default function Home({ playerName, onPlayerNameChange }) {
   const container = useRef(null);
 
@@ -29,8 +27,8 @@ export default function Home({ playerName, onPlayerNameChange }) {
         <h1 className="titre"> Countrizz</h1>
 
         <NomDuJoueur playerName={playerName} onChange={onPlayerNameChange} />
+
         <ButtonPlay name="LET'S GO" to="/modejeu" />
-        {/* <SpringDemo /> */}
       </div>
 
       <Footer />

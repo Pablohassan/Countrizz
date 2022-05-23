@@ -18,7 +18,7 @@ import Congrate from "@pages/Congrate";
 
 function App() {
   const navigate = useNavigate();
-  const [playerName, setPlayerName] = useState("");
+  const [playerName, setPlayerName] = useState(" > Entrez votre nom < ");
   const [score, setScore] = useState(0);
   const scoreRef = useRef(score);
 

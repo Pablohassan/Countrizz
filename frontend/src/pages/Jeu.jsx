@@ -145,8 +145,8 @@ function Jeu({
       <GameCountdown onFinished={onFinished} />
 
       <Globe
-        height={isMobile ? 820 : 700}
-        width={isMobile ? 400 : 1200}
+        height={isMobile ? 800 : 700}
+        width={isMobile ? 390 : 1200}
         ref={globeRef}
         globeMaterial={globeMaterial}
         globeImageUrl={isMobile ? earthImage : earthImageM}

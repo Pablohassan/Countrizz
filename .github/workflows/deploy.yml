@@ -18,15 +18,15 @@ jobs:
       - name: Check out Git repository
         uses: appleboy/ssh-action@master
 
-      with:
-        host: ${{ secrets.BDX_JS_VSP_SSH_HOST }}
-        port: ${{ secrets.BDX_JS_VSP_SSH_PORT }}
-        username: ${{ secrets.BDX_JS_VSP_SSH_USER }}
-        password: ${{ secrets.BDX_JS_VSP_SSH_PASSWORD }}
-        script: |
-          cd /home/instructor/projects/countrizz
-          git pull
-          npm run setup
-          cd frontend
-          npm run build
-          pm2 restart countrizz
+        with:
+          host: ${{ secrets.BDX_JS_VSP_SSH_HOST }}
+          port: ${{ secrets.BDX_JS_VSP_SSH_PORT }}
+          username: ${{ secrets.BDX_JS_VSP_SSH_USER }}
+          password: ${{ secrets.BDX_JS_VSP_SSH_PASSWORD }}
+          script: |
+            cd /home/instructor/projects/countrizz
+            git pull
+            npm run setup
+            cd frontend
+            npm run build
+            pm2 restart countrizz

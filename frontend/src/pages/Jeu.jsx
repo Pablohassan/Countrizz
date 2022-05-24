@@ -13,6 +13,7 @@ import earthImageM from "@assets/Images/earth4K.jpg";
 import spaceImage from "@assets/Images/night-sky.png";
 import * as THREE from "three";
 import ocean from "@assets/Images/ocean10kM.jpg";
+import fondbleu from "@assets/Images/fondbleu.png";
 import earthImage from "../assets/Images/laterre4k.jpeg";
 
 const globeMaterial = new THREE.MeshPhongMaterial();
@@ -72,7 +73,6 @@ const getAltitudeFromArea = (area) => {
 function Jeu({
   score,
   setScore,
-
   playerName,
   onFinished,
   renderQuestion,
@@ -150,7 +150,7 @@ function Jeu({
         ref={globeRef}
         globeMaterial={globeMaterial}
         globeImageUrl={isMobile ? earthImage : earthImageM}
-        backgroundImageUrl={spaceImage}
+        backgroundImageUrl={isMobile ? fondbleu : spaceImage}
         bumpImageUrl={isMobile ? bumpimg : bumpd}
         lineHoverPrecision={0}
         polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}

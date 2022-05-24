@@ -24,6 +24,8 @@ jobs:
           username: ${{ secrets.BDX_JS_VSP_SSH_USER }}
           password: ${{ secrets.BDX_JS_VSP_SSH_PASSWORD }}
           script: |
+            export PATH=$PATH:/home/instructor/.nvm/versions/node/v16.15.0/bin/npm
+            export PATH=$PATH:/home/instructor/.nvm/versions/node/v16.15.0/bin/pm2
             cd /home/instructor/projects/countrizz
             git pull
             npm run setup

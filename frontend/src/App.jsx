@@ -9,9 +9,6 @@ import { addScores } from "@services/api";
 
 import "./App.css";
 
-import UseDecrement from "@components/Countdown";
-import UseDecrementPays from "@components/CountdownPays";
-import UseDecrementCity from "@components/ContdownCity";
 import TableauScores from "@pages/TableauScores";
 import Splash from "@components/Splash";
 import Congrate from "@pages/Congrate";
@@ -50,9 +47,6 @@ function App() {
         />
 
         <Route path="/modejeu" element={<ModeJeu />} />
-        <Route path="/countdown" element={<UseDecrement />} />
-        <Route path="/countdownPays" element={<UseDecrementPays />} />
-        <Route path="/countdownCity" element={<UseDecrementCity />} />
 
         <Route
           path="/jeu"

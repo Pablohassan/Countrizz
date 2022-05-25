@@ -29,7 +29,6 @@
     "react-kapsule": "^2.2.3",
     "react-responsive": "^9.0.0-beta.6",
     "react-router-dom": "^6.3.0",
-    "react-spring": "^9.4.5",
     "router-dom": "^2.2.9",
     "three": "^0.140.2"
   }

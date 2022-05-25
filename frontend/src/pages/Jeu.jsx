@@ -105,7 +105,7 @@ function Jeu({
       altitude: 2,
     };
 
-    globeRef.current.pointOfView(franceLocation, 700);
+    globeRef.current.pointOfView(franceLocation, 500);
 
     setTimeout(() => {
       globeRef.current.pointOfView(countryLocation, 1500);
@@ -136,6 +136,7 @@ function Jeu({
       setTimeout(() => nextRound(), 600);
     }
   }
+
   return (
     <div className="Jeu">
       <Header playerName={playerName} score={score} />

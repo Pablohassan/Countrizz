@@ -5,8 +5,7 @@ header {
   color: var(--Main-Font-Color);
   font-size: x-large;
   display: flex;
-  padding-bottom: 0px;
-  margin-bottom: 0px;
+
   padding-right: 10%;
   margin-left: 300px;
   transform: translateY(60px);
@@ -18,7 +17,7 @@ header {
   display: flex;
   justify-content: flex-start;
   font-size: x-large;
-  width: 100%;
+  width: 100vw;
   font-family: "Chango";
   list-style-type: none;
   transform: translateY(-35px);
@@ -52,6 +51,7 @@ a {
   header {
     background-color: var(--background-color);
     justify-content: flex-end;
+    flex-direction: column;
     font-family: "Chango", cursive;
     color: var(--Main-Font-Color);
     font-size: x-large;

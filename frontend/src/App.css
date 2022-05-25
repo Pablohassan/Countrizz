@@ -76,7 +76,6 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: -webkit-fill-avalible;
 }
 
 .titreModejeu {
@@ -680,56 +679,54 @@ tr {
   transform: translateY(-180px);
 }
 
-
 @media (min-width: 600px) {
-
-.container3 {
-  display: block;
-  position: absolute;
-  background-color: #16173a;
-  padding-top: 50px;
-  height: 800px;
-  width: 1300px;
-  z-index: 5000;
-  margin-top: -49px;
-  -webkit-animation: container3, 1s cubic-bezier(0.2, 0.46, 0.45, 1.14) 4s both;
-  animation: container3 1s cubic-bezier(0.1, 0.46, 0.45, 1.14) 4s both;
-}
-
-@-webkit-keyframes container3 {
-  0% {
-    -webkit-transform: translateX(0px);
-
-    transform: translateX(0px);
-
-    opacity: 1;
-  }
-  100% {
-    -webkit-transform: translateX(0px);
-
-    transform: translateX(0px);
-
-    opacity: 0;
-  }
-}
-@keyframes container3 {
-  0% {
-    -webkit-transform: translateX(0px);
-    transform: translate3D(0px);
-
-    opacity: 1;
+  .container3 {
+    display: block;
+    position: absolute;
+    background-color: #16173a;
+    padding-top: 50px;
+    height: 100%;
+    width: 100%;
+    z-index: 5000;
+    margin-top: -49px;
+    -webkit-animation: container3,
+      1s cubic-bezier(0.2, 0.46, 0.45, 1.14) 4s both;
+    animation: container3 1s cubic-bezier(0.1, 0.46, 0.45, 1.14) 4s both;
   }
 
-  100% {
-    -webkit-transform: translateX(0px);
-    transform: translateX(0px);
+  @-webkit-keyframes container3 {
+    0% {
+      -webkit-transform: translateX(0px);
 
-    opacity: 0;
+      transform: translateX(0px);
+
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: translateX(0px);
+
+      transform: translateX(0px);
+
+      opacity: 0;
+    }
   }
-}
+  @keyframes container3 {
+    0% {
+      -webkit-transform: translateX(0px);
+      transform: translate3D(0px);
+
+      opacity: 1;
+    }
+
+    100% {
+      -webkit-transform: translateX(0px);
+      transform: translateX(0px);
+
+      opacity: 0;
+    }
+  }
 }
 @media (max-width: 500px) {
- 
   :root {
     --background-color: #16173a;
     --Main-Font-Color: #f7dc6f;
@@ -738,13 +735,21 @@ tr {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100vw;
+    max-height: 100vh;
   }
   html {
     height: -webkit-fill-avalible;
+    width: 100vw;
+    height: 100vh;
   }
   .Jeu {
     align-items: center;
-    max-height: 90vh;
+    max-height: 100vh;
+    width: 100vw;
+  }
+  .app {
+    max-height: 100vh;
   }
 
   .div {
@@ -759,6 +764,7 @@ tr {
     justify-content: center;
     align-items: center;
     max-height: 100vh;
+    width: 100vw;
   }
 
   .titre {
@@ -795,12 +801,6 @@ tr {
     text-align: center;
   }
 
-  body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-height: 100vh;
-  }
   h2 {
     color: var(--Main-Font-Color);
   }

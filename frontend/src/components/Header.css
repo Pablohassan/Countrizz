@@ -9,7 +9,7 @@ header {
   margin-bottom: 0px;
   padding-right: 10%;
   margin-left: 300px;
-  transform: translateY(20px);
+  transform: translateY(60px);
   z-index: 20;
   background-color: transparent;
 }
@@ -48,7 +48,7 @@ a {
   background-color: transparent;
   text-shadow: 5px 2px 1px black;
 }
-@media (max-width: 600px) {
+@media (max-width: 500px) {
   header {
     background-color: var(--background-color);
     justify-content: flex-end;
@@ -61,7 +61,7 @@ a {
     text-shadow: 5px 2px 1px black;
     padding-right: 10%;
     margin-left: 50px;
-    transform: translateY(20px);
+    transform: translateY(0px);
     background-color: transparent;
   }
 

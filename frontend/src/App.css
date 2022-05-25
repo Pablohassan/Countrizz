@@ -724,9 +724,7 @@ tr {
 }
 
 @media (max-width: 500px) {
-  /* .scene-container {
-    transform: translateY(-90px);
-  } */
+ 
   :root {
     --background-color: #16173a;
     --Main-Font-Color: #f7dc6f;

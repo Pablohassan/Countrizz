@@ -146,10 +146,8 @@ function Jeu({
         height={isMobile ? 800 : 750}
         width={isMobile ? 390 : 1300}
         ref={globeRef}
-        // globeMaterial={globeMaterial}
         globeImageUrl={isMobile ? earthImage : earthImageM}
         backgroundImageUrl={isMobile ? fondbleu : spaceImage}
-        // bumpImageUrl={isMobile ? bumpimg : bumpd}
         lineHoverPrecision={0}
         polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
         polygonAltitude={0.004}

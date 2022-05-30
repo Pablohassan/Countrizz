@@ -659,6 +659,35 @@ tr {
 }
 
 @media (min-width: 676px) {
+  :root {
+    --background-color: #16173a;
+    --Main-Font-Color: #f7dc6f;
+    --Button-backgroud-color: #d4e6f1;
+    --Button-font-color: #212121;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 855px;
+    padding: 0;
+  }
+
+  .Jeu {
+    align-items: center;
+    max-height: 750px;
+    width: 660px;
+  }
+
+  .titre {
+    background-color: var(--background-color);
+    font-family: "Chango";
+    display: block;
+    justify-content: center;
+    text-align: center;
+    font-size: 3.8rem;
+    padding-bottom: 30px;
+    color: var(--Main-Font-Color);
+    text-shadow: -6px 4px 2px rgb(11, 13, 15);
+  }
   .container3 {
     display: block;
     position: absolute;

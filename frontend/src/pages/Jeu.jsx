@@ -13,49 +13,6 @@ import fondbleu from "@assets/Images/fondbleu.png";
 import earthImage from "../assets/Images/laterre4k.jpeg";
 import data2 from "../assets/Images/CountdownAnimation.json";
 
-const getAltitudeFromArea = (area) => {
-  if (area > 10000000) {
-    return 1.8;
-  }
-
-  if (area > 5000000) {
-    return 1.6;
-  }
-
-  if (area > 1000000) {
-    return 1.5;
-  }
-  if (area > 500000) {
-    return 1.3;
-  }
-
-  if (area > 100000) {
-    return 1.2;
-  }
-  if (area > 50000) {
-    return 1;
-  }
-
-  if (area > 10000) {
-    return 0.9;
-  }
-
-  if (area > 5000) {
-    return 0.8;
-  }
-  if (area > 2500) {
-    return 0.7;
-  }
-  if (area > 1500) {
-    return 0.6;
-  }
-
-  if (area > 500) {
-    return 0.47;
-  }
-  return 0.35;
-};
-
 function Jeu({
   score,
   setScore,
@@ -77,6 +34,49 @@ function Jeu({
   const isMobile = useMediaQuery({ maxWidth: 386 });
   const isFold = useMediaQuery({ minWidth: 491, maxWidth: 677 });
   const container3 = useRef(null);
+
+  const getAltitudeFromArea = (area) => {
+    if (area > 10000000) {
+      return isDeskTop ? 1.4 : 2;
+    }
+
+    if (area > 5000000) {
+      return isDeskTop ? 1.2 : 1.7;
+    }
+
+    if (area > 1000000) {
+      return isDeskTop ? 1.1 : 1.5;
+    }
+    if (area > 500000) {
+      return isDeskTop ? 1 : 1.3;
+    }
+
+    if (area > 100000) {
+      return isDeskTop ? 0.8 : 1.2;
+    }
+    if (area > 50000) {
+      return isDeskTop ? 0.7 : 1.1;
+    }
+
+    if (area > 10000) {
+      return isDeskTop ? 0.6 : 1;
+    }
+
+    if (area > 5000) {
+      return isDeskTop ? 0.5 : 0.9;
+    }
+    if (area > 2500) {
+      return isDeskTop ? 0.4 : 0.7;
+    }
+    if (area > 1500) {
+      return isDeskTop ? 0.3 : 0.6;
+    }
+
+    if (area > 500) {
+      return isDeskTop ? 0.2 : 0.4;
+    }
+    return 0.25;
+  };
 
   useEffect(() => {
     lottie.loadAnimation({

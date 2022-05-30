@@ -658,7 +658,7 @@ tr {
   transform: translateY(-180px);
 }
 
-@media (min-width: 668px) {
+@media (min-width: 676px) {
   .container3 {
     display: block;
     position: absolute;

@@ -58,7 +58,7 @@
   }
 }
 
-@media (min-width: 381px) and (max-width: 420px) {
+@media (min-width: 380px) and (max-width: 420px) {
   .ModeJeu {
     max-width: 400px;
   }
@@ -92,7 +92,7 @@
     max-width: 360px;
   }
 }
-@media (min-width: 421px) and (max-width: 676px) {
+@media (min-width: 421px) and (max-width: 686px) {
   .ModeJeu {
     max-width: 660px;
   }

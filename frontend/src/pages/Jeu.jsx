@@ -30,8 +30,8 @@ function Jeu({
   const [turn, setTurn] = useState(0);
 
   const isDeskTop = useMediaQuery({ minWidth: 677 });
-  const isHmobile = useMediaQuery({ minWidth: 387, maxWidth: 490 });
-  const isMobile = useMediaQuery({ maxWidth: 386 });
+  const isHmobile = useMediaQuery({ minWidth: 380, maxWidth: 490 });
+  const isMobile = useMediaQuery({ maxWidth: 380 });
   const isFold = useMediaQuery({ minWidth: 491, maxWidth: 677 });
   const container3 = useRef(null);
 
@@ -167,7 +167,7 @@ function Jeu({
       {isFold && (
         <Globe
           height={800}
-          width={670}
+          width={650}
           ref={globeRef}
           globeImageUrl={isMobile ? earthImage : earthImageM}
           backgroundImageUrl={isMobile ? fondbleu : spaceImage}
@@ -208,7 +208,7 @@ function Jeu({
       {isHmobile && (
         <Globe
           height={840}
-          width={410}
+          width={400}
           ref={globeRef}
           globeImageUrl={isMobile ? earthImage : earthImageM}
           backgroundImageUrl={isMobile ? fondbleu : spaceImage}

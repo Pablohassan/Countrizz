@@ -167,7 +167,7 @@ function Jeu({
       {isFold && (
         <Globe
           height={780}
-          width={620}
+          width={650}
           ref={globeRef}
           globeImageUrl={isMobile ? earthImage : earthImageM}
           backgroundImageUrl={isMobile ? fondbleu : spaceImage}
@@ -207,7 +207,7 @@ function Jeu({
       )}
       {isHmobile && (
         <Globe
-          height={820}
+          height={840}
           width={400}
           ref={globeRef}
           globeImageUrl={isMobile ? earthImage : earthImageM}

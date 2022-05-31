@@ -746,14 +746,14 @@ tr {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-height: 750px;
+    max-height: 780px;
     padding: 0;
   }
 
   .Jeu {
     align-items: center;
-    max-height: 750px;
-    width: 600px;
+    max-height: 780px;
+    width: 620px;
   }
 
   .titre {

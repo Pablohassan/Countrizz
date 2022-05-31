@@ -45,7 +45,11 @@ export const getRandomCountries = async (countriesCount = 4, filter) => {
   for (let i = 0; i < countriesCount; i++) {
     let country = await getRandomCountry(filter);
 
-    while (randomCountries.includes(country.capital) || !country.capital) {
+    while (
+      randomCountries.includes(country || country.capital) ||
+      !country ||
+      !country.capital
+    ) {
       country = await getRandomCountry(filter);
     }
 

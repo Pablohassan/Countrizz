@@ -166,7 +166,7 @@ function Jeu({
 
       {isFold && (
         <Globe
-          height={780}
+          height={800}
           width={650}
           ref={globeRef}
           globeImageUrl={isMobile ? earthImage : earthImageM}

@@ -746,13 +746,13 @@ tr {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-height: 780px;
+    max-height: 800px;
     padding: 0;
   }
 
   .Jeu {
     align-items: center;
-    max-height: 780px;
+    max-height: 800px;
     width: 650px;
   }
 
@@ -1679,7 +1679,7 @@ tr {
     height: 130px;
     -webkit-animation: container 2.2s cubic-bezier(0.43, 1.2, 0.32, 1.1) both;
     animation: container 2.2s cubic-bezier(0.43, 1, 0.52, 1.1) both;
-    transform: translate(280px, 288px);
+    transform: translate(250px, 288px);
     max-width: 130px;
   }
 

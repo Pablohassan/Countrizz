@@ -737,7 +737,7 @@ tr {
 
 /* Pour le Fold */
 
-@media (min-width: 425px) and (max-width: 676px) {
+@media (min-width: 435px) and (max-width: 676px) {
   :root {
     --background-color: #16173a;
     --Main-Font-Color: #f7dc6f;
@@ -746,14 +746,14 @@ tr {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-height: 855px;
+    max-height: 800px;
     padding: 0;
   }
 
   .Jeu {
     align-items: center;
-    max-height: 750px;
-    width: 660px;
+    max-height: 800px;
+    width: 620px;
   }
 
   .titre {
@@ -1429,7 +1429,7 @@ tr {
     padding: 1px;
   }
 }
-@media (min-width: 380px) and (max-width: 425px) {
+@media (min-width: 380px) and (max-width: 435px) {
   :root {
     --background-color: #16173a;
     --Main-Font-Color: #f7dc6f;
@@ -2033,7 +2033,7 @@ tr {
 
   @-webkit-keyframes container3 {
     0% {
-      -webkit-transform: translateX(0px);
+      -webkit-transform: translateX(90px);
 
       transform: translateX(0px);
 

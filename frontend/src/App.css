@@ -658,7 +658,7 @@ tr {
   transform: translateY(-180px);
 }
 
-@media (min-width: 676px) {
+@media (min-width: 686px) {
   :root {
     --background-color: #16173a;
     --Main-Font-Color: #f7dc6f;
@@ -737,7 +737,7 @@ tr {
 
 /* Pour le Fold */
 
-@media (min-width: 435px) and (max-width: 676px) {
+@media (min-width: 445px) and (max-width: 686px) {
   :root {
     --background-color: #16173a;
     --Main-Font-Color: #f7dc6f;
@@ -746,14 +746,14 @@ tr {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-height: 800px;
+    max-height: 750px;
     padding: 0;
   }
 
   .Jeu {
     align-items: center;
-    max-height: 800px;
-    width: 620px;
+    max-height: 750px;
+    width: 600px;
   }
 
   .titre {
@@ -1429,7 +1429,7 @@ tr {
     padding: 1px;
   }
 }
-@media (min-width: 380px) and (max-width: 435px) {
+@media (min-width: 380px) and (max-width: 445px) {
   :root {
     --background-color: #16173a;
     --Main-Font-Color: #f7dc6f;

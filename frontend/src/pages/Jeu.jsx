@@ -30,8 +30,8 @@ function Jeu({
   const [turn, setTurn] = useState(0);
 
   const isDeskTop = useMediaQuery({ minWidth: 677 });
-  const isHmobile = useMediaQuery({ minWidth: 387, maxWidth: 490 });
-  const isMobile = useMediaQuery({ maxWidth: 386 });
+  const isHmobile = useMediaQuery({ minWidth: 380, maxWidth: 490 });
+  const isMobile = useMediaQuery({ maxWidth: 380 });
   const isFold = useMediaQuery({ minWidth: 491, maxWidth: 677 });
   const container3 = useRef(null);
 

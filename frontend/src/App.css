@@ -2152,7 +2152,6 @@ tr {
 
   .Jeu {
     align-items: center;
-
     width: 360px;
     max-height: 680px;
     transform: translateY(-80px);

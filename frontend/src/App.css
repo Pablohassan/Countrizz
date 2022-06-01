@@ -10,7 +10,7 @@
   justify-content: center;
 }
 .scene-container {
-  transform: translateY(-75px);
+  transform: translateY(-5px);
 }
 
 .div {
@@ -24,7 +24,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-height: 100vh;
+  max-height: 90vh;
 }
 
 .titre {
@@ -737,7 +737,7 @@ tr {
 
 /* Pour le Fold */
 
-@media (min-width: 445px) and (max-width: 686px) {
+@media (min-width: 460px) and (max-width: 686px) {
   :root {
     --background-color: #16173a;
     --Main-Font-Color: #f7dc6f;
@@ -752,8 +752,8 @@ tr {
 
   .Jeu {
     align-items: center;
-    max-height: 800px;
-    width: 650px;
+    max-height: 750px;
+    transform: translateY(-60px);
   }
 
   .titre {
@@ -1348,7 +1348,7 @@ tr {
     }
   }
 
-  /*tableau mediaquery */
+  /*tableau query */
 
   table {
     display: grid;
@@ -1357,8 +1357,8 @@ tr {
     border-radius: 10px;
     padding: 5%;
     margin-left: -35px;
-    max-width: 400px;
-    margin-bottom: 7%;
+    max-width: 450px;
+    margin-bottom: 10%;
     margin-top: 5%;
   }
   .th {
@@ -1410,7 +1410,7 @@ tr {
     grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 20px;
     grid-row-gap: 15px;
-    padding: 3px 5px 5px 5px;
+    padding: 10px 5px 5px 5px;
 
     margin-bottom: 2%;
     font-size: 18px;
@@ -1429,7 +1429,7 @@ tr {
     padding: 1px;
   }
 }
-@media (min-width: 380px) and (max-width: 445px) {
+@media (min-width: 390px) and (max-width: 460px) {
   :root {
     --background-color: #16173a;
     --Main-Font-Color: #f7dc6f;
@@ -1438,21 +1438,18 @@ tr {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-height: 840px;
+    max-height: 820px;
     padding: 0;
   }
   .scene-container {
-    max-width: 400px;
+    max-width: 100%;
   }
 
   .Jeu {
-    align-items: center;
-    max-height: 840px;
-    width: 400px;
+    width: 360px;
+    max-height: 690px;
+    transform: translateY(-60px);
   }
- 
-
-  
 
   body {
     background-color: var(--background-color);
@@ -1460,8 +1457,8 @@ tr {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-height: 840px;
-    width: 400px;
+    max-height: 820px;
+    width: 100%;
   }
 
   .titre {
@@ -2137,9 +2134,9 @@ tr {
   }
 }
 
-/* medias en dessous de 380px de large */
+/* medias en dessous de 300px de large */
 
-@media (max-width: 380px) {
+@media (max-width: 390px) {
   :root {
     --background-color: #16173a;
     --Main-Font-Color: #f7dc6f;
@@ -2148,18 +2145,19 @@ tr {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    max-height: 100vh;
+    transform: translateY(30px);
+    max-height: 650px;
     padding: 0;
   }
 
   .Jeu {
     align-items: center;
-    max-height: 690px;
+
     width: 360px;
+    max-height: 680px;
+    transform: translateY(-80px);
   }
   .app {
-    max-height: 100vh;
     max-width: 360px;
   }
 
@@ -2176,7 +2174,7 @@ tr {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-height: 690px;
+    max-height: 680px;
     width: 360px;
   }
 
@@ -2228,7 +2226,7 @@ tr {
 
   .BtnGameCountdown {
     position: absolute;
-    top: 15%;
+    top: 25%;
     bottom: 50%;
     left: 2%;
     padding: 14px 18px;

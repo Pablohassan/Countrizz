@@ -60,7 +60,7 @@ a {
     margin-bottom: 0px;
     text-shadow: 5px 2px 1px black;
     margin-left: 50px;
-    transform: translateY(0px);
+    transform: translateY(60px);
     background-color: transparent;
     max-width: 300px;
   }
@@ -133,7 +133,7 @@ a {
     margin-bottom: 0px;
     text-shadow: 5px 2px 1px black;
     margin-left: 50px;
-    transform: translateY(0px);
+    transform: translateY(60px);
     background-color: transparent;
     max-width: 300px;
   }

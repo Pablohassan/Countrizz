@@ -13,7 +13,10 @@ let countryList;
  * Retourne la liste complète des pays
  *
  * @returns {Promise<Array>}
+ *
+ *
  */
+
 export const getAllCountries = async (filter) => {
   if (!countryList) {
     countryList = (await axios(`${COUNTRY_API_URL}/all`)).data;

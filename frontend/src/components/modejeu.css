@@ -23,7 +23,7 @@
 
 /* Media Queryv */
 
-@media (max-width: 380px) {
+@media (max-width: 390px) {
   .ModeJeu {
     max-width: 360px;
   }
@@ -58,9 +58,9 @@
   }
 }
 
-@media (min-width: 380px) and (max-width: 420px) {
+@media (min-width: 390px) and (max-width: 420px) {
   .ModeJeu {
-    max-width: 400px;
+    max-width: 390px;
   }
   .titreModejeu {
     display: flex;
@@ -94,7 +94,7 @@
 }
 @media (min-width: 421px) and (max-width: 686px) {
   .ModeJeu {
-    max-width: 660px;
+    max-width: 650px;
   }
   .titreModejeu {
     display: flex;

@@ -191,12 +191,12 @@
     min-height: 95px;
   }
 }
-@media (min-width: 445px) and (max-width: 677px) {
+@media (min-width: 460px) and (max-width: 677px) {
   .responses {
     transition: 1s;
     justify-content: center;
     transition: 1100;
-    transform: translateY(-360px);
+    transform: translateY(-280px);
     animation: smooth;
     color: #ffee03a1;
     display: grid;
@@ -287,12 +287,12 @@
   }
 }
 
-@media (min-width: 380px) and (max-width: 445px) {
+@media (min-width: 390px) and (max-width: 460px) {
   .responses {
     transition: 1s;
     justify-content: center;
     transition: 1100;
-    transform: translateY(-320px);
+    transform: translateY(-270px);
     animation: smooth;
     color: #ffee03a1;
     display: grid;
@@ -320,8 +320,8 @@
     transition: 1s;
     box-shadow: 3px 3px 0 black;
     border-radius: 10px;
-    min-width: 183px;
-    max-width: 186px;
+    min-width: 160px;
+    max-width: 170px;
     min-height: 95px;
   }
 
@@ -360,7 +360,7 @@
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     border-radius: 15px;
-    min-width: 150px;
+    min-width: 160px;
     max-width: 170px;
     min-height: 95px;
   }
@@ -377,17 +377,17 @@
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     border-radius: 10px;
-    min-width: 150px;
+    min-width: 160px;
     max-width: 170px;
     min-height: 95px;
   }
 }
-@media (max-width: 380px) {
+@media (max-width: 390px) {
   .responses-mobile {
     transition: 1s;
     justify-content: center;
     transition: 1100;
-    transform: translateY(-350px);
+    transform: translateY(-300px);
     animation: smooth;
     color: #ffee03a1;
     display: grid;
@@ -416,8 +416,8 @@
     transition: 1s;
     box-shadow: 3px 3px 0 black;
     border-radius: 10px;
-    min-width: 160px;
-    max-width: 170px;
+    min-width: 155px;
+    max-width: 160px;
     min-height: 95px;
   }
 
@@ -450,15 +450,15 @@
     text-decoration: none;
     font-family: "chango";
     text-shadow: 2px 1px 5px black;
-    font-size: 17px;
+    font-size: 16px;
     color: white;
     background: rgba(0, 128, 0, 0.801);
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     border-radius: 15px;
-    min-width: 150px;
-    max-width: 165px;
-    min-height: 95px;
+    min-width: 155px;
+    max-width: 160px;
+    min-height: 90px;
   }
 
   .redBtn {
@@ -473,8 +473,8 @@
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     border-radius: 10px;
-    min-width: 150px;
-    max-width: 165px;
-    min-height: 95px;
+    min-width: 155px;
+    max-width: 160px;
+    min-height: 90px;
   }
 }

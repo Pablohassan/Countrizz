@@ -21,7 +21,7 @@
     margin: 2px;
     text-align: center;
     text-shadow: 5px 2px 1px black;
-    transform: translateY(-380px);
+    transform: translateY(-320px);
   }
 }
 @media (max-width: 500px) {
@@ -33,6 +33,6 @@
     margin: 2px;
     text-align: center;
     text-shadow: 5px 2px 2px black;
-    transform: translateY(-380px);
+    transform: translateY(-320px);
   }
 }

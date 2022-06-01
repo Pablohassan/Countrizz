@@ -2,6 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import { randomCountryQuestion, getRandomCountries } from "@services/api";
 import lottie from "lottie-web";
+import bumpimg from "@assets/Images/bump4k.jpg";
+import bumpd from "@assets/Images/bump4kD.jpg";
+import * as THREE from "three";
+import ocean from "@assets/Images/ocean10kM.jpg";
 import allcountries from "@assets/allcountries.js";
 import Globe from "@components/Globe";
 import Responses from "@components/Reponses";
@@ -9,9 +13,17 @@ import Header from "@components/Header";
 import GameCountdown from "@components/GameCountdown";
 import earthImageM from "@assets/Images/earth4K.jpg";
 import spaceImage from "@assets/Images/night-sky.png";
-import fondbleu from "@assets/Images/fondbleu.png";
 import earthImage from "../assets/Images/laterre4k.jpeg";
 import data2 from "../assets/Images/CountdownAnimation.json";
+
+const globeMaterial = new THREE.MeshPhongMaterial();
+globeMaterial.bumpScale = 3;
+globeMaterial.bumpAltitude = 1;
+new THREE.TextureLoader().load(ocean, (texture) => {
+  globeMaterial.specularMap = texture;
+  globeMaterial.specular = new THREE.Color("grey");
+  globeMaterial.shininess = 18;
+});
 
 function Jeu({
   score,
@@ -30,9 +42,9 @@ function Jeu({
   const [turn, setTurn] = useState(0);
 
   const isDeskTop = useMediaQuery({ minWidth: 677 });
-  const isHmobile = useMediaQuery({ minWidth: 380, maxWidth: 490 });
-  const isMobile = useMediaQuery({ maxWidth: 380 });
-  const isFold = useMediaQuery({ minWidth: 491, maxWidth: 677 });
+  const isHmobile = useMediaQuery({ minWidth: 390, maxWidth: 460 });
+  const isMobile = useMediaQuery({ maxWidth: 390 });
+  const isFold = useMediaQuery({ minWidth: 460, maxWidth: 677 });
   const container3 = useRef(null);
 
   const getAltitudeFromArea = (area) => {
@@ -114,7 +126,7 @@ function Jeu({
       setTimeout(() => {
         setCanRespond(true);
       }, 400);
-    }, 410);
+    }, 500);
   }
   useEffect(() => {
     nextRound();
@@ -141,15 +153,20 @@ function Jeu({
     <div className="Jeu">
       <Header playerName={playerName} score={score} />
       <GameCountdown onFinished={onFinished} />
-      <div className="container3" ref={container3} />
+      {/* <div className="container3" ref={container3} /> */}
 
       {isMobile && (
         <Globe
-          height={690}
-          width={370}
+          height={680}
+          width={360}
           ref={globeRef}
-          globeImageUrl={isMobile ? earthImage : earthImageM}
-          backgroundImageUrl={isMobile ? fondbleu : spaceImage}
+          globeMaterial={globeMaterial}
+          bumpImageUrl={bumpimg}
+          bumpMap
+          alpha
+          showAtmosphere
+          globeImageUrl={earthImageM}
+          backgroundImageUrl={spaceImage}
           lineHoverPrecision={0}
           polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
           polygonAltitude={0.004}
@@ -169,8 +186,13 @@ function Jeu({
           height={800}
           width={650}
           ref={globeRef}
-          globeImageUrl={isMobile ? earthImage : earthImageM}
-          backgroundImageUrl={isMobile ? fondbleu : spaceImage}
+          globeMaterial={globeMaterial}
+          bumpImageUrl={isDeskTop ? bumpd : bumpimg}
+          bumpMap
+          alpha
+          showAtmosphere
+          globeImageUrl={earthImageM}
+          backgroundImageUrl={spaceImage}
           lineHoverPrecision={0}
           polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
           polygonAltitude={0.004}
@@ -190,8 +212,13 @@ function Jeu({
           height={750}
           width={1300}
           ref={globeRef}
-          globeImageUrl={isMobile ? earthImage : earthImageM}
-          backgroundImageUrl={isMobile ? fondbleu : spaceImage}
+          globeMaterial={globeMaterial}
+          bumpImageUrl={bumpd}
+          bumpMap
+          alpha
+          showAtmosphere
+          globeImageUrl={earthImage}
+          backgroundImageUrl={spaceImage}
           lineHoverPrecision={0}
           polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
           polygonAltitude={0.004}
@@ -207,11 +234,16 @@ function Jeu({
       )}
       {isHmobile && (
         <Globe
-          height={840}
-          width={400}
+          height={820}
+          width={390}
           ref={globeRef}
-          globeImageUrl={isMobile ? earthImage : earthImageM}
-          backgroundImageUrl={isMobile ? fondbleu : spaceImage}
+          globeMaterial={globeMaterial}
+          bumpImageUrl={isDeskTop ? bumpd : bumpimg}
+          bumpMap
+          alpha
+          showAtmosphere
+          globeImageUrl={earthImageM}
+          backgroundImageUrl={spaceImage}
           lineHoverPrecision={0}
           polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
           polygonAltitude={0.004}

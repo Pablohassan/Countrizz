@@ -17,6 +17,7 @@ import Congrate from "@pages/Congrate";
 const JeuDrapeaux = React.lazy(() => import("@pages/JeuDrapeaux")); // eslint-disable-line no-console,
 const JeuPays = React.lazy(() => import("@pages/JeuPays")); // eslint-disable-line no-console,
 const JeuCity = React.lazy(() => import("@pages/JeuCity")); // eslint-disable-line no-console,
+// eslint-disable-next-line import/no-unresolved
 const ModeJeu = React.lazy(() => import("@pages/ModeJeu")); // eslint-disable-line no-console,
 
 function App() {

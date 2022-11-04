@@ -31,7 +31,7 @@
     "react-responsive": "^9.0.0-beta.6",
     "react-router-dom": "^6.3.0",
     "router-dom": "^2.2.9",
-    "three": "^0.140.2",
-    "vite": "^2.8.0"
+    "three": "^0.140.2"
+   
   }
 }

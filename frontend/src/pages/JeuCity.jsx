@@ -8,10 +8,10 @@ export default function JeuCity({ score, setScore, playerName, onFinished }) {
       playerName={playerName}
       setScore={setScore}
       onFinished={onFinished}
-      renderQuestion={(countryToGuess) => (
+      renderQuestion={() => (
         <Questions
           countryQuestion="Trouve la capitale de "
-          name={countryToGuess.translations.fra.common}
+          // name={countryToGuess.translations.fra.common}
         />
       )}
       renderResponse={(country) => country.capital}

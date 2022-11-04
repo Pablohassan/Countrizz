@@ -8,9 +8,10 @@ export default function JeuPays({ score, setScore, playerName, onFinished }) {
       playerName={playerName}
       setScore={setScore}
       onFinished={onFinished}
-      renderQuestion={(countryToGuess) => (
+      renderQuestion={() => (
+        // renderQuestion={(countryToGuess) => (
         <Questions
-          flag={countryToGuess.flag}
+          // flag={countryToGuess.flag}
           countryQuestion="Trouve le nom de ce pays?  "
         />
       )}

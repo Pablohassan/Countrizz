@@ -1,7 +1,7 @@
 import Jeu from "@pages/Jeu";
 import Questions from "@components/Questions";
 
-export default function JeuDrapeaux({
+export default function JeuNomPays({
   score,
   setScore,
   playerName,
@@ -14,15 +14,13 @@ export default function JeuDrapeaux({
       setScore={setScore}
       onFinished={onFinished}
       renderQuestion={() => (
-        // 1/2 renderQuestion={(countryToGuess) => (
+        // renderQuestion={(countryToGuess) => (
         <Questions
-          countryQuestion="Quel est le drapeau de ce pays : "
-          // 2/2 name={countryToGuess.translations.fra.common}
+          countryQuestion="Quel est le nom de ce pays : "
+          // name={countryToGuess.translations.fra.common}
         />
       )}
-      renderResponse={(country) => (
-        <img src={country.flags.svg} alt="name" height={70} />
-      )}
+      renderResponse={(country) => country.translations.fra.common}
     />
   );
 }

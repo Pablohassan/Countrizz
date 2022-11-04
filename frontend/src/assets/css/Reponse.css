@@ -8,7 +8,7 @@
   margin-left: 10%;
   margin-right: 10%;
   margin-bottom: 2%;
-  min-width: 200px;
+  min-width: 290px;
   min-height: 200px;
   justify-content: center;
   transition: 1100;
@@ -36,8 +36,8 @@
   transition: 1s;
   box-shadow: 3px 3px 0 black;
   border-radius: 15px;
-  min-width: 280x;
-  max-width: 280px;
+  min-width: 290x;
+  max-width: 290px;
   max-height: 85px;
 }
 
@@ -76,8 +76,8 @@
   transition: 1s;
   box-shadow: 6px 6px 0 black;
   border-radius: 15px;
-  min-width: 200px;
-  max-width: 280px;
+  min-width: 250px;
+  max-width: 290px;
 }
 
 .redBtn {
@@ -92,8 +92,8 @@
   transition: 1s;
   box-shadow: 6px 6px 0 black;
   border-radius: 15px;
-  min-width: 200px;
-  max-width: 280px;
+  min-width: 250px;
+  max-width: 290px;
 }
 
 @media (min-width: 678px) {
@@ -129,8 +129,8 @@
     transition: 1s;
     box-shadow: 3px 3px 0 black;
     border-radius: 10px;
-    min-width: 230px;
-    max-width: 240px;
+    min-width: 250px;
+    max-width: 250px;
     min-height: 95px;
   }
 
@@ -169,8 +169,8 @@
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     border-radius: 15px;
-    min-width: 200px;
-    max-width: 240px;
+    min-width: 250px;
+    max-width: 250px;
     min-height: 95px;
   }
 
@@ -186,8 +186,8 @@
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     border-radius: 10px;
-    min-width: 200px;
-    max-width: 240px;
+    min-width: 250px;
+    max-width: 250px;
     min-height: 95px;
   }
 }
@@ -225,7 +225,7 @@
     box-shadow: 3px 3px 0 black;
     border-radius: 10px;
     min-width: 210px;
-    max-width: 215px;
+    max-width: 245px;
     min-height: 95px;
   }
 
@@ -264,8 +264,8 @@
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     border-radius: 15px;
-    min-width: 190px;
-    max-width: 215px;
+    min-width: 210px;
+    max-width: 245px;
     min-height: 95px;
   }
 
@@ -281,8 +281,8 @@
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     border-radius: 10px;
-    min-width: 190px;
-    max-width: 215px;
+    min-width: 210px;
+    max-width: 245px;
     min-height: 95px;
   }
 }
@@ -320,8 +320,8 @@
     transition: 1s;
     box-shadow: 3px 3px 0 black;
     border-radius: 10px;
-    min-width: 160px;
-    max-width: 170px;
+    min-width: 170px;
+    max-width: 200px;
     min-height: 95px;
   }
 
@@ -360,8 +360,8 @@
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     border-radius: 15px;
-    min-width: 160px;
-    max-width: 170px;
+    min-width: 170px;
+    max-width: 200px;
     min-height: 95px;
   }
 
@@ -377,8 +377,8 @@
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     border-radius: 10px;
-    min-width: 160px;
-    max-width: 170px;
+    min-width: 170px;
+    max-width: 200px;
     min-height: 95px;
   }
 }

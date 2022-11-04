@@ -1,36 +1,37 @@
-import Counter from "@components/Counter";
-import logo from "@assets/logo.svg";
+import ButtonPlay from "@components/ButtonPlay";
+import NomDuJoueur from "@components/NomDuJoueur";
+import lottie from "lottie-web";
+import data from "@assets/Images/boucleterre.json";
+import { useEffect, useRef } from "react";
+import Footer from "../components/footer";
 
-export default function Home() {
+export default function Home({ playerName, onPlayerNameChange }) {
+  const container = useRef(null);
+
+  useEffect(() => {
+    lottie.loadAnimation({
+      container: container.current,
+      render: "svg",
+      loop: true,
+      autoplay: true,
+      animationData: data,
+    });
+  }, []);
+
   return (
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>Hello Vite + React !</p>
+    <>
+      <div />
+      <div>
+        <div className="container" ref={container} />
 
-      <Counter />
+        <h1 className="titre"> Countrizz</h1>
 
-      <p>
-        Edit <code>App.jsx</code> and save to test HMR updates.
-      </p>
-      <p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        {" | "}
-        <a
-          className="App-link"
-          href="https://vitejs.dev/guide/features.html"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Vite Docs
-        </a>
-      </p>
-    </header>
+        <NomDuJoueur playerName={playerName} onChange={onPlayerNameChange} />
+
+        <ButtonPlay name="LET'S GO" to="/modejeu" />
+      </div>
+
+      <Footer />
+    </>
   );
 }

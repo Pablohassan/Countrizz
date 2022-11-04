@@ -16,6 +16,7 @@
     "sourceType": "module"
   },
   "plugins": ["react", "import"],
+  "ignorePatterns": ["./src/assets/*"],
   "rules": {
     "no-console": "off",
     "no-restricted-syntax": [
@@ -26,7 +27,10 @@
       }
     ],
     "react/react-in-jsx-scope": "off",
-    "react/jsx-one-expression-per-line": "off"
+    "react/jsx-one-expression-per-line": "off",
+    "react/prop-types": "off",
+    "react/no-unescaped-entities": "off",
+    "react/jsx-no-bind": "off"
   },
   "settings": {
     "import/resolver": {

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import "@components/ButtonPlay.css";
+import "@assets/css/ButtonPlay.css";
 
 export default function ButtonPlay({ name, to }) {
   return (

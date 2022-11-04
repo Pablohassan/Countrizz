@@ -1,0 +1,1 @@
+import{J as a,Q as u}from"./Questions.fe6eeb7b.js";import{j as e}from"./index.c202641d.js";import"./vendor.03dad307.js";function f({score:o,setScore:r,playerName:s,onFinished:n}){return e(a,{score:o,playerName:s,setScore:r,onFinished:n,renderQuestion:()=>e(u,{countryQuestion:"Trouve le nom de ce pays?  "}),renderResponse:t=>t.translations.fra.common})}export{f as default};

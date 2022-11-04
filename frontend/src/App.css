@@ -12,6 +12,79 @@
 .scene-container {
   transform: translateY(-5px);
 }
+.namepaysbravo {
+  font-size: x-large;
+  text-align: center;
+  color: #f7dc6f;
+  font-family: "chango";
+}
+
+.namepaysloose {
+  font-size: x-large;
+  text-align: center;
+  color: #f7dc6f;
+  font-family: "chango";
+}
+
+.modale {
+  background-color: #2121219c;
+  transform: translateY(-300);
+  height: 100%;
+  width: 100%;
+  top: 100px;
+
+  transition: 300ms ease-in-out;
+  position: absolute;
+
+  z-index: 1000000;
+}
+.imagebravo {
+  display: flex;
+  width: 60%;
+  border-radius: 2%;
+  max-width: 600px;
+  min-width: 300px;
+  margin: auto;
+  justify-content: center;
+  align-content: center;
+}
+
+.imagebravo {
+  -webkit-animation: imagebravo t 1.9s cubic-bezier(0.25, 0.46, 0.45, 1.24) both;
+  animation: imagebravo 1.9s cubic-bezier(0.25, 0.46, 0.45, 1.24) both;
+}
+
+@-webkit-keyframes imagebravo {
+  0% {
+    -webkit-transform: translateX(-20px);
+    transform: translateX(-20px);
+  }
+  30% {
+    -webkit-transform: translateX(0px);
+    transform: translateX(0px);
+  }
+}
+@keyframes imagebravo {
+  0% {
+    -webkit-transform: translateX(-20px);
+    transform: translateX(-20px);
+  }
+  100% {
+    -webkit-transform: translateX(0px);
+    transform: translateX(0px);
+  }
+}
+
+.imageloose {
+  display: flex;
+  width: 60%;
+  border-radius: 2%;
+  max-width: 600px;
+  min-width: 300px;
+  margin: auto;
+  justify-content: center;
+  align-content: center;
+}
 
 .div {
   display: flex;
@@ -696,7 +769,8 @@ tr {
     height: 100%;
     width: 100%;
     z-index: 5000;
-    margin-top: -49px;
+    left: 0px;
+
     -webkit-animation: container3,
       1s cubic-bezier(0.2, 0.46, 0.45, 1.14) 4s both;
     animation: container3 1s cubic-bezier(0.1, 0.46, 0.45, 1.14) 4s both;
@@ -1310,6 +1384,7 @@ tr {
     background-color: #16173a;
     height: 700px;
     z-index: 5000;
+    left: 0px;
     margin-top: -49px;
     -webkit-animation: container3,
       1s cubic-bezier(0.2, 0.46, 0.45, 1.14) 3s both;
@@ -2013,6 +2088,7 @@ tr {
     background-color: #16173a;
     height: 700px;
     z-index: 5000;
+    left: 0px;
     margin-top: -49px;
     -webkit-animation: container3,
       1s cubic-bezier(0.2, 0.46, 0.45, 1.14) 3s both;
@@ -2734,6 +2810,7 @@ tr {
     height: 700px;
     z-index: 5000;
     margin-top: -49px;
+    left: 0px;
     -webkit-animation: container3,
       1s cubic-bezier(0.2, 0.46, 0.45, 1.14) 3s both;
     animation: container3 1s cubic-bezier(0.1, 0.46, 0.45, 1.14) 3s both;

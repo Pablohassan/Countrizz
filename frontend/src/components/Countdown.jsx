@@ -22,7 +22,7 @@ function UseDecrement() {
 
   setTimeout(() => {
     navigate("/jeu");
-  }, 4250);
+  }, 4050);
 
   return (
     <div>

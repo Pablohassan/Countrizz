@@ -13,11 +13,13 @@ import Header from "@components/Header";
 import GameCountdown from "@components/GameCountdown";
 import earthImageM from "@assets/Images/earth4K.jpg";
 import spaceImage from "@assets/Images/night-sky.png";
+import Bravo from "@components/Bravo";
+import Loose from "@components/Loose";
 import earthImage from "../assets/Images/laterre4k.jpeg";
 import data2 from "../assets/Images/CountdownAnimation.json";
 
 const globeMaterial = new THREE.MeshPhongMaterial();
-globeMaterial.bumpScale = 3;
+globeMaterial.bumpScale = 10;
 globeMaterial.bumpAltitude = 1;
 new THREE.TextureLoader().load(ocean, (texture) => {
   globeMaterial.specularMap = texture;
@@ -49,45 +51,48 @@ function Jeu({
 
   const getAltitudeFromArea = (area) => {
     if (area > 10000000) {
-      return isDeskTop ? 1.4 : 2;
+      return isDeskTop ? 1.8 : 2.2;
     }
 
     if (area > 5000000) {
-      return isDeskTop ? 1.2 : 1.7;
+      return isDeskTop ? 1.5 : 1.9;
     }
 
     if (area > 1000000) {
-      return isDeskTop ? 1.1 : 1.5;
+      return isDeskTop ? 1.3 : 1.6;
     }
     if (area > 500000) {
-      return isDeskTop ? 1 : 1.3;
+      return isDeskTop ? 1.2 : 1.4;
     }
 
     if (area > 100000) {
-      return isDeskTop ? 0.8 : 1.2;
+      return isDeskTop ? 0.9 : 1.3;
     }
     if (area > 50000) {
-      return isDeskTop ? 0.7 : 1.1;
+      return isDeskTop ? 0.8 : 1.2;
     }
 
     if (area > 10000) {
-      return isDeskTop ? 0.6 : 1;
+      return isDeskTop ? 0.7 : 1;
     }
 
     if (area > 5000) {
-      return isDeskTop ? 0.5 : 0.9;
+      return isDeskTop ? 0.6 : 0.9;
     }
     if (area > 2500) {
-      return isDeskTop ? 0.4 : 0.7;
+      return isDeskTop ? 0.5 : 0.7;
     }
     if (area > 1500) {
-      return isDeskTop ? 0.3 : 0.6;
+      return isDeskTop ? 0.4 : 0.6;
     }
 
     if (area > 500) {
       return isDeskTop ? 0.2 : 0.4;
     }
-    return 0.25;
+    if (area > 100) {
+      return isDeskTop ? 0.1 : 0.3;
+    }
+    return 0.035;
   };
 
   useEffect(() => {
@@ -114,19 +119,19 @@ function Jeu({
     };
 
     const franceLocation = {
-      altitude: isDeskTop ? 1.2 : 2,
+      altitude: isDeskTop ? 1.4 : 2.2,
     };
 
-    globeRef.current.pointOfView(franceLocation, 900);
+    globeRef.current.pointOfView(franceLocation, 1500);
 
     setTimeout(() => {
-      globeRef.current.pointOfView(countryLocation, 1400);
+      globeRef.current.pointOfView(countryLocation, 2000);
       setCountryRandom(countries);
       setCountryToGuess(randomCountry);
       setTimeout(() => {
         setCanRespond(true);
       }, 400);
-    }, 500);
+    }, 400);
   }
   useEffect(() => {
     nextRound();
@@ -141,11 +146,11 @@ function Jeu({
       setIsGoodResponse(true);
       setTurn(turn + 1);
       setScore(score + 10);
-      setTimeout(() => nextRound(), 600);
+      setTimeout(() => nextRound(), 1500);
     } else {
       setIsBadResponse(true);
       setTurn(turn + 1);
-      setTimeout(() => nextRound(), 600);
+      setTimeout(() => nextRound(), 1500);
     }
   }
 
@@ -153,6 +158,13 @@ function Jeu({
     <div className="Jeu">
       <Header playerName={playerName} score={score} />
       <GameCountdown onFinished={onFinished} />
+      {isGoodResponse && (
+        <Bravo
+          className="goodResp z-100000 absolute"
+          namePaysBravo={countryToGuess.name.common}
+        />
+      )}
+      {isBadResponse && <Loose namePaysLoose={countryToGuess.name.common} />}
       {/* <div className="container3" ref={container3} /> */}
 
       {isMobile && (

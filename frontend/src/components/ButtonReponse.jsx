@@ -1,4 +1,4 @@
-import "@components/Reponse.css";
+import "@assets/css/Reponse.css";
 
 export default function ButtonReponse({
   success,

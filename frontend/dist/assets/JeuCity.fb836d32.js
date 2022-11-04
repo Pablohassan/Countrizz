@@ -1,0 +1,1 @@
+import{J as i,Q as n}from"./Questions.fe6eeb7b.js";import{j as e}from"./index.c202641d.js";import"./vendor.03dad307.js";function c({score:r,setScore:t,playerName:o,onFinished:s}){return e(i,{score:r,playerName:o,setScore:t,onFinished:s,renderQuestion:()=>e(n,{countryQuestion:"Trouve la capitale de "}),renderResponse:a=>a.capital})}export{c as default};

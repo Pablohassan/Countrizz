@@ -15,6 +15,8 @@
     "geodata:fetch": "tsx scripts/geodata/fetch-sources.ts",
     "geodata:capitals": "tsx scripts/geodata/fetch-capitals.ts",
     "geodata": "tsx scripts/geodata/build.ts",
+    "textures:fetch": "tsx scripts/textures/fetch-textures.ts",
+    "textures": "tsx scripts/textures/build-textures.ts",
     "e2e": "playwright test"
   },
   "dependencies": {
@@ -42,6 +44,7 @@
     "pngjs": "7.0.0",
     "polyclip-ts": "0.16.8",
     "polylabel": "2.1.0",
+    "sharp": "0.35.5",
     "topojson-client": "3.1.0",
     "topojson-server": "3.0.1",
     "topojson-simplify": "3.0.3",

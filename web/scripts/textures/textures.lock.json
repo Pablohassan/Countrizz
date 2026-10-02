@@ -1,0 +1,17 @@
+{
+ "day": {
+  "url": "https://eoimages.gsfc.nasa.gov/images/imagerecords/74000/74092/world.200407.3x21600x10800.png",
+  "sha256": "8df8e94ede40dd7af32d1751461b013d846b504a3e7788d0ec46c273ba3ff3e7",
+  "bytes": 123901191
+ },
+ "night": {
+  "url": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/144000/144898/BlackMarble_2016_3km.jpg",
+  "sha256": "230aac448ae68c358be433dd518888cccb3a85ccf66f7b44326441c324ad6725",
+  "bytes": 8106233
+ },
+ "elevation": {
+  "url": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/topography/gebco_08_rev_elev_21600x10800.tif",
+  "sha256": "d74416ee4de4b9b2cbc20f25f8975e213a4148f6810d1d60e104a4ed6150dbcf",
+  "bytes": 233345166
+ }
+}

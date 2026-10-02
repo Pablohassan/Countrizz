@@ -1,0 +1,18 @@
+[
+ {
+  "layer": "jour",
+  "text": "Blue Marble: Next Generation (juillet 2004), NASA Earth Observatory (Reto Stöckli)."
+ },
+ {
+  "layer": "nuit",
+  "text": "Black Marble 2016, NASA Earth Observatory images by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA GSFC."
+ },
+ {
+  "layer": "relief",
+  "text": "Imagery by Jesse Allen, NASA's Earth Observatory, using data from the General Bathymetric Chart of the Oceans (GEBCO) produced by the British Oceanographic Data Centre."
+ },
+ {
+  "layer": "océans",
+  "text": "Masque terre/mer dérivé de Natural Earth (domaine public)."
+ }
+]

@@ -75,7 +75,7 @@ export function GlobeView({ ref, framing, onReady }: Props) {
     <Unsupported>
       <div style={{ position: 'absolute', inset: 0 }}>
         <Canvas
-          key={generation}
+          key={`gl-${generation}`}
           flat
           dpr={[1, 2]}
           camera={{ fov: FOV_Y_DEG, near: 0.001, far: 100 }}
@@ -98,7 +98,7 @@ export function GlobeView({ ref, framing, onReady }: Props) {
         )}
         <style>{'@keyframes countrizz-cut { from { opacity: 1 } to { opacity: 0 } }'}</style>
         <div
-          key={cuts}
+          key={`cut-${cuts}`}
           style={{ position: 'absolute', inset: 0, background: '#000', pointerEvents: 'none', opacity: 0, animation: cuts > 0 ? 'countrizz-cut 250ms ease-out' : 'none' }}
         />
       </div>

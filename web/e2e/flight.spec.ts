@@ -19,6 +19,9 @@ for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
   const q = backend === 'webgl2' ? '&webgl' : '';
   test.describe(backend, () => {
     test.use({ viewport: { width: 960, height: 600 } });
+    // En CI, SwiftShader rend le jeu WebGL 2 à quelques images par seconde : vol 2,1 min, patch 404 2,9 min, perte du GPU
+    // (deux chargements) au-delà de 3 min (run 37049219647). Délai triplé pour ce backend seulement.
+    test.slow(() => backend === 'webgl2' && !!process.env.CI, 'SwiftShader WebGL 2 lent en CI');
 
     test('vole de pays en pays et allume chacun à l’arrivée', async ({ page }) => {
       await page.goto(`/?demo=FRA,JPN,FJI${q}`);

@@ -18,3 +18,14 @@ test('changer de pays ne recharge pas les textures globales', async ({ page }) =
   console.log('requêtes de textures globales : au chargement', atLoad, 'après 3 pays', globalTextures);
   expect(globalTextures).toBe(atLoad);
 });
+
+// Le Canvas (clé = génération du renderer) et le voile de coupe (clé = nombre de coupes) sont frères : leurs clés ne
+// doivent pas se confondre (React : « Encountered two children with the same key »).
+test('aucune erreur React au chargement du globe', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  await page.goto('/?webgl');
+  await expect(page.getByRole('button', { name: 'Pays suivant' })).toBeEnabled({ timeout: 120_000 });
+  console.log('erreurs console', JSON.stringify(errors));
+  expect(errors.filter((e) => e.includes('same key'))).toEqual([]);
+});

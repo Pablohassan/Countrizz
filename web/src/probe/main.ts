@@ -1,17 +1,18 @@
 import * as THREE from 'three/webgpu';
-import { CameraDirector } from '../camera/director';
+import { CameraDirector, type FramePose } from '../camera/director';
 import { FLIGHT, FOV_Y_DEG, FRAMING } from '../camera/config';
 import { loadCountries } from '../data/countries';
 import type { LngLat } from '../data/types';
-import { toLngLat, toVec } from '../geo/vec';
+import { northUp, toLngLat, toVec } from '../geo/vec';
 import { Globe } from '../globe/globe';
 import { loadPatchTexture } from '../globe/patchTexture';
 import { createRenderer } from '../globe/renderer';
+import { loadGlobeTextures } from '../globe/textures';
 
 /** API exposée aux contrôles Playwright (e2e/). */
 export interface ProbeApi {
   backend: string;
-  cca3: string;
+  cca3: string | null;
   /** Pixel écran (coin haut gauche = 0,0) d'un point du globe, `null` derrière l'horizon. */
   project(points: LngLat[]): ([number, number] | null)[];
   /** Point du globe sous un pixel écran (coordonnées continues), `null` hors du globe. */
@@ -19,7 +20,14 @@ export interface ProbeApi {
 }
 declare global { interface Window { __probe?: ProbeApi } }
 
+/**
+ * Page de sonde (dev seulement). Paramètres :
+ * - `cca3` : pays cadré comme en jeu ; sinon `at=lng,lat` et `alt` : pose explicite ;
+ * - `mode=game` : textures, halo, étoiles (sinon masque) ; `tier=haute` : textures 8K ; `sun=lng,lat` : soleil forcé ;
+ * - `w`, `h` : taille ; `webgl` : repli WebGL 2 forcé.
+ */
 const q = new URLSearchParams(location.search);
+const lngLat = (s: string | null): LngLat | null => (s ? (s.split(',').map(Number) as LngLat) : null);
 const width = Number(q.get('w') ?? 960), height = Number(q.get('h') ?? 600);
 const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
@@ -27,20 +35,29 @@ const { renderer, backend } = await createRenderer(canvas, { forceWebGL: q.has('
 renderer.setPixelRatio(1);
 renderer.setSize(width, height);
 
-const countries = await loadCountries('/');
-const rec = countries.find((c) => c.cca3 === q.get('cca3'));
-if (!rec) throw new Error(`pays inconnu : ${q.get('cca3')}`);
-
-const globe = new Globe(q.get('mode') === 'game' ? 'game' : 'mask');
-globe.setPatch(rec.patch, await loadPatchTexture(`/data/${rec.patch.sdf}`));
-globe.setLook({ visible: true, reveal: 1, state: 'question', stateTime: 0 });
-
-const director = new CameraDirector({
-  viewport: { width, height, fovYDeg: FOV_Y_DEG }, framing: FRAMING, flight: FLIGHT, reducedMotion: true, start: rec.cap.center,
-});
+const mode = q.get('mode') === 'game' ? 'game' : 'mask';
+const textures = mode === 'game' ? await loadGlobeTextures(renderer, q.get('tier') === 'haute' ? 'haute' : 'standard') : undefined;
+const globe = new Globe(mode, { textures });
 const camera = new THREE.PerspectiveCamera(FOV_Y_DEG, width / height, 0.001, 100);
-void director.flyTo(rec);
-globe.applyPose(director.update(0), camera);
+
+const rec = q.get('cca3') ? (await loadCountries('/')).find((c) => c.cca3 === q.get('cca3')) : undefined;
+if (q.get('cca3') && !rec) throw new Error(`pays inconnu : ${q.get('cca3')}`);
+let pose: FramePose;
+if (rec) {
+  globe.setPatch(rec.patch, await loadPatchTexture(`/data/${rec.patch.sdf}`));
+  globe.setLook({ visible: true, reveal: 1, state: 'question', stateTime: 0 });
+  const director = new CameraDirector({
+    viewport: { width, height, fovYDeg: FOV_Y_DEG }, framing: FRAMING, flight: FLIGHT, reducedMotion: true, start: rec.cap.center,
+  });
+  void director.flyTo(rec);
+  pose = director.update(0);
+} else {
+  const dir = toVec(lngLat(q.get('at')) ?? [0, 0]);
+  pose = { dir, altitude: Number(q.get('alt') ?? 1.4), up: northUp(dir), cut: false };
+}
+globe.applyPose(pose, camera);
+const sun = lngLat(q.get('sun'));
+if (sun) globe.setSun(toVec(sun));
 const scene = new THREE.Scene();
 scene.add(globe.root);
 renderer.render(scene, camera);
@@ -50,7 +67,7 @@ const sphere = new THREE.Sphere(new THREE.Vector3(), 1);
 const hit = new THREE.Vector3();
 window.__probe = {
   backend,
-  cca3: rec.cca3,
+  cca3: rec?.cca3 ?? null,
   project: (points) => points.map((p) => {
     const v = new THREE.Vector3(...toVec(p));
     if (v.dot(camera.position) <= 1) return null; // derrière l'horizon (sphère unité)

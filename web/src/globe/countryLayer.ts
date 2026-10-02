@@ -3,6 +3,7 @@ import {
   abs, atan, cameraPosition, clamp, cross, dot, exp, float, fwidth, length, max, mix, normalize, positionWorld, select, sin,
   smoothstep, sqrt, texture, uniform, vec2, vec3, vec4, output,
 } from 'three/tsl';
+import type Node from 'three/src/nodes/core/Node.js';
 
 /** Repère tangent du centre du patch : C (centre), E (est), N (nord) — voir le contrat de PatchMeta. */
 export interface TangentFrame { center: THREE.Vector3; east: THREE.Vector3; north: THREE.Vector3 }
@@ -33,7 +34,7 @@ export type CountryUniforms = ReturnType<typeof makeUniforms>;
  * Couche pays lue dans le patch SDF (contrat de PatchMeta, src/data/types.ts). Renvoie le nœud de sortie à
  * poser sur `material.outputNode` : la couleur éclairée de la Terre, recouverte du pays.
  */
-export function createCountryLayer(placeholder: THREE.Texture) {
+export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'> = output) {
   const u = makeUniforms();
   const sdfNode = texture(placeholder);
 
@@ -76,13 +77,13 @@ export function createCountryLayer(placeholder: THREE.Texture) {
   const edgeA = edge.mul(wave).mul(float(0.85).add(flash.mul(0.15)));
   const lineA = neighbor.mul(wave).mul(0.8);
 
-  const lit = output.rgb;
+  const lit = base.rgb;
   const withLines = mix(lit, vec3(0.03, 0.03, 0.05), select(shown, lineA, float(0)));
   const withFill = mix(withLines, color, select(shown, fillA, float(0)));
   const withEdge = mix(withFill, mix(color, vec3(1, 1, 1), flash), select(shown, edgeA, float(0)));
 
   const mask = select(shown, inside, float(0));
-  const outputNode = select(u.maskMode.greaterThan(0.5), vec4(mask, mask, mask, 1), vec4(withEdge, output.a));
+  const outputNode = select(u.maskMode.greaterThan(0.5), vec4(mask, mask, mask, 1), vec4(withEdge, base.a));
 
   return {
     uniforms: u,

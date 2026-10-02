@@ -41,4 +41,13 @@ describe('frontières', () => {
     const count = (ls: number[][][]) => ls.reduce((s, l) => s + l.length, 0);
     expect(count(overviewBorders(fine, 0.12))).toBeLessThan(count(overviewBorders(fine, 1)));
   });
+
+  it('keep est la PART GARDÉE : 12 % des points intérieurs, pas 88 %', () => {
+    const fine = buildTopology([{ code: 'ZZZ', geometry: {
+      type: 'Polygon',
+      coordinates: [[...Array.from({ length: 200 }, (_, i) => [i / 100, Math.sin(i / 10) / 50]), [2, 1], [0, 1], [0, 0]]],
+    } }]);
+    const count = (ls: number[][][]) => ls.reduce((s, l) => s + l.length, 0);
+    expect(count(overviewBorders(fine, 0.12))).toBeLessThan(0.3 * count(overviewBorders(fine, 1)));
+  });
 });

@@ -1,0 +1,424 @@
+{
+ "naturalEarth": {
+  "licence": "domaine public",
+  "url": "https://www.naturalearthdata.com/"
+ },
+ "mledoze": {
+  "licence": "ODbL 1.0",
+  "url": "https://github.com/mledoze/countries"
+ },
+ "wikidata": {
+  "url": "https://www.wikidata.org/"
+ },
+ "geoBoundaries": [
+  {
+   "cca3": "ALB",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikipedia",
+   "year": "2003"
+  },
+  {
+   "cca3": "AND",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2007"
+  },
+  {
+   "cca3": "ARM",
+   "license": "Creative Commons Attribution 2.5 Generic",
+   "source": "geoBoundaries, Wikimedia",
+   "year": "2005"
+  },
+  {
+   "cca3": "ATG",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia",
+   "year": "2009"
+  },
+  {
+   "cca3": "BDI",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2006"
+  },
+  {
+   "cca3": "BEL",
+   "license": "Creative Commons Attribution 4.0 (CC BY 4.0)",
+   "source": "Eurostat- European Commission",
+   "year": "2022"
+  },
+  {
+   "cca3": "BHR",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "BHS",
+   "license": "Public Domain",
+   "source": "Natural Earth",
+   "year": "2021"
+  },
+  {
+   "cca3": "BLZ",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "BRB",
+   "license": "Creative Commons Attribution 2.5 Generic",
+   "source": "geoBoundaries, Wikimedia",
+   "year": "2005"
+  },
+  {
+   "cca3": "BRN",
+   "license": "Public Domain",
+   "source": "Wikimedia Commons",
+   "year": "2015"
+  },
+  {
+   "cca3": "BTN",
+   "license": "Creative Commons Attribution 3.0 License",
+   "source": "geoBoundaries, Wikimedia Commons; credit to author 'Babbage'",
+   "year": "2010"
+  },
+  {
+   "cca3": "COM",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "CPV",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "CYP",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "DJI",
+   "license": "Public Domain",
+   "source": "Natural Earth",
+   "year": "2021"
+  },
+  {
+   "cca3": "DMA",
+   "license": "Creative Commons Attribution 2.5 Generic",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2005"
+  },
+  {
+   "cca3": "DNK",
+   "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+   "source": "geoBoundaries, Web Vectors Map",
+   "year": "2021"
+  },
+  {
+   "cca3": "DOM",
+   "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+   "source": "Caribbean GeoPortal, N/A",
+   "year": "2020"
+  },
+  {
+   "cca3": "EST",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "FJI",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "geoBoundaries, OpenStreetMap",
+   "year": "2017"
+  },
+  {
+   "cca3": "FSM",
+   "license": "Creative Commons Attribution 3.0 Intergovernmental Organisations (CC BY 3.0 IGO)",
+   "source": "OCHA ROP, Federated States of Micronesia Division of Statistics, 2010 Census of Population and Housing and Secretariat of the Pacific Community, Statistics for Development Division",
+   "year": "2019"
+  },
+  {
+   "cca3": "GMB",
+   "license": "Creative Commons Attribution 4.0 (CC BY 4.0)",
+   "source": "geoBoundaries, Knippenberg, Erwin, & Moritz, Meyer. “The Hidden Potential of Mobile Phone Data Insights on COVID-19 in the Gambia.” The World Bank Data Catalog",
+   "year": "2020"
+  },
+  {
+   "cca3": "GNB",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "GNQ",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2016"
+  },
+  {
+   "cca3": "GRD",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "HTI",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "ISR",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "JAM",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2014"
+  },
+  {
+   "cca3": "KIR",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "KNA",
+   "license": "Creative Commons Attribution 2.5 Generic",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2006"
+  },
+  {
+   "cca3": "KWT",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "LBN",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2010"
+  },
+  {
+   "cca3": "LCA",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2005"
+  },
+  {
+   "cca3": "LIE",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "LSO",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "LUX",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "MCO",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "MDA",
+   "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+   "source": "geoBoundaries, Wikipedia",
+   "year": "2014"
+  },
+  {
+   "cca3": "MDV",
+   "license": "Creative Commons Attribution 4.0 (CC BY 4.0)",
+   "source": "Sentinel-2 10-Meter Land Use/LandCover",
+   "year": "2021"
+  },
+  {
+   "cca3": "MHL",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "MKD",
+   "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+   "source": "EuroGeographics, Regional IM Working Group - Europe",
+   "year": "2016"
+  },
+  {
+   "cca3": "MLT",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2010"
+  },
+  {
+   "cca3": "MNE",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "MUS",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambachers",
+   "year": "2017"
+  },
+  {
+   "cca3": "NLD",
+   "license": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+   "source": "National Georegister",
+   "year": "2022"
+  },
+  {
+   "cca3": "NRU",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "PSE",
+   "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+   "source": "raster2polygon from Sentinel-2 10m Land Cover where Image Year = 2021 / exclude gridcode = 1 (water) / dissolve / erase adm0 overlap / processed by IMB",
+   "year": "2021"
+  },
+  {
+   "cca3": "QAT",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "Open Street Map, Wambacher (https//wambachers-osm.website/boundaries/)",
+   "year": "2017"
+  },
+  {
+   "cca3": "RWA",
+   "license": "Creative Commons Attribution 4.0 (CC BY 4.0)",
+   "source": "Sentinel-2 10-Meter Land Use/LandCover",
+   "year": "2021"
+  },
+  {
+   "cca3": "SGP",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "Urban Redevelopment Authority, derived from ADM 3",
+   "year": "2016"
+  },
+  {
+   "cca3": "SLB",
+   "license": "Public Domain",
+   "source": "Natural Earth",
+   "year": "2021"
+  },
+  {
+   "cca3": "SLV",
+   "license": "Creative Commons Attribution-ShareAlike 2.0",
+   "source": "Open Street Map",
+   "year": "2021"
+  },
+  {
+   "cca3": "SMR",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "STP",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "SVK",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "SVN",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikipedia",
+   "year": "2009"
+  },
+  {
+   "cca3": "SWZ",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "SYC",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "TLS",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "TON",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "TTO",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "TUV",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "UNK",
+   "license": "Creative Commons Attribution-ShareAlike 2.0",
+   "source": "Open Street Map",
+   "year": "2021"
+  },
+  {
+   "cca3": "VAT",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2017"
+  },
+  {
+   "cca3": "VCT",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "VUT",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  {
+   "cca3": "WSM",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  }
+ ],
+ "note": "countries.json et les contours dérivés sont publiés sous ODbL 1.0."
+}

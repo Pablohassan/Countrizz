@@ -20,7 +20,8 @@ const round3 = (v: number) => Math.round(v * 1000) / 1000;
 
 export function overviewBorders(topo: Topo, keep: number): LngLat[][] {
   const pre = presimplify(topo);
-  const simp = keep >= 1 ? pre : simplify(pre, quantile(pre, 1 - keep));
+  // quantile trie les poids par ordre DÉCROISSANT : quantile(pre, keep) est le seuil qui garde la part `keep` des points.
+  const simp = keep >= 1 ? pre : simplify(pre, quantile(pre, keep));
   const m = mesh(simp, simp.objects.countries);
   return m.coordinates.map((line) => line.map(([x, y]) => [round3(x!), round3(y!)] as LngLat));
 }

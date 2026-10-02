@@ -1,0 +1,8287 @@
+[
+ {
+  "id": 1,
+  "cca3": "AFG",
+  "cca2": "AF",
+  "name": "Afghanistan",
+  "capital": "Kaboul",
+  "capitals": [
+   "Kaboul"
+  ],
+  "region": "Asia",
+  "subregion": "Southern Asia",
+  "neighbors": [
+   "CHN",
+   "IRN",
+   "PAK",
+   "TJK",
+   "TKM",
+   "UZB"
+  ],
+  "areaKm2": 642392.96,
+  "cap": {
+   "center": [
+    67.56693710028898,
+    33.744128537272275
+   ],
+   "radiusDeg": 6.90695074295509
+  },
+  "beacon": [
+   66.553982895032,
+   34.17301951066793
+  ],
+  "beaconClearanceKm": 300.032,
+  "flag": "flags/afg.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/afg.png",
+   "size": 1024,
+   "center": [
+    67.56693710028898,
+    33.744128537272275
+   ],
+   "extentRad": 0.1808235476064523,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 2,
+  "cca3": "AGO",
+  "cca2": "AO",
+  "name": "Angola",
+  "capital": "Luanda",
+  "capitals": [
+   "Luanda"
+  ],
+  "region": "Africa",
+  "subregion": "Middle Africa",
+  "neighbors": [
+   "COD",
+   "COG",
+   "NAM",
+   "ZMB"
+  ],
+  "areaKm2": 1249441.54,
+  "cap": {
+   "center": [
+    17.717688648106222,
+    -11.923009629272663
+   ],
+   "radiusDeg": 7.915646732360233
+  },
+  "beacon": [
+   17.750558366273253,
+   -13.272505944750794
+  ],
+  "beaconClearanceKm": 457.74,
+  "flag": "flags/ago.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ago.png",
+   "size": 1024,
+   "center": [
+    17.717688648106222,
+    -11.923009629272663
+   ],
+   "extentRad": 0.20723114685662464,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 3,
+  "cca3": "ALB",
+  "cca2": "AL",
+  "name": "Albanie",
+  "capital": "Tirana",
+  "capitals": [
+   "Tirana"
+  ],
+  "region": "Europe",
+  "subregion": "Southeast Europe",
+  "neighbors": [
+   "GRC",
+   "MKD",
+   "MNE",
+   "UNK"
+  ],
+  "areaKm2": 28745.93,
+  "cap": {
+   "center": [
+    19.980487979982534,
+    41.15454386933262
+   ],
+   "radiusDeg": 1.518496608959853
+  },
+  "beacon": [
+   20.139693153201765,
+   40.63488839527283
+  ],
+  "beaconClearanceKm": 58.765,
+  "flag": "flags/alb.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/alb.png",
+   "size": 1024,
+   "center": [
+    19.980487979982534,
+    41.15454386933262
+   ],
+   "extentRad": 0.03975414826007739,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 4,
+  "cca3": "AND",
+  "cca2": "AD",
+  "name": "Andorre",
+  "capital": "Andorre-la-Vieille",
+  "capitals": [
+   "Andorre-la-Vieille"
+  ],
+  "region": "Europe",
+  "subregion": "Southern Europe",
+  "neighbors": [
+   "ESP",
+   "FRA"
+  ],
+  "areaKm2": 469.4,
+  "cap": {
+   "center": [
+    1.5967009917480035,
+    42.53501156332762
+   ],
+   "radiusDeg": 0.14548760805737176
+  },
+  "beacon": [
+   1.5720851859576637,
+   42.545247998826675
+  ],
+  "beaconClearanceKm": 9.223,
+  "flag": "flags/and.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/and.png",
+   "size": 1024,
+   "center": [
+    1.5967009917480035,
+    42.53501156332762
+   ],
+   "extentRad": 0.0038088566721782525,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 5,
+  "cca3": "ARE",
+  "cca2": "AE",
+  "name": "Émirats arabes unis",
+  "capital": "Abou Dabi",
+  "capitals": [
+   "Abou Dabi"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "OMN",
+   "SAU"
+  ],
+  "areaKm2": 71246.88,
+  "cap": {
+   "center": [
+    54.0432544117305,
+    24.738422387368733
+   ],
+   "radiusDeg": 2.333973862754734
+  },
+  "beacon": [
+   54.48771738819474,
+   23.462916914928105
+  ],
+  "beaconClearanceKm": 84.425,
+  "flag": "flags/are.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/are.png",
+   "size": 1024,
+   "center": [
+    54.0432544117305,
+    24.738422387368733
+   ],
+   "extentRad": 0.061103292840840547,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 6,
+  "cca3": "ARG",
+  "cca2": "AR",
+  "name": "Argentine",
+  "capital": "Buenos Aires",
+  "capitals": [
+   "Buenos Aires"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "BOL",
+   "BRA",
+   "CHL",
+   "PRY",
+   "URY"
+  ],
+  "areaKm2": 2783122.31,
+  "cap": {
+   "center": [
+    -65.91108660850574,
+    -37.170506742666554
+   ],
+   "radiusDeg": 15.411477853554215
+  },
+  "beacon": [
+   -63.917795600079614,
+   -30.39339528820971
+  ],
+  "beaconClearanceKm": 569.302,
+  "flag": "flags/arg.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/arg.png",
+   "size": 1024,
+   "center": [
+    -65.91108660850574,
+    -37.170506742666554
+   ],
+   "extentRad": 0.40347154671406427,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 7,
+  "cca3": "ARM",
+  "cca2": "AM",
+  "name": "Arménie",
+  "capital": "Erevan",
+  "capitals": [
+   "Erevan"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "AZE",
+   "GEO",
+   "IRN",
+   "TUR"
+  ],
+  "areaKm2": 29241.27,
+  "cap": {
+   "center": [
+    45.025530550876155,
+    40.00682064934564
+   ],
+   "radiusDeg": 1.6276886975910838
+  },
+  "beacon": [
+   44.49110407498259,
+   40.59745484537848
+  ],
+  "beaconClearanceKm": 63.943,
+  "flag": "flags/arm.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/arm.png",
+   "size": 1024,
+   "center": [
+    45.025530550876155,
+    40.00682064934564
+   ],
+   "extentRad": 0.04261279045569406,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 8,
+  "cca3": "ATG",
+  "cca2": "AG",
+  "name": "Antigua-et-Barbuda",
+  "capital": "Saint John's",
+  "capitals": [
+   "Saint John's"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [],
+  "areaKm2": 422.75,
+  "cap": {
+   "center": [
+    -61.79764419907244,
+    17.363321855790836
+   ],
+   "radiusDeg": 0.36821371105448675
+  },
+  "beacon": [
+   -61.81525137435051,
+   17.070114619969935
+  ],
+  "beaconClearanceKm": 6.236,
+  "flag": "flags/atg.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/atg.png",
+   "size": 1024,
+   "center": [
+    -61.79764419907244,
+    17.363321855790836
+   ],
+   "extentRad": 0.009639812413331754,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 9,
+  "cca3": "AUS",
+  "cca2": "AU",
+  "name": "Australie",
+  "capital": "Canberra",
+  "capitals": [
+   "Canberra"
+  ],
+  "region": "Oceania",
+  "subregion": "Australia and New Zealand",
+  "neighbors": [],
+  "areaKm2": 7706043.86,
+  "cap": {
+   "center": [
+    133.18392596821516,
+    -26.61009410157475
+   ],
+   "radiusDeg": 18.207488149811432
+  },
+  "beacon": [
+   132.3097269963248,
+   -23.184997762675128
+  ],
+  "beaconClearanceKm": 929.022,
+  "flag": "flags/aus.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/aus.png",
+   "size": 1024,
+   "center": [
+    133.18392596821516,
+    -26.61009410157475
+   ],
+   "extentRad": 0.47667092509809006,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 10,
+  "cca3": "AUT",
+  "cca2": "AT",
+  "name": "Autriche",
+  "capital": "Vienne",
+  "capitals": [
+   "Vienne"
+  ],
+  "region": "Europe",
+  "subregion": "Central Europe",
+  "neighbors": [
+   "CHE",
+   "CZE",
+   "DEU",
+   "HUN",
+   "ITA",
+   "LIE",
+   "SVK",
+   "SVN"
+  ],
+  "areaKm2": 83755.92,
+  "cap": {
+   "center": [
+    13.306349261009649,
+    47.685924648291085
+   ],
+   "radiusDeg": 2.599784525430203
+  },
+  "beacon": [
+   14.54282061105714,
+   47.57755955568412
+  ],
+  "beaconClearanceKm": 110.282,
+  "flag": "flags/aut.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/aut.png",
+   "size": 1024,
+   "center": [
+    13.306349261009649,
+    47.685924648291085
+   ],
+   "extentRad": 0.06806219971673293,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 11,
+  "cca3": "AZE",
+  "cca2": "AZ",
+  "name": "Azerbaïdjan",
+  "capital": "Bakou",
+  "capitals": [
+   "Bakou"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "ARM",
+   "GEO",
+   "IRN",
+   "RUS",
+   "TUR"
+  ],
+  "areaKm2": 86152.88,
+  "cap": {
+   "center": [
+    47.563476715029836,
+    40.34097373546674
+   ],
+   "radiusDeg": 2.1594490252687333
+  },
+  "beacon": [
+   47.0885144235521,
+   40.3214178254296
+  ],
+  "beaconClearanceKm": 94.659,
+  "flag": "flags/aze.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/aze.png",
+   "size": 1024,
+   "center": [
+    47.563476715029836,
+    40.34097373546674
+   ],
+   "extentRad": 0.056534243279882435,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 12,
+  "cca3": "BDI",
+  "cca2": "BI",
+  "name": "Burundi",
+  "capital": "Gitega",
+  "capitals": [
+   "Gitega"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "COD",
+   "RWA",
+   "TZA"
+  ],
+  "areaKm2": 25158.98,
+  "cap": {
+   "center": [
+    29.9656298153213,
+    -3.3503848050212888
+   ],
+   "radiusDeg": 1.1373391238851762
+  },
+  "beacon": [
+   29.90982683113668,
+   -3.3619640750966315
+  ],
+  "beaconClearanceKm": 62.829,
+  "flag": "flags/bdi.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/bdi.png",
+   "size": 1024,
+   "center": [
+    29.9656298153213,
+    -3.3503848050212888
+   ],
+   "extentRad": 0.029775468635316008,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 13,
+  "cca3": "BEL",
+  "cca2": "BE",
+  "name": "Belgique",
+  "capital": "Bruxelles",
+  "capitals": [
+   "Bruxelles"
+  ],
+  "region": "Europe",
+  "subregion": "Western Europe",
+  "neighbors": [
+   "DEU",
+   "FRA",
+   "LUX",
+   "NLD"
+  ],
+  "areaKm2": 30561.03,
+  "cap": {
+   "center": [
+    4.360323480990597,
+    50.45653422910997
+   ],
+   "radiusDeg": 1.3104928205962805
+  },
+  "beacon": [
+   4.681622641876594,
+   50.7822336153088
+  ],
+  "beaconClearanceKm": 65.985,
+  "flag": "flags/bel.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/bel.png",
+   "size": 1024,
+   "center": [
+    4.360323480990597,
+    50.45653422910997
+   ],
+   "extentRad": 0.03430862181472868,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 14,
+  "cca3": "BEN",
+  "cca2": "BJ",
+  "name": "Bénin",
+  "capital": "Porto-Novo",
+  "capitals": [
+   "Cotonou",
+   "Porto-Novo"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "BFA",
+   "NER",
+   "NGA",
+   "TGO"
+  ],
+  "areaKm2": 116589.9,
+  "cap": {
+   "center": [
+    2.226589592457629,
+    9.307407983158841
+   ],
+   "radiusDeg": 3.1514133951495835
+  },
+  "beacon": [
+   2.377454258078321,
+   10.383879466048437
+  ],
+  "beaconClearanceKm": 122.361,
+  "flag": "flags/ben.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ben.png",
+   "size": 1024,
+   "center": [
+    2.226589592457629,
+    9.307407983158841
+   ],
+   "extentRad": 0.08250380975521998,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 15,
+  "cca3": "BFA",
+  "cca2": "BF",
+  "name": "Burkina Faso",
+  "capital": "Ouagadougou",
+  "capitals": [
+   "Ouagadougou"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "BEN",
+   "CIV",
+   "GHA",
+   "MLI",
+   "NER",
+   "TGO"
+  ],
+  "areaKm2": 273827.33,
+  "cap": {
+   "center": [
+    -1.614720195825778,
+    11.380988235016487
+   ],
+   "radiusDeg": 3.9562322701381705
+  },
+  "beacon": [
+   -0.9461576997264607,
+   12.792264902785082
+  ],
+  "beaconClearanceKm": 194.271,
+  "flag": "flags/bfa.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/bfa.png",
+   "size": 1024,
+   "center": [
+    -1.614720195825778,
+    11.380988235016487
+   ],
+   "extentRad": 0.10357391863134122,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 16,
+  "cca3": "BGD",
+  "cca2": "BD",
+  "name": "Bangladesh",
+  "capital": "Dacca",
+  "capitals": [
+   "Dacca"
+  ],
+  "region": "Asia",
+  "subregion": "Southern Asia",
+  "neighbors": [
+   "IND",
+   "MMR"
+  ],
+  "areaKm2": 137217.42,
+  "cap": {
+   "center": [
+    90.3998026883175,
+    23.693501675366143
+   ],
+   "radiusDeg": 3.450901009386705
+  },
+  "beacon": [
+   89.78583362241395,
+   24.315585393996415
+  ],
+  "beaconClearanceKm": 105.522,
+  "flag": "flags/bgd.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/bgd.png",
+   "size": 1024,
+   "center": [
+    90.3998026883175,
+    23.693501675366143
+   ],
+   "extentRad": 0.09034437716129062,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 17,
+  "cca3": "BGR",
+  "cca2": "BG",
+  "name": "Bulgarie",
+  "capital": "Sofia",
+  "capitals": [
+   "Sofia"
+  ],
+  "region": "Europe",
+  "subregion": "Southeast Europe",
+  "neighbors": [
+   "GRC",
+   "MKD",
+   "ROU",
+   "SRB",
+   "TUR"
+  ],
+  "areaKm2": 112569.07,
+  "cap": {
+   "center": [
+    25.4186814073208,
+    42.920524731621185
+   ],
+   "radiusDeg": 2.440326764461408
+  },
+  "beacon": [
+   25.126055892567987,
+   42.56496481679431
+  ],
+  "beaconClearanceKm": 122.602,
+  "flag": "flags/bgr.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/bgr.png",
+   "size": 1024,
+   "center": [
+    25.4186814073208,
+    42.920524731621185
+   ],
+   "extentRad": 0.06388760529658757,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 18,
+  "cca3": "BHR",
+  "cca2": "BH",
+  "name": "Bahreïn",
+  "capital": "Manama",
+  "capitals": [
+   "Manama"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [],
+  "areaKm2": 762.87,
+  "cap": {
+   "center": [
+    50.70465843379554,
+    25.951109593734476
+   ],
+   "radiusDeg": 0.3848549717767968
+  },
+  "beacon": [
+   50.539023527435916,
+   25.97579921847764
+  ],
+  "beaconClearanceKm": 7.419,
+  "flag": "flags/bhr.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/bhr.png",
+   "size": 1024,
+   "center": [
+    50.70465843379554,
+    25.951109593734476
+   ],
+   "extentRad": 0.010075479600262432,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 19,
+  "cca3": "BHS",
+  "cca2": "BS",
+  "name": "Bahamas",
+  "capital": "Nassau",
+  "capitals": [
+   "Nassau"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [],
+  "areaKm2": 12620.7,
+  "cap": {
+   "center": [
+    -75.99923417060734,
+    23.875446241926056
+   ],
+   "radiusDeg": 3.9161997694670707
+  },
+  "beacon": [
+   -77.96758965306819,
+   24.625636239333808
+  ],
+  "beaconClearanceKm": 21.792,
+  "flag": "flags/bhs.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/bhs.png",
+   "size": 1024,
+   "center": [
+    -75.99923417060734,
+    23.875446241926056
+   ],
+   "extentRad": 0.10252587021456491,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 20,
+  "cca3": "BIH",
+  "cca2": "BA",
+  "name": "Bosnie-Herzégovine",
+  "capital": "Sarajevo",
+  "capitals": [
+   "Sarajevo"
+  ],
+  "region": "Europe",
+  "subregion": "Southeast Europe",
+  "neighbors": [
+   "HRV",
+   "MNE",
+   "SRB"
+  ],
+  "areaKm2": 51721.46,
+  "cap": {
+   "center": [
+    17.41208433921736,
+    44.0131033170502
+   ],
+   "radiusDeg": 1.6479125684075213
+  },
+  "beacon": [
+   17.917281766896625,
+   44.1971337278357
+  ],
+  "beaconClearanceKm": 96.655,
+  "flag": "flags/bih.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/bih.png",
+   "size": 1024,
+   "center": [
+    17.41208433921736,
+    44.0131033170502
+   ],
+   "extentRad": 0.0431422501555613,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 21,
+  "cca3": "BLR",
+  "cca2": "BY",
+  "name": "Biélorussie",
+  "capital": "Minsk",
+  "capitals": [
+   "Minsk"
+  ],
+  "region": "Europe",
+  "subregion": "Eastern Europe",
+  "neighbors": [
+   "LTU",
+   "LVA",
+   "POL",
+   "RUS",
+   "UKR"
+  ],
+  "areaKm2": 206631.82,
+  "cap": {
+   "center": [
+    27.664722812696322,
+    53.245056800325735
+   ],
+   "radiusDeg": 3.023508619301356
+  },
+  "beacon": [
+   28.408042050223685,
+   53.38902460281073
+  ],
+  "beaconClearanceKm": 193.616,
+  "flag": "flags/blr.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/blr.png",
+   "size": 1024,
+   "center": [
+    27.664722812696322,
+    53.245056800325735
+   ],
+   "extentRad": 0.07915527055385466,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 22,
+  "cca3": "BLZ",
+  "cca2": "BZ",
+  "name": "Belize",
+  "capital": "Belmopan",
+  "capitals": [
+   "Belmopan"
+  ],
+  "region": "Americas",
+  "subregion": "Central America",
+  "neighbors": [
+   "GTM",
+   "MEX"
+  ],
+  "areaKm2": 21970.84,
+  "cap": {
+   "center": [
+    -88.77653188505228,
+    17.188133745326034
+   ],
+   "radiusDeg": 1.3710643377600435
+  },
+  "beacon": [
+   -88.71076325682648,
+   17.437035875223884
+  ],
+  "beaconClearanceKm": 46.697,
+  "flag": "flags/blz.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/blz.png",
+   "size": 1024,
+   "center": [
+    -88.77653188505228,
+    17.188133745326034
+   ],
+   "extentRad": 0.03589438042588256,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 23,
+  "cca3": "BOL",
+  "cca2": "BO",
+  "name": "Bolivie",
+  "capital": "Sucre",
+  "capitals": [
+   "La Paz",
+   "Sucre"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "ARG",
+   "BRA",
+   "CHL",
+   "PER",
+   "PRY"
+  ],
+  "areaKm2": 1090456.9,
+  "cap": {
+   "center": [
+    -64.47755718810747,
+    -16.299408425312638
+   ],
+   "radiusDeg": 7.2895064240751655
+  },
+  "beacon": [
+   -64.62066355869298,
+   -16.646518614861037
+  ],
+  "beaconClearanceKm": 450.561,
+  "flag": "flags/bol.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/bol.png",
+   "size": 1024,
+   "center": [
+    -64.47755718810747,
+    -16.299408425312638
+   ],
+   "extentRad": 0.19083883191808454,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 24,
+  "cca3": "BRA",
+  "cca2": "BR",
+  "name": "Brésil",
+  "capital": "Brasilia",
+  "capitals": [
+   "Brasilia"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "ARG",
+   "BOL",
+   "COL",
+   "GUY",
+   "PER",
+   "PRY",
+   "SUR",
+   "URY",
+   "VEN"
+  ],
+  "areaKm2": 8504960.99,
+  "cap": {
+   "center": [
+    -54.97319706007294,
+    -12.962438699663036
+   ],
+   "radiusDeg": 20.828832005192577
+  },
+  "beacon": [
+   -49.085097543773294,
+   -12.420449649472255
+  ],
+  "beaconClearanceKm": 1086.088,
+  "flag": "flags/bra.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/bra.png",
+   "size": 1024,
+   "center": [
+    -54.97319706007294,
+    -12.962438699663036
+   ],
+   "extentRad": 0.5452975467530746,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 25,
+  "cca3": "BRB",
+  "cca2": "BB",
+  "name": "Barbade",
+  "capital": "Bridgetown",
+  "capitals": [
+   "Bridgetown"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [],
+  "areaKm2": 434.23,
+  "cap": {
+   "center": [
+    -59.56875533233501,
+    13.190567841593156
+   ],
+   "radiusDeg": 0.15215620333200175
+  },
+  "beacon": [
+   -59.552373902393974,
+   13.142752038389384
+  ],
+  "beaconClearanceKm": 8.554,
+  "flag": "flags/brb.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/brb.png",
+   "size": 1024,
+   "center": [
+    -59.56875533233501,
+    13.190567841593156
+   ],
+   "extentRad": 0.003983440088216096,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 26,
+  "cca3": "BRN",
+  "cca2": "BN",
+  "name": "Brunei",
+  "capital": "Bandar Seri Begawan",
+  "capitals": [
+   "Bandar Seri Begawan"
+  ],
+  "region": "Asia",
+  "subregion": "South-Eastern Asia",
+  "neighbors": [
+   "MYS"
+  ],
+  "areaKm2": 6085.69,
+  "cap": {
+   "center": [
+    114.7350458792971,
+    4.521977889591914
+   ],
+   "radiusDeg": 0.6566432930365599
+  },
+  "beacon": [
+   114.59008464970499,
+   4.477378210396422
+  ],
+  "beaconClearanceKm": 27.087,
+  "flag": "flags/brn.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/brn.png",
+   "size": 1024,
+   "center": [
+    114.7350458792971,
+    4.521977889591914
+   ],
+   "extentRad": 0.017190881211938888,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 27,
+  "cca3": "BTN",
+  "cca2": "BT",
+  "name": "Bhoutan",
+  "capital": "Thimphou",
+  "capitals": [
+   "Thimphou"
+  ],
+  "region": "Asia",
+  "subregion": "Southern Asia",
+  "neighbors": [
+   "CHN",
+   "IND"
+  ],
+  "areaKm2": 40396.56,
+  "cap": {
+   "center": [
+    90.44058593355764,
+    27.151020821256356
+   ],
+   "radiusDeg": 1.504704596934616
+  },
+  "beacon": [
+   90.0138318083,
+   27.508441891248697
+  ],
+  "beaconClearanceKm": 75.431,
+  "flag": "flags/btn.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/btn.png",
+   "size": 1024,
+   "center": [
+    90.44058593355764,
+    27.151020821256356
+   ],
+   "extentRad": 0.03939307422960484,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 28,
+  "cca3": "BWA",
+  "cca2": "BW",
+  "name": "Botswana",
+  "capital": "Gaborone",
+  "capitals": [
+   "Gaborone"
+  ],
+  "region": "Africa",
+  "subregion": "Southern Africa",
+  "neighbors": [
+   "NAM",
+   "ZAF",
+   "ZMB",
+   "ZWE"
+  ],
+  "areaKm2": 580514.85,
+  "cap": {
+   "center": [
+    23.848185656435604,
+    -22.66111984818236
+   ],
+   "radiusDeg": 5.109851393519123
+  },
+  "beacon": [
+   24.251640406510628,
+   -21.990026146353067
+  ],
+  "beaconClearanceKm": 336.867,
+  "flag": "flags/bwa.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/bwa.png",
+   "size": 1024,
+   "center": [
+    23.848185656435604,
+    -22.66111984818236
+   ],
+   "extentRad": 0.1337755966567937,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 29,
+  "cca3": "CAF",
+  "cca2": "CF",
+  "name": "République centrafricaine",
+  "capital": "Bangui",
+  "capitals": [
+   "Bangui"
+  ],
+  "region": "Africa",
+  "subregion": "Middle Africa",
+  "neighbors": [
+   "CMR",
+   "COD",
+   "COG",
+   "SDN",
+   "SSD",
+   "TCD"
+  ],
+  "areaKm2": 620644.41,
+  "cap": {
+   "center": [
+    20.919757941028404,
+    5.591274241257316
+   ],
+   "radiusDeg": 6.514229145320273
+  },
+  "beacon": [
+   21.577362467010964,
+   6.9289866926360135
+  ],
+  "beaconClearanceKm": 275.981,
+  "flag": "flags/caf.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/caf.png",
+   "size": 1024,
+   "center": [
+    20.919757941028404,
+    5.591274241257316
+   ],
+   "extentRad": 0.17054212022282242,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 30,
+  "cca3": "CAN",
+  "cca2": "CA",
+  "name": "Canada",
+  "capital": "Ottawa",
+  "capitals": [
+   "Ottawa"
+  ],
+  "region": "Americas",
+  "subregion": "North America",
+  "neighbors": [
+   "USA"
+  ],
+  "areaKm2": 9894500.88,
+  "cap": {
+   "center": [
+    -92.9324853638094,
+    63.20786566399128
+   ],
+   "radiusDeg": 22.396478782846756
+  },
+  "beacon": [
+   -113.72890953423203,
+   57.92686085724409
+  ],
+  "beaconClearanceKm": 996.394,
+  "flag": "flags/can.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/can.png",
+   "size": 1024,
+   "center": [
+    -92.9324853638094,
+    63.20786566399128
+   ],
+   "extentRad": 0.586338443420592,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 31,
+  "cca3": "CHE",
+  "cca2": "CH",
+  "name": "Suisse",
+  "capital": "Berne",
+  "capitals": [
+   "Berne"
+  ],
+  "region": "Europe",
+  "subregion": "Western Europe",
+  "neighbors": [
+   "AUT",
+   "DEU",
+   "FRA",
+   "ITA",
+   "LIE"
+  ],
+  "areaKm2": 41326.31,
+  "cap": {
+   "center": [
+    8.192007420788126,
+    46.55567553312387
+   ],
+   "radiusDeg": 1.5991428736978026
+  },
+  "beacon": [
+   7.560065662251103,
+   46.779976334841415
+  ],
+  "beaconClearanceKm": 69.081,
+  "flag": "flags/che.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/che.png",
+   "size": 1024,
+   "center": [
+    8.192007420788126,
+    46.55567553312387
+   ],
+   "extentRad": 0.04186546253374573,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 32,
+  "cca3": "CHL",
+  "cca2": "CL",
+  "name": "Chili",
+  "capital": "Santiago",
+  "capitals": [
+   "Santiago"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "ARG",
+   "BOL",
+   "PER"
+  ],
+  "areaKm2": 736362.22,
+  "cap": {
+   "center": [
+    -69.36905981682912,
+    -36.22813621486601
+   ],
+   "radiusDeg": 18.721964218265253
+  },
+  "beacon": [
+   -69.06359467009578,
+   -23.405822042690716
+  ],
+  "beaconClearanceKm": 137.42,
+  "flag": "flags/chl.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/chl.png",
+   "size": 1024,
+   "center": [
+    -69.36905981682912,
+    -36.22813621486601
+   ],
+   "extentRad": 0.4901398770739424,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 33,
+  "cca3": "CHN",
+  "cca2": "CN",
+  "name": "Chine",
+  "capital": "Pékin",
+  "capitals": [
+   "Pékin"
+  ],
+  "region": "Asia",
+  "subregion": "Eastern Asia",
+  "neighbors": [
+   "AFG",
+   "BTN",
+   "IND",
+   "KAZ",
+   "KGZ",
+   "LAO",
+   "MMR",
+   "MNG",
+   "NPL",
+   "PAK",
+   "PRK",
+   "RUS",
+   "TJK",
+   "VNM"
+  ],
+  "areaKm2": 9373435,
+  "cap": {
+   "center": [
+    103.331990372048,
+    42.22924105578394
+   ],
+   "radiusDeg": 22.744636874119774
+  },
+  "beacon": [
+   108.16612833858366,
+   32.47497137585738
+  ],
+  "beaconClearanceKm": 1052.147,
+  "flag": "flags/chn.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/chn.png",
+   "size": 1024,
+   "center": [
+    103.331990372048,
+    42.22924105578394
+   ],
+   "extentRad": 0.5954532009358516,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 34,
+  "cca3": "CIV",
+  "cca2": "CI",
+  "name": "Côte d'Ivoire",
+  "capital": "Yamoussoukro",
+  "capitals": [
+   "Yamoussoukro"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "BFA",
+   "GHA",
+   "GIN",
+   "LBR",
+   "MLI"
+  ],
+  "areaKm2": 322038.47,
+  "cap": {
+   "center": [
+    -5.611358930510211,
+    7.429293901208839
+   ],
+   "radiusDeg": 3.627604078634045
+  },
+  "beacon": [
+   -5.500658595478698,
+   7.526327075659761
+  ],
+  "beaconClearanceKm": 256.083,
+  "flag": "flags/civ.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/civ.png",
+   "size": 1024,
+   "center": [
+    -5.611358930510211,
+    7.429293901208839
+   ],
+   "extentRad": 0.09497045269640905,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 35,
+  "cca3": "CMR",
+  "cca2": "CM",
+  "name": "Cameroun",
+  "capital": "Yaoundé",
+  "capitals": [
+   "Yaoundé"
+  ],
+  "region": "Africa",
+  "subregion": "Middle Africa",
+  "neighbors": [
+   "CAF",
+   "COG",
+   "GAB",
+   "GNQ",
+   "NGA",
+   "TCD"
+  ],
+  "areaKm2": 466331.97,
+  "cap": {
+   "center": [
+    13.438180342325186,
+    7.109714892592174
+   ],
+   "radiusDeg": 6.052996693620731
+  },
+  "beacon": [
+   12.441194092140648,
+   4.520518654002486
+  ],
+  "beaconClearanceKm": 245.705,
+  "flag": "flags/cmr.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/cmr.png",
+   "size": 1024,
+   "center": [
+    13.438180342325186,
+    7.109714892592174
+   ],
+   "extentRad": 0.15846708287401828,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 36,
+  "cca3": "COD",
+  "cca2": "CD",
+  "name": "Congo (Rép. dém.)",
+  "capital": "Kinshasa",
+  "capitals": [
+   "Kinshasa"
+  ],
+  "region": "Africa",
+  "subregion": "Middle Africa",
+  "neighbors": [
+   "AGO",
+   "BDI",
+   "CAF",
+   "COG",
+   "RWA",
+   "SSD",
+   "TZA",
+   "UGA",
+   "ZMB"
+  ],
+  "areaKm2": 2335422.65,
+  "cap": {
+   "center": [
+    23.2692251887139,
+    -4.412879702652454
+   ],
+   "radiusDeg": 11.097200553685195
+  },
+  "beacon": [
+   23.241772014000144,
+   -1.8290792754685705
+  ],
+  "beaconClearanceKm": 627.617,
+  "flag": "flags/cod.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/cod.png",
+   "size": 1024,
+   "center": [
+    23.2692251887139,
+    -4.412879702652454
+   ],
+   "extentRad": 0.29052403112391656,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 37,
+  "cca3": "COG",
+  "cca2": "CG",
+  "name": "Congo",
+  "capital": "Brazzaville",
+  "capitals": [
+   "Brazzaville"
+  ],
+  "region": "Africa",
+  "subregion": "Middle Africa",
+  "neighbors": [
+   "AGO",
+   "CAF",
+   "CMR",
+   "COD",
+   "GAB"
+  ],
+  "areaKm2": 346428.75,
+  "cap": {
+   "center": [
+    15.243532240613614,
+    -0.6949134428749898
+   ],
+   "radiusDeg": 5.39762505378404
+  },
+  "beacon": [
+   15.933531129488568,
+   0.06900582775169013
+  ],
+  "beaconClearanceKm": 176.958,
+  "flag": "flags/cog.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/cog.png",
+   "size": 1024,
+   "center": [
+    15.243532240613614,
+    -0.6949134428749898
+   ],
+   "extentRad": 0.14130949346500127,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 38,
+  "cca3": "COL",
+  "cca2": "CO",
+  "name": "Colombie",
+  "capital": "Bogota",
+  "capitals": [
+   "Bogota"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "BRA",
+   "ECU",
+   "PAN",
+   "PER",
+   "VEN"
+  ],
+  "areaKm2": 1140094.89,
+  "cap": {
+   "center": [
+    -70.98192273191854,
+    4.1010651890576035
+   ],
+   "radiusDeg": 8.399234065585304
+  },
+  "beacon": [
+   -73.25334725370413,
+   3.423014201343909
+  ],
+  "beaconClearanceKm": 422.828,
+  "flag": "flags/col.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/col.png",
+   "size": 1024,
+   "center": [
+    -70.98192273191854,
+    4.1010651890576035
+   ],
+   "extentRad": 0.21989143363519936,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 39,
+  "cca3": "COM",
+  "cca2": "KM",
+  "name": "Comores",
+  "capital": "Moroni",
+  "capitals": [
+   "Moroni"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [],
+  "areaKm2": 1655.61,
+  "cap": {
+   "center": [
+    43.90205403108904,
+    -11.889423244719907
+   ],
+   "radiusDeg": 0.7847289116302251
+  },
+  "beacon": [
+   43.342742421551684,
+   -11.741692184571265
+  ],
+  "beaconClearanceKm": 10.73,
+  "flag": "flags/com.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/com.png",
+   "size": 1024,
+   "center": [
+    43.90205403108904,
+    -11.889423244719907
+   ],
+   "extentRad": 0.020544154865308577,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 40,
+  "cca3": "CPV",
+  "cca2": "CV",
+  "name": "Îles du Cap-Vert",
+  "capital": "Praia",
+  "capitals": [
+   "Praia"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [],
+  "areaKm2": 4074.56,
+  "cap": {
+   "center": [
+    -24.173588230197744,
+    16.167612760952935
+   ],
+   "radiusDeg": 1.4499330582307977
+  },
+  "beacon": [
+   -23.59767058611963,
+   15.035942559142988
+  ],
+  "beaconClearanceKm": 12.869,
+  "flag": "flags/cpv.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/cpv.png",
+   "size": 1024,
+   "center": [
+    -24.173588230197744,
+    16.167612760952935
+   ],
+   "extentRad": 0.03795915869945713,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 41,
+  "cca3": "CRI",
+  "cca2": "CR",
+  "name": "Costa Rica",
+  "capital": "San José",
+  "capitals": [
+   "San José"
+  ],
+  "region": "Americas",
+  "subregion": "Central America",
+  "neighbors": [
+   "NIC",
+   "PAN"
+  ],
+  "areaKm2": 51360.18,
+  "cap": {
+   "center": [
+    -84.33557127183457,
+    9.553977394943088
+   ],
+   "radiusDeg": 2.0802102837073617
+  },
+  "beacon": [
+   -83.97372706174083,
+   10.069058771338751
+  ],
+  "beaconClearanceKm": 71.922,
+  "flag": "flags/cri.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/cri.png",
+   "size": 1024,
+   "center": [
+    -84.33557127183457,
+    9.553977394943088
+   ],
+   "extentRad": 0.054459777876808224,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 42,
+  "cca3": "CUB",
+  "cca2": "CU",
+  "name": "Cuba",
+  "capital": "La Havane",
+  "capitals": [
+   "La Havane"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [],
+  "areaKm2": 110221.92,
+  "cap": {
+   "center": [
+    -79.51069364545643,
+    21.126779604512567
+   ],
+   "radiusDeg": 5.115377156807685
+  },
+  "beacon": [
+   -76.44583999387575,
+   20.5702289822321
+  ],
+  "beaconClearanceKm": 67.321,
+  "flag": "flags/cub.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/cub.png",
+   "size": 1024,
+   "center": [
+    -79.51069364545643,
+    21.126779604512567
+   ],
+   "extentRad": 0.13392026080140054,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 43,
+  "cca3": "CYP",
+  "cca2": "CY",
+  "name": "Chypre",
+  "capital": "Nicosie",
+  "capitals": [
+   "Nicosie"
+  ],
+  "region": "Europe",
+  "subregion": "Southern Europe",
+  "neighbors": [],
+  "areaKm2": 8982.85,
+  "cap": {
+   "center": [
+    33.47190102314314,
+    35.25583895054401
+   ],
+   "radiusDeg": 1.0109716356359235
+  },
+  "beacon": [
+   33.23749499966231,
+   35.033161039290945
+  ],
+  "beaconClearanceKm": 34.642,
+  "flag": "flags/cyp.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/cyp.png",
+   "size": 1024,
+   "center": [
+    33.47190102314314,
+    35.25583895054401
+   ],
+   "extentRad": 0.026467175529178953,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 44,
+  "cca3": "CZE",
+  "cca2": "CZ",
+  "name": "Tchéquie",
+  "capital": "Prague",
+  "capitals": [
+   "Prague"
+  ],
+  "region": "Europe",
+  "subregion": "Central Europe",
+  "neighbors": [
+   "AUT",
+   "DEU",
+   "POL",
+   "SVK"
+  ],
+  "areaKm2": 78497.15,
+  "cap": {
+   "center": [
+    15.48280413253469,
+    49.96179373610974
+   ],
+   "radiusDeg": 2.2117641866759983
+  },
+  "beacon": [
+   14.300287438193306,
+   49.83429765725565
+  ],
+  "beaconClearanceKm": 104.287,
+  "flag": "flags/cze.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/cze.png",
+   "size": 1024,
+   "center": [
+    15.48280413253469,
+    49.96179373610974
+   ],
+   "extentRad": 0.05790385100278601,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 45,
+  "cca3": "DEU",
+  "cca2": "DE",
+  "name": "Allemagne",
+  "capital": "Berlin",
+  "capitals": [
+   "Berlin"
+  ],
+  "region": "Europe",
+  "subregion": "Western Europe",
+  "neighbors": [
+   "AUT",
+   "BEL",
+   "CHE",
+   "CZE",
+   "DNK",
+   "FRA",
+   "LUX",
+   "NLD",
+   "POL"
+  ],
+  "areaKm2": 356379.05,
+  "cap": {
+   "center": [
+    10.459124399767786,
+    51.0744959523624
+   ],
+   "radiusDeg": 3.9718493178738274
+  },
+  "beacon": [
+   9.947293369893233,
+   51.650326440312604
+  ],
+  "beaconClearanceKm": 210.34,
+  "flag": "flags/deu.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/deu.png",
+   "size": 1024,
+   "center": [
+    10.459124399767786,
+    51.0744959523624
+   ],
+   "extentRad": 0.10398277198498374,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 46,
+  "cca3": "DJI",
+  "cca2": "DJ",
+  "name": "Djibouti",
+  "capital": "Djibouti",
+  "capitals": [
+   "Djibouti"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "ERI",
+   "ETH",
+   "SOM"
+  ],
+  "areaKm2": 21933.52,
+  "cap": {
+   "center": [
+    42.4518545600963,
+    11.839378794578888
+   ],
+   "radiusDeg": 1.0863607408159717
+  },
+  "beacon": [
+   42.16814186281082,
+   11.379509009951464
+  ],
+  "beaconClearanceKm": 42.661,
+  "flag": "flags/dji.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/dji.png",
+   "size": 1024,
+   "center": [
+    42.4518545600963,
+    11.839378794578888
+   ],
+   "extentRad": 0.028440857687465185,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 47,
+  "cca3": "DMA",
+  "cca2": "DM",
+  "name": "Dominique",
+  "capital": "Roseau",
+  "capitals": [
+   "Roseau"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [],
+  "areaKm2": 754.94,
+  "cap": {
+   "center": [
+    -61.396815258409724,
+    15.42454726356639
+   ],
+   "radiusDeg": 0.22193041070341335
+  },
+  "beacon": [
+   -61.34739209052551,
+   15.463278915999776
+  ],
+  "beaconClearanceKm": 10.09,
+  "flag": "flags/dma.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/dma.png",
+   "size": 1024,
+   "center": [
+    -61.396815258409724,
+    15.42454726356639
+   ],
+   "extentRad": 0.005810124565616742,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 48,
+  "cca3": "DNK",
+  "cca2": "DK",
+  "name": "Danemark",
+  "capital": "Copenhague",
+  "capitals": [
+   "Copenhague"
+  ],
+  "region": "Europe",
+  "subregion": "Northern Europe",
+  "neighbors": [
+   "DEU"
+  ],
+  "areaKm2": 42693.69,
+  "cap": {
+   "center": [
+    10.531105898402727,
+    56.1262866367518
+   ],
+   "radiusDeg": 1.6289108408715194
+  },
+  "beacon": [
+   9.144637835127297,
+   56.04283462321929
+  ],
+  "beaconClearanceKm": 48.883,
+  "flag": "flags/dnk.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/dnk.png",
+   "size": 1024,
+   "center": [
+    10.531105898402727,
+    56.1262866367518
+   ],
+   "extentRad": 0.04264478609195615,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 49,
+  "cca3": "DOM",
+  "cca2": "DO",
+  "name": "République dominicaine",
+  "capital": "Saint-Domingue",
+  "capitals": [
+   "Saint-Domingue"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [
+   "HTI"
+  ],
+  "areaKm2": 48240.16,
+  "cap": {
+   "center": [
+    -70.18440563087822,
+    18.830190068158153
+   ],
+   "radiusDeg": 1.7797287951213243
+  },
+  "beacon": [
+   -70.8853793295558,
+   19.104708371967913
+  ],
+  "beaconClearanceKm": 77.881,
+  "flag": "flags/dom.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/dom.png",
+   "size": 1024,
+   "center": [
+    -70.18440563087822,
+    18.830190068158153
+   ],
+   "extentRad": 0.04659319090112806,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 50,
+  "cca3": "DZA",
+  "cca2": "DZ",
+  "name": "Algérie",
+  "capital": "Alger",
+  "capitals": [
+   "Alger"
+  ],
+  "region": "Africa",
+  "subregion": "Northern Africa",
+  "neighbors": [
+   "LBY",
+   "MAR",
+   "MLI",
+   "MRT",
+   "NER",
+   "TUN"
+  ],
+  "areaKm2": 2312301.92,
+  "cap": {
+   "center": [
+    2.4412741538041938,
+    28.494899785306085
+   ],
+   "radiusDeg": 9.902833282283503
+  },
+  "beacon": [
+   2.8506640422372076,
+   27.31002177559606
+  ],
+  "beaconClearanceKm": 660.401,
+  "flag": "flags/dza.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/dza.png",
+   "size": 1024,
+   "center": [
+    2.4412741538041938,
+    28.494899785306085
+   ],
+   "extentRad": 0.25925556907788627,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 51,
+  "cca3": "ECU",
+  "cca2": "EC",
+  "name": "Équateur",
+  "capital": "Quito",
+  "capitals": [
+   "Quito"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "COL",
+   "PER"
+  ],
+  "areaKm2": 256155.28,
+  "cap": {
+   "center": [
+    -78.17762664771283,
+    -1.9158044402812284
+   ],
+   "radiusDeg": 3.412774176813247
+  },
+  "beacon": [
+   -78.17440867149445,
+   -1.2112338702171623
+  ],
+  "beaconClearanceKm": 197.662,
+  "flag": "flags/ecu.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ecu.png",
+   "size": 1024,
+   "center": [
+    -78.17762664771283,
+    -1.9158044402812284
+   ],
+   "extentRad": 0.08934621901864542,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 52,
+  "cca3": "EGY",
+  "cca2": "EG",
+  "name": "Égypte",
+  "capital": "Le Caire",
+  "capitals": [
+   "Le Caire"
+  ],
+  "region": "Africa",
+  "subregion": "Northern Africa",
+  "neighbors": [
+   "ISR",
+   "LBY",
+   "PSE",
+   "SDN"
+  ],
+  "areaKm2": 1002870.07,
+  "cap": {
+   "center": [
+    30.932927806639963,
+    26.628726422570818
+   ],
+   "radiusDeg": 7.132982675153869
+  },
+  "beacon": [
+   29.42499172898194,
+   25.988312478138116
+  ],
+  "beaconClearanceKm": 444.078,
+  "flag": "flags/egy.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/egy.png",
+   "size": 1024,
+   "center": [
+    30.932927806639963,
+    26.628726422570818
+   ],
+   "extentRad": 0.18674104975372222,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 53,
+  "cca3": "ERI",
+  "cca2": "ER",
+  "name": "Érythrée",
+  "capital": "Asmara",
+  "capitals": [
+   "Asmara"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "DJI",
+   "ETH",
+   "SDN"
+  ],
+  "areaKm2": 122971.92,
+  "cap": {
+   "center": [
+    40.079584107723164,
+    14.909439853853605
+   ],
+   "radiusDeg": 3.681335594696566
+  },
+  "beacon": [
+   38.07748543819768,
+   15.983556904397744
+  ],
+  "beaconClearanceKm": 124.375,
+  "flag": "flags/eri.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/eri.png",
+   "size": 1024,
+   "center": [
+    40.079584107723164,
+    14.909439853853605
+   ],
+   "extentRad": 0.09637714049747785,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 54,
+  "cca3": "ESP",
+  "cca2": "ES",
+  "name": "Espagne",
+  "capital": "Madrid",
+  "capitals": [
+   "Madrid"
+  ],
+  "region": "Europe",
+  "subregion": "Southern Europe",
+  "neighbors": [
+   "AND",
+   "FRA",
+   "MAR",
+   "PRT"
+  ],
+  "areaKm2": 506327.39,
+  "cap": {
+   "center": [
+    -3.170796619719307,
+    40.740567262549845
+   ],
+   "radiusDeg": 5.106913450475289
+  },
+  "beacon": [
+   -3.6451924269706066,
+   39.40405172656922
+  ],
+  "beaconClearanceKm": 284.755,
+  "flag": "flags/esp.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/esp.png",
+   "size": 1024,
+   "center": [
+    -3.170796619719307,
+    40.740567262549845
+   ],
+   "extentRad": 0.13369868148776723,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 55,
+  "cca3": "EST",
+  "cca2": "EE",
+  "name": "Estonie",
+  "capital": "Tallinn",
+  "capitals": [
+   "Tallinn"
+  ],
+  "region": "Europe",
+  "subregion": "Northern Europe",
+  "neighbors": [
+   "LVA",
+   "RUS"
+  ],
+  "areaKm2": 43248.34,
+  "cap": {
+   "center": [
+    25.928174699594216,
+    58.66566375067806
+   ],
+   "radiusDeg": 1.3772159781025937
+  },
+  "beacon": [
+   25.211737029951827,
+   58.86474075050899
+  ],
+  "beaconClearanceKm": 68.114,
+  "flag": "flags/est.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/est.png",
+   "size": 1024,
+   "center": [
+    25.928174699594216,
+    58.66566375067806
+   ],
+   "extentRad": 0.036055429993446575,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 56,
+  "cca3": "ETH",
+  "cca2": "ET",
+  "name": "Éthiopie",
+  "capital": "Addis-Abeba",
+  "capitals": [
+   "Addis-Abeba"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "DJI",
+   "ERI",
+   "KEN",
+   "SDN",
+   "SOM",
+   "SSD"
+  ],
+  "areaKm2": 1132067.54,
+  "cap": {
+   "center": [
+    40.482859710590105,
+    8.025112787853754
+   ],
+   "radiusDeg": 7.423110015347689
+  },
+  "beacon": [
+   38.4395831432152,
+   8.498069624319827
+  ],
+  "beaconClearanceKm": 457.888,
+  "flag": "flags/eth.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/eth.png",
+   "size": 1024,
+   "center": [
+    40.482859710590105,
+    8.025112787853754
+   ],
+   "extentRad": 0.19433656575837596,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 57,
+  "cca3": "FIN",
+  "cca2": "FI",
+  "name": "Finlande",
+  "capital": "Helsinki",
+  "capitals": [
+   "Helsinki"
+  ],
+  "region": "Europe",
+  "subregion": "Northern Europe",
+  "neighbors": [
+   "NOR",
+   "RUS",
+   "SWE"
+  ],
+  "areaKm2": 330937.5,
+  "cap": {
+   "center": [
+    24.908913625447813,
+    64.9624356464224
+   ],
+   "radiusDeg": 5.234963633738958
+  },
+  "beacon": [
+   26.188365118321776,
+   62.51624818816027
+  ],
+  "beaconClearanceKm": 208.808,
+  "flag": "flags/fin.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/fin.png",
+   "size": 1024,
+   "center": [
+    24.908913625447813,
+    64.9624356464224
+   ],
+   "extentRad": 0.137051027446367,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 58,
+  "cca3": "FJI",
+  "cca2": "FJ",
+  "name": "Fidji",
+  "capital": "Suva",
+  "capitals": [
+   "Suva"
+  ],
+  "region": "Oceania",
+  "subregion": "Melanesia",
+  "neighbors": [],
+  "areaKm2": 18668.56,
+  "cap": {
+   "center": [
+    178.99365421768584,
+    -17.648547737653985
+   ],
+   "radiusDeg": 1.7901772594976952
+  },
+  "beacon": [
+   177.98651984419195,
+   -17.841864346649746
+  ],
+  "beaconClearanceKm": 45.611,
+  "flag": "flags/fji.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/fji.png",
+   "size": 1024,
+   "center": [
+    178.99365421768584,
+    -17.648547737653985
+   ],
+   "extentRad": 0.04686673105884556,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 59,
+  "cca3": "FRA",
+  "cca2": "FR",
+  "name": "France",
+  "capital": "Paris",
+  "capitals": [
+   "Paris"
+  ],
+  "region": "Europe",
+  "subregion": "Western Europe",
+  "neighbors": [
+   "AND",
+   "BEL",
+   "CHE",
+   "DEU",
+   "ESP",
+   "ITA",
+   "LUX",
+   "MCO"
+  ],
+  "areaKm2": 635743.97,
+  "cap": {
+   "center": [
+    1.864664845934693,
+    46.59912566826888
+   ],
+   "radiusDeg": 4.866456269099665
+  },
+  "beacon": [
+   2.431304365737558,
+   47.22696631547001
+  ],
+  "beaconClearanceKm": 288.676,
+  "flag": "flags/fra.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/fra.png",
+   "size": 1024,
+   "center": [
+    1.864664845934693,
+    46.59912566826888
+   ],
+   "extentRad": 0.1274035272001625,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 60,
+  "cca3": "FSM",
+  "cca2": "FM",
+  "name": "Micronésie",
+  "capital": "Palikir",
+  "capitals": [
+   "Palikir"
+  ],
+  "region": "Oceania",
+  "subregion": "Micronesia",
+  "neighbors": [],
+  "areaKm2": 690.91,
+  "cap": {
+   "center": [
+    150.60632648501436,
+    7.5621241016247325
+   ],
+   "radiusDeg": 12.556070055641165
+  },
+  "beacon": [
+   158.22350623765757,
+   6.875882623771748
+  ],
+  "beaconClearanceKm": 7.255,
+  "flag": "flags/fsm.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/fsm.png",
+   "size": 1024,
+   "center": [
+    150.60632648501436,
+    7.5621241016247325
+   ],
+   "extentRad": 0.3287171453730089,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 61,
+  "cca3": "GAB",
+  "cca2": "GA",
+  "name": "Gabon",
+  "capital": "Libreville",
+  "capitals": [
+   "Libreville"
+  ],
+  "region": "Africa",
+  "subregion": "Middle Africa",
+  "neighbors": [
+   "CMR",
+   "COG",
+   "GNQ"
+  ],
+  "areaKm2": 261133.52,
+  "cap": {
+   "center": [
+    11.980258381347573,
+    -0.7634594452887604
+   ],
+   "radiusDeg": 3.2892806618628576
+  },
+  "beacon": [
+   11.428287932997323,
+   -0.6138374230672566
+  ],
+  "beaconClearanceKm": 179.65,
+  "flag": "flags/gab.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/gab.png",
+   "size": 1024,
+   "center": [
+    11.980258381347573,
+    -0.7634594452887604
+   ],
+   "extentRad": 0.0861131663575277,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 62,
+  "cca3": "GBR",
+  "cca2": "GB",
+  "name": "Royaume-Uni",
+  "capital": "Londres",
+  "capitals": [
+   "Londres"
+  ],
+  "region": "Europe",
+  "subregion": "Northern Europe",
+  "neighbors": [
+   "IRL"
+  ],
+  "areaKm2": 242737.45,
+  "cap": {
+   "center": [
+    -3.7391625237974577,
+    54.27395782802306
+   ],
+   "radiusDeg": 4.411422194699946
+  },
+  "beacon": [
+   -1.56376636896313,
+   52.62681784126034
+  ],
+  "beaconClearanceKm": 109.796,
+  "flag": "flags/gbr.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/gbr.png",
+   "size": 1024,
+   "center": [
+    -3.7391625237974577,
+    54.27395782802306
+   ],
+   "extentRad": 0.1154907629896026,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 63,
+  "cca3": "GEO",
+  "cca2": "GE",
+  "name": "Géorgie",
+  "capital": "Tbilissi",
+  "capitals": [
+   "Tbilissi"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "ARM",
+   "AZE",
+   "RUS",
+   "TUR"
+  ],
+  "areaKm2": 69462.18,
+  "cap": {
+   "center": [
+    43.40344726102148,
+    42.3715373498051
+   ],
+   "radiusDeg": 2.7099402466085523
+  },
+  "beacon": [
+   42.64547307170827,
+   42.317288034651874
+  ],
+  "beaconClearanceKm": 81.076,
+  "flag": "flags/geo.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/geo.png",
+   "size": 1024,
+   "center": [
+    43.40344726102148,
+    42.3715373498051
+   ],
+   "extentRad": 0.0709460697534395,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 64,
+  "cca3": "GHA",
+  "cca2": "GH",
+  "name": "Ghana",
+  "capital": "Accra",
+  "capitals": [
+   "Accra"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "BFA",
+   "CIV",
+   "TGO"
+  ],
+  "areaKm2": 239676.43,
+  "cap": {
+   "center": [
+    -1.5074148487364607,
+    8.059359202771532
+   ],
+   "radiusDeg": 3.3724895856393986
+  },
+  "beacon": [
+   -1.2400042414298278,
+   6.982513906216672
+  ],
+  "beaconClearanceKm": 191.46,
+  "flag": "flags/gha.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/gha.png",
+   "size": 1024,
+   "center": [
+    -1.5074148487364607,
+    8.059359202771532
+   ],
+   "extentRad": 0.08829157088794017,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 65,
+  "cca3": "GIN",
+  "cca2": "GN",
+  "name": "Guinée",
+  "capital": "Conakry",
+  "capitals": [
+   "Conakry"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "CIV",
+   "GNB",
+   "LBR",
+   "MLI",
+   "SEN",
+   "SLE"
+  ],
+  "areaKm2": 245290.03,
+  "cap": {
+   "center": [
+    -11.358009145466053,
+    9.646633061810624
+   ],
+   "radiusDeg": 3.8650827630589393
+  },
+  "beacon": [
+   -10.039007337778703,
+   10.698606390688564
+  ],
+  "beaconClearanceKm": 149.431,
+  "flag": "flags/gin.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/gin.png",
+   "size": 1024,
+   "center": [
+    -11.358009145466053,
+    9.646633061810624
+   ],
+   "extentRad": 0.10118763011618752,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 66,
+  "cca3": "GMB",
+  "cca2": "GM",
+  "name": "Gambie",
+  "capital": "Banjul",
+  "capitals": [
+   "Banjul"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "SEN"
+  ],
+  "areaKm2": 10607.92,
+  "cap": {
+   "center": [
+    -15.304524921151069,
+    13.396397507112498
+   ],
+   "radiusDeg": 1.4725246517814774
+  },
+  "beacon": [
+   -15.935985500529096,
+   13.295433807973039
+  ],
+  "beaconClearanceKm": 14.409,
+  "flag": "flags/gmb.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/gmb.png",
+   "size": 1024,
+   "center": [
+    -15.304524921151069,
+    13.396397507112498
+   ],
+   "extentRad": 0.03855060523555465,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 67,
+  "cca3": "GNB",
+  "cca2": "GW",
+  "name": "Guinée-Bissau",
+  "capital": "Bissau",
+  "capitals": [
+   "Bissau"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "GIN",
+   "SEN"
+  ],
+  "areaKm2": 35408.19,
+  "cap": {
+   "center": [
+    -15.169374157599602,
+    12.217736354511125
+   ],
+   "radiusDeg": 1.5178302266505979
+  },
+  "beacon": [
+   -14.970871932973603,
+   12.053942388242923
+  ],
+  "beaconClearanceKm": 69.607,
+  "flag": "flags/gnb.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/gnb.png",
+   "size": 1024,
+   "center": [
+    -15.169374157599602,
+    12.217736354511125
+   ],
+   "extentRad": 0.03973670241201707,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 68,
+  "cca3": "GNQ",
+  "cca2": "GQ",
+  "name": "Guinée équatoriale",
+  "capital": "Ciudad de la Paz",
+  "capitals": [
+   "Ciudad de la Paz"
+  ],
+  "region": "Africa",
+  "subregion": "Middle Africa",
+  "neighbors": [
+   "CMR",
+   "GAB"
+  ],
+  "areaKm2": 27153.55,
+  "cap": {
+   "center": [
+    10.390796625074138,
+    1.592004959091339
+   ],
+   "radiusDeg": 1.1293456105279578
+  },
+  "beacon": [
+   10.465075006549215,
+   1.5880883885283432
+  ],
+  "beaconClearanceKm": 65.145,
+  "flag": "flags/gnq.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/gnq.png",
+   "size": 1024,
+   "center": [
+    10.390796625074138,
+    1.592004959091339
+   ],
+   "extentRad": 0.0295661989449876,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 69,
+  "cca3": "GRC",
+  "cca2": "GR",
+  "name": "Grèce",
+  "capital": "Athènes",
+  "capitals": [
+   "Athènes"
+  ],
+  "region": "Europe",
+  "subregion": "Southern Europe",
+  "neighbors": [
+   "ALB",
+   "BGR",
+   "MKD",
+   "TUR"
+  ],
+  "areaKm2": 131243.85,
+  "cap": {
+   "center": [
+    24.39865083913137,
+    38.381663200877334
+   ],
+   "radiusDeg": 3.659364896745538
+  },
+  "beacon": [
+   21.598568612324026,
+   39.760063812451
+  ],
+  "beaconClearanceKm": 89.187,
+  "flag": "flags/grc.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/grc.png",
+   "size": 1024,
+   "center": [
+    24.39865083913137,
+    38.381663200877334
+   ],
+   "extentRad": 0.09580194897016794,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 70,
+  "cca3": "GRD",
+  "cca2": "GD",
+  "name": "Grenade",
+  "capital": "Saint-Georges",
+  "capitals": [
+   "Saint-Georges"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [],
+  "areaKm2": 351.51,
+  "cap": {
+   "center": [
+    -61.61700025838301,
+    12.264221192137958
+   ],
+   "radiusDeg": 0.3183836066179867
+  },
+  "beacon": [
+   -61.687428125289145,
+   12.08926146523201
+  ],
+  "beaconClearanceKm": 6.716,
+  "flag": "flags/grd.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/grd.png",
+   "size": 1024,
+   "center": [
+    -61.61700025838301,
+    12.264221192137958
+   ],
+   "extentRad": 0.008335263329787413,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 71,
+  "cca3": "GTM",
+  "cca2": "GT",
+  "name": "Guatemala",
+  "capital": "Guatemala",
+  "capitals": [
+   "Guatemala"
+  ],
+  "region": "Americas",
+  "subregion": "Central America",
+  "neighbors": [
+   "BLZ",
+   "HND",
+   "MEX",
+   "SLV"
+  ],
+  "areaKm2": 109192.47,
+  "cap": {
+   "center": [
+    -90.43682430475786,
+    15.94236641268297
+   ],
+   "radiusDeg": 2.2352971096095717
+  },
+  "beacon": [
+   -90.93510832673441,
+   14.990886991086526
+  ],
+  "beaconClearanceKm": 119.992,
+  "flag": "flags/gtm.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/gtm.png",
+   "size": 1024,
+   "center": [
+    -90.43682430475786,
+    15.94236641268297
+   ],
+   "extentRad": 0.058519941484499405,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 72,
+  "cca3": "GUY",
+  "cca2": "GY",
+  "name": "Guyana",
+  "capital": "Georgetown",
+  "capitals": [
+   "Georgetown"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "BRA",
+   "SUR",
+   "VEN"
+  ],
+  "areaKm2": 212139.47,
+  "cap": {
+   "center": [
+    -58.75890298117265,
+    4.9775527122881185
+   ],
+   "radiusDeg": 3.7933983293883267
+  },
+  "beacon": [
+   -58.652905043588234,
+   2.7425850564338967
+  ],
+  "beaconClearanceKm": 132.178,
+  "flag": "flags/guy.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/guy.png",
+   "size": 1024,
+   "center": [
+    -58.75890298117265,
+    4.9775527122881185
+   ],
+   "extentRad": 0.09931093603121802,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 73,
+  "cca3": "HND",
+  "cca2": "HN",
+  "name": "Honduras",
+  "capital": "Tegucigalpa",
+  "capitals": [
+   "Tegucigalpa"
+  ],
+  "region": "Americas",
+  "subregion": "Central America",
+  "neighbors": [
+   "GTM",
+   "NIC",
+   "SLV"
+  ],
+  "areaKm2": 112641.8,
+  "cap": {
+   "center": [
+    -86.25005804717075,
+    14.727031311498642
+   ],
+   "radiusDeg": 3.0275263884965047
+  },
+  "beacon": [
+   -87.14398311056075,
+   14.73345740104187
+  ],
+  "beaconClearanceKm": 116.346,
+  "flag": "flags/hnd.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/hnd.png",
+   "size": 1024,
+   "center": [
+    -86.25005804717075,
+    14.727031311498642
+   ],
+   "extentRad": 0.07926045550541548,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 74,
+  "cca3": "HRV",
+  "cca2": "HR",
+  "name": "Croatie",
+  "capital": "Zagreb",
+  "capitals": [
+   "Zagreb"
+  ],
+  "region": "Europe",
+  "subregion": "Southeast Europe",
+  "neighbors": [
+   "BIH",
+   "HUN",
+   "MNE",
+   "SRB",
+   "SVN"
+  ],
+  "areaKm2": 54899.58,
+  "cap": {
+   "center": [
+    16.41253694651592,
+    44.89814070812471
+   ],
+   "radiusDeg": 2.1378615720521505
+  },
+  "beacon": [
+   16.46711605526645,
+   45.77588156053984
+  ],
+  "beaconClearanceKm": 61.749,
+  "flag": "flags/hrv.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/hrv.png",
+   "size": 1024,
+   "center": [
+    16.41253694651592,
+    44.89814070812471
+   ],
+   "extentRad": 0.055969085076258016,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 75,
+  "cca3": "HTI",
+  "cca2": "HT",
+  "name": "Haïti",
+  "capital": "Port-au-Prince",
+  "capitals": [
+   "Port-au-Prince"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [
+   "DOM"
+  ],
+  "areaKm2": 27002.57,
+  "cap": {
+   "center": [
+    -73.01884012657985,
+    18.86229279253886
+   ],
+   "radiusDeg": 1.4559833214945719
+  },
+  "beacon": [
+   -72.24605195772381,
+   19.243697613298295
+  ],
+  "beaconClearanceKm": 49.271,
+  "flag": "flags/hti.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/hti.png",
+   "size": 1024,
+   "center": [
+    -73.01884012657985,
+    18.86229279253886
+   ],
+   "extentRad": 0.038117554221305104,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 76,
+  "cca3": "HUN",
+  "cca2": "HU",
+  "name": "Hongrie",
+  "capital": "Budapest",
+  "capitals": [
+   "Budapest"
+  ],
+  "region": "Europe",
+  "subregion": "Central Europe",
+  "neighbors": [
+   "AUT",
+   "HRV",
+   "ROU",
+   "SRB",
+   "SVK",
+   "SVN",
+   "UKR"
+  ],
+  "areaKm2": 92946.86,
+  "cap": {
+   "center": [
+    19.44014015473772,
+    47.495237174014584
+   ],
+   "radiusDeg": 2.360707307941117
+  },
+  "beacon": [
+   20.09235162911239,
+   47.144879038464886
+  ],
+  "beaconClearanceKm": 109.808,
+  "flag": "flags/hun.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/hun.png",
+   "size": 1024,
+   "center": [
+    19.44014015473772,
+    47.495237174014584
+   ],
+   "extentRad": 0.061803172799196254,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 77,
+  "cca3": "IDN",
+  "cca2": "ID",
+  "name": "Indonésie",
+  "capital": "Jakarta",
+  "capitals": [
+   "Jakarta"
+  ],
+  "region": "Asia",
+  "subregion": "South-Eastern Asia",
+  "neighbors": [
+   "MYS",
+   "PNG",
+   "TLS"
+  ],
+  "areaKm2": 1888147.57,
+  "cap": {
+   "center": [
+    117.99873106054639,
+    -1.9171860599120822
+   ],
+   "radiusDeg": 23.965474214739174
+  },
+  "beacon": [
+   114.14520118462931,
+   -0.9508772400700781
+  ],
+  "beaconClearanceKm": 249.039,
+  "flag": "flags/idn.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/idn.png",
+   "size": 1024,
+   "center": [
+    117.99873106054639,
+    -1.9171860599120822
+   ],
+   "extentRad": 0.6274146477735018,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 78,
+  "cca3": "IND",
+  "cca2": "IN",
+  "name": "Inde",
+  "capital": "New Delhi",
+  "capitals": [
+   "New Delhi"
+  ],
+  "region": "Asia",
+  "subregion": "Southern Asia",
+  "neighbors": [
+   "BGD",
+   "BTN",
+   "CHN",
+   "MMR",
+   "NPL",
+   "PAK"
+  ],
+  "areaKm2": 3158319.08,
+  "cap": {
+   "center": [
+    82.5426527029457,
+    21.98216998196381
+   ],
+   "radiusDeg": 14.75017916568863
+  },
+  "beacon": [
+   79.42491719823808,
+   22.41140845121313
+  ],
+  "beaconClearanceKm": 652.414,
+  "flag": "flags/ind.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ind.png",
+   "size": 1024,
+   "center": [
+    82.5426527029457,
+    21.98216998196381
+   ],
+   "extentRad": 0.38615878755050526,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 79,
+  "cca3": "IRL",
+  "cca2": "IE",
+  "name": "Irlande",
+  "capital": "Dublin",
+  "capitals": [
+   "Dublin"
+  ],
+  "region": "Europe",
+  "subregion": "Northern Europe",
+  "neighbors": [
+   "GBR"
+  ],
+  "areaKm2": 69160,
+  "cap": {
+   "center": [
+    -8.605218012699549,
+    53.41104788918595
+   ],
+   "radiusDeg": 2.1005402611381414
+  },
+  "beacon": [
+   -7.528444692680254,
+   53.06278956299677
+  ],
+  "beaconClearanceKm": 92.816,
+  "flag": "flags/irl.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/irl.png",
+   "size": 1024,
+   "center": [
+    -8.605218012699549,
+    53.41104788918595
+   ],
+   "extentRad": 0.0549920154413431,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 80,
+  "cca3": "IRN",
+  "cca2": "IR",
+  "name": "Iran",
+  "capital": "Téhéran",
+  "capitals": [
+   "Téhéran"
+  ],
+  "region": "Asia",
+  "subregion": "Southern Asia",
+  "neighbors": [
+   "AFG",
+   "ARM",
+   "AZE",
+   "IRQ",
+   "PAK",
+   "TKM",
+   "TUR"
+  ],
+  "areaKm2": 1623489.09,
+  "cap": {
+   "center": [
+    53.71569782890673,
+    32.771317896311224
+   ],
+   "radiusDeg": 10.240002074914582
+  },
+  "beacon": [
+   55.08335155738547,
+   32.20569267534873
+  ],
+  "beaconClearanceKm": 521.749,
+  "flag": "flags/irn.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/irn.png",
+   "size": 1024,
+   "center": [
+    53.71569782890673,
+    32.771317896311224
+   ],
+   "extentRad": 0.26808262742746575,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 81,
+  "cca3": "IRQ",
+  "cca2": "IQ",
+  "name": "Irak",
+  "capital": "Bagdad",
+  "capitals": [
+   "Bagdad"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "IRN",
+   "JOR",
+   "KWT",
+   "SAU",
+   "SYR",
+   "TUR"
+  ],
+  "areaKm2": 437585.53,
+  "cap": {
+   "center": [
+    44.311265672717774,
+    32.88501168544278
+   ],
+   "radiusDeg": 4.665731901854531
+  },
+  "beacon": [
+   43.02387993739247,
+   33.103870263634064
+  ],
+  "beaconClearanceKm": 238.849,
+  "flag": "flags/irq.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/irq.png",
+   "size": 1024,
+   "center": [
+    44.311265672717774,
+    32.88501168544278
+   ],
+   "extentRad": 0.12214857555404773,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 82,
+  "cca3": "ISL",
+  "cca2": "IS",
+  "name": "Islande",
+  "capital": "Reykjavik",
+  "capitals": [
+   "Reykjavik"
+  ],
+  "region": "Europe",
+  "subregion": "Northern Europe",
+  "neighbors": [],
+  "areaKm2": 101722.38,
+  "cap": {
+   "center": [
+    -18.977008396441757,
+    65.3954842897758
+   ],
+   "radiusDeg": 2.3134616712304563
+  },
+  "beacon": [
+   -18.92780185710661,
+   64.67389172636078
+  ],
+  "beaconClearanceKm": 115.286,
+  "flag": "flags/isl.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/isl.png",
+   "size": 1024,
+   "center": [
+    -18.977008396441757,
+    65.3954842897758
+   ],
+   "extentRad": 0.06056628492249306,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 83,
+  "cca3": "ISR",
+  "cca2": "IL",
+  "name": "Israël",
+  "capital": "Jérusalem",
+  "capitals": [
+   "Jérusalem"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "EGY",
+   "JOR",
+   "LBN",
+   "PSE",
+   "SYR"
+  ],
+  "areaKm2": 22083.18,
+  "cap": {
+   "center": [
+    35.32923189987178,
+    31.414969080627085
+   ],
+   "radiusDeg": 1.9591542818405965
+  },
+  "beacon": [
+   34.873163407693184,
+   30.942686401567414
+  ],
+  "beaconClearanceKm": 44.656,
+  "flag": "flags/isr.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/isr.png",
+   "size": 1024,
+   "center": [
+    35.32923189987178,
+    31.414969080627085
+   ],
+   "extentRad": 0.051290539158995035,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 84,
+  "cca3": "ITA",
+  "cca2": "IT",
+  "name": "Italie",
+  "capital": "Rome",
+  "capitals": [
+   "Rome"
+  ],
+  "region": "Europe",
+  "subregion": "Southern Europe",
+  "neighbors": [
+   "AUT",
+   "CHE",
+   "FRA",
+   "SMR",
+   "SVN",
+   "VAT"
+  ],
+  "areaKm2": 300678.56,
+  "cap": {
+   "center": [
+    11.69432822471848,
+    41.53954981335412
+   ],
+   "radiusDeg": 5.55658328502242
+  },
+  "beacon": [
+   10.54946279883768,
+   45.13059681821361
+  ],
+  "beaconClearanceKm": 126.609,
+  "flag": "flags/ita.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ita.png",
+   "size": 1024,
+   "center": [
+    11.69432822471848,
+    41.53954981335412
+   ],
+   "extentRad": 0.14547101022738562,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 85,
+  "cca3": "JAM",
+  "cca2": "JM",
+  "name": "Jamaïque",
+  "capital": "Kingston",
+  "capitals": [
+   "Kingston"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [],
+  "areaKm2": 11090.89,
+  "cap": {
+   "center": [
+    -77.27509843589365,
+    18.095750827854545
+   ],
+   "radiusDeg": 1.0531841064694352
+  },
+  "beacon": [
+   -77.55591148528823,
+   18.172632789834285
+  ],
+  "beaconClearanceKm": 34.598,
+  "flag": "flags/jam.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/jam.png",
+   "size": 1024,
+   "center": [
+    -77.27509843589365,
+    18.095750827854545
+   ],
+   "extentRad": 0.027572295431349234,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 86,
+  "cca3": "JOR",
+  "cca2": "JO",
+  "name": "Jordanie",
+  "capital": "Amman",
+  "capitals": [
+   "Amman"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "IRQ",
+   "ISR",
+   "PSE",
+   "SAU",
+   "SYR"
+  ],
+  "areaKm2": 88940.95,
+  "cap": {
+   "center": [
+    36.82071100592712,
+    31.3759976669878
+   ],
+   "radiusDeg": 2.5894014346177783
+  },
+  "beacon": [
+   36.38450395842955,
+   30.702778003291968
+  ],
+  "beaconClearanceKm": 99.708,
+  "flag": "flags/jor.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/jor.png",
+   "size": 1024,
+   "center": [
+    36.82071100592712,
+    31.3759976669878
+   ],
+   "extentRad": 0.06779037103491735,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 87,
+  "cca3": "JPN",
+  "cca2": "JP",
+  "name": "Japon",
+  "capital": "Tokyo",
+  "capitals": [
+   "Tokyo"
+  ],
+  "region": "Asia",
+  "subregion": "Eastern Asia",
+  "neighbors": [],
+  "areaKm2": 373333.07,
+  "cap": {
+   "center": [
+    137.09951496726,
+    38.04343908974885
+   ],
+   "radiusDeg": 8.837937241013543
+  },
+  "beacon": [
+   138.57577250648256,
+   36.175326911163104
+  ],
+  "beaconClearanceKm": 115.306,
+  "flag": "flags/jpn.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/jpn.png",
+   "size": 1024,
+   "center": [
+    137.09951496726,
+    38.04343908974885
+   ],
+   "extentRad": 0.23137665591046494,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 88,
+  "cca3": "KAZ",
+  "cca2": "KZ",
+  "name": "Kazakhstan",
+  "capital": "Astana",
+  "capitals": [
+   "Astana"
+  ],
+  "region": "Asia",
+  "subregion": "Central Asia",
+  "neighbors": [
+   "CHN",
+   "KGZ",
+   "RUS",
+   "TKM",
+   "UZB"
+  ],
+  "areaKm2": 2712839.71,
+  "cap": {
+   "center": [
+    66.75762983710602,
+    50.581618331216454
+   ],
+   "radiusDeg": 13.306085510276603
+  },
+  "beacon": [
+   71.20980863122873,
+   48.23724487684713
+  ],
+  "beaconClearanceKm": 597.873,
+  "flag": "flags/kaz.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/kaz.png",
+   "size": 1024,
+   "center": [
+    66.75762983710602,
+    50.581618331216454
+   ],
+   "extentRad": 0.34835250405935475,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 89,
+  "cca3": "KEN",
+  "cca2": "KE",
+  "name": "Kenya",
+  "capital": "Nairobi",
+  "capitals": [
+   "Nairobi"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "ETH",
+   "SOM",
+   "SSD",
+   "TZA",
+   "UGA"
+  ],
+  "areaKm2": 588320.24,
+  "cap": {
+   "center": [
+    37.808776002791454,
+    0.491550066817864
+   ],
+   "radiusDeg": 5.363328191092276
+  },
+  "beacon": [
+   37.84401334095891,
+   0.4212410697129312
+  ],
+  "beaconClearanceKm": 347.417,
+  "flag": "flags/ken.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ken.png",
+   "size": 1024,
+   "center": [
+    37.808776002791454,
+    0.491550066817864
+   ],
+   "extentRad": 0.14041160369938777,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 90,
+  "cca3": "KGZ",
+  "cca2": "KG",
+  "name": "Kirghizistan",
+  "capital": "Bichkek",
+  "capitals": [
+   "Bichkek"
+  ],
+  "region": "Asia",
+  "subregion": "Central Asia",
+  "neighbors": [
+   "CHN",
+   "KAZ",
+   "TJK",
+   "UZB"
+  ],
+  "areaKm2": 198713.03,
+  "cap": {
+   "center": [
+    74.66518066683393,
+    40.94218568319888
+   ],
+   "radiusDeg": 4.338881879943538
+  },
+  "beacon": [
+   74.79070782356618,
+   41.698520689497236
+  ],
+  "beaconClearanceKm": 131.919,
+  "flag": "flags/kgz.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/kgz.png",
+   "size": 1024,
+   "center": [
+    74.66518066683393,
+    40.94218568319888
+   ],
+   "extentRad": 0.11359166199020407,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 91,
+  "cca3": "KHM",
+  "cca2": "KH",
+  "name": "Cambodge",
+  "capital": "Phnom Penh",
+  "capitals": [
+   "Phnom Penh"
+  ],
+  "region": "Asia",
+  "subregion": "South-Eastern Asia",
+  "neighbors": [
+   "LAO",
+   "THA",
+   "VNM"
+  ],
+  "areaKm2": 181754.11,
+  "cap": {
+   "center": [
+    105.19757287473239,
+    12.920518161866404
+   ],
+   "radiusDeg": 2.8758146740968655
+  },
+  "beacon": [
+   104.48383561385133,
+   12.655397238414844
+  ],
+  "beaconClearanceKm": 183.719,
+  "flag": "flags/khm.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/khm.png",
+   "size": 1024,
+   "center": [
+    105.19757287473239,
+    12.920518161866404
+   ],
+   "extentRad": 0.07528865211023698,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 92,
+  "cca3": "KIR",
+  "cca2": "KI",
+  "name": "Kiribati",
+  "capital": "Tarawa-Sud",
+  "capitals": [
+   "Tarawa-Sud"
+  ],
+  "region": "Oceania",
+  "subregion": "Micronesia",
+  "neighbors": [],
+  "areaKm2": 891.79,
+  "cap": {
+   "center": [
+    -158.26369306342127,
+    2.780434893581515
+   ],
+   "radiusDeg": 1.5380312862860328
+  },
+  "beacon": [
+   -157.40865106920418,
+   1.8505734907243752
+  ],
+  "beaconClearanceKm": 7.375,
+  "flag": "flags/kir.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/kir.png",
+   "size": 1024,
+   "center": [
+    -158.26369306342127,
+    2.780434893581515
+   ],
+   "extentRad": 0.04026556491656216,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 93,
+  "cca3": "KNA",
+  "cca2": "KN",
+  "name": "Saint-Christophe-et-Niévès",
+  "capital": "Basseterre",
+  "capitals": [
+   "Basseterre"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [],
+  "areaKm2": 263.58,
+  "cap": {
+   "center": [
+    -62.69967323777921,
+    17.258257538257954
+   ],
+   "radiusDeg": 0.20541838548661095
+  },
+  "beacon": [
+   -62.80251350832092,
+   17.366172254616824
+  ],
+  "beaconClearanceKm": 4.546,
+  "flag": "flags/kna.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/kna.png",
+   "size": 1024,
+   "center": [
+    -62.69967323777921,
+    17.258257538257954
+   ],
+   "extentRad": 0.005377840756308443,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 94,
+  "cca3": "KOR",
+  "cca2": "KR",
+  "name": "Corée du Sud",
+  "capital": "Séoul",
+  "capitals": [
+   "Séoul"
+  ],
+  "region": "Asia",
+  "subregion": "Eastern Asia",
+  "neighbors": [
+   "PRK"
+  ],
+  "areaKm2": 98521.56,
+  "cap": {
+   "center": [
+    127.41719902752355,
+    36.46247840065997
+   ],
+   "radiusDeg": 2.2886884460435817
+  },
+  "beacon": [
+   128.09814037764602,
+   36.376912881933386
+  ],
+  "beaconClearanceKm": 115.545,
+  "flag": "flags/kor.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/kor.png",
+   "size": 1024,
+   "center": [
+    127.41719902752355,
+    36.46247840065997
+   ],
+   "extentRad": 0.05991772340371963,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 95,
+  "cca3": "KWT",
+  "cca2": "KW",
+  "name": "Koweït",
+  "capital": "Koweït",
+  "capitals": [
+   "Koweït"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "IRQ",
+   "SAU"
+  ],
+  "areaKm2": 17236.15,
+  "cap": {
+   "center": [
+    47.635205973474214,
+    29.179447832312892
+   ],
+   "radiusDeg": 0.9521816324225036
+  },
+  "beacon": [
+   47.48988890864846,
+   29.72650192747222
+  ],
+  "beaconClearanceKm": 41.778,
+  "flag": "flags/kwt.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/kwt.png",
+   "size": 1024,
+   "center": [
+    47.635205973474214,
+    29.179447832312892
+   ],
+   "extentRad": 0.02492805684418062,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 96,
+  "cca3": "LAO",
+  "cca2": "LA",
+  "name": "Laos",
+  "capital": "Vientiane",
+  "capitals": [
+   "Vientiane"
+  ],
+  "region": "Asia",
+  "subregion": "South-Eastern Asia",
+  "neighbors": [
+   "CHN",
+   "KHM",
+   "MMR",
+   "THA",
+   "VNM"
+  ],
+  "areaKm2": 228826.99,
+  "cap": {
+   "center": [
+    104.57385476999167,
+    18.501176577581
+   ],
+   "radiusDeg": 4.808310728224254
+  },
+  "beacon": [
+   102.58210778089918,
+   19.70298252967279
+  ],
+  "beaconClearanceKm": 140.096,
+  "flag": "flags/lao.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/lao.png",
+   "size": 1024,
+   "center": [
+    104.57385476999167,
+    18.501176577581
+   ],
+   "extentRad": 0.12588128049971922,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 97,
+  "cca3": "LBN",
+  "cca2": "LB",
+  "name": "Liban",
+  "capital": "Beyrouth",
+  "capitals": [
+   "Beyrouth"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "ISR",
+   "SYR"
+  ],
+  "areaKm2": 10179.14,
+  "cap": {
+   "center": [
+    35.77777872219965,
+    33.867768204082005
+   ],
+   "radiusDeg": 0.9561798968506409
+  },
+  "beacon": [
+   36.04268981798119,
+   34.16835985760888
+  ],
+  "beaconClearanceKm": 33.83,
+  "flag": "flags/lbn.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/lbn.png",
+   "size": 1024,
+   "center": [
+    35.77777872219965,
+    33.867768204082005
+   ],
+   "extentRad": 0.025032731162135162,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 98,
+  "cca3": "LBR",
+  "cca2": "LR",
+  "name": "Liberia",
+  "capital": "Monrovia",
+  "capitals": [
+   "Monrovia"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "CIV",
+   "GIN",
+   "SLE"
+  ],
+  "areaKm2": 95709.57,
+  "cap": {
+   "center": [
+    -9.052740444387911,
+    6.325565396605572
+   ],
+   "radiusDeg": 2.481525152037166
+  },
+  "beacon": [
+   -10.23108946759673,
+   7.026072570536588
+  ],
+  "beaconClearanceKm": 90.477,
+  "flag": "flags/lbr.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/lbr.png",
+   "size": 1024,
+   "center": [
+    -9.052740444387911,
+    6.325565396605572
+   ],
+   "extentRad": 0.06496617656115213,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 99,
+  "cca3": "LBY",
+  "cca2": "LY",
+  "name": "Libye",
+  "capital": "Tripoli",
+  "capitals": [
+   "Tripoli"
+  ],
+  "region": "Africa",
+  "subregion": "Northern Africa",
+  "neighbors": [
+   "DZA",
+   "EGY",
+   "NER",
+   "SDN",
+   "TCD",
+   "TUN"
+  ],
+  "areaKm2": 1626533.4,
+  "cap": {
+   "center": [
+    18.632207308744075,
+    26.748106061380934
+   ],
+   "radiusDeg": 8.913122203261466
+  },
+  "beacon": [
+   20.26719750861055,
+   26.141481225578474
+  ],
+  "beaconClearanceKm": 470.477,
+  "flag": "flags/lby.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/lby.png",
+   "size": 1024,
+   "center": [
+    18.632207308744075,
+    26.748106061380934
+   ],
+   "extentRad": 0.23334499361928576,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 100,
+  "cca3": "LCA",
+  "cca2": "LC",
+  "name": "Sainte-Lucie",
+  "capital": "Castries",
+  "capitals": [
+   "Castries"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [],
+  "areaKm2": 612.08,
+  "cap": {
+   "center": [
+    -60.946341700433095,
+    13.908627124781006
+   ],
+   "radiusDeg": 0.20093899004401752
+  },
+  "beacon": [
+   -60.98174815428717,
+   13.883730921069898
+  ],
+  "beaconClearanceKm": 9.243,
+  "flag": "flags/lca.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/lca.png",
+   "size": 1024,
+   "center": [
+    -60.946341700433095,
+    13.908627124781006
+   ],
+   "extentRad": 0.0052605704578503176,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 101,
+  "cca3": "LIE",
+  "cca2": "LI",
+  "name": "Liechtenstein",
+  "capital": "Vaduz",
+  "capitals": [
+   "Vaduz"
+  ],
+  "region": "Europe",
+  "subregion": "Western Europe",
+  "neighbors": [
+   "AUT",
+   "CHE"
+  ],
+  "areaKm2": 160.08,
+  "cap": {
+   "center": [
+    9.525095161709501,
+    47.15823733897217
+   ],
+   "radiusDeg": 0.11245398499594404
+  },
+  "beacon": [
+   9.569465920299816,
+   47.121745883885374
+  ],
+  "beaconClearanceKm": 4.082,
+  "flag": "flags/lie.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/lie.png",
+   "size": 1024,
+   "center": [
+    9.525095161709501,
+    47.15823733897217
+   ],
+   "extentRad": 0.0029440384427512883,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 102,
+  "cca3": "LKA",
+  "cca2": "LK",
+  "name": "Sri Lanka",
+  "capital": "Sri Jayawardenapura",
+  "capitals": [
+   "Colombo",
+   "Sri Jayawardenapura"
+  ],
+  "region": "Asia",
+  "subregion": "Southern Asia",
+  "neighbors": [
+   "IND"
+  ],
+  "areaKm2": 66573.03,
+  "cap": {
+   "center": [
+    80.29527604378313,
+    7.873419741585402
+   ],
+   "radiusDeg": 1.9729529327271527
+  },
+  "beacon": [
+   80.84434803587607,
+   7.095871215356743
+  ],
+  "beaconClearanceKm": 108.505,
+  "flag": "flags/lka.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/lka.png",
+   "size": 1024,
+   "center": [
+    80.29527604378313,
+    7.873419741585402
+   ],
+   "extentRad": 0.0516517869944505,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 103,
+  "cca3": "LSO",
+  "cca2": "LS",
+  "name": "Lesotho",
+  "capital": "Maseru",
+  "capitals": [
+   "Maseru"
+  ],
+  "region": "Africa",
+  "subregion": "Southern Africa",
+  "neighbors": [
+   "ZAF"
+  ],
+  "areaKm2": 30586.36,
+  "cap": {
+   "center": [
+    28.246544063621677,
+    -29.603456880216203
+   ],
+   "radiusDeg": 1.0919376751460939
+  },
+  "beacon": [
+   28.430279242646908,
+   -29.454618313157603
+  ],
+  "beaconClearanceKm": 74.962,
+  "flag": "flags/lso.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/lso.png",
+   "size": 1024,
+   "center": [
+    28.246544063621677,
+    -29.603456880216203
+   ],
+   "extentRad": 0.028586861486807388,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 104,
+  "cca3": "LTU",
+  "cca2": "LT",
+  "name": "Lituanie",
+  "capital": "Vilnius",
+  "capitals": [
+   "Vilnius"
+  ],
+  "region": "Europe",
+  "subregion": "Northern Europe",
+  "neighbors": [
+   "BLR",
+   "LVA",
+   "POL",
+   "RUS"
+  ],
+  "areaKm2": 64641.7,
+  "cap": {
+   "center": [
+    23.837299867303983,
+    55.4334587399854
+   ],
+   "radiusDeg": 1.6922065798505423
+  },
+  "beacon": [
+   24.309194652189476,
+   55.31068156026321
+  ],
+  "beaconClearanceKm": 105.813,
+  "flag": "flags/ltu.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ltu.png",
+   "size": 1024,
+   "center": [
+    23.837299867303983,
+    55.4334587399854
+   ],
+   "extentRad": 0.044301864663456446,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 105,
+  "cca3": "LUX",
+  "cca2": "LU",
+  "name": "Luxembourg",
+  "capital": "Luxembourg",
+  "capitals": [
+   "Luxembourg"
+  ],
+  "region": "Europe",
+  "subregion": "Western Europe",
+  "neighbors": [
+   "BEL",
+   "DEU",
+   "FRA"
+  ],
+  "areaKm2": 2584.35,
+  "cap": {
+   "center": [
+    6.156634429831755,
+    49.81438955011947
+   ],
+   "radiusDeg": 0.3805283237250825
+  },
+  "beacon": [
+   6.1677169302041515,
+   49.69981848604381
+  ],
+  "beaconClearanceKm": 18.955,
+  "flag": "flags/lux.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/lux.png",
+   "size": 1024,
+   "center": [
+    6.156634429831755,
+    49.81438955011947
+   ],
+   "extentRad": 0.009962208219146314,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 106,
+  "cca3": "LVA",
+  "cca2": "LV",
+  "name": "Lettonie",
+  "capital": "Riga",
+  "capitals": [
+   "Riga"
+  ],
+  "region": "Europe",
+  "subregion": "Northern Europe",
+  "neighbors": [
+   "BLR",
+   "EST",
+   "LTU",
+   "RUS"
+  ],
+  "areaKm2": 64259.13,
+  "cap": {
+   "center": [
+    24.59139434716731,
+    56.348430047350476
+   ],
+   "radiusDeg": 2.0125623606362013
+  },
+  "beacon": [
+   26.28859813798913,
+   56.78949064812474
+  ],
+  "beaconClearanceKm": 81.762,
+  "flag": "flags/lva.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/lva.png",
+   "size": 1024,
+   "center": [
+    24.59139434716731,
+    56.348430047350476
+   ],
+   "extentRad": 0.05268875939221686,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 107,
+  "cca3": "MAR",
+  "cca2": "MA",
+  "name": "Maroc",
+  "capital": "Rabat",
+  "capitals": [
+   "Rabat"
+  ],
+  "region": "Africa",
+  "subregion": "Northern Africa",
+  "neighbors": [
+   "DZA",
+   "ESP"
+  ],
+  "areaKm2": 592431.38,
+  "cap": {
+   "center": [
+    -9.869157389055504,
+    28.29211144688625
+   ],
+   "radiusDeg": 9.4424550499051
+  },
+  "beacon": [
+   -6.647606554270515,
+   31.661719198066766
+  ],
+  "beaconClearanceKm": 234.203,
+  "flag": "flags/mar.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/mar.png",
+   "size": 1024,
+   "center": [
+    -9.869157389055504,
+    28.29211144688625
+   ],
+   "extentRad": 0.24720289513861418,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 108,
+  "cca3": "MCO",
+  "cca2": "MC",
+  "name": "Monaco",
+  "capital": "Monaco",
+  "capitals": [
+   "Monaco"
+  ],
+  "region": "Europe",
+  "subregion": "Western Europe",
+  "neighbors": [
+   "FRA"
+  ],
+  "areaKm2": 2.03,
+  "cap": {
+   "center": [
+    7.425523760719642,
+    43.73925225110302
+   ],
+   "radiusDeg": 0.015350918298326117
+  },
+  "beacon": [
+   7.418058244314052,
+   43.73405205471368
+  ],
+  "beaconClearanceKm": 0.349,
+  "flag": "flags/mco.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/mco.png",
+   "size": 1024,
+   "center": [
+    7.425523760719642,
+    43.73925225110302
+   ],
+   "extentRad": 0.0004018861012656538,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 109,
+  "cca3": "MDA",
+  "cca2": "MD",
+  "name": "Moldavie",
+  "capital": "Chișinău",
+  "capitals": [
+   "Chișinău"
+  ],
+  "region": "Europe",
+  "subregion": "Eastern Europe",
+  "neighbors": [
+   "ROU",
+   "UKR"
+  ],
+  "areaKm2": 33902.67,
+  "cap": {
+   "center": [
+    28.00384881052783,
+    47.05815216235647
+   ],
+   "radiusDeg": 1.6074131442133512
+  },
+  "beacon": [
+   28.377302999904686,
+   47.55477219660782
+  ],
+  "beaconClearanceKm": 56.941,
+  "flag": "flags/mda.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/mda.png",
+   "size": 1024,
+   "center": [
+    28.00384881052783,
+    47.05815216235647
+   ],
+   "extentRad": 0.042081977709536124,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 110,
+  "cca3": "MDG",
+  "cca2": "MG",
+  "name": "Madagascar",
+  "capital": "Antananarivo",
+  "capitals": [
+   "Antananarivo"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [],
+  "areaKm2": 594755.33,
+  "cap": {
+   "center": [
+    47.29586499055422,
+    -18.781874759288236
+   ],
+   "radiusDeg": 7.09798837553391
+  },
+  "beacon": [
+   46.70339814046088,
+   -18.31935988476471
+  ],
+  "beaconClearanceKm": 263.421,
+  "flag": "flags/mdg.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/mdg.png",
+   "size": 1024,
+   "center": [
+    47.29586499055422,
+    -18.781874759288236
+   ],
+   "extentRad": 0.18582490113202565,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 111,
+  "cca3": "MDV",
+  "cca2": "MV",
+  "name": "Maldives",
+  "capital": "Malé",
+  "capitals": [
+   "Malé"
+  ],
+  "region": "Asia",
+  "subregion": "Southern Asia",
+  "neighbors": [],
+  "areaKm2": 196.45,
+  "cap": {
+   "center": [
+    73.0281286180339,
+    3.2018613312509183
+   ],
+   "radiusDeg": 3.9070450996986676
+  },
+  "beacon": [
+   73.54575972559901,
+   1.9288541869555063
+  ],
+  "beaconClearanceKm": 0.713,
+  "flag": "flags/mdv.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/mdv.png",
+   "size": 1024,
+   "center": [
+    73.0281286180339,
+    3.2018613312509183
+   ],
+   "extentRad": 0.1022862015204778,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 112,
+  "cca3": "MEX",
+  "cca2": "MX",
+  "name": "Mexique",
+  "capital": "Mexico",
+  "capitals": [
+   "Mexico"
+  ],
+  "region": "Americas",
+  "subregion": "North America",
+  "neighbors": [
+   "BLZ",
+   "GTM",
+   "USA"
+  ],
+  "areaKm2": 1962244.66,
+  "cap": {
+   "center": [
+    -101.5935341769785,
+    26.09596976634459
+   ],
+   "radiusDeg": 14.97260123368524
+  },
+  "beacon": [
+   -101.88112530411715,
+   23.684561299211786
+  ],
+  "beaconClearanceKm": 413.303,
+  "flag": "flags/mex.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/mex.png",
+   "size": 1024,
+   "center": [
+    -101.5935341769785,
+    26.09596976634459
+   ],
+   "extentRad": 0.3919817836739585,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 113,
+  "cca3": "MHL",
+  "cca2": "MH",
+  "name": "Îles Marshall",
+  "capital": "Majuro",
+  "capitals": [
+   "Majuro"
+  ],
+  "region": "Oceania",
+  "subregion": "Micronesia",
+  "neighbors": [],
+  "areaKm2": 125.94,
+  "cap": {
+   "center": [
+    167.59260509342067,
+    9.189444449980709
+   ],
+   "radiusDeg": 5.619222213809785
+  },
+  "beacon": [
+   171.94319875816515,
+   6.037892204284203
+  ],
+  "beaconClearanceKm": 0.188,
+  "flag": "flags/mhl.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/mhl.png",
+   "size": 1024,
+   "center": [
+    167.59260509342067,
+    9.189444449980709
+   ],
+   "extentRad": 0.14711089354827828,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 114,
+  "cca3": "MKD",
+  "cca2": "MK",
+  "name": "Macédoine du Nord",
+  "capital": "Skopje",
+  "capitals": [
+   "Skopje"
+  ],
+  "region": "Europe",
+  "subregion": "Southeast Europe",
+  "neighbors": [
+   "ALB",
+   "BGR",
+   "GRC",
+   "SRB",
+   "UNK"
+  ],
+  "areaKm2": 24923.31,
+  "cap": {
+   "center": [
+    21.757097123175683,
+    41.5108014938232
+   ],
+   "radiusDeg": 0.9772056981512754
+  },
+  "beacon": [
+   21.385503246771705,
+   41.51772376775355
+  ],
+  "beaconClearanceKm": 64.715,
+  "flag": "flags/mkd.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/mkd.png",
+   "size": 1024,
+   "center": [
+    21.757097123175683,
+    41.5108014938232
+   ],
+   "extentRad": 0.02558318535298443,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 115,
+  "cca3": "MLI",
+  "cca2": "ML",
+  "name": "Mali",
+  "capital": "Bamako",
+  "capitals": [
+   "Bamako"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "BFA",
+   "CIV",
+   "DZA",
+   "GIN",
+   "MRT",
+   "NER",
+   "SEN"
+  ],
+  "areaKm2": 1256813.45,
+  "cap": {
+   "center": [
+    -4.287836937329605,
+    16.86371030349744
+   ],
+   "radiusDeg": 8.413177678151987
+  },
+  "beacon": [
+   -1.9629181858862907,
+   18.545723857820704
+  ],
+  "beaconClearanceKm": 407.473,
+  "flag": "flags/mli.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/mli.png",
+   "size": 1024,
+   "center": [
+    -4.287836937329605,
+    16.86371030349744
+   ],
+   "extentRad": 0.22025647655856595,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 116,
+  "cca3": "MLT",
+  "cca2": "MT",
+  "name": "Malte",
+  "capital": "La Valette",
+  "capitals": [
+   "La Valette"
+  ],
+  "region": "Europe",
+  "subregion": "Southern Europe",
+  "neighbors": [],
+  "areaKm2": 320.74,
+  "cap": {
+   "center": [
+    14.373893830638908,
+    35.946931778837516
+   ],
+   "radiusDeg": 0.19793063865899954
+  },
+  "beacon": [
+   14.42417913957605,
+   35.89196614584018
+  ],
+  "beaconClearanceKm": 5.967,
+  "flag": "flags/mlt.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/mlt.png",
+   "size": 1024,
+   "center": [
+    14.373893830638908,
+    35.946931778837516
+   ],
+   "extentRad": 0.0051818120027620745,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 117,
+  "cca3": "MMR",
+  "cca2": "MM",
+  "name": "Birmanie",
+  "capital": "Naypyidaw",
+  "capitals": [
+   "Naypyidaw"
+  ],
+  "region": "Asia",
+  "subregion": "South-Eastern Asia",
+  "neighbors": [
+   "BGD",
+   "CHN",
+   "IND",
+   "LAO",
+   "THA"
+  ],
+  "areaKm2": 664957.06,
+  "cap": {
+   "center": [
+    98.07245550360376,
+    19.263581282018002
+   ],
+   "radiusDeg": 9.287311086393014
+  },
+  "beacon": [
+   95.97461381293441,
+   21.656689834436257
+  ],
+  "beaconClearanceKm": 296.527,
+  "flag": "flags/mmr.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/mmr.png",
+   "size": 1024,
+   "center": [
+    98.07245550360376,
+    19.263581282018002
+   ],
+   "extentRad": 0.24314123567179446,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 118,
+  "cca3": "MNE",
+  "cca2": "ME",
+  "name": "Monténégro",
+  "capital": "Podgorica",
+  "capitals": [
+   "Podgorica"
+  ],
+  "region": "Europe",
+  "subregion": "Southeast Europe",
+  "neighbors": [
+   "ALB",
+   "BIH",
+   "HRV",
+   "SRB",
+   "UNK"
+  ],
+  "areaKm2": 13862.38,
+  "cap": {
+   "center": [
+    19.199548663269297,
+    42.70369321751371
+   ],
+   "radiusDeg": 0.8670489854379707
+  },
+  "beacon": [
+   19.17290656196831,
+   42.84808243606766
+  ],
+  "beaconClearanceKm": 46.703,
+  "flag": "flags/mne.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/mne.png",
+   "size": 1024,
+   "center": [
+    19.199548663269297,
+    42.70369321751371
+   ],
+   "extentRad": 0.022699289357953435,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 119,
+  "cca3": "MNG",
+  "cca2": "MN",
+  "name": "Mongolie",
+  "capital": "Oulan-Bator",
+  "capitals": [
+   "Oulan-Bator"
+  ],
+  "region": "Asia",
+  "subregion": "Eastern Asia",
+  "neighbors": [
+   "CHN",
+   "RUS"
+  ],
+  "areaKm2": 1560538.39,
+  "cap": {
+   "center": [
+    104.16386635232911,
+    48.92421958814224
+   ],
+   "radiusDeg": 10.778462269370277
+  },
+  "beacon": [
+   104.5226327254497,
+   46.05572106708586
+  ],
+  "beaconClearanceKm": 455.712,
+  "flag": "flags/mng.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/mng.png",
+   "size": 1024,
+   "center": [
+    104.16386635232911,
+    48.92421958814224
+   ],
+   "extentRad": 0.2821794823537369,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 120,
+  "cca3": "MOZ",
+  "cca2": "MZ",
+  "name": "Mozambique",
+  "capital": "Maputo",
+  "capitals": [
+   "Maputo"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "MWI",
+   "SWZ",
+   "TZA",
+   "ZAF",
+   "ZMB",
+   "ZWE"
+  ],
+  "areaKm2": 791023,
+  "cap": {
+   "center": [
+    36.5160198395429,
+    -18.704888288578644
+   ],
+   "radiusDeg": 9.089118607468503
+  },
+  "beacon": [
+   38.14499218154241,
+   -13.955980158481056
+  ],
+  "beaconClearanceKm": 259.378,
+  "flag": "flags/moz.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/moz.png",
+   "size": 1024,
+   "center": [
+    36.5160198395429,
+    -18.704888288578644
+   ],
+   "extentRad": 0.23795256870691114,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 121,
+  "cca3": "MRT",
+  "cca2": "MR",
+  "name": "Mauritanie",
+  "capital": "Nouakchott",
+  "capitals": [
+   "Nouakchott"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "DZA",
+   "MLI",
+   "SEN"
+  ],
+  "areaKm2": 1039356.78,
+  "cap": {
+   "center": [
+    -10.858513587030716,
+    20.499165661505923
+   ],
+   "radiusDeg": 7.154015494024065
+  },
+  "beacon": [
+   -9.80271984314006,
+   19.304671649836767
+  ],
+  "beaconClearanceKm": 403.845,
+  "flag": "flags/mrt.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/mrt.png",
+   "size": 1024,
+   "center": [
+    -10.858513587030716,
+    20.499165661505923
+   ],
+   "extentRad": 0.18729168766411297,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 122,
+  "cca3": "MUS",
+  "cca2": "MU",
+  "name": "Île Maurice",
+  "capital": "Port-Louis",
+  "capitals": [
+   "Port-Louis"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [],
+  "areaKm2": 2003.7,
+  "cap": {
+   "center": [
+    57.501701639118565,
+    -20.242189151967313
+   ],
+   "radiusDeg": 0.28882032619565845
+  },
+  "beacon": [
+   57.54549769676122,
+   -20.315238906965423
+  ],
+  "beaconClearanceKm": 17.379,
+  "flag": "flags/mus.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/mus.png",
+   "size": 1024,
+   "center": [
+    57.501701639118565,
+    -20.242189151967313
+   ],
+   "extentRad": 0.007561298458197403,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 123,
+  "cca3": "MWI",
+  "cca2": "MW",
+  "name": "Malawi",
+  "capital": "Lilongwe",
+  "capitals": [
+   "Lilongwe"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "MOZ",
+   "TZA",
+   "ZMB"
+  ],
+  "areaKm2": 119848.58,
+  "cap": {
+   "center": [
+    34.10495501108754,
+    -13.2582067113082
+   ],
+   "radiusDeg": 4.036980132415512
+  },
+  "beacon": [
+   33.75755968201154,
+   -13.431365361773862
+  ],
+  "beaconClearanceKm": 86.023,
+  "flag": "flags/mwi.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/mwi.png",
+   "size": 1024,
+   "center": [
+    34.10495501108754,
+    -13.2582067113082
+   ],
+   "extentRad": 0.10568789272237103,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 124,
+  "cca3": "MYS",
+  "cca2": "MY",
+  "name": "Malaisie",
+  "capital": "Kuala Lumpur",
+  "capitals": [
+   "Kuala Lumpur",
+   "Putrajaya"
+  ],
+  "region": "Asia",
+  "subregion": "South-Eastern Asia",
+  "neighbors": [
+   "BRN",
+   "IDN",
+   "THA"
+  ],
+  "areaKm2": 329335.09,
+  "cap": {
+   "center": [
+    109.70921928077856,
+    5.915951656982227
+   ],
+   "radiusDeg": 9.540627551873927
+  },
+  "beacon": [
+   113.76462086413507,
+   2.462219501940322
+  ],
+  "beaconClearanceKm": 114.526,
+  "flag": "flags/mys.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/mys.png",
+   "size": 1024,
+   "center": [
+    109.70921928077856,
+    5.915951656982227
+   ],
+   "extentRad": 0.24977304523002916,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 125,
+  "cca3": "NAM",
+  "cca2": "NA",
+  "name": "Namibie",
+  "capital": "Windhoek",
+  "capitals": [
+   "Windhoek"
+  ],
+  "region": "Africa",
+  "subregion": "Southern Africa",
+  "neighbors": [
+   "AGO",
+   "BWA",
+   "ZAF",
+   "ZMB"
+  ],
+  "areaKm2": 824823.5,
+  "cap": {
+   "center": [
+    18.331253542393252,
+    -21.49059461429428
+   ],
+   "radiusDeg": 7.503121858807344
+  },
+  "beacon": [
+   17.0924578929486,
+   -20.479298627403704
+  ],
+  "beaconClearanceKm": 343.641,
+  "flag": "flags/nam.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/nam.png",
+   "size": 1024,
+   "center": [
+    18.331253542393252,
+    -21.49059461429428
+   ],
+   "extentRad": 0.19643127092181786,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 126,
+  "cca3": "NER",
+  "cca2": "NE",
+  "name": "Niger",
+  "capital": "Niamey",
+  "capitals": [
+   "Niamey"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "BEN",
+   "BFA",
+   "DZA",
+   "LBY",
+   "MLI",
+   "NGA",
+   "TCD"
+  ],
+  "areaKm2": 1185159.52,
+  "cap": {
+   "center": [
+    7.782565174378856,
+    18.139054844164935
+   ],
+   "radiusDeg": 8.303558916071374
+  },
+  "beacon": [
+   10.336067168082524,
+   17.580505151074714
+  ],
+  "beaconClearanceKm": 469.045,
+  "flag": "flags/ner.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ner.png",
+   "size": 1024,
+   "center": [
+    7.782565174378856,
+    18.139054844164935
+   ],
+   "extentRad": 0.21738666407816545,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 127,
+  "cca3": "NGA",
+  "cca2": "NG",
+  "name": "Nigéria",
+  "capital": "Abuja",
+  "capitals": [
+   "Abuja"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "BEN",
+   "CMR",
+   "NER",
+   "TCD"
+  ],
+  "areaKm2": 911219.58,
+  "cap": {
+   "center": [
+    8.635345993052477,
+    9.323055077930414
+   ],
+   "radiusDeg": 6.57813364957565
+  },
+  "beacon": [
+   7.288924077565093,
+   9.404133981291741
+  ],
+  "beaconClearanceKm": 399.875,
+  "flag": "flags/nga.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/nga.png",
+   "size": 1024,
+   "center": [
+    8.635345993052477,
+    9.323055077930414
+   ],
+   "extentRad": 0.17221513623198897,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 128,
+  "cca3": "NIC",
+  "cca2": "NI",
+  "name": "Nicaragua",
+  "capital": "Managua",
+  "capitals": [
+   "Managua"
+  ],
+  "region": "Americas",
+  "subregion": "Central America",
+  "neighbors": [
+   "CRI",
+   "HND"
+  ],
+  "areaKm2": 129176.48,
+  "cap": {
+   "center": [
+    -84.99436310145869,
+    13.090632453375456
+   ],
+   "radiusDeg": 2.6289015832389184
+  },
+  "beacon": [
+   -85.19662966847385,
+   12.541369281654683
+  ],
+  "beaconClearanceKm": 154.35,
+  "flag": "flags/nic.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/nic.png",
+   "size": 1024,
+   "center": [
+    -84.99436310145869,
+    13.090632453375456
+   ],
+   "extentRad": 0.06882448250761636,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 129,
+  "cca3": "NLD",
+  "cca2": "NL",
+  "name": "Pays-Bas",
+  "capital": "Amsterdam",
+  "capitals": [
+   "Amsterdam"
+  ],
+  "region": "Europe",
+  "subregion": "Western Europe",
+  "neighbors": [
+   "BEL",
+   "DEU"
+  ],
+  "areaKm2": 41383.53,
+  "cap": {
+   "center": [
+    5.335462576433502,
+    52.25071528033498
+   ],
+   "radiusDeg": 1.556829812830418
+  },
+  "beacon": [
+   5.635032755931979,
+   52.47108594413677
+  ],
+  "beaconClearanceKm": 71.363,
+  "flag": "flags/nld.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/nld.png",
+   "size": 1024,
+   "center": [
+    5.335462576433502,
+    52.25071528033498
+   ],
+   "extentRad": 0.04075770919064678,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 130,
+  "cca3": "NOR",
+  "cca2": "NO",
+  "name": "Norvège",
+  "capital": "Oslo",
+  "capitals": [
+   "Oslo"
+  ],
+  "region": "Europe",
+  "subregion": "Northern Europe",
+  "neighbors": [
+   "FIN",
+   "RUS",
+   "SWE"
+  ],
+  "areaKm2": 379535.25,
+  "cap": {
+   "center": [
+    10.734326990332415,
+    69.38661345085367
+   ],
+   "radiusDeg": 11.507406350082785
+  },
+  "beacon": [
+   9.94648195651135,
+   60.96971220075097
+  ],
+  "beaconClearanceKm": 124.506,
+  "flag": "flags/nor.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/nor.png",
+   "size": 1024,
+   "center": [
+    10.734326990332415,
+    69.38661345085367
+   ],
+   "extentRad": 0.30126319376077176,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 131,
+  "cca3": "NPL",
+  "cca2": "NP",
+  "name": "Népal",
+  "capital": "Katmandou",
+  "capitals": [
+   "Katmandou"
+  ],
+  "region": "Asia",
+  "subregion": "Southern Asia",
+  "neighbors": [
+   "CHN",
+   "IND"
+  ],
+  "areaKm2": 147323.17,
+  "cap": {
+   "center": [
+    84.21799175469233,
+    28.047222810364534
+   ],
+   "radiusDeg": 3.780060819728743
+  },
+  "beacon": [
+   82.07042920361651,
+   28.942160885388166
+  ],
+  "beaconClearanceKm": 109.042,
+  "flag": "flags/npl.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/npl.png",
+   "size": 1024,
+   "center": [
+    84.21799175469233,
+    28.047222810364534
+   ],
+   "extentRad": 0.09896176084485359,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 132,
+  "cca3": "NRU",
+  "cca2": "NR",
+  "name": "Nauru",
+  "capital": "Yaren",
+  "capitals": [
+   "Yaren"
+  ],
+  "region": "Oceania",
+  "subregion": "Micronesia",
+  "neighbors": [],
+  "areaKm2": 21.78,
+  "cap": {
+   "center": [
+    166.9342554528087,
+    -0.5275968584096068
+   ],
+   "radiusDeg": 0.027771116300049203
+  },
+  "beacon": [
+   166.930747791956,
+   -0.5334276303548902
+  ],
+  "beaconClearanceKm": 2.199,
+  "flag": "flags/nru.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/nru.png",
+   "size": 1024,
+   "center": [
+    166.9342554528087,
+    -0.5275968584096068
+   ],
+   "extentRad": 0.000727046124585186,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 133,
+  "cca3": "NZL",
+  "cca2": "NZ",
+  "name": "Nouvelle-Zélande",
+  "capital": "Wellington",
+  "capitals": [
+   "Wellington"
+  ],
+  "region": "Oceania",
+  "subregion": "Australia and New Zealand",
+  "neighbors": [],
+  "areaKm2": 268110.8,
+  "cap": {
+   "center": [
+    171.19617975561886,
+    -40.655512316485776
+   ],
+   "radiusDeg": 6.4302825251398446
+  },
+  "beacon": [
+   169.41295938693577,
+   -44.99695294362627
+  ],
+  "beaconClearanceKm": 121.218,
+  "flag": "flags/nzl.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/nzl.png",
+   "size": 1024,
+   "center": [
+    171.19617975561886,
+    -40.655512316485776
+   ],
+   "extentRad": 0.168344402845718,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 134,
+  "cca3": "OMN",
+  "cca2": "OM",
+  "name": "Oman",
+  "capital": "Mascate",
+  "capitals": [
+   "Mascate"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "ARE",
+   "SAU",
+   "YEM"
+  ],
+  "areaKm2": 312090.23,
+  "cap": {
+   "center": [
+    55.458409512569645,
+    20.550873877372954
+   ],
+   "radiusDeg": 4.50871771304324
+  },
+  "beacon": [
+   57.42674735769189,
+   22.113411514961857
+  ],
+  "beaconClearanceKm": 184.875,
+  "flag": "flags/omn.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/omn.png",
+   "size": 1024,
+   "center": [
+    55.458409512569645,
+    20.550873877372954
+   ],
+   "extentRad": 0.11803795370339015,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 135,
+  "cca3": "PAK",
+  "cca2": "PK",
+  "name": "Pakistan",
+  "capital": "Islamabad",
+  "capitals": [
+   "Islamabad",
+   "Rawalpindi"
+  ],
+  "region": "Asia",
+  "subregion": "Southern Asia",
+  "neighbors": [
+   "AFG",
+   "CHN",
+   "IND",
+   "IRN"
+  ],
+  "areaKm2": 873936.31,
+  "cap": {
+   "center": [
+    68.52726858369154,
+    30.872075316309367
+   ],
+   "radiusDeg": 8.384296772366584
+  },
+  "beacon": [
+   67.12191326844408,
+   27.756232385516455
+  ],
+  "beaconClearanceKm": 248.253,
+  "flag": "flags/pak.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/pak.png",
+   "size": 1024,
+   "center": [
+    68.52726858369154,
+    30.872075316309367
+   ],
+   "extentRad": 0.21950037621319562,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 136,
+  "cca3": "PAN",
+  "cca2": "PA",
+  "name": "Panama",
+  "capital": "Panama",
+  "capitals": [
+   "Panama"
+  ],
+  "region": "Americas",
+  "subregion": "Central America",
+  "neighbors": [
+   "COL",
+   "CRI"
+  ],
+  "areaKm2": 74842.94,
+  "cap": {
+   "center": [
+    -80.07638165907527,
+    8.595609671794412
+   ],
+   "radiusDeg": 2.9578289204890527
+  },
+  "beacon": [
+   -80.92339629117839,
+   8.361588161827909
+  ],
+  "beaconClearanceKm": 52.092,
+  "flag": "flags/pan.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/pan.png",
+   "size": 1024,
+   "center": [
+    -80.07638165907527,
+    8.595609671794412
+   ],
+   "extentRad": 0.07743578005986529,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 137,
+  "cca3": "PER",
+  "cca2": "PE",
+  "name": "Pérou",
+  "capital": "Lima",
+  "capitals": [
+   "Lima"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "BOL",
+   "BRA",
+   "CHL",
+   "COL",
+   "ECU"
+  ],
+  "areaKm2": 1295126.58,
+  "cap": {
+   "center": [
+    -73.14767168836754,
+    -9.278734626553142
+   ],
+   "radiusDeg": 9.5009933718449
+  },
+  "beacon": [
+   -73.07122543628289,
+   -12.956438676308043
+  ],
+  "beaconClearanceKm": 341.799,
+  "flag": "flags/per.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/per.png",
+   "size": 1024,
+   "center": [
+    -73.14767168836754,
+    -9.278734626553142
+   ],
+   "extentRad": 0.2487354248232771,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 138,
+  "cca3": "PHL",
+  "cca2": "PH",
+  "name": "Philippines",
+  "capital": "Manille",
+  "capitals": [
+   "Manille"
+  ],
+  "region": "Asia",
+  "subregion": "South-Eastern Asia",
+  "neighbors": [],
+  "areaKm2": 294429.88,
+  "cap": {
+   "center": [
+    123.08441355346282,
+    12.096585531264239
+   ],
+   "radiusDeg": 6.9103173457841836
+  },
+  "beacon": [
+   121.39477240451885,
+   16.941602094339185
+  ],
+  "beaconClearanceKm": 102.207,
+  "flag": "flags/phl.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/phl.png",
+   "size": 1024,
+   "center": [
+    123.08441355346282,
+    12.096585531264239
+   ],
+   "extentRad": 0.18091168506241426,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 139,
+  "cca3": "PLW",
+  "cca2": "PW",
+  "name": "Palaos (Palau)",
+  "capital": "Ngerulmud",
+  "capitals": [
+   "Ngerulmud"
+  ],
+  "region": "Oceania",
+  "subregion": "Micronesia",
+  "neighbors": [],
+  "areaKm2": 494.04,
+  "cap": {
+   "center": [
+    132.88479105045803,
+    5.376064568524578
+   ],
+   "radiusDeg": 2.9306948862659863
+  },
+  "beacon": [
+   134.59659548975443,
+   7.572633869982396
+  ],
+  "beaconClearanceKm": 5.347,
+  "flag": "flags/plw.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/plw.png",
+   "size": 1024,
+   "center": [
+    132.88479105045803,
+    5.376064568524578
+   ],
+   "extentRad": 0.07672541270505331,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 140,
+  "cca3": "PNG",
+  "cca2": "PG",
+  "name": "Papouasie-Nouvelle-Guinée",
+  "capital": "Port Moresby",
+  "capitals": [
+   "Port Moresby"
+  ],
+  "region": "Oceania",
+  "subregion": "Melanesia",
+  "neighbors": [
+   "IDN"
+  ],
+  "areaKm2": 467150.62,
+  "cap": {
+   "center": [
+    146.30943417988826,
+    -5.9904250598819555
+   ],
+   "radiusDeg": 6.307556373959556
+  },
+  "beacon": [
+   142.99509156490228,
+   -5.53662221519843
+  ],
+  "beaconClearanceKm": 223.378,
+  "flag": "flags/png.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/png.png",
+   "size": 1024,
+   "center": [
+    146.30943417988826,
+    -5.9904250598819555
+   ],
+   "extentRad": 0.16513143972112346,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 141,
+  "cca3": "POL",
+  "cca2": "PL",
+  "name": "Pologne",
+  "capital": "Varsovie",
+  "capitals": [
+   "Varsovie"
+  ],
+  "region": "Europe",
+  "subregion": "Central Europe",
+  "neighbors": [
+   "BLR",
+   "CZE",
+   "DEU",
+   "LTU",
+   "RUS",
+   "SVK",
+   "UKR"
+  ],
+  "areaKm2": 312220.83,
+  "cap": {
+   "center": [
+    18.979392136549762,
+    51.687046036304714
+   ],
+   "radiusDeg": 3.656378945851487
+  },
+  "beacon": [
+   19.57935843765804,
+   52.17265075776946
+  ],
+  "beaconClearanceKm": 244.562,
+  "flag": "flags/pol.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/pol.png",
+   "size": 1024,
+   "center": [
+    18.979392136549762,
+    51.687046036304714
+   ],
+   "extentRad": 0.09572377695856188,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 142,
+  "cca3": "PRK",
+  "cca2": "KP",
+  "name": "Corée du Nord",
+  "capital": "Pyongyang",
+  "capitals": [
+   "Pyongyang"
+  ],
+  "region": "Asia",
+  "subregion": "Eastern Asia",
+  "neighbors": [
+   "CHN",
+   "KOR",
+   "RUS"
+  ],
+  "areaKm2": 122246.09,
+  "cap": {
+   "center": [
+    127.64021571363291,
+    40.35310424418762
+   ],
+   "radiusDeg": 3.216159686271304
+  },
+  "beacon": [
+   126.42830816942868,
+   40.06296982571869
+  ],
+  "beaconClearanceKm": 99.422,
+  "flag": "flags/prk.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/prk.png",
+   "size": 1024,
+   "center": [
+    127.64021571363291,
+    40.35310424418762
+   ],
+   "extentRad": 0.08419886369301319,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 143,
+  "cca3": "PRT",
+  "cca2": "PT",
+  "name": "Portugal",
+  "capital": "Lisbonne",
+  "capitals": [
+   "Lisbonne"
+  ],
+  "region": "Europe",
+  "subregion": "Southern Europe",
+  "neighbors": [
+   "ESP"
+  ],
+  "areaKm2": 91303.48,
+  "cap": {
+   "center": [
+    -7.939584031432452,
+    39.524390238891584
+   ],
+   "radiusDeg": 2.637951661487719
+  },
+  "beacon": [
+   -7.916409542506799,
+   40.29814864155371
+  ],
+  "beaconClearanceKm": 75.256,
+  "flag": "flags/prt.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/prt.png",
+   "size": 1024,
+   "center": [
+    -7.939584031432452,
+    39.524390238891584
+   ],
+   "extentRad": 0.0690614130021234,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 144,
+  "cca3": "PRY",
+  "cca2": "PY",
+  "name": "Paraguay",
+  "capital": "Asuncion",
+  "capitals": [
+   "Asuncion"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "ARG",
+   "BOL",
+   "BRA"
+  ],
+  "areaKm2": 400858.05,
+  "cap": {
+   "center": [
+    -58.7892752882012,
+    -23.53704588435126
+   ],
+   "radiusDeg": 4.7707104335286425
+  },
+  "beacon": [
+   -60.17409814829081,
+   -21.70422912948105
+  ],
+  "beaconClearanceKm": 228.709,
+  "flag": "flags/pry.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/pry.png",
+   "size": 1024,
+   "center": [
+    -58.7892752882012,
+    -23.53704588435126
+   ],
+   "extentRad": 0.12489690708648135,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 145,
+  "cca3": "PSE",
+  "cca2": "PS",
+  "name": "Palestine",
+  "capital": "Jérusalem-Est",
+  "capitals": [
+   "Jérusalem-Est",
+   "Ramallah"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "EGY",
+   "ISR",
+   "JOR"
+  ],
+  "areaKm2": 5913.68,
+  "cap": {
+   "center": [
+    35.08996534775108,
+    31.944515466828566
+   ],
+   "radiusDeg": 0.6186900780191104
+  },
+  "beacon": [
+   35.2819750393242,
+   32.22234731070314
+  ],
+  "beaconClearanceKm": 24.119,
+  "flag": "flags/pse.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/pse.png",
+   "size": 1024,
+   "center": [
+    35.08996534775108,
+    31.944515466828566
+   ],
+   "extentRad": 0.01619726836628111,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 146,
+  "cca3": "QAT",
+  "cca2": "QA",
+  "name": "Qatar",
+  "capital": "Doha",
+  "capitals": [
+   "Doha"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "SAU"
+  ],
+  "areaKm2": 11578.11,
+  "cap": {
+   "center": [
+    51.16767674683185,
+    25.31702909372645
+   ],
+   "radiusDeg": 0.8485964884197358
+  },
+  "beacon": [
+   51.20352803829947,
+   25.08681764836311
+  ],
+  "beaconClearanceKm": 39.61,
+  "flag": "flags/qat.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/qat.png",
+   "size": 1024,
+   "center": [
+    51.16767674683185,
+    25.31702909372645
+   ],
+   "extentRad": 0.02221620411567948,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 147,
+  "cca3": "ROU",
+  "cca2": "RO",
+  "name": "Roumanie",
+  "capital": "Bucarest",
+  "capitals": [
+   "Bucarest"
+  ],
+  "region": "Europe",
+  "subregion": "Southeast Europe",
+  "neighbors": [
+   "BGR",
+   "HUN",
+   "MDA",
+   "SRB",
+   "UKR"
+  ],
+  "areaKm2": 235805.35,
+  "cap": {
+   "center": [
+    24.982553005765002,
+    45.58092909062022
+   ],
+   "radiusDeg": 3.3430238969431905
+  },
+  "beacon": [
+   24.957558861670446,
+   45.76487235781788
+  ],
+  "beaconClearanceKm": 216.345,
+  "flag": "flags/rou.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/rou.png",
+   "size": 1024,
+   "center": [
+    24.982553005765002,
+    45.58092909062022
+   ],
+   "extentRad": 0.08752016096176542,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 148,
+  "cca3": "RUS",
+  "cca2": "RU",
+  "name": "Russie",
+  "capital": "Moscou",
+  "capitals": [
+   "Moscou"
+  ],
+  "region": "Europe",
+  "subregion": "Eastern Europe",
+  "neighbors": [
+   "AZE",
+   "BLR",
+   "CHN",
+   "EST",
+   "FIN",
+   "GEO",
+   "KAZ",
+   "LTU",
+   "LVA",
+   "MNG",
+   "NOR",
+   "POL",
+   "PRK",
+   "UKR"
+  ],
+  "areaKm2": 16886313.35,
+  "cap": {
+   "center": [
+    91.00594013732864,
+    65.83484846899142
+   ],
+   "radiusDeg": 35.52884872849364
+  },
+  "beacon": [
+   108.0888171118879,
+   61.87518579000219
+  ],
+  "beaconClearanceKm": 1217.614,
+  "flag": "flags/rus.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/rus.png",
+   "size": 1024,
+   "center": [
+    91.00594013732864,
+    65.83484846899142
+   ],
+   "extentRad": 0.9301430846328225,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 149,
+  "cca3": "RWA",
+  "cca2": "RW",
+  "name": "Rwanda",
+  "capital": "Kigali",
+  "capitals": [
+   "Kigali"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "BDI",
+   "COD",
+   "TZA",
+   "UGA"
+  ],
+  "areaKm2": 23779.37,
+  "cap": {
+   "center": [
+    29.778572098476182,
+    -1.9486690091066399
+   ],
+   "radiusDeg": 1.132292558445757
+  },
+  "beacon": [
+   29.31164020472794,
+   -2.4602878063492257
+  ],
+  "beaconClearanceKm": 18.29,
+  "flag": "flags/rwa.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/rwa.png",
+   "size": 1024,
+   "center": [
+    29.778572098476182,
+    -1.9486690091066399
+   ],
+   "extentRad": 0.029643349861063185,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 150,
+  "cca3": "SAU",
+  "cca2": "SA",
+  "name": "Arabie Saoudite",
+  "capital": "Riyad",
+  "capitals": [
+   "Riyad"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "ARE",
+   "IRQ",
+   "JOR",
+   "KWT",
+   "OMN",
+   "QAT",
+   "YEM"
+  ],
+  "areaKm2": 1926006.78,
+  "cap": {
+   "center": [
+    45.343174987863215,
+    25.0078892896868
+   ],
+   "radiusDeg": 10.210797703893817
+  },
+  "beacon": [
+   44.7888772571211,
+   23.546133749255794
+  ],
+  "beaconClearanceKm": 591.786,
+  "flag": "flags/sau.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/sau.png",
+   "size": 1024,
+   "center": [
+    45.343174987863215,
+    25.0078892896868
+   ],
+   "extentRad": 0.2673180587820362,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 151,
+  "cca3": "SDN",
+  "cca2": "SD",
+  "name": "Soudan",
+  "capital": "Khartoum",
+  "capitals": [
+   "Khartoum"
+  ],
+  "region": "Africa",
+  "subregion": "Northern Africa",
+  "neighbors": [
+   "CAF",
+   "EGY",
+   "ERI",
+   "ETH",
+   "LBY",
+   "SSD",
+   "TCD"
+  ],
+  "areaKm2": 1861993.88,
+  "cap": {
+   "center": [
+    29.979910990387687,
+    15.45303824225562
+   ],
+   "radiusDeg": 9.246005711895712
+  },
+  "beacon": [
+   29.522408722905418,
+   16.68977381549414
+  ],
+  "beaconClearanceKm": 589.878,
+  "flag": "flags/sdn.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/sdn.png",
+   "size": 1024,
+   "center": [
+    29.979910990387687,
+    15.45303824225562
+   ],
+   "extentRad": 0.24205986349617364,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 152,
+  "cca3": "SEN",
+  "cca2": "SN",
+  "name": "Sénégal",
+  "capital": "Dakar",
+  "capitals": [
+   "Dakar"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "GIN",
+   "GMB",
+   "GNB",
+   "MLI",
+   "MRT"
+  ],
+  "areaKm2": 196942.21,
+  "cap": {
+   "center": [
+    -14.323140454352492,
+    13.903105720593462
+   ],
+   "radiusDeg": 3.227968242892614
+  },
+  "beacon": [
+   -14.938239965822303,
+   15.203175374614645
+  ],
+  "beaconClearanceKm": 154.637,
+  "flag": "flags/sen.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/sen.png",
+   "size": 1024,
+   "center": [
+    -14.323140454352492,
+    13.903105720593462
+   ],
+   "extentRad": 0.08450801098243824,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 153,
+  "cca3": "SGP",
+  "cca2": "SG",
+  "name": "Singapour",
+  "capital": "Singapour",
+  "capitals": [
+   "Singapour"
+  ],
+  "region": "Asia",
+  "subregion": "South-Eastern Asia",
+  "neighbors": [],
+  "areaKm2": 727.52,
+  "cap": {
+   "center": [
+    103.84698764197057,
+    1.3130729951277769
+   ],
+   "radiusDeg": 0.2577745252084898
+  },
+  "beacon": [
+   103.82378397646141,
+   1.350255029326803
+  ],
+  "beaconClearanceKm": 9.147,
+  "flag": "flags/sgp.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/sgp.png",
+   "size": 1024,
+   "center": [
+    103.84698764197057,
+    1.3130729951277769
+   ],
+   "extentRad": 0.0067485212889799055,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 154,
+  "cca3": "SLB",
+  "cca2": "SB",
+  "name": "Îles Salomon",
+  "capital": "Honiara",
+  "capitals": [
+   "Honiara"
+  ],
+  "region": "Oceania",
+  "subregion": "Melanesia",
+  "neighbors": [],
+  "areaKm2": 27312.01,
+  "cap": {
+   "center": [
+    161.27037720624705,
+    -8.700268794954821
+   ],
+   "radiusDeg": 5.2045659368580495
+  },
+  "beacon": [
+   160.29651148352525,
+   -9.616741760059993
+  ],
+  "beaconClearanceKm": 21.919,
+  "flag": "flags/slb.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/slb.png",
+   "size": 1024,
+   "center": [
+    161.27037720624705,
+    -8.700268794954821
+   ],
+   "extentRad": 0.1362552176029744,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 155,
+  "cca3": "SLE",
+  "cca2": "SL",
+  "name": "Sierra Leone",
+  "capital": "Freetown",
+  "capitals": [
+   "Freetown"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "GIN",
+   "LBR"
+  ],
+  "areaKm2": 71911.8,
+  "cap": {
+   "center": [
+    -11.782695676325984,
+    8.489694687284537
+   ],
+   "radiusDeg": 1.5995843415289808
+  },
+  "beacon": [
+   -11.770110679027614,
+   8.672210346366764
+  ],
+  "beaconClearanceKm": 121.429,
+  "flag": "flags/sle.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/sle.png",
+   "size": 1024,
+   "center": [
+    -11.782695676325984,
+    8.489694687284537
+   ],
+   "extentRad": 0.04187702013453927,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 156,
+  "cca3": "SLV",
+  "cca2": "SV",
+  "name": "Salvador",
+  "capital": "San Salvador",
+  "capitals": [
+   "San Salvador"
+  ],
+  "region": "Americas",
+  "subregion": "Central America",
+  "neighbors": [
+   "GTM",
+   "HND"
+  ],
+  "areaKm2": 25432.41,
+  "cap": {
+   "center": [
+    -88.9246554378363,
+    13.453988946713984
+   ],
+   "radiusDeg": 1.2807889512296744
+  },
+  "beacon": [
+   -89.25409623772106,
+   13.817522448884835
+  ],
+  "beaconClearanceKm": 53.476,
+  "flag": "flags/slv.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/slv.png",
+   "size": 1024,
+   "center": [
+    -88.9246554378363,
+    13.453988946713984
+   ],
+   "extentRad": 0.03353097633318434,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 157,
+  "cca3": "SMR",
+  "cca2": "SM",
+  "name": "Saint-Marin",
+  "capital": "Saint-Marin",
+  "capitals": [
+   "Saint-Marin"
+  ],
+  "region": "Europe",
+  "subregion": "Southern Europe",
+  "neighbors": [
+   "ITA"
+  ],
+  "areaKm2": 61,
+  "cap": {
+   "center": [
+    12.46183164616967,
+    43.94636933136441
+   ],
+   "radiusDeg": 0.058403892829252166
+  },
+  "beacon": [
+   12.458150736225415,
+   43.93249903577008
+  ],
+  "beaconClearanceKm": 3.194,
+  "flag": "flags/smr.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/smr.png",
+   "size": 1024,
+   "center": [
+    12.46183164616967,
+    43.94636933136441
+   ],
+   "extentRad": 0.0015290103387785349,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 158,
+  "cca3": "SOM",
+  "cca2": "SO",
+  "name": "Somalie",
+  "capital": "Mogadiscio",
+  "capitals": [
+   "Mogadiscio"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "DJI",
+   "ETH",
+   "KEN"
+  ],
+  "areaKm2": 641965.34,
+  "cap": {
+   "center": [
+    46.362350509081594,
+    5.087826082990193
+   ],
+   "radiusDeg": 8.323412726912954
+  },
+  "beacon": [
+   43.019703475641315,
+   2.5585289212922295
+  ],
+  "beaconClearanceKm": 193.685,
+  "flag": "flags/som.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/som.png",
+   "size": 1024,
+   "center": [
+    46.362350509081594,
+    5.087826082990193
+   ],
+   "extentRad": 0.217906435630546,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 159,
+  "cca3": "SRB",
+  "cca2": "RS",
+  "name": "Serbie",
+  "capital": "Belgrade",
+  "capitals": [
+   "Belgrade"
+  ],
+  "region": "Europe",
+  "subregion": "Southeast Europe",
+  "neighbors": [
+   "BGR",
+   "BIH",
+   "HRV",
+   "HUN",
+   "MKD",
+   "MNE",
+   "ROU",
+   "UNK"
+  ],
+  "areaKm2": 77470.54,
+  "cap": {
+   "center": [
+    20.756897572582947,
+    44.16174385234943
+   ],
+   "radiusDeg": 2.2020860600813696
+  },
+  "beacon": [
+   20.769999000054963,
+   44.09194015368331
+  ],
+  "beaconClearanceKm": 92.187,
+  "flag": "flags/srb.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/srb.png",
+   "size": 1024,
+   "center": [
+    20.756897572582947,
+    44.16174385234943
+   ],
+   "extentRad": 0.05765047824103435,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 160,
+  "cca3": "SSD",
+  "cca2": "SS",
+  "name": "Soudan du Sud",
+  "capital": "Djouba",
+  "capitals": [
+   "Djouba"
+  ],
+  "region": "Africa",
+  "subregion": "Middle Africa",
+  "neighbors": [
+   "CAF",
+   "COD",
+   "ETH",
+   "KEN",
+   "SDN",
+   "UGA"
+  ],
+  "areaKm2": 629533.12,
+  "cap": {
+   "center": [
+    30.12076346802475,
+    6.830454027672645
+   ],
+   "radiusDeg": 6.181730012297297
+  },
+  "beacon": [
+   30.47403819157032,
+   7.11839552233734
+  ],
+  "beaconClearanceKm": 291.211,
+  "flag": "flags/ssd.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ssd.png",
+   "size": 1024,
+   "center": [
+    30.12076346802475,
+    6.830454027672645
+   ],
+   "extentRad": 0.1618373132759061,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 161,
+  "cca3": "STP",
+  "cca2": "ST",
+  "name": "São Tomé et Príncipe",
+  "capital": "São Tomé",
+  "capitals": [
+   "São Tomé"
+  ],
+  "region": "Africa",
+  "subregion": "Middle Africa",
+  "neighbors": [],
+  "areaKm2": 994.61,
+  "cap": {
+   "center": [
+    6.97913726800987,
+    0.8550392816367262
+   ],
+   "radiusDeg": 0.9558547354141101
+  },
+  "beacon": [
+   6.589125051321111,
+   0.23937005543992654
+  ],
+  "beaconClearanceKm": 12.687,
+  "flag": "flags/stp.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/stp.png",
+   "size": 1024,
+   "center": [
+    6.97913726800987,
+    0.8550392816367262
+   ],
+   "extentRad": 0.025024218455633202,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 162,
+  "cca3": "SUR",
+  "cca2": "SR",
+  "name": "Surinam",
+  "capital": "Paramaribo",
+  "capitals": [
+   "Paramaribo"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "BRA",
+   "GUY"
+  ],
+  "areaKm2": 145764.47,
+  "cap": {
+   "center": [
+    -55.70200368200356,
+    4.1666344250555865
+   ],
+   "radiusDeg": 2.3608326259257413
+  },
+  "beacon": [
+   -55.95824330451339,
+   4.138873705289473
+  ],
+  "beaconClearanceKm": 171.13,
+  "flag": "flags/sur.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/sur.png",
+   "size": 1024,
+   "center": [
+    -55.70200368200356,
+    4.1666344250555865
+   ],
+   "extentRad": 0.06180645361636174,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 163,
+  "cca3": "SVK",
+  "cca2": "SK",
+  "name": "Slovaquie",
+  "capital": "Bratislava",
+  "capitals": [
+   "Bratislava"
+  ],
+  "region": "Europe",
+  "subregion": "Central Europe",
+  "neighbors": [
+   "AUT",
+   "CZE",
+   "HUN",
+   "POL",
+   "UKR"
+  ],
+  "areaKm2": 48873.76,
+  "cap": {
+   "center": [
+    19.68192027994758,
+    48.756603867525904
+   ],
+   "radiusDeg": 1.923521075424539
+  },
+  "beacon": [
+   18.96479520963732,
+   48.74127870912108
+  ],
+  "beaconClearanceKm": 72.717,
+  "flag": "flags/svk.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/svk.png",
+   "size": 1024,
+   "center": [
+    19.68192027994758,
+    48.756603867525904
+   ],
+   "extentRad": 0.05035766399649059,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 164,
+  "cca3": "SVN",
+  "cca2": "SI",
+  "name": "Slovénie",
+  "capital": "Ljubljana",
+  "capitals": [
+   "Ljubljana"
+  ],
+  "region": "Europe",
+  "subregion": "Central Europe",
+  "neighbors": [
+   "AUT",
+   "HRV",
+   "HUN",
+   "ITA"
+  ],
+  "areaKm2": 20349.07,
+  "cap": {
+   "center": [
+    14.959626575165501,
+    46.157409926449304
+   ],
+   "radiusDeg": 1.175461379780612
+  },
+  "beacon": [
+   14.250544260801524,
+   46.01471230516232
+  ],
+  "beaconClearanceKm": 46.67,
+  "flag": "flags/svn.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/svn.png",
+   "size": 1024,
+   "center": [
+    14.959626575165501,
+    46.157409926449304
+   ],
+   "extentRad": 0.03077350696081077,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 165,
+  "cca3": "SWE",
+  "cca2": "SE",
+  "name": "Suède",
+  "capital": "Stockholm",
+  "capitals": [
+   "Stockholm"
+  ],
+  "region": "Europe",
+  "subregion": "Northern Europe",
+  "neighbors": [
+   "FIN",
+   "NOR"
+  ],
+  "areaKm2": 443498.65,
+  "cap": {
+   "center": [
+    15.842673968402144,
+    62.260795416658546
+   ],
+   "radiusDeg": 7.05130431438592
+  },
+  "beacon": [
+   17.664322245090762,
+   64.77057658538835
+  ],
+  "beaconClearanceKm": 159.857,
+  "flag": "flags/swe.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/swe.png",
+   "size": 1024,
+   "center": [
+    15.842673968402144,
+    62.260795416658546
+   ],
+   "extentRad": 0.1846027152691735,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 166,
+  "cca3": "SWZ",
+  "cca2": "SZ",
+  "name": "Eswatini",
+  "capital": "Mbabane",
+  "capitals": [
+   "Lobamba",
+   "Mbabane"
+  ],
+  "region": "Africa",
+  "subregion": "Southern Africa",
+  "neighbors": [
+   "MOZ",
+   "ZAF"
+  ],
+  "areaKm2": 17394.41,
+  "cap": {
+   "center": [
+    31.644552539120678,
+    -26.530728478526363
+   ],
+   "radiusDeg": 0.8411192712667412
+  },
+  "beacon": [
+   31.45913163172221,
+   -26.57675578028911
+  ],
+  "beaconClearanceKm": 60.69,
+  "flag": "flags/swz.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/swz.png",
+   "size": 1024,
+   "center": [
+    31.644552539120678,
+    -26.530728478526363
+   ],
+   "extentRad": 0.022020451028369952,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 167,
+  "cca3": "SYC",
+  "cca2": "SC",
+  "name": "Seychelles",
+  "capital": "Victoria",
+  "capitals": [
+   "Victoria"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [],
+  "areaKm2": 483.17,
+  "cap": {
+   "center": [
+    51.06990126783909,
+    -6.943939004484828
+   ],
+   "radiusDeg": 5.4205061504199845
+  },
+  "beacon": [
+   55.43292403573566,
+   -4.641567043754003
+  ],
+  "beaconClearanceKm": 3.076,
+  "flag": "flags/syc.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/syc.png",
+   "size": 1024,
+   "center": [
+    51.06990126783909,
+    -6.943939004484828
+   ],
+   "extentRad": 0.1419085191741476,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 168,
+  "cca3": "SYR",
+  "cca2": "SY",
+  "name": "Syrie",
+  "capital": "Damas",
+  "capitals": [
+   "Damas"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "IRQ",
+   "ISR",
+   "JOR",
+   "LBN",
+   "TUR"
+  ],
+  "areaKm2": 185951.47,
+  "cap": {
+   "center": [
+    38.960715216957205,
+    35.03656010407681
+   ],
+   "radiusDeg": 3.5111984959097886
+  },
+  "beacon": [
+   38.36016670853196,
+   35.08166629661123
+  ],
+  "beaconClearanceKm": 182.264,
+  "flag": "flags/syr.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/syr.png",
+   "size": 1024,
+   "center": [
+    38.960715216957205,
+    35.03656010407681
+   ],
+   "extentRad": 0.09192296166704769,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 169,
+  "cca3": "TCD",
+  "cca2": "TD",
+  "name": "Tchad",
+  "capital": "N'Djaména",
+  "capitals": [
+   "N'Djaména"
+  ],
+  "region": "Africa",
+  "subregion": "Middle Africa",
+  "neighbors": [
+   "CAF",
+   "CMR",
+   "LBY",
+   "NER",
+   "NGA",
+   "SDN"
+  ],
+  "areaKm2": 1270722.68,
+  "cap": {
+   "center": [
+    16.70828212932913,
+    15.436771095943733
+   ],
+   "radiusDeg": 8.03686878381115
+  },
+  "beacon": [
+   19.498897537366826,
+   17.442774679410842
+  ],
+  "beaconClearanceKm": 420.471,
+  "flag": "flags/tcd.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/tcd.png",
+   "size": 1024,
+   "center": [
+    16.70828212932913,
+    15.436771095943733
+   ],
+   "extentRad": 0.21040473274238533,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 170,
+  "cca3": "TGO",
+  "cca2": "TG",
+  "name": "Togo",
+  "capital": "Lomé",
+  "capitals": [
+   "Lomé"
+  ],
+  "region": "Africa",
+  "subregion": "Western Africa",
+  "neighbors": [
+   "BEN",
+   "BFA",
+   "GHA"
+  ],
+  "areaKm2": 57101.63,
+  "cap": {
+   "center": [
+    0.7329075497575768,
+    8.67480751790206
+   ],
+   "radiusDeg": 2.6146955867156185
+  },
+  "beacon": [
+   1.0538533324640784,
+   8.81839980078266
+  ],
+  "beaconClearanceKm": 60.47,
+  "flag": "flags/tgo.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/tgo.png",
+   "size": 1024,
+   "center": [
+    0.7329075497575768,
+    8.67480751790206
+   ],
+   "extentRad": 0.06845257038832868,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 171,
+  "cca3": "THA",
+  "cca2": "TH",
+  "name": "Thaïlande",
+  "capital": "Bangkok",
+  "capitals": [
+   "Bangkok"
+  ],
+  "region": "Asia",
+  "subregion": "South-Eastern Asia",
+  "neighbors": [
+   "KHM",
+   "LAO",
+   "MMR",
+   "MYS"
+  ],
+  "areaKm2": 516275.64,
+  "cap": {
+   "center": [
+    100.54752637024545,
+    13.038123062295451
+   ],
+   "radiusDeg": 7.429870252584795
+  },
+  "beacon": [
+   101.34134983397799,
+   15.474821864376569
+  ],
+  "beaconClearanceKm": 222.031,
+  "flag": "flags/tha.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/tha.png",
+   "size": 1024,
+   "center": [
+    100.54752637024545,
+    13.038123062295451
+   ],
+   "extentRad": 0.1945135483553811,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 172,
+  "cca3": "TJK",
+  "cca2": "TJ",
+  "name": "Tadjikistan",
+  "capital": "Douchanbé",
+  "capitals": [
+   "Douchanbé"
+  ],
+  "region": "Asia",
+  "subregion": "Central Asia",
+  "neighbors": [
+   "AFG",
+   "CHN",
+   "KGZ",
+   "UZB"
+  ],
+  "areaKm2": 142135.9,
+  "cap": {
+   "center": [
+    71.30581314074948,
+    38.405813966135895
+   ],
+   "radiusDeg": 3.205737360186503
+  },
+  "beacon": [
+   72.66022740187445,
+   38.31508715296281
+  ],
+  "beaconClearanceKm": 103.875,
+  "flag": "flags/tjk.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/tjk.png",
+   "size": 1024,
+   "center": [
+    71.30581314074948,
+    38.405813966135895
+   ],
+   "extentRad": 0.08392600783416877,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 173,
+  "cca3": "TKM",
+  "cca2": "TM",
+  "name": "Turkménistan",
+  "capital": "Achgabat",
+  "capitals": [
+   "Achgabat"
+  ],
+  "region": "Asia",
+  "subregion": "Central Asia",
+  "neighbors": [
+   "AFG",
+   "IRN",
+   "KAZ",
+   "UZB"
+  ],
+  "areaKm2": 470450.5,
+  "cap": {
+   "center": [
+    59.70122478512671,
+    39.76925920660516
+   ],
+   "radiusDeg": 5.846408931988075
+  },
+  "beacon": [
+   58.991500860652486,
+   39.627243787393475
+  ],
+  "beaconClearanceKm": 215.531,
+  "flag": "flags/tkm.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/tkm.png",
+   "size": 1024,
+   "center": [
+    59.70122478512671,
+    39.76925920660516
+   ],
+   "extentRad": 0.15305862792179573,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 174,
+  "cca3": "TLS",
+  "cca2": "TL",
+  "name": "Timor oriental",
+  "capital": "Dili",
+  "capitals": [
+   "Dili"
+  ],
+  "region": "Asia",
+  "subregion": "South-Eastern Asia",
+  "neighbors": [
+   "IDN"
+  ],
+  "areaKm2": 14951.37,
+  "cap": {
+   "center": [
+    126.14754670527346,
+    -8.8436209171977
+   ],
+   "radiusDeg": 1.2231813367162563
+  },
+  "beacon": [
+   125.47735176367435,
+   -8.892506017151934
+  ],
+  "beaconClearanceKm": 35.3,
+  "flag": "flags/tls.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/tls.png",
+   "size": 1024,
+   "center": [
+    126.14754670527346,
+    -8.8436209171977
+   ],
+   "extentRad": 0.03202281251196612,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 175,
+  "cca3": "TON",
+  "cca2": "TO",
+  "name": "Tonga",
+  "capital": "Nukuʻalofa",
+  "capitals": [
+   "Nukuʻalofa"
+  ],
+  "region": "Oceania",
+  "subregion": "Polynesia",
+  "neighbors": [],
+  "areaKm2": 684.27,
+  "cap": {
+   "center": [
+    -175.27607459990247,
+    -18.512579913962973
+   ],
+   "radiusDeg": 2.966097009099349
+  },
+  "beacon": [
+   -175.139858268347,
+   -21.232725596962453
+  ],
+  "beaconClearanceKm": 3.918,
+  "flag": "flags/ton.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/ton.png",
+   "size": 1024,
+   "center": [
+    -175.27607459990247,
+    -18.512579913962973
+   ],
+   "extentRad": 0.07765223811350977,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 176,
+  "cca3": "TTO",
+  "cca2": "TT",
+  "name": "Trinité-et-Tobago",
+  "capital": "Port-d'Espagne",
+  "capitals": [
+   "Port-d'Espagne"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [],
+  "areaKm2": 5159.83,
+  "cap": {
+   "center": [
+    -61.41999054915556,
+    10.442395208461816
+   ],
+   "radiusDeg": 0.6373407893909827
+  },
+  "beacon": [
+   -61.22969565372903,
+   10.30745450817998
+  ],
+  "beaconClearanceKm": 24.767,
+  "flag": "flags/tto.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/tto.png",
+   "size": 1024,
+   "center": [
+    -61.41999054915556,
+    10.442395208461816
+   ],
+   "extentRad": 0.01668554284819859,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 177,
+  "cca3": "TUN",
+  "cca2": "TN",
+  "name": "Tunisie",
+  "capital": "Tunis",
+  "capitals": [
+   "Tunis"
+  ],
+  "region": "Africa",
+  "subregion": "Northern Africa",
+  "neighbors": [
+   "DZA",
+   "LBY"
+  ],
+  "areaKm2": 156653.42,
+  "cap": {
+   "center": [
+    9.627654858690185,
+    33.787704990446166
+   ],
+   "radiusDeg": 3.5599761695844983
+  },
+  "beacon": [
+   9.90638967250103,
+   32.75837010804698
+  ],
+  "beaconClearanceKm": 110.473,
+  "flag": "flags/tun.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/tun.png",
+   "size": 1024,
+   "center": [
+    9.627654858690185,
+    33.787704990446166
+   ],
+   "extentRad": 0.09319995817767826,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 178,
+  "cca3": "TUR",
+  "cca2": "TR",
+  "name": "Turquie",
+  "capital": "Ankara",
+  "capitals": [
+   "Ankara"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "ARM",
+   "AZE",
+   "BGR",
+   "GEO",
+   "GRC",
+   "IRN",
+   "IRQ",
+   "SYR"
+  ],
+  "areaKm2": 779425.83,
+  "cap": {
+   "center": [
+    35.569919517416096,
+    38.692209589140376
+   ],
+   "radiusDeg": 7.41520417862747
+  },
+  "beacon": [
+   33.862051685910785,
+   39.342410063187984
+  ],
+  "beaconClearanceKm": 290.427,
+  "flag": "flags/tur.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/tur.png",
+   "size": 1024,
+   "center": [
+    35.569919517416096,
+    38.692209589140376
+   ],
+   "extentRad": 0.19412959143703665,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 179,
+  "cca3": "TUV",
+  "cca2": "TV",
+  "name": "Tuvalu",
+  "capital": "Funafuti",
+  "capitals": [
+   "Funafuti"
+  ],
+  "region": "Oceania",
+  "subregion": "Polynesia",
+  "neighbors": [],
+  "areaKm2": 21.97,
+  "cap": {
+   "center": [
+    177.9546970203688,
+    -7.542315234365671
+   ],
+   "radiusDeg": 2.674592416826935
+  },
+  "beacon": [
+   178.6743981756564,
+   -7.472619477800466
+  ],
+  "beaconClearanceKm": 0.599,
+  "flag": "flags/tuv.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/tuv.png",
+   "size": 1024,
+   "center": [
+    177.9546970203688,
+    -7.542315234365671
+   ],
+   "extentRad": 0.0700206657337539,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 180,
+  "cca3": "TWN",
+  "cca2": "TW",
+  "name": "Taïwan",
+  "capital": "Taipei",
+  "capitals": [
+   "Taipei"
+  ],
+  "region": "Asia",
+  "subregion": "Eastern Asia",
+  "neighbors": [],
+  "areaKm2": 36281.35,
+  "cap": {
+   "center": [
+    121.20566439679862,
+    23.594341961094234
+   ],
+   "radiusDeg": 1.722988841292948
+  },
+  "beacon": [
+   120.81800394257148,
+   23.53427197828845
+  ],
+  "beaconClearanceKm": 67.51,
+  "flag": "flags/twn.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/twn.png",
+   "size": 1024,
+   "center": [
+    121.20566439679862,
+    23.594341961094234
+   ],
+   "extentRad": 0.04510774238352595,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 181,
+  "cca3": "TZA",
+  "cca2": "TZ",
+  "name": "Tanzanie",
+  "capital": "Dodoma",
+  "capitals": [
+   "Dodoma"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "BDI",
+   "COD",
+   "KEN",
+   "MOZ",
+   "MWI",
+   "RWA",
+   "UGA",
+   "ZMB"
+  ],
+  "areaKm2": 945556.53,
+  "cap": {
+   "center": [
+    35.405418933008235,
+    -5.807210483192499
+   ],
+   "radiusDeg": 6.834506201109408
+  },
+  "beacon": [
+   34.03017713496012,
+   -5.5399986129600585
+  ],
+  "beaconClearanceKm": 437.843,
+  "flag": "flags/tza.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/tza.png",
+   "size": 1024,
+   "center": [
+    35.405418933008235,
+    -5.807210483192499
+   ],
+   "extentRad": 0.17892695393599334,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 182,
+  "cca3": "UGA",
+  "cca2": "UG",
+  "name": "Ouganda",
+  "capital": "Kampala",
+  "capitals": [
+   "Kampala"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "COD",
+   "KEN",
+   "RWA",
+   "SSD",
+   "TZA"
+  ],
+  "areaKm2": 242936.13,
+  "cap": {
+   "center": [
+    31.80066987263682,
+    1.4009291839286717
+   ],
+   "radiusDeg": 3.5665059692758105
+  },
+  "beacon": [
+   33.00971561254608,
+   1.9940288323962376
+  ],
+  "beaconClearanceKm": 192.981,
+  "flag": "flags/uga.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/uga.png",
+   "size": 1024,
+   "center": [
+    31.80066987263682,
+    1.4009291839286717
+   ],
+   "extentRad": 0.09337090793384192,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 183,
+  "cca3": "UKR",
+  "cca2": "UA",
+  "name": "Ukraine",
+  "capital": "Kiev",
+  "capitals": [
+   "Kiev"
+  ],
+  "region": "Europe",
+  "subregion": "Eastern Europe",
+  "neighbors": [
+   "BLR",
+   "HUN",
+   "MDA",
+   "POL",
+   "ROU",
+   "RUS",
+   "SVK"
+  ],
+  "areaKm2": 570179.15,
+  "cap": {
+   "center": [
+    31.0840677176943,
+    49.051029968733786
+   ],
+   "radiusDeg": 5.936279789758202
+  },
+  "beacon": [
+   32.38325617109863,
+   49.39713154520507
+  ],
+  "beaconClearanceKm": 242.426,
+  "flag": "flags/ukr.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ukr.png",
+   "size": 1024,
+   "center": [
+    31.0840677176943,
+    49.051029968733786
+   ],
+   "extentRad": 0.15541144147631605,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 184,
+  "cca3": "UNK",
+  "cca2": "XK",
+  "name": "Kosovo",
+  "capital": "Pristina",
+  "capitals": [
+   "Pristina"
+  ],
+  "region": "Europe",
+  "subregion": "Southeast Europe",
+  "neighbors": [
+   "ALB",
+   "MKD",
+   "MNE",
+   "SRB"
+  ],
+  "areaKm2": 10888.81,
+  "cap": {
+   "center": [
+    20.82585033940086,
+    42.55739188649594
+   ],
+   "radiusDeg": 0.7161434517216855
+  },
+  "beacon": [
+   20.89490485033697,
+   42.57762398349491
+  ],
+  "beaconClearanceKm": 44.753,
+  "flag": "flags/unk.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/unk.png",
+   "size": 1024,
+   "center": [
+    20.82585033940086,
+    42.55739188649594
+   ],
+   "extentRad": 0.018748591723710697,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 185,
+  "cca3": "URY",
+  "cca2": "UY",
+  "name": "Uruguay",
+  "capital": "Montevideo",
+  "capitals": [
+   "Montevideo"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "ARG",
+   "BRA"
+  ],
+  "areaKm2": 177439.68,
+  "cap": {
+   "center": [
+    -55.93765359753993,
+    -32.44248892799593
+   ],
+   "radiusDeg": 2.6796118142558996
+  },
+  "beacon": [
+   -55.91488817693137,
+   -32.97831474287392
+  ],
+  "beaconClearanceKm": 199.188,
+  "flag": "flags/ury.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ury.png",
+   "size": 1024,
+   "center": [
+    -55.93765359753993,
+    -32.44248892799593
+   ],
+   "extentRad": 0.07015207325115626,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 186,
+  "cca3": "USA",
+  "cca2": "US",
+  "name": "États-Unis",
+  "capital": "Washington",
+  "capitals": [
+   "Washington"
+  ],
+  "region": "Americas",
+  "subregion": "North America",
+  "neighbors": [
+   "CAN",
+   "MEX"
+  ],
+  "areaKm2": 9447852.13,
+  "cap": {
+   "center": [
+    -96.1114029478092,
+    42.02130917542055
+   ],
+   "radiusDeg": 21.25208113637906
+  },
+  "beacon": [
+   -98.14804053962953,
+   39.20299336555795
+  ],
+  "beaconClearanceKm": 1088.584,
+  "flag": "flags/usa.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/usa.png",
+   "size": 1024,
+   "center": [
+    -96.1114029478092,
+    42.02130917542055
+   ],
+   "extentRad": 0.556378183096189,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 187,
+  "cca3": "UZB",
+  "cca2": "UZ",
+  "name": "Ouzbékistan",
+  "capital": "Tachkent",
+  "capitals": [
+   "Tachkent"
+  ],
+  "region": "Asia",
+  "subregion": "Central Asia",
+  "neighbors": [
+   "AFG",
+   "KAZ",
+   "KGZ",
+   "TJK",
+   "TKM"
+  ],
+  "areaKm2": 447178.58,
+  "cap": {
+   "center": [
+    64.67533396953937,
+    42.829860650046896
+   ],
+   "radiusDeg": 6.626349050023823
+  },
+  "beacon": [
+   63.796048541077475,
+   41.93695868786648
+  ],
+  "beaconClearanceKm": 182.922,
+  "flag": "flags/uzb.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/uzb.png",
+   "size": 1024,
+   "center": [
+    64.67533396953937,
+    42.829860650046896
+   ],
+   "extentRad": 0.17347741246397122,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 188,
+  "cca3": "VAT",
+  "cca2": "VA",
+  "name": "Cité du Vatican",
+  "capital": "Vatican",
+  "capitals": [
+   "Vatican"
+  ],
+  "region": "Europe",
+  "subregion": "Southern Europe",
+  "neighbors": [
+   "ITA"
+  ],
+  "areaKm2": 0.51,
+  "cap": {
+   "center": [
+    12.452131618080582,
+    41.90320239981395
+   ],
+   "radiusDeg": 0.004943483449551688
+  },
+  "beacon": [
+   12.453536767171126,
+   41.9037817671897
+  ],
+  "beaconClearanceKm": 0.323,
+  "flag": "flags/vat.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/vat.png",
+   "size": 1024,
+   "center": [
+    12.452131618080582,
+    41.90320239981395
+   ],
+   "extentRad": 0.00034906585039886593,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 189,
+  "cca3": "VCT",
+  "cca2": "VC",
+  "name": "Saint-Vincent-et-les-Grenadines",
+  "capital": "Kingstown",
+  "capitals": [
+   "Kingstown"
+  ],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "neighbors": [],
+  "areaKm2": 388.84,
+  "cap": {
+   "center": [
+    -61.21442514288848,
+    13.184262712439077
+   ],
+   "radiusDeg": 0.20702055077234205
+  },
+  "beacon": [
+   -61.202136043020545,
+   13.223558618819451
+  ],
+  "beaconClearanceKm": 7.687,
+  "flag": "flags/vct.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/vct.png",
+   "size": 1024,
+   "center": [
+    -61.21442514288848,
+    13.184262712439077
+   ],
+   "extentRad": 0.005419785345404188,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 190,
+  "cca3": "VEN",
+  "cca2": "VE",
+  "name": "Venezuela",
+  "capital": "Caracas",
+  "capitals": [
+   "Caracas"
+  ],
+  "region": "Americas",
+  "subregion": "South America",
+  "neighbors": [
+   "BRA",
+   "COL",
+   "GUY"
+  ],
+  "areaKm2": 916571.73,
+  "cap": {
+   "center": [
+    -66.68633293288073,
+    7.414199829568543
+   ],
+   "radiusDeg": 6.868579393360359
+  },
+  "beacon": [
+   -64.2707002633612,
+   7.191305573008193
+  ],
+  "beaconClearanceKm": 327.184,
+  "flag": "flags/ven.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/ven.png",
+   "size": 1024,
+   "center": [
+    -66.68633293288073,
+    7.414199829568543
+   ],
+   "extentRad": 0.17981898802315952,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 191,
+  "cca3": "VNM",
+  "cca2": "VN",
+  "name": "Viêt Nam",
+  "capital": "Hanoï",
+  "capitals": [
+   "Hanoï"
+  ],
+  "region": "Asia",
+  "subregion": "South-Eastern Asia",
+  "neighbors": [
+   "CHN",
+   "KHM",
+   "LAO"
+  ],
+  "areaKm2": 329987.03,
+  "cap": {
+   "center": [
+    105.07623190810443,
+    15.965998264699737
+   ],
+   "radiusDeg": 7.403536707490264
+  },
+  "beacon": [
+   105.33270280321835,
+   21.710309425746757
+  ],
+  "beaconClearanceKm": 139.322,
+  "flag": "flags/vnm.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/vnm.png",
+   "size": 1024,
+   "center": [
+    105.07623190810443,
+    15.965998264699737
+   ],
+   "extentRad": 0.19382413775694812,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 192,
+  "cca3": "VUT",
+  "cca2": "VU",
+  "name": "Vanuatu",
+  "capital": "Port-Vila",
+  "capitals": [
+   "Port-Vila"
+  ],
+  "region": "Oceania",
+  "subregion": "Melanesia",
+  "neighbors": [],
+  "areaKm2": 12243.84,
+  "cap": {
+   "center": [
+    168.43489839790428,
+    -16.686674285319516
+   ],
+   "radiusDeg": 3.119125196060927
+  },
+  "beacon": [
+   166.89387147391858,
+   -15.380126945090597
+  ],
+  "beaconClearanceKm": 23.235,
+  "flag": "flags/vut.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/vut.png",
+   "size": 1024,
+   "center": [
+    168.43489839790428,
+    -16.686674285319516
+   ],
+   "extentRad": 0.08165850667976525,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 193,
+  "cca3": "WSM",
+  "cca2": "WS",
+  "name": "Samoa",
+  "capital": "Apia",
+  "capitals": [
+   "Apia"
+  ],
+  "region": "Oceania",
+  "subregion": "Polynesia",
+  "neighbors": [],
+  "areaKm2": 2845.42,
+  "cap": {
+   "center": [
+    -172.1146431120823,
+    -13.77113644447114
+   ],
+   "radiusDeg": 0.7170867794578781
+  },
+  "beacon": [
+   -172.45888518034457,
+   -13.628146117890648
+  ],
+  "beaconClearanceKm": 17.664,
+  "flag": "flags/wsm.svg",
+  "outlineSource": "geoboundaries",
+  "patch": {
+   "sdf": "patches/sdf/wsm.png",
+   "size": 1024,
+   "center": [
+    -172.1146431120823,
+    -13.77113644447114
+   ],
+   "extentRad": 0.01877328798609362,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 194,
+  "cca3": "YEM",
+  "cca2": "YE",
+  "name": "Yémen",
+  "capital": "Sanaa",
+  "capitals": [
+   "Aden",
+   "Sanaa"
+  ],
+  "region": "Asia",
+  "subregion": "Western Asia",
+  "neighbors": [
+   "OMN",
+   "SAU"
+  ],
+  "areaKm2": 454650.1,
+  "cap": {
+   "center": [
+    47.79383619960661,
+    15.70993862731143
+   ],
+   "radiusDeg": 5.171468187462659
+  },
+  "beacon": [
+   45.03163724052676,
+   15.297839894653116
+  ],
+  "beaconClearanceKm": 228.031,
+  "flag": "flags/yem.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/yem.png",
+   "size": 1024,
+   "center": [
+    47.79383619960661,
+    15.70993862731143
+   ],
+   "extentRad": 0.1353887205500501,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 195,
+  "cca3": "ZAF",
+  "cca2": "ZA",
+  "name": "Afrique du Sud",
+  "capital": "Pretoria",
+  "capitals": [
+   "Bloemfontein",
+   "Le Cap",
+   "Pretoria"
+  ],
+  "region": "Africa",
+  "subregion": "Southern Africa",
+  "neighbors": [
+   "BWA",
+   "LSO",
+   "MOZ",
+   "NAM",
+   "SWZ",
+   "ZWE"
+  ],
+  "areaKm2": 1221447.94,
+  "cap": {
+   "center": [
+    25.206963423557912,
+    -28.492566079187146
+   ],
+   "radiusDeg": 8.211396898748433
+  },
+  "beacon": [
+   23.129602175606724,
+   -30.535481826220273
+  ],
+  "beaconClearanceKm": 384.863,
+  "flag": "flags/zaf.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/zaf.png",
+   "size": 1024,
+   "center": [
+    25.206963423557912,
+    -28.492566079187146
+   ],
+   "extentRad": 0.21497386810681737,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 196,
+  "cca3": "ZMB",
+  "cca2": "ZM",
+  "name": "Zambie",
+  "capital": "Lusaka",
+  "capitals": [
+   "Lusaka"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "AGO",
+   "BWA",
+   "COD",
+   "MOZ",
+   "MWI",
+   "NAM",
+   "TZA",
+   "ZWE"
+  ],
+  "areaKm2": 754730.71,
+  "cap": {
+   "center": [
+    27.803436867615332,
+    -13.249050093325735
+   ],
+   "radiusDeg": 6.41384420259475
+  },
+  "beacon": [
+   26.200592322735886,
+   -14.709700435999482
+  ],
+  "beaconClearanceKm": 304.17,
+  "flag": "flags/zmb.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/zmb.png",
+   "size": 1024,
+   "center": [
+    27.803436867615332,
+    -13.249050093325735
+   ],
+   "extentRad": 0.16791404856784292,
+   "rangeTexels": 32
+  }
+ },
+ {
+  "id": 197,
+  "cca3": "ZWE",
+  "cca2": "ZW",
+  "name": "Zimbabwe",
+  "capital": "Harare",
+  "capitals": [
+   "Harare"
+  ],
+  "region": "Africa",
+  "subregion": "Eastern Africa",
+  "neighbors": [
+   "BWA",
+   "MOZ",
+   "ZAF",
+   "ZMB"
+  ],
+  "areaKm2": 390528.5,
+  "cap": {
+   "center": [
+    29.359168873077575,
+    -18.79008273666683
+   ],
+   "radiusDeg": 4.034098600701106
+  },
+  "beacon": [
+   29.912522902678194,
+   -18.923733645949305
+  ],
+  "beaconClearanceKm": 291.202,
+  "flag": "flags/zwe.svg",
+  "outlineSource": "naturalearth",
+  "patch": {
+   "sdf": "patches/sdf/zwe.png",
+   "size": 1024,
+   "center": [
+    29.359168873077575,
+    -18.79008273666683
+   ],
+   "extentRad": 0.10561245439849548,
+   "rangeTexels": 32
+  }
+ }
+]

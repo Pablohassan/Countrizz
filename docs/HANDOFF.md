@@ -2,6 +2,19 @@
 
 À lire en premier par la prochaine session. Ce document dit **où on en est**, **ce qui a été décidé avec l'utilisateur**, **ce qui reste**, et **les pièges déjà payés**.
 
+> **Mise à jour du 02/10, soir (3ᵉ session) — prime sur les §1 et §5 ci-dessous.**
+>
+> - **Phase 1A exécutée** (plan `docs/superpowers/plans/2026-10-02-countrizz-phase1a-globe-camera.md`, 13 tâches) sur la branche **`phase1a-globe`**, **poussée** sur `countriz` avec l'accord de l'utilisateur ; **pas encore fusionnée** dans `newcountri` (accord à demander, CI verte d'abord). Revue finale par un relecteur neuf (Opus) : C1, C2, I1–I5 corrigés test d'abord ; mineurs M1–M9 reportés (registre `.superpowers/sdd/2026-10-02-countrizz-phase1a-globe-camera/progress.md`, non versionné, et message de fin de session).
+> - **Cadrage « B »** choisi par l'utilisateur sur la page de calibration : `k 1`, `m 3`, `θ_min 3°` (`web/src/camera/config.ts`). Il veut **garder les réglages interactifs** : `calibrate.html` (curseurs + préréglages par l'URL `country`, `k`, `margin`, `floor`, `ctx`, `nopanel`).
+> - **Serveur de dev** : `npm run dev -- --port 5180 --strictPort` (le 5173 est pris par un conteneur Docker) → `http://localhost:5180/` et `/calibrate.html`.
+> - **CI Linux** : WebGPU exige `--use-vulkan=swiftshader` en plus des options macOS ; SwiftShader WebGL 2 y rend le jeu complet à quelques images par seconde → délais longs (`playwright.config.ts`, `test.slow` du groupe webgl2 de `flight.spec.ts`). Ne jamais supposer qu'un retard fixe (ex. 8 s) dure plus qu'un vol en CI : retenir la route jusqu'à la mesure (`slow-patch.spec.ts`).
+> - **Imagerie (1B) — constats du 02/10 au soir, décisions à prendre avec l'utilisateur** :
+>   - le millésime **2017** (CC BY 4.0, choisi par l'utilisateur comme « plus récent CC BY ») **ne couvre que l'Europe** : ailleurs, blanc (aucune donnée) ; **2016** est le seul CC BY mondial mais a des **bandes nuageuses** (Irlande, Chine du Nord…) et des halos côtiers ; **2024/2025** (CC BY-NC-SA) sont propres partout ;
+>   - au **cadrage B**, la caméra reste loin : la texture globale 8K n'est grossie qu'au plus ×1,73 à l'arrivée (bureau DPR 1), ×3,47 en DPR 2, ×3,77 sur téléphone en 4K ; l'emprise utile d'un patch image est donc celle de la **vue d'arrivée** (≈ θ_eff · m · 1,75), pas celle du patch SDF ;
+>   - un patch Sentinel-2 posé sur Blue Marble laisse une **couture** (disque d'océan plus clair) ; Sentinel-2 aussi en texture globale l'efface ;
+>   - poids estimé des patchs (2048 + 1024 px, KTX2 ETC1S) : **≈ 139 Mo** pour 197 pays (moyenne de FRA, LUX, JPN) → hébergement à décider (git, LFS, ou hors dépôt).
+>   - Service EOX : WMS `https://tiles.maps.eox.at/wms` (GetMap EPSG:4326, ≤ 4096 px, sans clé ; l'`OnlineResource` des capacités est cassé, `http://tiles.maps.eox.at/?`) ; couches `s2cloudless` (= 2016), `s2cloudless-2017` … `s2cloudless-2025`.
+
 ## 1. État
 
 - Dépôt : `~/projetsperso/countriz/countrizz`, branche **`newcountri`**, HEAD **`c266e31`**, arbre propre. **Rien n'a été poussé** (remote du projet : `countriz` → `github.com/Pablohassan/Countrizz`).

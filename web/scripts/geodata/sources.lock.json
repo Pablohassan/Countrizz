@@ -1,0 +1,1370 @@
+{
+ "flags": {
+  "AFG": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/afg.svg",
+   "sha256": "d651c4d526e8b3737398d862c30f0a742ced13a22f39bfc29f04bc0d7783d861"
+  },
+  "AGO": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ago.svg",
+   "sha256": "d510319aa366d9690f37f822bd506511c0287bafba32b727125fff42dfc320a2"
+  },
+  "ALB": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/alb.svg",
+   "sha256": "58a7875b9e1d6cd29d04ea37980c598726ef29dab82830c71b03c01931f73648"
+  },
+  "AND": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/and.svg",
+   "sha256": "cabcda797d98f77c61973e20f33a82f6f4881ad1c2198b2d6c21394a9c0fc9d1"
+  },
+  "ARE": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/are.svg",
+   "sha256": "c2f0ab611e7ef71e387a32e9fc11529f9ab3e4399f86bdaa72d8641bf9d16d0f"
+  },
+  "ARG": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/arg.svg",
+   "sha256": "28df5e6b8990689509da5a3b604d336952ff670a522dea698b6f4dc981593560"
+  },
+  "ARM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/arm.svg",
+   "sha256": "105f860a02d777fd6d9dac98f9b8bb3ecef823c0f29024d3eeb8a05d7f27c5c5"
+  },
+  "ATG": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/atg.svg",
+   "sha256": "84e4afd659f4599081fb41aecfbacec156d88655774ddac22bd65aa85ed16757"
+  },
+  "AUS": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/aus.svg",
+   "sha256": "7a929fa6b7864aa1fe284747e301de3ec33774e0f13e9db2ceaa472af7780e0f"
+  },
+  "AUT": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/aut.svg",
+   "sha256": "87ba54f4d246b8c5ace4abbbaec67f00a1eeaa0e82050eec99fd0d4c66a2d15d"
+  },
+  "AZE": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/aze.svg",
+   "sha256": "989b0ede6bc5b5f0a78123ac86ca83c7142d2b58950f33719d0b885bdd6e0775"
+  },
+  "BDI": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/bdi.svg",
+   "sha256": "c6ecefc5503f2665b7ed5c8cd78a04eab9fea0fcb5d9d1136174b78c92a4e1e3"
+  },
+  "BEL": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/bel.svg",
+   "sha256": "71593871a477e6de99a0b808c1b49ae5d6c413ffe1e0a87c2f7dda893bcae1b2"
+  },
+  "BEN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ben.svg",
+   "sha256": "5263e808c60140fd9cfcd2d263a6a84f25006ba4ee67084756714148c167308b"
+  },
+  "BFA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/bfa.svg",
+   "sha256": "146b13643544fe363686dd9e1411e05b67b8808a6868c4b4619715234e1d4eb9"
+  },
+  "BGD": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/bgd.svg",
+   "sha256": "3c905e721f1bd3d02395b25a71c33999a1806f1443b680faea3f98bdb2824a05"
+  },
+  "BGR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/bgr.svg",
+   "sha256": "4d75044a89e3d1d60d139e46a9d7eb73ea3fb875aa3c0537fa266e66e1264dc6"
+  },
+  "BHR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/bhr.svg",
+   "sha256": "3b0ea96157bfe3a03efbf60d3438cc61bf0524cb924139849070f111fa36617b"
+  },
+  "BHS": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/bhs.svg",
+   "sha256": "cb8d83b37bb4abf04408d343569f21ff55e520cc6f4132c81d0fa68d68f2c199"
+  },
+  "BIH": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/bih.svg",
+   "sha256": "f97d2bdc30c486737b6f551c199728ce854520e9cc0e29b4439f1d8235278a9e"
+  },
+  "BLR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/blr.svg",
+   "sha256": "6c207d2c29ca9624efa3913da48b0126509f81f4fc1d584d787db1b11b002c64"
+  },
+  "BLZ": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/blz.svg",
+   "sha256": "063c3e725efb58f62991f4915a7b05738802880187da7ee7801f34a55f49c803"
+  },
+  "BOL": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/bol.svg",
+   "sha256": "ff9145f2f1ce4984dd2fc5c991411c6cce80d0e973365c1d02518827fb429b63"
+  },
+  "BRA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/bra.svg",
+   "sha256": "1c88c41b5cd59b259a3d33e79bdb47abf497a98c3ed22765c8f1eda25145348a"
+  },
+  "BRB": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/brb.svg",
+   "sha256": "8f3e0915b5844b48242742c8c175702c10250f18be17a16518ad48117a2dcd53"
+  },
+  "BRN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/brn.svg",
+   "sha256": "022584eac01f3dc2f9e26ff677880edc557d3693b787db462725cb4aa5b0c4d3"
+  },
+  "BTN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/btn.svg",
+   "sha256": "df1f82c25df1589dbb43efeeefcde322dd985462e40de6d29b35f6d580948117"
+  },
+  "BWA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/bwa.svg",
+   "sha256": "a304b768c8dd4d3dfdd3ac4d95bfad2367e944138ad0b7becc264c4021331cc2"
+  },
+  "CAF": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/caf.svg",
+   "sha256": "61f0ed34a11550e880abe4c3a8a0c6e464c5359256a812f04f91ac84377e5a7d"
+  },
+  "CAN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/can.svg",
+   "sha256": "438fa2fe24336d84e9d8c3d162eb71dcafdbc091b8851eb7dedee92d1bc73234"
+  },
+  "CHE": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/che.svg",
+   "sha256": "8d497c6d7953587b1b4c63611bd59c01c90ead08c549a7349500a74493d93276"
+  },
+  "CHL": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/chl.svg",
+   "sha256": "6bee191c7412f2edbcc3cd01bf8b46c31ae004dbe3aac9a5effaedf4592fc775"
+  },
+  "CHN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/chn.svg",
+   "sha256": "067f3d4a9c9ae019213a40a5602289b4e58e437649c694c8a512eb78133e74af"
+  },
+  "CIV": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/civ.svg",
+   "sha256": "8acc566d494c77e2bb6962eebff1ad7563aec887bff73724050b12fc456b9fe0"
+  },
+  "CMR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/cmr.svg",
+   "sha256": "3959f1407f09ff3311bb8127464c9dc7e4ae69becdfc6e1e3af60edfd3dab791"
+  },
+  "COD": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/cod.svg",
+   "sha256": "ac87deb56759d31866c2e2534666818f282baf5eeb49877c2f2cdd1952b8787c"
+  },
+  "COG": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/cog.svg",
+   "sha256": "7979fb385766b627a74d22b7368b74dfd1330fa8d702ac9a6407fa7454d8026c"
+  },
+  "COL": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/col.svg",
+   "sha256": "94bd7c5005f32a49590a17e5235076e7b817cd50212965e994113fadbab5fe63"
+  },
+  "COM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/com.svg",
+   "sha256": "d4bec3c0cbd4f40f8c7935cc2445291243b2a72722b022bd3214ad7da317d9d5"
+  },
+  "CPV": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/cpv.svg",
+   "sha256": "a0cea3322efbd802beb288f8aa22ce0f03fa2b9e1981443696b0734967ead272"
+  },
+  "CRI": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/cri.svg",
+   "sha256": "c57d593d9a9c515139c868d7bf7a52a0ddffd9e4779fcb4726f3b19981302254"
+  },
+  "CUB": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/cub.svg",
+   "sha256": "5b4939d1887851566662579c08f902cd406e10e93f77bc65a71f00f6ebe26a38"
+  },
+  "CYP": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/cyp.svg",
+   "sha256": "5fb7f568ecd0e932a1ba75ee41460a4c984ccdff00eb80067c42bef6f4185eeb"
+  },
+  "CZE": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/cze.svg",
+   "sha256": "2c37beb5499f1200eabb665e89e8820267ee850f8de8a0844180b28d2a0a75e5"
+  },
+  "DEU": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/deu.svg",
+   "sha256": "2c250539e04acb7a231c79e79c5a677f52f9b8c3bed888cad8961fcece637220"
+  },
+  "DJI": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/dji.svg",
+   "sha256": "d738d99ec677b82365216809f0f1b2eddc15d8097c8d94f75cdbcf1e7d913bd4"
+  },
+  "DMA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/dma.svg",
+   "sha256": "45dc4e0ab145724abb72f508a5ac66a07e35b1b1a412c765129942c642800f2e"
+  },
+  "DNK": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/dnk.svg",
+   "sha256": "cda1acb38b77c12ccd2386d2001d45a39b925fc0355f8c2e6add2ea9b344a60e"
+  },
+  "DOM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/dom.svg",
+   "sha256": "1a5e5867b50e225605483587c746f801939536547a743496e6d7e5a1bf88ccca"
+  },
+  "DZA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/dza.svg",
+   "sha256": "0aebaa77b0e8962dea9a46852a2c83f3c5f77820762ed0093506e36e159ba998"
+  },
+  "ECU": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ecu.svg",
+   "sha256": "28a25b99d30be8a135369410a280411371ae8bf1f4f810445b37ed8ae61db563"
+  },
+  "EGY": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/egy.svg",
+   "sha256": "fee319f1d79b6f9e5d2c38d9f55d1943a70eca8aafd818ce7d03d609cf193d50"
+  },
+  "ERI": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/eri.svg",
+   "sha256": "5caed10d9b5e76c625abaa90ae7e0f8bab6ededbf93d83bbc3529912d3aa85c6"
+  },
+  "ESP": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/esp.svg",
+   "sha256": "9284c2eb74644d83cab4d2bf5ab97ba11f194b003fd365e40ce8b8fcff104180"
+  },
+  "EST": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/est.svg",
+   "sha256": "c14e431a242c496558703a085d251415f25d19b694d42316e0e8782c48c92569"
+  },
+  "ETH": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/eth.svg",
+   "sha256": "aab618e2965aac01fa5eb48c5af9d4f94fffe9b1e5d123bf1725c1609f4b8e28"
+  },
+  "FIN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/fin.svg",
+   "sha256": "092319e9d930dc1586c06ae2addad763a39085662a648b370ffe34a3c9f3a34d"
+  },
+  "FJI": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/fji.svg",
+   "sha256": "0d3f48359295c0d9eeb55ed3ce0f549f60808f8cb5ba0a4c7ad82312eae3098a"
+  },
+  "FRA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/fra.svg",
+   "sha256": "ed464889a9bd7a15290b7668108bfddc5f7a1919647fc32e703ef15e997f21c9"
+  },
+  "FSM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/fsm.svg",
+   "sha256": "1b77fbb8bdd4d4a11a8b3f020728844f7fbd75e2e9b844f56eabc98d09f95313"
+  },
+  "GAB": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/gab.svg",
+   "sha256": "49b3d90f61b21d5205c11e662000386634389dbdb59814406cc5f3f95898dd9e"
+  },
+  "GBR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/gbr.svg",
+   "sha256": "6630bbeda9e545f741ebfa81f85a9ad33c504ca03edbd9809d2aba49d79f2ac5"
+  },
+  "GEO": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/geo.svg",
+   "sha256": "9a2c64e85c53be6531557803e372d5ee05e694854f5a68731fcc7d92cdb556b2"
+  },
+  "GHA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/gha.svg",
+   "sha256": "ba91d6ca3701d7aa7925efc07e74a6613cb7a9362754a00fb41a03cd51810d9e"
+  },
+  "GIN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/gin.svg",
+   "sha256": "3cc3c6c935a6437ddfb64d37968e240e8a30c21430ad9d6f1d462a7d1a325c9e"
+  },
+  "GMB": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/gmb.svg",
+   "sha256": "7bd4a28293b449cceb68203578062ae2edcac85a92a2200cf269ff5a4216ae71"
+  },
+  "GNB": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/gnb.svg",
+   "sha256": "61b1a1165bee31a3e3f80f08551cd0b37d5ee0ce85b0c55e8fe136ba09ccdb48"
+  },
+  "GNQ": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/gnq.svg",
+   "sha256": "a0133c62e6d735a4f322b8f0935fb0128c8636f6c8bfafbe907857064aed61e0"
+  },
+  "GRC": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/grc.svg",
+   "sha256": "05bf8bf4284b398104c612647361210c4fbbe79941ee02d741a8f78019f1a95b"
+  },
+  "GRD": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/grd.svg",
+   "sha256": "c21d8df4c456c047b8226e8dc0007492a9e120e06870d3244c1b4f51bae86121"
+  },
+  "GTM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/gtm.svg",
+   "sha256": "124fb28e60d97c2f5661abb664682ab5d2cab2f93d5dbb8efe01f97b1baf13fb"
+  },
+  "GUY": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/guy.svg",
+   "sha256": "7e7ed0e3b8f0a28dd8970952ee88714b12f13f573c00edce0aed655c0c823fd9"
+  },
+  "HND": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/hnd.svg",
+   "sha256": "165e84dd07025ab626c5777db02c71893536479aad07153968b28f329d976900"
+  },
+  "HRV": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/hrv.svg",
+   "sha256": "746d272b48219a6e3a5275964a1d064157dd2f7a59f73595ab72eefb10af3589"
+  },
+  "HTI": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/hti.svg",
+   "sha256": "482434c6bde4b2e6c58431817efc368183aeee30dd5023365ad4ccba24444dae"
+  },
+  "HUN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/hun.svg",
+   "sha256": "e2b190936c5ad0b1d0ab724e49a581cb2e9a2eb863f811d2a9dd66fc34d0b22d"
+  },
+  "IDN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/idn.svg",
+   "sha256": "3a5b7e918c628944082dbfdb8b2e3585b5c79668ec01dfd6d31da4ac1aa0afe5"
+  },
+  "IND": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ind.svg",
+   "sha256": "ac1799decc6c8d7306eb692459b4f75240db6069211c91e917e92d7c184f609a"
+  },
+  "IRL": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/irl.svg",
+   "sha256": "4308758999cf5dfc5b7aed2479601d90c4d55ccec820c0365a2a68075ea66449"
+  },
+  "IRN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/irn.svg",
+   "sha256": "6d54f8efba82ac71a9e6c4af7aa8e9658981deff5d244312688277c0536cd3e2"
+  },
+  "IRQ": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/irq.svg",
+   "sha256": "5817324ec2fc7cc2ebe25c1bb820f1f9581db343f230ff04d6cf298aa2b68724"
+  },
+  "ISL": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/isl.svg",
+   "sha256": "61c249f14d1f224aa40b6afd1a64b029aadf3ef5051b57c6bb762613621753ef"
+  },
+  "ISR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/isr.svg",
+   "sha256": "386cca0c982ef9390fadd1d2772380abbe42ff620203972a34c0b4056cf17e6a"
+  },
+  "ITA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ita.svg",
+   "sha256": "84d336c82f30b60b61fbfdfedc294895d7f588d536cff865c2a1672bbf2dceff"
+  },
+  "JAM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/jam.svg",
+   "sha256": "b79dfc40d0ef5b161625f1ce1cfbb82b32338342bf44d78f141c5060347ab64e"
+  },
+  "JOR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/jor.svg",
+   "sha256": "638cbd069fffda1402fe406127e8d0ce76caef5ec89aab9a6b01d7b3d928d613"
+  },
+  "JPN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/jpn.svg",
+   "sha256": "021528286cd78ab6c79b3a09069de817d2fe572be3f347857bcfbebdca9fa603"
+  },
+  "KAZ": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/kaz.svg",
+   "sha256": "4e7d79977e473589fd8442d3cdd79173a7c01c7a94c94973c72bdcecdbfd3df4"
+  },
+  "KEN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ken.svg",
+   "sha256": "07a60a5a76283ef067ba20be1042b83401f8a4d10d2ffa147cdd8b47a37e4356"
+  },
+  "KGZ": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/kgz.svg",
+   "sha256": "5390956ccecee510d2b2e335a49de7700b6a53007490fdf891b4ca69225d6a59"
+  },
+  "KHM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/khm.svg",
+   "sha256": "3be8d40012e8ff4818695a77a06f927f706f6bfa26b5fd3d90683a9291fe95ea"
+  },
+  "KIR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/kir.svg",
+   "sha256": "4e98723fc35e4aed9811362ea805ad2b89cad2b876b55f28a920155b98b8765b"
+  },
+  "KNA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/kna.svg",
+   "sha256": "7141fc771ed8643ef579bfe1877b487c0d78ca651c406747ea5b222075bdcab8"
+  },
+  "KOR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/kor.svg",
+   "sha256": "11bf656b2ab70f39cc348a0a9708a1b18e1d760a3ee8e5e2cfdcdfa4564ed61a"
+  },
+  "KWT": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/kwt.svg",
+   "sha256": "c78f07ce54bfe82fe780ecf89421f6b227178b6b67494d12dab8f7367dcfa17e"
+  },
+  "LAO": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/lao.svg",
+   "sha256": "2d455cd79e90777f2a73f9d22a0f418025225d27775b5eaab00fd5ba4a3c80e3"
+  },
+  "LBN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/lbn.svg",
+   "sha256": "743e92013c04b61bb8117e2fe9a9f0a75563c71ae7cf829bd898b5cebccc7069"
+  },
+  "LBR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/lbr.svg",
+   "sha256": "88134f28766a987aa25962e4cfc88d517e82c3d43a680340714b772ebec1f400"
+  },
+  "LBY": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/lby.svg",
+   "sha256": "937722cc6560a406d640e0cb951f61131cc1a12ba9449a2d7b69f3989d2b3af5"
+  },
+  "LCA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/lca.svg",
+   "sha256": "de2bda515b3296a0323d1d7d0e4c8c9f65eb74a9cdff96ce0fd5f696b92cc0c2"
+  },
+  "LIE": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/lie.svg",
+   "sha256": "91a3c853872a7ce82061f225b8ff6e48adab5b40b2c23f9de8069f56af6f1028"
+  },
+  "LKA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/lka.svg",
+   "sha256": "9cf7e67940e1def88f0f7f30a55428b65997aca9064d5f07cb29ee17a271a6ad"
+  },
+  "LSO": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/lso.svg",
+   "sha256": "d62346fb96e858b9c6ff8e45626bb5f4daa60be00df36119af4c1013a832955e"
+  },
+  "LTU": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ltu.svg",
+   "sha256": "6d09f2569d8337903b914c3d47d426e4400c248cdf4e09ac28afc86729c204da"
+  },
+  "LUX": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/lux.svg",
+   "sha256": "7f5f416cc28126734bb3658ceca5daf73e2e22b47894003c0f4f4040d43c33f7"
+  },
+  "LVA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/lva.svg",
+   "sha256": "526d2bcd29471445d80ff06c0f5c6952b8e2522c9b92628f330f361669061fe0"
+  },
+  "MAR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mar.svg",
+   "sha256": "8af97ae438e3c865920ac0d7f490ce7b2743991c080871a6e8e363a3bf023f93"
+  },
+  "MCO": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mco.svg",
+   "sha256": "9280f69ba9be91ee2dc2c42b21997a35b85c09873400f2a803800d6a5ac527fb"
+  },
+  "MDA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mda.svg",
+   "sha256": "47285db23e3e1a2b5ffa07d489b2288708b6aa6abbe8f0bbca95157f9db78e5a"
+  },
+  "MDG": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mdg.svg",
+   "sha256": "0c89389db4c8d3e324b0bbe931f5bf6793059156c092574280c467c432161ebb"
+  },
+  "MDV": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mdv.svg",
+   "sha256": "4705b6a52a4032cebae342dd1f7eb03d59c6502630a8e87d9cc58098216032b3"
+  },
+  "MEX": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mex.svg",
+   "sha256": "8f8c68cdfdb0555aff09344839f98f98968c17e234a6e658b9ec03f232ac7393"
+  },
+  "MHL": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mhl.svg",
+   "sha256": "002b4bdb9a2a052bf912f94d7e0c4ac477ad3f8999acd3fbc0205a95f65ec461"
+  },
+  "MKD": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mkd.svg",
+   "sha256": "ec68234212aea25304e95f2c9c24e9c9345e84db5f51646e798666d812bf446d"
+  },
+  "MLI": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mli.svg",
+   "sha256": "46414f469590796e5c954514a7e85b4f42a1aaed090ff00cdf3dd1177b71cd5a"
+  },
+  "MLT": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mlt.svg",
+   "sha256": "9b52006c0fa572286821f8aa49031aa3e84882634582b918a8f458f93b0c160f"
+  },
+  "MMR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mmr.svg",
+   "sha256": "a59661a7414dcf27bb0f207e6ea7675d106b94c415d16d0d281114350b64f216"
+  },
+  "MNE": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mne.svg",
+   "sha256": "26da118cfde1dff29bcb62d7848b27e7937c67c4a14aed5d534305abd1b790df"
+  },
+  "MNG": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mng.svg",
+   "sha256": "ecce8055ed0459cd9a3f1457b2a97d3c5fdb9248b66f778fb6cd34e0782444bd"
+  },
+  "MOZ": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/moz.svg",
+   "sha256": "5954bc225999796917367e1eee54c9f7aa62ca8258a829394bc5d61960fc1b8e"
+  },
+  "MRT": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mrt.svg",
+   "sha256": "1655e7ed2d848678e50138df15f3db7b37ed7a9c4f61cdf7e26cfec12d0e7057"
+  },
+  "MUS": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mus.svg",
+   "sha256": "620065e8d55a3debeb8ffbb5c1a02822d035608a8a88f31c3d782566e4ac8460"
+  },
+  "MWI": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mwi.svg",
+   "sha256": "e6ea2fef8894e31f5c56f710ad95d4e76c585c4aa82306eaa92e01e5bf6e5676"
+  },
+  "MYS": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/mys.svg",
+   "sha256": "50153aa2b4252689ea2867c7fcc3e71e22726d6f5bd6f2617d7a6e41b0ff69bd"
+  },
+  "NAM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/nam.svg",
+   "sha256": "52046de37a57cc1adbbb9f395c50dc5c76efe6723e92d5afa5943c537105c709"
+  },
+  "NER": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ner.svg",
+   "sha256": "3d6dcd673d7d6513b6eca5ae39aa07e8814674dc7ae1cad8653db23e0db1f605"
+  },
+  "NGA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/nga.svg",
+   "sha256": "a7ab3f4739067655f944100c607d7aa60e18e7cd5891be1c49740552772d07d1"
+  },
+  "NIC": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/nic.svg",
+   "sha256": "75a1793652afbcdc6784e43ca2f1cc95023eb901215a30ebc62933b2166470cd"
+  },
+  "NLD": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/nld.svg",
+   "sha256": "02f98ef41b7d13c8541028365e6a5230418322375d08ea179f151b8cda81a718"
+  },
+  "NOR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/nor.svg",
+   "sha256": "cf778c90eab3597dd6960c27a597e5d82b571eefc8fd9d0da5ea3a1465785290"
+  },
+  "NPL": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/npl.svg",
+   "sha256": "af31f69d534d987f041d527ca5389ea3aa38803244406f71846a31c644a64e30"
+  },
+  "NRU": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/nru.svg",
+   "sha256": "f058a4304eba49975a88e43f9bf78fabdfa4376b74d0b0f7a20686bfd013cffc"
+  },
+  "NZL": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/nzl.svg",
+   "sha256": "397d8d7055883fa600d16d976fb24918318064ae4e76f09043c67e0ec6b61052"
+  },
+  "OMN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/omn.svg",
+   "sha256": "0cdbe5a103675a9a93ca7ee6b74543d1bfe72a9f00865d96e451e95863ab308f"
+  },
+  "PAK": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/pak.svg",
+   "sha256": "50e2c7a7975eac53565fbf6cd3992b1888783aaa6c47be7663ef25f270f6dd73"
+  },
+  "PAN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/pan.svg",
+   "sha256": "a9ed934904a5dddc99fbcde89409a95608d16624110e3a8ad11ea54846530f1e"
+  },
+  "PER": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/per.svg",
+   "sha256": "00b4b5c892cfba5af86075acf930cb08624356060cb3f5f8f6dfe07b613c0d0d"
+  },
+  "PHL": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/phl.svg",
+   "sha256": "a6e9296ed129eb9c7081cdf9c982bba1e5eea751ed62605e9edbdb279aa4b01c"
+  },
+  "PLW": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/plw.svg",
+   "sha256": "e10e786ef194947c4ef307b264b6386080b46e72b6f1b6cf092b84a70ae25458"
+  },
+  "PNG": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/png.svg",
+   "sha256": "062ffeedb0f17be099a6e93fbb490a1391d247bd29110dae00a7dca2ce6b81f2"
+  },
+  "POL": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/pol.svg",
+   "sha256": "a07617b8f0c94466de6eb130ebebae90ba24a63621490d1ed09c68e776a66234"
+  },
+  "PRK": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/prk.svg",
+   "sha256": "acacc97bf058c67b65d3b274ca3d77ec27e6ce317b0c4525242ae822bc8ac003"
+  },
+  "PRT": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/prt.svg",
+   "sha256": "edb74efa7f686ae550a8bda714b2806951feebd3d0c7ec23b67e398776c0b490"
+  },
+  "PRY": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/pry.svg",
+   "sha256": "18c0c63fb67a7e7b2ce2ee6e592281b02d2975b0abf518b6bcfda3a144dce65a"
+  },
+  "PSE": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/pse.svg",
+   "sha256": "38baf089db4a0b12a780f588c115a5027c49fbbb0ce155d259a71b9b167334a9"
+  },
+  "QAT": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/qat.svg",
+   "sha256": "fa5328908ce97fe3308288f5fdbf244a2bd1c29bbf416f835ae1a290647148d7"
+  },
+  "ROU": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/rou.svg",
+   "sha256": "f2c772c0e45aeacdb37b4c6dd3a72728bb704dfeaad0bdba2006c2f316a406ad"
+  },
+  "RUS": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/rus.svg",
+   "sha256": "a522f2a2c90b45c61d0ea15898c102061eb7d72195e1ede1318734979c6c538b"
+  },
+  "RWA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/rwa.svg",
+   "sha256": "603a34e50f4d8eed69f8f46a62acb30194bb38ad131710698090d38e71f0fd56"
+  },
+  "SAU": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/sau.svg",
+   "sha256": "f08733af02356940e857332bcba2d5241f5fcf293047b06d79a3570abc894669"
+  },
+  "SDN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/sdn.svg",
+   "sha256": "6a989ca6adff0e8369afc376c6a1bbe39ce923bcf47957dc6ccea35b305a860e"
+  },
+  "SEN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/sen.svg",
+   "sha256": "7e517e59e2225e8832442da3c63247626083eeac69359fcde2778d4ca03e018c"
+  },
+  "SGP": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/sgp.svg",
+   "sha256": "11e0cb81c9de2e4573d1c19e8725211f56459999f82dcedb634c69295be408d8"
+  },
+  "SLB": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/slb.svg",
+   "sha256": "73dd791adc89cb0fc6eb47611f20e0edc88822c1b5d115ce1d1c9a1f7a85c695"
+  },
+  "SLE": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/sle.svg",
+   "sha256": "5703f44b0569e1f5dc483b5cd2e92b446271bc8685fe87dce17db7863813318c"
+  },
+  "SLV": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/slv.svg",
+   "sha256": "f21bfe589f74aaa9f7b144e07a7e6975d2a4b91df0faaaa3a9408d62a1228a06"
+  },
+  "SMR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/smr.svg",
+   "sha256": "4fc8bef03fe3dee6f20a5f6002ced36aa6301ca27aa24252e99a6dbb8d82f576"
+  },
+  "SOM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/som.svg",
+   "sha256": "49f0e4dfd5b954909390e9f7f2e0c470912f0cde9dd66b0812e05ff41d26334a"
+  },
+  "SRB": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/srb.svg",
+   "sha256": "c6c1f2b05c866dd5810af669428daabffc3913e2af940a22841c0ca6694cc5d4"
+  },
+  "SSD": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ssd.svg",
+   "sha256": "d3cbf907be6f08e2774d47fbb618724e0ce0d80f22feec982598d4c439ecd0a9"
+  },
+  "STP": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/stp.svg",
+   "sha256": "bed99c1df7ee7261ed821ffc8e501540f1fd2b582802d14a867264089be99143"
+  },
+  "SUR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/sur.svg",
+   "sha256": "05ec4be8d1b12ff694421f898c6ec0d3781085e505c5aa1e75de4839741dbc05"
+  },
+  "SVK": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/svk.svg",
+   "sha256": "19807f47056dc616adb285a9fe98de197d196c4deb030db9ad24496c1702eee1"
+  },
+  "SVN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/svn.svg",
+   "sha256": "405c2e8c81354b5da78781ea9ddcc02d90eb0ebef8a15552139b74d57a061381"
+  },
+  "SWE": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/swe.svg",
+   "sha256": "355aad973caa2749f6bad1d968147a0d6729bfa9708e3a2d35a2dc59e056a862"
+  },
+  "SWZ": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/swz.svg",
+   "sha256": "08aec8fb884a28c6ea30039020735a7daa66e14308f4ceafc95cc1d1864ba4ac"
+  },
+  "SYC": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/syc.svg",
+   "sha256": "78c63630819694ec1cc4f116c530324572aa95c7f83a1bfc904df505f276dee8"
+  },
+  "SYR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/syr.svg",
+   "sha256": "54f97951fca4b7fa41c14c39f60b676970a708c1868067c7d83625ff1b6a54a3"
+  },
+  "TCD": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/tcd.svg",
+   "sha256": "00d7848e2227786d3948bb6ba29b3f2c069d6b5435c5887fb2493dd8c56cf654"
+  },
+  "TGO": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/tgo.svg",
+   "sha256": "7c43fc9e6185b400cc8dbded9e53e77a74a6571b2eac30aa1880aab540e4d246"
+  },
+  "THA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/tha.svg",
+   "sha256": "7b132d5dae5b49db5fe30939b7727479507d032be65a70837e713bd67e0ca969"
+  },
+  "TJK": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/tjk.svg",
+   "sha256": "d201ded0e4c37d718d4f3f63e1e117e1922ecfa069ef6f875db62a6ad0927e21"
+  },
+  "TKM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/tkm.svg",
+   "sha256": "2bca06d1b18532bfa7073613f09ede066c5cdba9b82d28e8305d1c66f96bde21"
+  },
+  "TLS": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/tls.svg",
+   "sha256": "b55c22bb60658815c7743f9d8bd0ae92fac58d478a4b3d64d2456d342eda2811"
+  },
+  "TON": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ton.svg",
+   "sha256": "8fce8b8085e903b92c76e015169d9a599df6a9d0a4d9542fd9e2dcdaed52c9d7"
+  },
+  "TTO": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/tto.svg",
+   "sha256": "acdfc1d9f97da239f11da6e776978c57f90803e960d667fa07d4c87a51c7b2fe"
+  },
+  "TUN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/tun.svg",
+   "sha256": "091928df942ffffcfd25f56f7669db6a3e4ab8056651a14141cf6125307fc317"
+  },
+  "TUR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/tur.svg",
+   "sha256": "9a79acab61aa6c7aafbcf156a5981f82082cab1d99d54125fd46b8ea08827e5d"
+  },
+  "TUV": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/tuv.svg",
+   "sha256": "892886d01673719f94ffbc30eb2d45537bf328056f4afe5f948f650bff5c1f1f"
+  },
+  "TWN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/twn.svg",
+   "sha256": "ca6460c643e56f17c8319371b9cf3299be9f148a432c08907118f4dae451763c"
+  },
+  "TZA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/tza.svg",
+   "sha256": "ec2946483003e4d6719efdc960c8495b8686717ff71fb49b98be6e77c5446978"
+  },
+  "UGA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/uga.svg",
+   "sha256": "29d11149316481b79195f7b8904057c660b5b9de6909abbf65c39d73616fe4e6"
+  },
+  "UKR": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ukr.svg",
+   "sha256": "99378f3f43f136b550020a681c25405d2318a3ac4c531200b904f5e499ffb0b8"
+  },
+  "UNK": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/unk.svg",
+   "sha256": "b491dc9d63ba71ac1f7b7aece763bffd498cf53f63c61901efb9715b8911ae20"
+  },
+  "URY": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ury.svg",
+   "sha256": "25f99bf54b2f8ecb634ec9f7b4733fc75eec78a65e90e0c73aca147795268278"
+  },
+  "USA": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/usa.svg",
+   "sha256": "a2bcd5f0579f15bb79fa6c28dd1ed55b647c7726de6cec108e1bfd305a257050"
+  },
+  "UZB": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/uzb.svg",
+   "sha256": "a21bdfe5eda0196e8f610cd7bc7055874ee405ca271035f2f2655179861398f1"
+  },
+  "VAT": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/vat.svg",
+   "sha256": "a9b6942dcf4fbf0e507ab138149dccbb336809517b4869daee4384f72b7113fe"
+  },
+  "VCT": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/vct.svg",
+   "sha256": "ad03cdafd142ad99fef7df1beaa78f025140c34775c173b7bf2cd6c0a453bbad"
+  },
+  "VEN": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/ven.svg",
+   "sha256": "fc900175eae3027f4335aed41b5a89fde6825b24561416069ec0e890e99c02e5"
+  },
+  "VNM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/vnm.svg",
+   "sha256": "be513630b99b05b9987a43722ae416d87d45e860ea8dd0c8b4f0c5e33b9af38a"
+  },
+  "VUT": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/vut.svg",
+   "sha256": "dda80df857425b07d5d227e11e34e9b4d8ca55b23221f84ee4dfbdccc33865e4"
+  },
+  "WSM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/wsm.svg",
+   "sha256": "a73180862b079ac9fefad2e634299ea09e01422b208a5c55bba7dedd0062d534"
+  },
+  "YEM": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/yem.svg",
+   "sha256": "aff4d12e967f61e73956a24619f40c610fc86cec88e2f382a6f19ee810d14726"
+  },
+  "ZAF": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/zaf.svg",
+   "sha256": "32ac1bf128b0f2edde2c9a3e1393eb0a0eab24446c68dd8c7638915e02087ef1"
+  },
+  "ZMB": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/zmb.svg",
+   "sha256": "a4ed541311a7746a2e1efc8a6d47c1906cf5d5e63f0d238c589c885149899491"
+  },
+  "ZWE": {
+   "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/data/zwe.svg",
+   "sha256": "9f301eb679651980b2f8537086fe6f668e4c67ec8197b5a1392bd1e7f05eebdd"
+  }
+ },
+ "geoBoundaries": {
+  "ALB": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/ALB/ADM0/geoBoundaries-ALB-ADM0.geojson",
+   "sha256": "9564408f188c755326f84ea40a8bd9be41225c26e8c877a0232c7c14269a5fc3",
+   "iso": "ALB",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikipedia",
+   "year": "2003"
+  },
+  "AND": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/AND/ADM0/geoBoundaries-AND-ADM0.geojson",
+   "sha256": "6cb835ac2a6a2fffe8b81f08b4a3dc366adac4083e61cbe9918bd0ab795234b1",
+   "iso": "AND",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2007"
+  },
+  "ARM": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/ARM/ADM0/geoBoundaries-ARM-ADM0.geojson",
+   "sha256": "3a0d673dc347a5ae2eb5622b4dcaf65090c50f8a7ce8cf2c750ec37464260f2b",
+   "iso": "ARM",
+   "license": "Creative Commons Attribution 2.5 Generic",
+   "source": "geoBoundaries, Wikimedia",
+   "year": "2005"
+  },
+  "ATG": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/ATG/ADM0/geoBoundaries-ATG-ADM0.geojson",
+   "sha256": "52396401ccf60056c63784182151702195bb289cd9060b3e676f25f3508a4537",
+   "iso": "ATG",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia",
+   "year": "2009"
+  },
+  "BDI": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/BDI/ADM0/geoBoundaries-BDI-ADM0.geojson",
+   "sha256": "f3a4b3b3adbb2a9c8bdc1ab206e96b14125c2006af5c64cd858aadd4280e643d",
+   "iso": "BDI",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2006"
+  },
+  "BEL": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/BEL/ADM0/geoBoundaries-BEL-ADM0.geojson",
+   "sha256": "8ca06eb105130dfc4b751a519ad32f0d1653321c4243b4189ee32894c4433418",
+   "iso": "BEL",
+   "license": "Creative Commons Attribution 4.0 (CC BY 4.0)",
+   "source": "Eurostat- European Commission",
+   "year": "2022"
+  },
+  "BHR": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/BHR/ADM0/geoBoundaries-BHR-ADM0.geojson",
+   "sha256": "cc75e86fb0075be1635a7e46b502ce055b023a9c05fb71715704e5a8ec123d28",
+   "iso": "BHR",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "BHS": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/BHS/ADM0/geoBoundaries-BHS-ADM0.geojson",
+   "sha256": "cd7f8976c584e774fd57649bc3ece36fe278f45ed15121c403b170bfbceb24a1",
+   "iso": "BHS",
+   "license": "Public Domain",
+   "source": "Natural Earth",
+   "year": "2021"
+  },
+  "BLZ": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/BLZ/ADM0/geoBoundaries-BLZ-ADM0.geojson",
+   "sha256": "28c4db1b42b3430600b2692ccf0ebe90dceeb8704a759c6611de3f6c03ffc7af",
+   "iso": "BLZ",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "BRB": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/BRB/ADM0/geoBoundaries-BRB-ADM0.geojson",
+   "sha256": "ba0b05fa020e9c41c863e12536408edfbb362877f8fe52f8dd6235c7ee150419",
+   "iso": "BRB",
+   "license": "Creative Commons Attribution 2.5 Generic",
+   "source": "geoBoundaries, Wikimedia",
+   "year": "2005"
+  },
+  "BRN": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/f549eab/releaseData/gbOpen/BRN/ADM0/geoBoundaries-BRN-ADM0.geojson",
+   "sha256": "544e8a3b70531614f1fc0441d0a9ebf5777fe03fbfb1b9d8bc4fd07d81131bfa",
+   "iso": "BRN",
+   "license": "Public Domain",
+   "source": "Wikimedia Commons",
+   "year": "2015"
+  },
+  "BTN": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/BTN/ADM0/geoBoundaries-BTN-ADM0.geojson",
+   "sha256": "035550a8428684b14230fc04bcd48e3b25375f567c654cc1555f7a5eec942eb7",
+   "iso": "BTN",
+   "license": "Creative Commons Attribution 3.0 License",
+   "source": "geoBoundaries, Wikimedia Commons; credit to author 'Babbage'",
+   "year": "2010"
+  },
+  "CHE": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/CHE/ADM0/geoBoundaries-CHE-ADM0.geojson",
+   "sha256": "3eb2414cea931ee2c2927d718b8ef57b4e492543bd8a34af4233e1d43007a55d",
+   "iso": "CHE",
+   "license": "Federal Office of Topography swisstopo License",
+   "source": "Federal Office of Topography swisstopo",
+   "year": "2022"
+  },
+  "COM": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/COM/ADM0/geoBoundaries-COM-ADM0.geojson",
+   "sha256": "5a7314c4704470e88dcb5dda329a1c365ad7fa3dc12b4ce89c2632fff5277305",
+   "iso": "COM",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "CPV": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/CPV/ADM0/geoBoundaries-CPV-ADM0.geojson",
+   "sha256": "832e5d177fcea9dc1af72596281d3b915ef60afd3fc2486c1c3fbb12390c11d1",
+   "iso": "CPV",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "CYP": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/CYP/ADM0/geoBoundaries-CYP-ADM0.geojson",
+   "sha256": "87ede4e9e630eec610eba9c017dc9645fb088a3aff61b8a510349080f9c78efb",
+   "iso": "CYP",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "DJI": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/DJI/ADM0/geoBoundaries-DJI-ADM0.geojson",
+   "sha256": "01d3818471d1470b69845101e87f83d09edeeaee23133b437654e2c48acdde5b",
+   "iso": "DJI",
+   "license": "Public Domain",
+   "source": "Natural Earth",
+   "year": "2021"
+  },
+  "DMA": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/DMA/ADM0/geoBoundaries-DMA-ADM0.geojson",
+   "sha256": "3816b95a8cc9b1587a6317e091884654051a2d9c38d222037005dcd3b3d1e5ae",
+   "iso": "DMA",
+   "license": "Creative Commons Attribution 2.5 Generic",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2005"
+  },
+  "DNK": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/DNK/ADM0/geoBoundaries-DNK-ADM0.geojson",
+   "sha256": "960cfc505de51d236eeb4bd1a1052c30624c73bd7dd64812abec6a760afb71bf",
+   "iso": "DNK",
+   "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+   "source": "geoBoundaries, Web Vectors Map",
+   "year": "2021"
+  },
+  "DOM": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/DOM/ADM0/geoBoundaries-DOM-ADM0.geojson",
+   "sha256": "271b81fe9dc134beb53f921969ac2f75cd04acfabc97e00b8955107812a78db9",
+   "iso": "DOM",
+   "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+   "source": "Caribbean GeoPortal, N/A",
+   "year": "2020"
+  },
+  "EST": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/EST/ADM0/geoBoundaries-EST-ADM0.geojson",
+   "sha256": "969d725711bd7fc8aac521c2bcba983172ff70017fce51162b32a5eb9253f89e",
+   "iso": "EST",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "FJI": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/FJI/ADM0/geoBoundaries-FJI-ADM0.geojson",
+   "sha256": "f31373981f0b8d91700cff20cb1b4ccfba7e409ee0180ae438b7a0dd04b0ba09",
+   "iso": "FJI",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "geoBoundaries, OpenStreetMap",
+   "year": "2017"
+  },
+  "FSM": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/FSM/ADM0/geoBoundaries-FSM-ADM0.geojson",
+   "sha256": "583b5e180784fb9cf9d56fadcb89a883246be0584dd305fc71517c91e798554b",
+   "iso": "FSM",
+   "license": "Creative Commons Attribution 3.0 Intergovernmental Organisations (CC BY 3.0 IGO)",
+   "source": "OCHA ROP, Federated States of Micronesia Division of Statistics, 2010 Census of Population and Housing and Secretariat of the Pacific Community, Statistics for Development Division",
+   "year": "2019"
+  },
+  "GMB": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/GMB/ADM0/geoBoundaries-GMB-ADM0.geojson",
+   "sha256": "a7bfabd0b9d6a823341d1cbc0eaa627a781342834b9795abab52d2c15a7b48e3",
+   "iso": "GMB",
+   "license": "Creative Commons Attribution 4.0 (CC BY 4.0)",
+   "source": "geoBoundaries, Knippenberg, Erwin, & Moritz, Meyer. “The Hidden Potential of Mobile Phone Data Insights on COVID-19 in the Gambia.” The World Bank Data Catalog",
+   "year": "2020"
+  },
+  "GNB": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/GNB/ADM0/geoBoundaries-GNB-ADM0.geojson",
+   "sha256": "cf8ca0e1b3cafbe204bc4d55cf2ab13ca655bc6a48e863161ad35b3549cfd86c",
+   "iso": "GNB",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "GNQ": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/GNQ/ADM0/geoBoundaries-GNQ-ADM0.geojson",
+   "sha256": "63c68b263ffdb4aa908c76c050693364175a7e71aaf53102b05cdbe85d63fa88",
+   "iso": "GNQ",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2016"
+  },
+  "GRD": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/GRD/ADM0/geoBoundaries-GRD-ADM0.geojson",
+   "sha256": "5e9233fd5ed3c199cd387fc03500c8f3eaa2e076abb7e247e7a6c19c12e67b23",
+   "iso": "GRD",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "HTI": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/HTI/ADM0/geoBoundaries-HTI-ADM0.geojson",
+   "sha256": "6029d87d264af82b36b54ba2b611d0edd6da56a33fc78fee50b580fd1bfd3010",
+   "iso": "HTI",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "ISR": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/ISR/ADM0/geoBoundaries-ISR-ADM0.geojson",
+   "sha256": "19d7d535f1dea08ac558558af3a4e9521a8dcc498e2794c456b87e6b925b0e82",
+   "iso": "ISR",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "JAM": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/JAM/ADM0/geoBoundaries-JAM-ADM0.geojson",
+   "sha256": "50f195907246be126dceff209cb954b0d542b057134aad5df82dd05dfe246655",
+   "iso": "JAM",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2014"
+  },
+  "KIR": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/KIR/ADM0/geoBoundaries-KIR-ADM0.geojson",
+   "sha256": "8ae4e8915709032641c56ec8f47a095f49a29817ef8fea7fc6a179bb9904ee6b",
+   "iso": "KIR",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "KNA": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/KNA/ADM0/geoBoundaries-KNA-ADM0.geojson",
+   "sha256": "7de139b327f1e0503d67b45284d80d9d885a73bd96c824c9abc407ec3b1ebd96",
+   "iso": "KNA",
+   "license": "Creative Commons Attribution 2.5 Generic",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2006"
+  },
+  "KWT": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/KWT/ADM0/geoBoundaries-KWT-ADM0.geojson",
+   "sha256": "ee9a6ab896afa735109d5bde836abfbde79c3413a358d4a2a62392dec929e100",
+   "iso": "KWT",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "LBN": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/90a1d52/releaseData/gbOpen/LBN/ADM0/geoBoundaries-LBN-ADM0.geojson",
+   "sha256": "e72382a086c0aed8fb19c6895a1bdf212264f180f4439143b759f24a3ad395f2",
+   "iso": "LBN",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2010"
+  },
+  "LCA": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/LCA/ADM0/geoBoundaries-LCA-ADM0.geojson",
+   "sha256": "dd371a300ecf188ed01d9629a1bde349e5c019893689e87b76d5bec542ce4e81",
+   "iso": "LCA",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2005"
+  },
+  "LIE": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/LIE/ADM0/geoBoundaries-LIE-ADM0.geojson",
+   "sha256": "8a447218181a4649807bd4803ff9ff81873b3a770f60142ec42c58220bfaeae8",
+   "iso": "LIE",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "LSO": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/LSO/ADM0/geoBoundaries-LSO-ADM0.geojson",
+   "sha256": "e99ac1987a9f066cb83dd7d6ceefb07c884487a5a38dfce1abc02d38ccf9b72d",
+   "iso": "LSO",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "LUX": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/LUX/ADM0/geoBoundaries-LUX-ADM0.geojson",
+   "sha256": "4a8520b25b82ae16a8385f26a95886f78a9cac2812893947f97a423760bded8f",
+   "iso": "LUX",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "MCO": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/MCO/ADM0/geoBoundaries-MCO-ADM0.geojson",
+   "sha256": "782f642ae163ac729516d8e7faa223f354c32b2719577bb332d7eb7be7e7b7c1",
+   "iso": "MCO",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "MDA": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/MDA/ADM0/geoBoundaries-MDA-ADM0.geojson",
+   "sha256": "0721c988a6faf135d4915ee466fb7fe461bc110d98a5881f23846548b3b9709d",
+   "iso": "MDA",
+   "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+   "source": "geoBoundaries, Wikipedia",
+   "year": "2014"
+  },
+  "MDV": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/MDV/ADM0/geoBoundaries-MDV-ADM0.geojson",
+   "sha256": "67946ca5af6ff4c85e7bdf63901addccfeac239e2d9b8e97d81eb6a3d5e90f3a",
+   "iso": "MDV",
+   "license": "Creative Commons Attribution 4.0 (CC BY 4.0)",
+   "source": "Sentinel-2 10-Meter Land Use/LandCover",
+   "year": "2021"
+  },
+  "MHL": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/MHL/ADM0/geoBoundaries-MHL-ADM0.geojson",
+   "sha256": "13445171e902d4400cb9c3fb02492d212c57a7106612cc69c4f6e5b2ec8d0a12",
+   "iso": "MHL",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "MKD": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/MKD/ADM0/geoBoundaries-MKD-ADM0.geojson",
+   "sha256": "958bca8dbec85a1d64e2454a40e48f169477234082fcfb189cf1a0b6ef3088b3",
+   "iso": "MKD",
+   "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+   "source": "EuroGeographics, Regional IM Working Group - Europe",
+   "year": "2016"
+  },
+  "MLT": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/MLT/ADM0/geoBoundaries-MLT-ADM0.geojson",
+   "sha256": "6fdd6eac31cb0c76f29a119731f0705c7e4cc46459ba8ad11e7d85539e0bcb5b",
+   "iso": "MLT",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2010"
+  },
+  "MNE": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/MNE/ADM0/geoBoundaries-MNE-ADM0.geojson",
+   "sha256": "b3991446cfdd7a5101ee0d227007269ab9f4cb83e971ef16ad2335058a967fe3",
+   "iso": "MNE",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "MUS": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/MUS/ADM0/geoBoundaries-MUS-ADM0.geojson",
+   "sha256": "8f4cee597c5e2840a65cb2d89e151fa1928d0a0b7506e91aafe3d2b6114ddaf7",
+   "iso": "MUS",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambachers",
+   "year": "2017"
+  },
+  "NLD": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/NLD/ADM0/geoBoundaries-NLD-ADM0.geojson",
+   "sha256": "626345fb2e69cf4ac95ffa0db737a725dc041f455dcdb892293dcbabc5034881",
+   "iso": "NLD",
+   "license": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+   "source": "National Georegister",
+   "year": "2022"
+  },
+  "NRU": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/NRU/ADM0/geoBoundaries-NRU-ADM0.geojson",
+   "sha256": "3f6b35591f16f04b07d5882a38d79c95c80b1754bd34f7f1cba0a5d127688aa3",
+   "iso": "NRU",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "PLW": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/PLW/ADM0/geoBoundaries-PLW-ADM0.geojson",
+   "sha256": "7905de9e65bfa18ff4361f701d4b87598b6298616a84beb634dc6aa236484dbe",
+   "iso": "PLW",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "PSE": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/PSE/ADM0/geoBoundaries-PSE-ADM0.geojson",
+   "sha256": "ad8d5e564d5023e06e3899e3c4435c0a7e5f4a9fb117019ef8f6d522a3f96640",
+   "iso": "PSE",
+   "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+   "source": "raster2polygon from Sentinel-2 10m Land Cover where Image Year = 2021 / exclude gridcode = 1 (water) / dissolve / erase adm0 overlap / processed by IMB",
+   "year": "2021"
+  },
+  "QAT": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/QAT/ADM0/geoBoundaries-QAT-ADM0.geojson",
+   "sha256": "2a14d3068d2fc131ed411d9db187a1579f6d207d4c577bd453920213b8193ee9",
+   "iso": "QAT",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "Open Street Map, Wambacher (https//wambachers-osm.website/boundaries/)",
+   "year": "2017"
+  },
+  "RWA": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/RWA/ADM0/geoBoundaries-RWA-ADM0.geojson",
+   "sha256": "4aff3394463aaa84d8c0592260aa0f04009a7d555781c2530b65b533e18bb507",
+   "iso": "RWA",
+   "license": "Creative Commons Attribution 4.0 (CC BY 4.0)",
+   "source": "Sentinel-2 10-Meter Land Use/LandCover",
+   "year": "2021"
+  },
+  "SGP": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/SGP/ADM0/geoBoundaries-SGP-ADM0.geojson",
+   "sha256": "d347c753ec38568609f9414da6b85ec46d2a776d1a3c99b9634822735a335c38",
+   "iso": "SGP",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "Urban Redevelopment Authority, derived from ADM 3",
+   "year": "2016"
+  },
+  "SLB": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/SLB/ADM0/geoBoundaries-SLB-ADM0.geojson",
+   "sha256": "87d4be37df7b284c03fe411a462dd2bcf58d383d46edf2bc046326ac774a2e36",
+   "iso": "SLB",
+   "license": "Public Domain",
+   "source": "Natural Earth",
+   "year": "2021"
+  },
+  "SLV": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/SLV/ADM0/geoBoundaries-SLV-ADM0.geojson",
+   "sha256": "c864925e93e1851af10062792881683189771be4a04c111a9f276a6c6de547c4",
+   "iso": "SLV",
+   "license": "Creative Commons Attribution-ShareAlike 2.0",
+   "source": "Open Street Map",
+   "year": "2021"
+  },
+  "SMR": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/SMR/ADM0/geoBoundaries-SMR-ADM0.geojson",
+   "sha256": "2109c65de0bcba5bc61e6d227e1c5669f8244c436fbb433f8a7405c3e8031bed",
+   "iso": "SMR",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "STP": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/STP/ADM0/geoBoundaries-STP-ADM0.geojson",
+   "sha256": "666ecde10c5d7ff4d3f8f2623e0f68d55e3f035691d1d2437d2893089b885a0c",
+   "iso": "STP",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "SVK": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/SVK/ADM0/geoBoundaries-SVK-ADM0.geojson",
+   "sha256": "67ff5f5dfa031ba5a4ccb43fcf0d092e6ab307e78e278dfd0652c9112978febd",
+   "iso": "SVK",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "SVN": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/SVN/ADM0/geoBoundaries-SVN-ADM0.geojson",
+   "sha256": "9df0ad9979ff342ea79d11b046e0ed0d0b08763b6e618d54f7b37152768c92fe",
+   "iso": "SVN",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikipedia",
+   "year": "2009"
+  },
+  "SWZ": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/SWZ/ADM0/geoBoundaries-SWZ-ADM0.geojson",
+   "sha256": "d5d26bd867d566c7665baa8f95f7959d087fdf5ffda1b32299b20b47ecae6adb",
+   "iso": "SWZ",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "SYC": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/SYC/ADM0/geoBoundaries-SYC-ADM0.geojson",
+   "sha256": "942dfb20a5ffc9867ef647d98258532ed587b63b1e1e93df90f1837a1d781a93",
+   "iso": "SYC",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "TLS": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/TLS/ADM0/geoBoundaries-TLS-ADM0.geojson",
+   "sha256": "8d8e1ce1f1f7452e4f27923c881e04c7b88402d8f1bdbab488f682160e70b3b6",
+   "iso": "TLS",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "TON": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/TON/ADM0/geoBoundaries-TON-ADM0.geojson",
+   "sha256": "106f993f53bf2cba6adf6b1b91b30c6b78788c11c6f1dc5897af4081f8a07df9",
+   "iso": "TON",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "TTO": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/TTO/ADM0/geoBoundaries-TTO-ADM0.geojson",
+   "sha256": "898660f34135bb61e8f31d547f88800a5ed646656ce5c13a93e0dfb23b878a2a",
+   "iso": "TTO",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "TUV": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/TUV/ADM0/geoBoundaries-TUV-ADM0.geojson",
+   "sha256": "84aad1891d78f181ebd0b4898772c6258f98c51ca7aaef2053fadb8f12ac385e",
+   "iso": "TUV",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "TWN": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/TWN/ADM0/geoBoundaries-TWN-ADM0.geojson",
+   "sha256": "56781c61d1e9fbc3bb86d2197d8887c8df010227843faaf46b00c98974403896",
+   "iso": "TWN",
+   "license": "Pixabay License for Content",
+   "source": "geoBoundaries, Pixabay",
+   "year": "2012"
+  },
+  "UNK": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/XKX/ADM0/geoBoundaries-XKX-ADM0.geojson",
+   "sha256": "7515263ee1d809fb7159bc39e1f482ed7d846e322c41c015fb3cd61bfcbe095d",
+   "iso": "XKX",
+   "license": "Creative Commons Attribution-ShareAlike 2.0",
+   "source": "Open Street Map",
+   "year": "2021"
+  },
+  "VAT": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/VAT/ADM0/geoBoundaries-VAT-ADM0.geojson",
+   "sha256": "7deb521dbc378d5bce40dda500caca3addc1adcaea0d56658f4121a13bad7def",
+   "iso": "VAT",
+   "license": "Public Domain",
+   "source": "geoBoundaries, Wikimedia Commons",
+   "year": "2017"
+  },
+  "VCT": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/VCT/ADM0/geoBoundaries-VCT-ADM0.geojson",
+   "sha256": "c58186849921b1fca83779d3ab614801d7b60f444f36348dc24429ff837a452e",
+   "iso": "VCT",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "VUT": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/VUT/ADM0/geoBoundaries-VUT-ADM0.geojson",
+   "sha256": "a219d3616d7084e80fb04dc6c9d84d3090ae9db2b962b308a8f42e5fdae58d4e",
+   "iso": "VUT",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  },
+  "WSM": {
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/WSM/ADM0/geoBoundaries-WSM-ADM0.geojson",
+   "sha256": "d553c39353df082e51df3a4d0c60df4e79300ad86a59aa3a2f9bc6f167961a9e",
+   "iso": "WSM",
+   "license": "Open Data Commons Open Database License 1.0",
+   "source": "OpenStreetMap, Wambacher",
+   "year": "2017"
+  }
+ },
+ "naturalEarth": {
+  "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/9380cca83db5f9aef52d5e762765100745f84b27/geojson/ne_10m_admin_0_countries.geojson",
+  "sha256": "239eec57ac17f100a11e2536cffc56752c318b50ae765b0918ff7aab4ce8f255"
+ },
+ "mledozeCountries": {
+  "url": "https://raw.githubusercontent.com/mledoze/countries/c2ac0049c14edcf2436c7aa1b2493222a020b462/countries.json",
+  "sha256": "913e5d716f9dc6b59881ee23488d47f5fda52070d1a34cac5fa327c9e61d8f7c"
+ }
+}

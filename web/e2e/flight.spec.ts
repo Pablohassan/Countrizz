@@ -1,0 +1,53 @@
+import { readFileSync } from 'node:fs';
+import { expect, test, type Page } from '@playwright/test';
+import { PNG } from 'pngjs';
+import type { CountryRecord } from '../src/data/types';
+import type { BackendName } from './sdf-check';
+
+const countries = JSON.parse(readFileSync('public/data/countries.json', 'utf8')) as CountryRecord[];
+const by = (cca3: string) => countries.find((c) => c.cca3 === cca3)!;
+
+async function pixelAt(page: Page, rec: CountryRecord): Promise<number[]> {
+  const p = await page.evaluate((b) => window.__globe!.project(b), rec.beacon);
+  if (!p) throw new Error(`${rec.cca3} : balise derrière l'horizon`);
+  const png = PNG.sync.read(await page.screenshot());
+  const i = (Math.floor(p[1]) * png.width + Math.floor(p[0])) * 4;
+  return [png.data[i]!, png.data[i + 1]!, png.data[i + 2]!];
+}
+
+for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
+  const q = backend === 'webgl2' ? '&webgl' : '';
+  test.describe(backend, () => {
+    test.use({ viewport: { width: 960, height: 600 } });
+
+    test('vole de pays en pays et allume chacun à l’arrivée', async ({ page }) => {
+      await page.goto(`/?demo=FRA,JPN,FJI${q}`);
+      await page.waitForFunction(() => window.__demo?.done === true, null, { timeout: 45_000 });
+      expect(await page.evaluate(() => window.__demo!.arrived)).toEqual(['FRA', 'JPN', 'FJI']);
+      expect(await page.evaluate(() => window.__globe!.backend)).toBe(backend);
+      const c = await pixelAt(page, by('FJI'));
+      console.log(backend, 'Fidji après bonne réponse', JSON.stringify(c));
+      expect(c[1]!).toBeGreaterThan(c[0]! + 20); // vert
+    });
+
+    test('patch absent (404) : la manche continue et la balise prend le relais', async ({ page }) => {
+      await page.route('**/data/patches/sdf/fra.png', (r) => r.fulfill({ status: 404 }));
+      await page.goto(`/?demo=FRA${q}`);
+      await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 30_000 });
+      await page.waitForTimeout(300);
+      const c = await pixelAt(page, by('FRA'));
+      console.log(backend, 'balise de secours', JSON.stringify(c));
+      expect(c.every((v) => v > 220)).toBe(true); // cœur blanc de la balise
+    });
+
+    test('perte du GPU : le renderer est recréé et le globe repart', async ({ page }) => {
+      await page.goto(`/?demo=FRA${q}`);
+      await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 30_000 });
+      await page.evaluate(() => window.__globe!.simulateDeviceLost());
+      await page.waitForFunction(() => window.__globe?.generation === 1 && window.__globe.frames > 10, null, { timeout: 30_000 });
+      const c = await pixelAt(page, by('FRA'));
+      console.log(backend, 'après recréation', JSON.stringify(c));
+      expect(c[0]! + c[1]! + c[2]!).toBeGreaterThan(60);
+    });
+  });
+}

@@ -11,7 +11,7 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node", "vite/client"]
   },
   "include": ["src", "scripts", "types", "e2e", "vite.config.ts", "vitest.config.ts", "playwright.config.ts"]
 }

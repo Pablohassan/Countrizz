@@ -22,6 +22,7 @@
     "e2e": "playwright test"
   },
   "dependencies": {
+    "@react-three/fiber": "9.8.1",
     "d3-interpolate": "3.0.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",

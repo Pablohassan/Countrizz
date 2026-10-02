@@ -1,0 +1,87 @@
+# Countrizz — passation (session du 02/10/2026)
+
+À lire en premier par la prochaine session. Ce document dit **où on en est**, **ce qui a été décidé avec l'utilisateur**, **ce qui reste**, et **les pièges déjà payés**.
+
+## 1. État
+
+- Dépôt : `~/projetsperso/countriz/countrizz`, branche **`newcountri`**, HEAD **`c266e31`**, arbre propre. **Rien n'a été poussé** (remote du projet : `countriz` → `github.com/Pablohassan/Countrizz`).
+- **Phase 0 (socle + données) terminée** : exécutée en direct, revue par un relecteur neuf (Opus), corrections committées, fusionnée en avance rapide dans `newcountri` (13 commits depuis `2d62fc2`, l'instantané de l'ancien code).
+- Dernier état des tests, au merge : `cd web && npm run check` → 62 tests unitaires verts (tsc compris) ; `npm run test:data` → 43 contrôles de données verts.
+- L'ancien code (React 17, globe.gl, Express/MySQL) n'existe plus dans l'arbre ; il reste dans l'historique (`2d62fc2`). Restent sur disque, non suivis et ignorés : `backend/.env` (anciens identifiants MySQL) et quelques `.DS_Store`.
+
+## 2. Documents de référence
+
+| Document | Rôle |
+|---|---|
+| `docs/superpowers/specs/2026-10-02-countrizz-refonte-design.md` | **Le spec, autorité.** §3 données (amendé), §4 rendu, §5 caméra, §6 jeu/UI/intro/PWA, §7 scores/K3s, §8 tests/erreurs, §9 licences, §10 points à valider au prototype |
+| `docs/superpowers/plans/2026-10-02-countrizz-phase0-socle-donnees.md` | Plan exécuté de la phase 0 ; **feuille de route des phases 1 à 3 en fin de fichier** |
+| `web/src/data/types.ts` | Contrat de `countries.json` (`CountryRecord`, `PatchMeta`) que la phase 1 consomme |
+| `web/scripts/geodata/rapport-geodata.md` | Rapport de la dernière génération (par pays : contour, licence, surface, calotte, couverture) |
+| `web/scripts/geodata/overrides.json` | Toutes les exceptions décidées (Kosovo, fusions, capitales, zones disputées) |
+| rpi1 `~/docs/cluster/DETTE.md` §« Reverse proxy nginx » | Dettes **40 à 45** relevées le 02/10 (hors périmètre Countrizz, pour une session cluster) |
+
+## 3. Décisions de l'utilisateur (ne pas les rouvrir sans lui)
+
+- **Approche A** : moteur maison `three/webgpu` + TSL dans React Three Fiber 9 (pas globe.gl, resté en WebGL). Stack alignée sur Zone Club (three r186, R3F 9, React 19, TS 5.9).
+- **197 pays jouables** : les 194 `unMember` de mledoze (Vatican inclus) + Palestine, Kosovo, Taïwan.
+- **Frontières internationalement reconnues** : Crimée → Ukraine ; Golan → **Syrie** ; Palestine dans les **lignes de 1967** (Cisjordanie, Jérusalem-Est comprise, Gaza) ; Sahara occidental et **Cachemire (toutes parties) neutres** ; Chypre du Nord → Chypre ; Somaliland → Somalie. Figé par `__tests__/data/disputed.test.ts` (17 points-sondes).
+- **Capitales de jeu arbitrées** : Palestine → Jérusalem-Est ; Afrique du Sud → Pretoria ; Bolivie → Sucre ; Eswatini → Mbabane ; Malaisie → Kuala Lumpur ; Yémen → Sanaa ; Pakistan → Islamabad ; Sri Lanka → Sri Jayawardenapura ; Bénin → Porto-Novo. Toute nouvelle ambiguïté se **demande** à l'utilisateur.
+- **Imagerie** : jeu **non commercial** → Sentinel-2 cloudless (EOX, CC BY-NC-SA 4.0, attribution visible obligatoire) pour les patchs image des pays.
+- **Style** : globe **photoréaliste** + interface **cartoon** (police Chango, fond `#16173a`, jaune `#f7dc6f`, boutons violets `#6225e6` inclinés avec ombre noire nette).
+- **PWA, mobile d'abord** ; intro recréée en **three.js** (plus de Lottie, plus de vélos, plus de Rick & Morty, plus de « Le Gruppetto »).
+- **Hébergement** : site statique + petit service de scores (Node/TS + PostgreSQL) sur le cluster K3s ; domaine **`countrizz.fr`** (+ `www`).
+- **Mode d'exécution** préféré pour les plans : **en direct** (executing-plans), revue finale par un relecteur neuf.
+
+## 4. Infrastructure déjà en place
+
+- Reverse proxy `.60` : vhost `/etc/nginx/sites-available/countrizz.fr.conf` (+ lien `sites-enabled`), gabarit `mecapilote.fr`, `/` → `192.168.1.101:80`, `/api/` → `192.168.1.102:80`, `sw.js`/`registerSW.js`/`manifest.webmanifest` en `expires -1`. Synchronisé vers le backup `.3` (poussée toutes les 5 min). Répond 502 tant que l'appli n'est pas déployée.
+- Certificat Let's Encrypt `countrizz.fr` + `www.countrizz.fr` (webroot, ecdsa), expiration 31/12/2026, renouvellement automatique.
+- MetalLB : `.101` (countrizz/web) et `.102` (countrizz/scores) **réservées** dans `~/docs/cluster/gen-metallb-allocations.sh` (rpi1). Les Services devront les déclarer par `loadBalancerIP`, via Helm uniquement.
+
+## 5. Prochaines étapes, dans l'ordre
+
+> **Mise à jour du 02/10, fin de journée (2ᵉ session).** Les étapes 1 et 2 ci-dessous sont **faites mais rien n'est commité** (en attente de l'accord de l'utilisateur) :
+> - étape 1 : contrat du patch écrit dans `web/src/data/types.ts` + 6 tests dans `web/scripts/geodata/__tests__/unit/patch.test.ts` (68 tests unitaires, 43 contrôles de données verts) ; chaque nouveau test a été vu échouer sous mutation (nord inversé, rotation sans latitude, lecture bornée au bord) ;
+> - étape 2 : le plan de la phase **1A** (globe jouable : rendu et caméra) est écrit, `docs/superpowers/plans/2026-10-02-countrizz-phase1a-globe-camera.md` (13 tâches). Les points §10.1–§10.3 du spec ont été tranchés sur prototype, et **tout le code du plan a tourné** dans un bac à sable (scratchpad de la session, éphémère) : 67 tests unitaires et 428 tests Playwright verts, dont les 197 pays sur WebGPU et WebGL 2. Les patchs **image** Sentinel-2, les nuages et le post-traitement passent en **phase 1B** (feuille de route en fin de plan).
+>
+> **Suite :** l'utilisateur relit le plan 1A ; exécution **en direct** (executing-plans) puis relecteur neuf. Décisions qui lui reviendront : la forme de la formule de cadrage et `k`/`m` (Task 13 du plan, chiffres en tête du plan), le millésime EOX (phase 1B : 2016 en CC BY 4.0 ou 2018–2025 en CC BY-NC-SA 4.0), les mineurs ci-dessous.
+
+1. ~~**Mineur n°5 de la revue, avant toute ligne de shader**~~ (fait, non commité) : compléter le contrat du patch dans `web/src/data/types.ts` — forme close de la projection azimutale équidistante identique à d3 (`k = c/sin c`, `x = k·cosφ·sinΔλ`, `y = −k·(cosφ0·sinφ − sinφ0·cosφ·cosΔλ)` : **le y de d3 est orienté vers le sud**), `v = py/size` (ligne 0 = nord, pas de flipY), B et A inutilisés, comportement hors cadre ; plus un test qui fige `makeProjector` sur cette forme.
+2. ~~**Écrire le plan de la phase 1 (rendu + caméra)**~~ (fait : plan 1A, non commité) avec `superpowers:writing-plans`, depuis le spec §4–§5 et la feuille de route du plan phase 0 : `WebGPURenderer` + repli WebGL 2, matériau Terre en couches (TSL), lecture du patch SDF dans le shader, frontières (`borders.json`), balises, `CameraDirector` (slerp + profil van Wijk, formule de cadrage, calibration de `k`), patchs **image** Sentinel-2 (lire la doc EOX avant tout appel). Valider d'abord sur prototype les points du spec §10 (lignes épaisses, KTX2, CI headless).
+3. Mineurs reportés de la revue (à proposer à l'utilisateur, pas à faire d'office) :
+   - n°2 Kiribati cadré sur les îles de la Ligne (Tarawa hors cadre) → ancrage + coordonnées des capitales + test « capitale dans le cadre » ;
+   - n°6 patchs en PNG RGB (`colorType: 2`) : 45 065 329 octets au lieu de 50 946 025 ;
+   - n°7 licences : note « dérivés sous ODbL » fausse pour Salvador et Kosovo (CC BY-SA 2.0) ; refuser les licences NoDerivatives ; confirmer licences des drapeaux mledoze et de Wikidata ;
+   - n°8 CI : versionner les surfaces de référence pour lancer `test:data` et `vite build` en CI ;
+   - n°9 écriture atomique des sorties ; n°10 erreur sur collision de codes dans la jointure ;
+   - n°11 test de fusion de Chypre non discriminant ; n°12 le trou de la France chez Natural Earth est Llívia, pas Monaco ;
+   - n°13 publier une couverture du remplissage (`insideTexels`) — la Micronésie n'a que 42 pixels ; n°14 bord du SDF quantifié à ±0,5 texel ;
+   - libellé Wikidata « Kiev » (l'utilisateur préférera sans doute « Kyiv ») → à lui soumettre.
+
+## 6. Pièges déjà payés
+
+- **Ne jamais « sonder » une route d'appli sans lire son handler** : un `GET /api/countries` de l'ancien backend a écrasé `backend/src/data/countries.json` (fichier non suivi). Voir la mémoire `sonde-http-sans-effet-de-bord`.
+- **Hooks du poste** : `grep`/`rg`/`awk`/`sed` filtrant par motif sont bloqués (lire en entier ou par plages, ou `node -e`) ; toute API tierce exige la lecture de sa doc dans le même tour ; le juge anti-mensonge ne voit que les outils **du tour** → relancer la commande avant de citer un chiffre, et recopier les nombres exacts (pas d'arrondi non signalé).
+- `topojson.quantile(topology, p)` trie les poids **par ordre décroissant** : `p` est la **part gardée**.
+- `polyclip-ts` rend des anneaux extérieurs **anti-horaires** (RFC 7946) ; d3 attend l'inverse → repasser par `forD3`.
+- `topojson.mesh` **raccorde** les arcs en lignes continues ; les coutures à ±180° et aux pôles sont filtrées par `dropSeams`.
+- Les tests de types (`expectTypeOf`) ne peuvent pas échouer sous Vitest seul : c'est `tsc` (dans `npm run check`) qui les garde.
+- La variante `ne_10m_admin_0_countries_fra` de Natural Earth laisse le Golan **sans pays** : ne pas l'utiliser telle quelle.
+- geoBoundaries : licence **par pays** ; Suisse (swisstopo) et Taïwan (Pixabay) refusées → Natural Earth ; Palau refusé (surface ×2,54).
+- Le cache `web/scripts/geodata/.cache/` (≈ 70 Mo) n'est pas versionné : une session fraîche doit lancer `npm run geodata:fetch` (≈ 3 min, verrou d'empreintes vérifié) avant `npm run geodata` ou `npm run test:data`. Wikidata coupe parfois une connexion : relancer `npm run geodata:capitals` une fois avant de chercher plus loin.
+- Le dépôt contient une branche nommée comme un hash (`5573f5765b16cf1b02edba45c198e05c7d6a7b28`), antérieure à cette session : ne pas y toucher sans l'utilisateur.
+- **Rendu (prototype du 02/10, détail en tête du plan 1A)** : un readback de canvas WebGPU rend du noir → mesurer sur la capture d'écran ; en headless, WebGPU n'est rendu juste qu'avec `--enable-unsafe-webgpu --enable-features=Vulkan --use-angle=swiftshader --use-webgpu-adapter=swiftshader` ; les KTX2 sortent **retournés nord-sud** sans `toktx --lower_left_maps_to_s0t0` ; sur une face arrière, `normalWorld` est retourné ; un `Sprite` + `PointsNodeMaterial` exige `positionNode = vec3(0)` ; la facette du maillage décale la lecture du patch au cadrage du Vatican → le shader prend le **point exact de la sphère** (intersection du rayon de vue) ; la prop R3F `linear` assombrit tout.
+- **npm + Vitest 5** : après des `npm i` successifs dans un même dossier, la liaison native de rolldown peut manquer (« Cannot find native binding », bug npm #4828). Constaté dans le bac à sable, réparé en supprimant `node_modules` **et** `package-lock.json`. Dans le dépôt, essayer d'abord `rm -rf web/node_modules && npm ci` (le lock épingle les dépendances transitives) ; ne régénérer le lock qu'avec l'accord de l'utilisateur.
+- **Playwright** : `test.use({ launchOptions })` n'est permis qu'au niveau du fichier.
+
+## 7. Commandes utiles
+
+```bash
+cd ~/projetsperso/countriz/countrizz/web
+npm install                      # dépendances
+npm run check                    # tsc + tests unitaires
+npm run geodata:fetch            # sources épinglées → .cache (réseau)
+npm run geodata                  # régénère public/data + rapport (≈ 1 min)
+npm run test:data                # contrôles sur les données générées
+npm run dev                      # page provisoire
+```

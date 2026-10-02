@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import "@components/modejeu.css";
+import "@assets/css/Modejeu.css";
 import ButtonPlay from "@components/ButtonPlay";
 import Footer from "../components/footer";
-import "@components/ButtonPlay.css";
+import "@assets/css/ButtonPlay.css";
 
 export default function ModeJeu() {
   return (

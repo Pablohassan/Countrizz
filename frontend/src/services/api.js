@@ -17,16 +17,36 @@ let countryList;
  *
  */
 
-export const getAllCountries = async (filter) => {
-  if (!countryList) {
-    countryList = (await axios(`${COUNTRY_API_URL}/all`)).data;
-  }
+// export const getAllCountries = async (filter) => {
+//   if (!countryList) {
+//     countryList = (await axios(`${COUNTRY_API_URL}/all`)).data;
+//   }
+
+//   if (filter) {
+//     return countryList.filter(filter);
+//   }
+
+//   return countryList;
+// };
+
+
+
+
+/**
+ * Récupère tous les pays et applique le filtre, si nécessaire.
+ *
+ * @param {function} filter - Fonction de filtrage.
+ * @returns {Promise<Array>}
+ */
+ export const getAllCountries = async (filter) => {
+  const response = await axios(`${LOCAL_API}/api/countries`);
+  const countries = response.data;
 
   if (filter) {
-    return countryList.filter(filter);
+    return countries.filter(filter);
   }
 
-  return countryList;
+  return countries;
 };
 
 /**
@@ -48,11 +68,7 @@ export const getRandomCountries = async (countriesCount = 4, filter) => {
   for (let i = 0; i < countriesCount; i++) {
     let country = await getRandomCountry(filter);
 
-    while (
-      randomCountries.includes(country || country.capital) ||
-      !country ||
-      !country.capital
-    ) {
+    while (randomCountries.includes(country && country.capital) || !country || !country.capital ) {
       country = await getRandomCountry(filter);
     }
 

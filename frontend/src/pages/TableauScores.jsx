@@ -16,8 +16,8 @@ export default function TableauScores() {
 
       <table>
         <tbody>
-          {scores.map(({ name, score }) => (
-            <tr>
+          {scores.map(({ name, score, id }) => (
+            <tr key={id}>
               <td>{name}</td>
               <td>{score}</td>
             </tr>

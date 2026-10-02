@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef,React } from "react";
+
 import lottie from "lottie-web";
 import { useNavigate } from "react-router-dom";
 import data2 from "../assets/Images/CountdownAnimation.json";
@@ -22,7 +23,7 @@ function UseDecrement() {
 
   setTimeout(() => {
     navigate("/jeu");
-  }, 4250);
+  }, 4050);
 
   return (
     <div>

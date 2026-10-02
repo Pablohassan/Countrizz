@@ -1,5 +1,5 @@
 import React from "react";
-import "@components/Questions.css";
+import "@assets/css/Questions.css";
 
 export default function Questions({ countryQuestion, name, flag }) {
   return (

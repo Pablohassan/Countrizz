@@ -7,16 +7,19 @@ export default function JeuDrapeaux({
   playerName,
   onFinished,
 }) {
+
+  
   return (
     <Jeu
       score={score}
       playerName={playerName}
       setScore={setScore}
       onFinished={onFinished}
-      renderQuestion={(countryToGuess) => (
+      renderQuestion={() => (
+        // 1/2 renderQuestion={(countryToGuess) => (
         <Questions
           countryQuestion="Quel est le drapeau de ce pays : "
-          name={countryToGuess.translations.fra.common}
+          // 2/2 name={countryToGuess.translations.fra.common}
         />
       )}
       renderResponse={(country) => (

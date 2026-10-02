@@ -1,5 +1,5 @@
 import React from "react";
-import "@components/Header.css";
+import "@assets/css/Header.css";
 
 export default function Header({ playerName, score }) {
   return (

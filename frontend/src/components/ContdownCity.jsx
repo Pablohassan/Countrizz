@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import lottie from "lottie-web";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 import data2 from "../assets/Images/CountdownAnimation.json";
 import "../App.css";
 

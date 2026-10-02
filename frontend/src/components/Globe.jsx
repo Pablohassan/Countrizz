@@ -1,5 +1,6 @@
 import fromKapsule from "react-kapsule";
 import GlobeKapsule from "globe.gl";
+import * as THREE from 'three';
 
 const Globe = fromKapsule(GlobeKapsule, {
   methodNames: [
@@ -23,7 +24,7 @@ const Globe = fromKapsule(GlobeKapsule, {
     "toGeoCoords",
     "toGlobeCoords",
   ],
-  initPropNames: ["animateIn", "waitForGlobeReady", "rendererConfig"],
+  initPropNames: ["animateIn", "waitForGlobeReady", "rendererConfig","cloudsImageUrl"],
 });
 
 Globe.displayName = "Globe";

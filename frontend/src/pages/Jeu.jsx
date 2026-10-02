@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import { randomCountryQuestion, getRandomCountries } from "@services/api";
+import cloudsImage from "@assets/Images/clouds.png";
 import lottie from "lottie-web";
 import bumpimg from "@assets/Images/bump4k.jpg";
 import bumpd from "@assets/Images/bump4kD.jpg";
@@ -13,11 +14,13 @@ import Header from "@components/Header";
 import GameCountdown from "@components/GameCountdown";
 import earthImageM from "@assets/Images/earth4K.jpg";
 import spaceImage from "@assets/Images/night-sky.png";
+import Bravo from "@components/Bravo";
+import Loose from "@components/Loose";
 import earthImage from "../assets/Images/laterre4k.jpeg";
 import data2 from "../assets/Images/CountdownAnimation.json";
 
 const globeMaterial = new THREE.MeshPhongMaterial();
-globeMaterial.bumpScale = 3;
+globeMaterial.bumpScale = 10;
 globeMaterial.bumpAltitude = 1;
 new THREE.TextureLoader().load(ocean, (texture) => {
   globeMaterial.specularMap = texture;
@@ -26,6 +29,7 @@ new THREE.TextureLoader().load(ocean, (texture) => {
 });
 
 function Jeu({
+  preloadedEarthImage,
   score,
   setScore,
   playerName,
@@ -40,7 +44,8 @@ function Jeu({
   const [isBadResponse, setIsBadResponse] = useState(false);
   const [canRespond, setCanRespond] = useState(false);
   const [turn, setTurn] = useState(0);
-
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const isDeskTop = useMediaQuery({ minWidth: 677 });
   const isHmobile = useMediaQuery({ minWidth: 390, maxWidth: 460 });
   const isMobile = useMediaQuery({ maxWidth: 390 });
@@ -49,46 +54,53 @@ function Jeu({
 
   const getAltitudeFromArea = (area) => {
     if (area > 10000000) {
-      return isDeskTop ? 1.4 : 2;
+      return isDeskTop ? 1.8 : 2.2;
     }
 
     if (area > 5000000) {
-      return isDeskTop ? 1.2 : 1.7;
+      return isDeskTop ? 1.5 : 1.9;
     }
 
     if (area > 1000000) {
-      return isDeskTop ? 1.1 : 1.5;
+      return isDeskTop ? 1.3 : 1.6;
     }
     if (area > 500000) {
-      return isDeskTop ? 1 : 1.3;
+      return isDeskTop ? 1.2 : 1.4;
     }
 
     if (area > 100000) {
-      return isDeskTop ? 0.8 : 1.2;
+      return isDeskTop ? 0.9 : 1.3;
     }
     if (area > 50000) {
-      return isDeskTop ? 0.7 : 1.1;
+      return isDeskTop ? 0.8 : 1.2;
     }
 
     if (area > 10000) {
-      return isDeskTop ? 0.6 : 1;
+      return isDeskTop ? 0.7 : 1;
     }
 
     if (area > 5000) {
-      return isDeskTop ? 0.5 : 0.9;
+      return isDeskTop ? 0.6 : 0.9;
     }
     if (area > 2500) {
-      return isDeskTop ? 0.4 : 0.7;
+      return isDeskTop ? 0.5 : 0.7;
     }
     if (area > 1500) {
-      return isDeskTop ? 0.3 : 0.6;
+      return isDeskTop ? 0.4 : 0.6;
     }
 
     if (area > 500) {
       return isDeskTop ? 0.2 : 0.4;
     }
-    return 0.25;
+    if (area > 100) {
+      return isDeskTop ? 0.1 : 0.3;
+    }
+    return 0.035;
   };
+
+  useEffect(() => {
+    setIsAnimating(isGoodResponse || isBadResponse );
+  }, [isGoodResponse, isBadResponse]);
 
   useEffect(() => {
     lottie.loadAnimation({
@@ -103,6 +115,8 @@ function Jeu({
   async function nextRound() {
     setIsGoodResponse(false);
     setIsBadResponse(false);
+ 
+
 
     const countries = await getRandomCountries(4);
     const randomCountry = randomCountryQuestion(countries);
@@ -114,19 +128,21 @@ function Jeu({
     };
 
     const franceLocation = {
-      altitude: isDeskTop ? 1.2 : 2,
+      altitude: isDeskTop ? 1.4 : 2.2,
     };
 
-    globeRef.current.pointOfView(franceLocation, 900);
+    globeRef.current.pointOfView(franceLocation, 1500);
 
     setTimeout(() => {
-      globeRef.current.pointOfView(countryLocation, 1400);
+      globeRef.current.pointOfView(countryLocation, 2500);
       setCountryRandom(countries);
       setCountryToGuess(randomCountry);
       setTimeout(() => {
         setCanRespond(true);
       }, 400);
-    }, 500);
+     
+    }, 400);
+    setIsPaused(false);
   }
   useEffect(() => {
     nextRound();
@@ -139,20 +155,31 @@ function Jeu({
 
     if (country.name.common === countryToGuess.name.common) {
       setIsGoodResponse(true);
+      setIsPaused(true);
       setTurn(turn + 1);
       setScore(score + 10);
-      setTimeout(() => nextRound(), 600);
+      setTimeout(() => nextRound(), 1500);
+    
     } else {
       setIsBadResponse(true);
+      setIsPaused(true);
       setTurn(turn + 1);
-      setTimeout(() => nextRound(), 600);
+      setTimeout(() => nextRound(), 1500);
+     
     }
   }
 
   return (
     <div className="Jeu">
       <Header playerName={playerName} score={score} />
-      <GameCountdown onFinished={onFinished} />
+      <GameCountdown onFinished={onFinished} paused={isPaused} />
+      {isGoodResponse && (
+        <Bravo
+          className="goodResp z-100000 absolute"
+          namePaysBravo={countryToGuess.name.common}
+        />
+      )}
+      {isBadResponse && <Loose namePaysLoose={countryToGuess.name.common} />}
       {/* <div className="container3" ref={container3} /> */}
 
       {isMobile && (
@@ -162,10 +189,11 @@ function Jeu({
           ref={globeRef}
           globeMaterial={globeMaterial}
           bumpImageUrl={bumpimg}
+          cloudsImageUrl={cloudsImage}
           bumpMap
           alpha
           showAtmosphere
-          globeImageUrl={earthImageM}
+          globeImageUrl={preloadedEarthImage}
           backgroundImageUrl={spaceImage}
           lineHoverPrecision={0}
           polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
@@ -188,10 +216,11 @@ function Jeu({
           ref={globeRef}
           globeMaterial={globeMaterial}
           bumpImageUrl={isDeskTop ? bumpd : bumpimg}
+          cloudsImageUrl={cloudsImage}
           bumpMap
           alpha
           showAtmosphere
-          globeImageUrl={earthImageM}
+          globeImageUrl={preloadedEarthImage}
           backgroundImageUrl={spaceImage}
           lineHoverPrecision={0}
           polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
@@ -217,7 +246,7 @@ function Jeu({
           bumpMap
           alpha
           showAtmosphere
-          globeImageUrl={earthImage}
+          globeImageUrl={preloadedEarthImage}
           backgroundImageUrl={spaceImage}
           lineHoverPrecision={0}
           polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}
@@ -242,7 +271,7 @@ function Jeu({
           bumpMap
           alpha
           showAtmosphere
-          globeImageUrl={earthImageM}
+          globeImageUrl={preloadedEarthImage}
           backgroundImageUrl={spaceImage}
           lineHoverPrecision={0}
           polygonsData={allcountries.features.filter((d) => d.id !== "AQ")}

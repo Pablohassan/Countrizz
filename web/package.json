@@ -19,7 +19,8 @@
     "geodata": "tsx scripts/geodata/build.ts",
     "textures:fetch": "tsx scripts/textures/fetch-textures.ts",
     "textures": "tsx scripts/textures/build-textures.ts",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "e2e:countries": "playwright test e2e/countries.spec.ts"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.1",

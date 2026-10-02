@@ -27,7 +27,8 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `mode=game` : textures, halo, étoiles (sinon masque) ; `tier=haute` : textures 8K ; `sun=lng,lat` : soleil forcé ;
  * - `w`, `h` : taille ; `webgl` : repli WebGL 2 forcé ;
  * - `reveal`, `state`, `t` : apparence du pays (défaut : question, vague achevée) ;
- * - `borders` : frontières de vue d'ensemble.
+ * - `borders` : frontières de vue d'ensemble ;
+ * - `beacon=lng,lat` : balise.
  */
 const q = new URLSearchParams(location.search);
 const lngLat = (s: string | null): LngLat | null => (s ? (s.split(',').map(Number) as LngLat) : null);
@@ -60,6 +61,7 @@ if (rec) {
   pose = { dir, altitude: Number(q.get('alt') ?? 1.4), up: northUp(dir), cut: false };
 }
 globe.applyPose(pose, camera);
+globe.setBeacon(lngLat(q.get('beacon')));
 const sun = lngLat(q.get('sun'));
 if (sun) globe.setSun(toVec(sun));
 const scene = new THREE.Scene();

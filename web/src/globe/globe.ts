@@ -5,6 +5,7 @@ import { sunDirection } from '../camera/sun';
 import type { LngLat, PatchMeta } from '../data/types';
 import type { Vec3 } from '../geo/vec';
 import { createAtmosphere } from './atmosphere';
+import { createBeacon } from './beacon';
 import { createBorders } from './borders';
 import { createCountryLayer, STATE } from './countryLayer';
 import { createEarthMaterial } from './earth';
@@ -32,6 +33,7 @@ export class Globe {
   private readonly sun = new THREE.DirectionalLight(0xffffff, 3);
   private readonly sunListeners: ((dir: Vec3) => void)[] = [];
   private readonly altitudeListeners: ((altitude: number) => void)[] = [];
+  private readonly beacon = createBeacon();
   private hasPatch = false;
 
   constructor(readonly mode: GlobeMode, parts: GlobeParts = {}) {
@@ -41,7 +43,7 @@ export class Globe {
       this.country = createCountryLayer(new THREE.Texture(), earth.base);
       const atmosphere = createAtmosphere();
       this.sunListeners.push(earth.setSun, atmosphere.setSun);
-      this.root.add(atmosphere.mesh, createStars());
+      this.root.add(atmosphere.mesh, createStars(), this.beacon.sprite);
       if (parts.borders) {
         const borders = createBorders(parts.borders);
         this.root.add(borders.object);
@@ -78,6 +80,12 @@ export class Globe {
     u.state.value = STATE[look.state];
     u.stateTime.value = look.stateTime;
   }
+
+  /** Balise au pôle d'inaccessibilité du pays visé (micro-États, archipels, patch absent) ; `null` la retire. */
+  setBeacon(point: LngLat | null): void { this.beacon.setPosition(point); }
+
+  /** Horloge des animations propres au globe (pulsation de la balise), en secondes. */
+  setTime(seconds: number): void { this.beacon.setTime(seconds); }
 
   /** Place la caméra (regard vers le centre, `up` en haut) et le soleil pour la pose de la frame. */
   applyPose(pose: FramePose, camera: THREE.PerspectiveCamera): void {

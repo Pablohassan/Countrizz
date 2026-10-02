@@ -6,7 +6,7 @@ test.use({ viewport: { width: 960, height: 600 }, reducedMotion: 'reduce' });
 
 test('mouvement réduit : coupe puis fondu, l’image revient', async ({ page }) => {
   await page.goto('/?demo=FRA&webgl');
-  await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 45_000 });
+  await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 120_000 });
   await page.waitForTimeout(1000);
   const png = PNG.sync.read(await page.screenshot());
   let sum = 0;

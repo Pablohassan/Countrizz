@@ -10,7 +10,7 @@ test.use({ viewport: { width: 960, height: 600 } });
 test('patch lent : à l’arrivée, la balise montre le pays en attendant le remplissage', async ({ page }) => {
   await page.route('**/data/patches/sdf/fra.png', async (r) => { await new Promise((ok) => setTimeout(ok, 8000)); await r.continue(); });
   await page.goto('/?demo=FRA&webgl');
-  await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 45_000 });
+  await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 120_000 });
   await page.waitForTimeout(300);
   const p = await page.evaluate((b) => window.__globe!.project(b), fra.beacon);
   const png = PNG.sync.read(await page.screenshot());

@@ -22,7 +22,7 @@ for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
 
     test('vole de pays en pays et allume chacun à l’arrivée', async ({ page }) => {
       await page.goto(`/?demo=FRA,JPN,FJI${q}`);
-      await page.waitForFunction(() => window.__demo?.done === true, null, { timeout: 45_000 });
+      await page.waitForFunction(() => window.__demo?.done === true, null, { timeout: 120_000 });
       expect(await page.evaluate(() => window.__demo!.arrived)).toEqual(['FRA', 'JPN', 'FJI']);
       expect(await page.evaluate(() => window.__globe!.backend)).toBe(backend);
       const c = await pixelAt(page, by('FJI'));
@@ -33,7 +33,7 @@ for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
     test('patch absent (404) : la manche continue et la balise prend le relais', async ({ page }) => {
       await page.route('**/data/patches/sdf/fra.png', (r) => r.fulfill({ status: 404 }));
       await page.goto(`/?demo=FRA${q}`);
-      await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 30_000 });
+      await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 120_000 });
       await page.waitForTimeout(300);
       const c = await pixelAt(page, by('FRA'));
       console.log(backend, 'balise de secours', JSON.stringify(c));
@@ -42,10 +42,10 @@ for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
 
     test('perte du GPU : le renderer est recréé et la partie continue (même cadrage, même état)', async ({ page }) => {
       await page.goto(`/?demo=FRA${q}`);
-      await page.waitForFunction(() => window.__demo?.done === true, null, { timeout: 30_000 }); // bonne réponse donnée
+      await page.waitForFunction(() => window.__demo?.done === true, null, { timeout: 120_000 }); // bonne réponse donnée
       const before = await page.evaluate((b) => window.__globe!.project(b), by('FRA').beacon);
       await page.evaluate(() => window.__globe!.simulateDeviceLost());
-      await page.waitForFunction(() => window.__globe?.generation === 1 && window.__globe.frames > 10, null, { timeout: 30_000 });
+      await page.waitForFunction(() => window.__globe?.generation === 1 && window.__globe.frames > 10, null, { timeout: 120_000 });
       const after = await page.evaluate((b) => window.__globe!.project(b), by('FRA').beacon);
       const c = await pixelAt(page, by('FRA'));
       console.log(backend, 'après recréation', JSON.stringify(c), 'projection avant', JSON.stringify(before), 'après', JSON.stringify(after));

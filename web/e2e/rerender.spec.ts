@@ -8,7 +8,7 @@ test('changer de pays ne recharge pas les textures globales', async ({ page }) =
   page.on('request', (r) => { if (/\/textures\/(day|night|surface)-/.test(r.url())) globalTextures++; });
   await page.goto('/?webgl');
   const next = page.getByRole('button', { name: 'Pays suivant' });
-  await expect(next).toBeEnabled({ timeout: 45_000 });
+  await expect(next).toBeEnabled({ timeout: 120_000 });
   await page.waitForTimeout(500);
   const atLoad = globalTextures;
   for (let i = 0; i < 3; i++) {

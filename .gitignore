@@ -6,3 +6,5 @@ web/scripts/geodata/.cache/
 .superpowers/
 .env
 *.env
+web/test-results/
+web/playwright-report/

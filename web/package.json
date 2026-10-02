@@ -14,15 +14,18 @@
     "test:data": "vitest run --project data",
     "geodata:fetch": "tsx scripts/geodata/fetch-sources.ts",
     "geodata:capitals": "tsx scripts/geodata/fetch-capitals.ts",
-    "geodata": "tsx scripts/geodata/build.ts"
+    "geodata": "tsx scripts/geodata/build.ts",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "d3-interpolate": "3.0.1",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "three": "0.186.1"
   },
   "devDependencies": {
     "@mapbox/geojson-rewind": "0.5.2",
+    "@playwright/test": "1.63.0",
     "@types/d3-geo": "3.1.1",
     "@types/d3-interpolate": "3.0.4",
     "@types/geojson": "7946.0.16",
@@ -30,6 +33,7 @@
     "@types/pngjs": "6.0.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "@types/three": "0.186.0",
     "@types/topojson-client": "3.1.5",
     "@types/topojson-server": "3.0.4",
     "@types/topojson-simplify": "3.0.3",

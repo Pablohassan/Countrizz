@@ -2,6 +2,7 @@ import * as THREE from 'three/webgpu';
 import { CameraDirector, type FramePose } from '../camera/director';
 import { FLIGHT, FOV_Y_DEG, FRAMING } from '../camera/config';
 import { loadCountries } from '../data/countries';
+import type { CountryState } from '../globe/globe';
 import type { LngLat } from '../data/types';
 import { northUp, toLngLat, toVec } from '../geo/vec';
 import { Globe } from '../globe/globe';
@@ -24,7 +25,8 @@ declare global { interface Window { __probe?: ProbeApi } }
  * Page de sonde (dev seulement). Paramètres :
  * - `cca3` : pays cadré comme en jeu ; sinon `at=lng,lat` et `alt` : pose explicite ;
  * - `mode=game` : textures, halo, étoiles (sinon masque) ; `tier=haute` : textures 8K ; `sun=lng,lat` : soleil forcé ;
- * - `w`, `h` : taille ; `webgl` : repli WebGL 2 forcé.
+ * - `w`, `h` : taille ; `webgl` : repli WebGL 2 forcé ;
+ * - `reveal`, `state`, `t` : apparence du pays (défaut : question, vague achevée).
  */
 const q = new URLSearchParams(location.search);
 const lngLat = (s: string | null): LngLat | null => (s ? (s.split(',').map(Number) as LngLat) : null);
@@ -45,7 +47,7 @@ if (q.get('cca3') && !rec) throw new Error(`pays inconnu : ${q.get('cca3')}`);
 let pose: FramePose;
 if (rec) {
   globe.setPatch(rec.patch, await loadPatchTexture(`/data/${rec.patch.sdf}`));
-  globe.setLook({ visible: true, reveal: 1, state: 'question', stateTime: 0 });
+  globe.setLook({ visible: true, reveal: Number(q.get('reveal') ?? 1), state: (q.get('state') ?? 'question') as CountryState, stateTime: Number(q.get('t') ?? 0) });
   const director = new CameraDirector({
     viewport: { width, height, fovYDeg: FOV_Y_DEG }, framing: FRAMING, flight: FLIGHT, reducedMotion: true, start: rec.cap.center,
   });

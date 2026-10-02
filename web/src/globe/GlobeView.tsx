@@ -1,4 +1,4 @@
-import { Component, useEffect, useImperativeHandle, useState, type ReactNode, type Ref } from 'react';
+import { Component, useEffect, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from 'react';
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three/webgpu';
 import { FOV_Y_DEG } from '../camera/config';
@@ -9,7 +9,8 @@ import { GlobeController } from './controller';
 import { Globe } from './globe';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
 import { lookAt } from './reveal';
-import { loadGlobeTextures } from './textures';
+import { withRetry } from './retry';
+import { disposeGlobeTextures, loadGlobeTextures, type GlobeTextures } from './textures';
 
 extend(THREE as unknown as Parameters<typeof extend>[0]);
 
@@ -53,7 +54,10 @@ class Unsupported extends Component<{ children: ReactNode }, { failed: boolean }
 export function GlobeView({ ref, framing, onReady }: Props) {
   const [controller] = useState(() => new GlobeController('/', matchMedia('(prefers-reduced-motion: reduce)').matches));
   const [generation, setGeneration] = useState(0);
-  const [fade, setFade] = useState(false);
+  // Mouvement réduit (spec §5 : fondu + coupe) : chaque coupe relance un voile noir qui s'efface en 250 ms.
+  const [cuts, setCuts] = useState(0);
+  // Textures globales ou frontières introuvables après les nouvelles tentatives : message et « Réessayer ».
+  const [loadError, setLoadError] = useState<string | null>(null);
   const forceWebGL = new URLSearchParams(location.search).has('webgl');
 
   useEffect(() => { if (framing) controller.setFraming(framing); }, [controller, framing]);
@@ -84,35 +88,58 @@ export function GlobeView({ ref, framing, onReady }: Props) {
             return info.renderer;
           }}
         >
-          <GlobeScene controller={controller} generation={generation} onReady={onReady} onCut={() => setFade(true)} />
+          <GlobeScene controller={controller} generation={generation} onReady={onReady} onError={(e) => setLoadError(String(e))} onCut={() => setCuts((c) => c + 1)} />
         </Canvas>
+        {loadError && (
+          <div role="alert" title={loadError} style={{ position: 'absolute', inset: 0, display: 'grid', placeContent: 'center', gap: 12, color: '#f7dc6f', background: '#16173a', textAlign: 'center', fontFamily: 'sans-serif' }}>
+            <p>Le globe n’a pas pu se charger (réseau ?).</p>
+            <button onClick={() => { setLoadError(null); setGeneration((g) => g + 1); }}>Réessayer</button>
+          </div>
+        )}
+        <style>{'@keyframes countrizz-cut { from { opacity: 1 } to { opacity: 0 } }'}</style>
         <div
-          onTransitionEnd={() => setFade(false)}
-          style={{ position: 'absolute', inset: 0, background: '#000', pointerEvents: 'none', opacity: fade ? 1 : 0, transition: fade ? 'none' : 'opacity 250ms' }}
+          key={cuts}
+          style={{ position: 'absolute', inset: 0, background: '#000', pointerEvents: 'none', opacity: 0, animation: cuts > 0 ? 'countrizz-cut 250ms ease-out' : 'none' }}
         />
       </div>
     </Unsupported>
   );
 }
 
-function GlobeScene({ controller, generation, onReady, onCut }: { controller: GlobeController; generation: number; onReady?: Props['onReady']; onCut(): void }) {
+function GlobeScene({ controller, generation, onReady, onError, onCut }: { controller: GlobeController; generation: number; onReady?: Props['onReady']; onError(e: unknown): void; onCut(): void }) {
   const renderer = useThree((s) => s.gl) as unknown as THREE.WebGPURenderer & { userData: { backend: Backend; tier: QualityTier } };
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
   const [globe, setGlobe] = useState<Globe | null>(null);
+  // onReady passe par une ref : un parent qui le donne en flèche inline ne doit pas reconstruire le globe à chaque rendu.
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
+  const onErrorRef = useRef(onError);
+  onErrorRef.current = onError;
 
   useEffect(() => {
     let alive = true;
+    let built: { globe: Globe; textures: GlobeTextures } | null = null;
     const { backend, tier } = renderer.userData;
-    void Promise.all([loadGlobeTextures(renderer, tier), fetch('/data/borders.json').then((r) => r.json() as Promise<LngLat[][]>)]).then(([textures, borders]) => {
-      if (!alive) return;
+    const loadBorders = async () => {
+      const r = await fetch('/data/borders.json');
+      if (!r.ok) throw new Error(`borders.json : HTTP ${r.status}`);
+      return (await r.json()) as LngLat[][];
+    };
+    void withRetry(() => Promise.all([loadGlobeTextures(renderer, tier), loadBorders()]), { attempts: 3, delayMs: 800 }).then(([textures, borders]) => {
+      if (!alive) { disposeGlobeTextures(textures); return; }
       const g = new Globe('game', { textures, borders });
+      built = { globe: g, textures };
       controller.attach(g);
       setGlobe(g);
-      onReady?.({ backend, tier });
-    });
-    return () => { alive = false; controller.attach(null); };
-  }, [renderer, controller, onReady]);
+      onReadyRef.current?.({ backend, tier });
+    }, (e: unknown) => { if (alive) onErrorRef.current(e); });
+    return () => {
+      alive = false;
+      controller.attach(null);
+      if (built) { built.globe.dispose(); disposeGlobeTextures(built.textures); }
+    };
+  }, [renderer, controller]);
 
   useEffect(() => { controller.setViewport({ width: size.width, height: size.height, fovYDeg: FOV_Y_DEG }); }, [controller, size.width, size.height]);
 

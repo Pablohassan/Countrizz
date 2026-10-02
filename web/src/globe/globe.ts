@@ -3,7 +3,7 @@ import { color } from 'three/tsl';
 import type { FramePose } from '../camera/director';
 import { sunDirection } from '../camera/sun';
 import type { LngLat, PatchMeta } from '../data/types';
-import type { Vec3 } from '../geo/vec';
+import { toVec, type Vec3 } from '../geo/vec';
 import { createAtmosphere } from './atmosphere';
 import { createBeacon } from './beacon';
 import { createBorders } from './borders';
@@ -34,6 +34,8 @@ export class Globe {
   private readonly sunListeners: ((dir: Vec3) => void)[] = [];
   private readonly altitudeListeners: ((altitude: number) => void)[] = [];
   private readonly beacon = createBeacon();
+  private beaconDir: Vec3 | null = null;
+  private readonly cameraPosition = new THREE.Vector3(0, 0, 3);
   private hasPatch = false;
 
   constructor(readonly mode: GlobeMode, parts: GlobeParts = {}) {
@@ -82,7 +84,17 @@ export class Globe {
   }
 
   /** Balise au pôle d'inaccessibilité du pays visé (micro-États, archipels, patch absent) ; `null` la retire. */
-  setBeacon(point: LngLat | null): void { this.beacon.setPosition(point); }
+  setBeacon(point: LngLat | null): void {
+    this.beacon.setPosition(point);
+    this.beaconDir = point ? toVec(point) : null;
+    this.updateBeaconVisibility();
+  }
+
+  /** Derrière l'horizon (P·C ≤ 1 sur la sphère unité), la balise se dessinerait à travers la Terre : on la cache. */
+  private updateBeaconVisibility(): void {
+    const d = this.beaconDir, c = this.cameraPosition;
+    this.beacon.sprite.visible = d !== null && d[0] * c.x + d[1] * c.y + d[2] * c.z > 1;
+  }
 
   /** Horloge des animations propres au globe (pulsation de la balise), en secondes. */
   setTime(seconds: number): void { this.beacon.setTime(seconds); }
@@ -93,11 +105,22 @@ export class Globe {
     camera.position.set(pose.dir[0] * d, pose.dir[1] * d, pose.dir[2] * d);
     camera.up.set(...pose.up);
     camera.lookAt(0, 0, 0);
+    this.cameraPosition.copy(camera.position);
+    this.updateBeaconVisibility();
     camera.near = Math.max(pose.altitude * 0.2, 1e-5);
     camera.far = d + 60;
     camera.updateProjectionMatrix();
     this.setSun(sunDirection(pose));
     for (const f of this.altitudeListeners) f(pose.altitude);
+  }
+
+  /** Libère les géométries et matériaux créés par le globe ; les textures prêtées (GlobeParts, patchs) restent à l'appelant. */
+  dispose(): void {
+    this.root.traverse((o) => {
+      const m = o as THREE.Mesh;
+      m.geometry?.dispose();
+      for (const mat of [m.material].flat()) (mat as THREE.Material | undefined)?.dispose();
+    });
   }
 
   /** Direction du soleil (unitaire) ; applyPose la place par rapport à la caméra, la sonde peut la forcer. */

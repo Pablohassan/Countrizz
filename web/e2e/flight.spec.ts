@@ -40,14 +40,17 @@ for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
       expect(c.every((v) => v > 220)).toBe(true); // cœur blanc de la balise
     });
 
-    test('perte du GPU : le renderer est recréé et le globe repart', async ({ page }) => {
+    test('perte du GPU : le renderer est recréé et la partie continue (même cadrage, même état)', async ({ page }) => {
       await page.goto(`/?demo=FRA${q}`);
-      await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 30_000 });
+      await page.waitForFunction(() => window.__demo?.done === true, null, { timeout: 30_000 }); // bonne réponse donnée
+      const before = await page.evaluate((b) => window.__globe!.project(b), by('FRA').beacon);
       await page.evaluate(() => window.__globe!.simulateDeviceLost());
       await page.waitForFunction(() => window.__globe?.generation === 1 && window.__globe.frames > 10, null, { timeout: 30_000 });
+      const after = await page.evaluate((b) => window.__globe!.project(b), by('FRA').beacon);
       const c = await pixelAt(page, by('FRA'));
-      console.log(backend, 'après recréation', JSON.stringify(c));
-      expect(c[0]! + c[1]! + c[2]!).toBeGreaterThan(60);
+      console.log(backend, 'après recréation', JSON.stringify(c), 'projection avant', JSON.stringify(before), 'après', JSON.stringify(after));
+      expect(Math.hypot(after![0] - before![0], after![1] - before![1])).toBeLessThan(1);
+      expect(c[1]!).toBeGreaterThan(c[0]! + 20); // toujours vert : la révélation a survécu
     });
   });
 }

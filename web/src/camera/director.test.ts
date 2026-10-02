@@ -71,6 +71,36 @@ describe('CameraDirector', () => {
     expect(b.altitude).toBe(a.altitude);
   });
 
+  it('après une rotation de l’écran, le pays visé est recadré par un vol court (spec §5 : α recalculé)', () => {
+    const d = new CameraDirector(opts);
+    d.update(0);
+    void d.flyTo(france);
+    d.update(10_000);
+    d.setViewport({ width: 390, height: 844, fovYDeg: 50 });
+    const start = d.update(10_000);
+    expect(start.altitude).toBeLessThan(0.3); // pas de saut au changement
+    // France (θ = 4,87°) en portrait 390×844, m = 1,2 : cos θ + sin θ / tan(12,1598°/1,2) − 1 = 0,471395
+    expect(d.update(10_700).altitude).toBeCloseTo(0.471395, 5);
+  });
+
+  it('pendant un vol, le recadrage attend l’arrivée', () => {
+    const d = new CameraDirector(opts);
+    d.update(0);
+    void d.flyTo(japan);
+    d.update(1000);
+    d.setViewport({ width: 390, height: 844, fovYDeg: 50 });
+    d.update(10_000); // arrivée sur le cadrage paysage, puis recadrage
+    // Japon (θ = 8,84°) en portrait : 0,847966
+    expect(d.update(10_700).altitude).toBeCloseTo(0.847966, 5);
+  });
+
+  it('à l’accueil, la vue d’ensemble suit l’orientation (1,4 paysage, 2,2 portrait)', () => {
+    const d = new CameraDirector(opts);
+    expect(d.update(0).altitude).toBe(1.4);
+    d.setViewport({ width: 390, height: 844, fovYDeg: 50 });
+    expect(d.update(700).altitude).toBeCloseTo(2.2, 9);
+  });
+
   it('setFraming change le cadrage des vols suivants', () => {
     const d = new CameraDirector(opts);
     d.update(0);

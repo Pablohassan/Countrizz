@@ -20,6 +20,8 @@ export class GlobeController {
   private target: CountryRecord | null = null;
   private patch: THREE.Texture | null = null;
   private patchFailed = false;
+  /** Arrivé sur la cible : sans patch à ce moment-là, la balise montre le pays (patch lent). */
+  private arrived = false;
   private next: CountryRecord | null = null;
   private viewport: Viewport;
   private framing: FramingParams;
@@ -54,13 +56,16 @@ export class GlobeController {
     this.timeline = null;
     this.patch = null;
     this.patchFailed = false;
+    this.arrived = false;
     this.cache.keep([rec.patch.sdf, ...(this.next ? [this.next.patch.sdf] : [])]);
     this.cache.get(rec.patch.sdf).then(
       (t) => { if (this.target === rec) { this.patch = t; this.apply(); } },
       () => { if (this.target === rec) { this.patchFailed = true; this.apply(); } },
     );
     this.apply();
-    return this.director.flyTo(rec);
+    return this.director.flyTo(rec).then(() => {
+      if (this.target === rec) { this.arrived = true; this.apply(); }
+    });
   }
 
   prefetch(rec: CountryRecord): void {
@@ -84,7 +89,7 @@ export class GlobeController {
     const g = this.globe, rec = this.target;
     if (!g) return;
     g.setPatch(rec && this.patch ? rec.patch : null, this.patch);
-    const beacon = rec !== null && (this.patchFailed || needsBeacon(rec, this.viewport, this.framing));
+    const beacon = rec !== null && (this.patchFailed || (this.arrived && !this.patch) || needsBeacon(rec, this.viewport, this.framing));
     g.setBeacon(beacon ? rec.beacon : null);
   }
 }

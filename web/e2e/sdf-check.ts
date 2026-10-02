@@ -20,9 +20,9 @@ const MARGIN_LEVELS = 12;
  * Rend le pays en mode masque sur la page de sonde, puis compare chaque point d'une grille de l'écran (plus la balise)
  * au patch PNG lu côté CPU (samplePatchPng, même projection que le pipeline) : allumé ⇔ R > 128.
  */
-export async function checkCountry(page: Page, rec: CountryRecord, o: { backend: BackendName; width: number; height: number; grid?: number }): Promise<SdfCheck> {
+export async function checkCountry(page: Page, rec: CountryRecord, o: { backend: BackendName; width: number; height: number; grid?: number; query?: string }): Promise<SdfCheck> {
   await page.setViewportSize({ width: o.width, height: o.height });
-  await page.goto(`/probe.html?cca3=${rec.cca3}&w=${o.width}&h=${o.height}${o.backend === 'webgl2' ? '&webgl' : ''}`);
+  await page.goto(`/probe.html?cca3=${rec.cca3}&w=${o.width}&h=${o.height}${o.backend === 'webgl2' ? '&webgl' : ''}${o.query ? `&${o.query}` : ''}`);
   await page.waitForFunction(() => window.__probe !== undefined, null, { timeout: 30_000 });
   const backend = await page.evaluate(() => window.__probe!.backend);
   if (backend !== o.backend) throw new Error(`${rec.cca3} : backend ${backend} obtenu au lieu de ${o.backend}`);

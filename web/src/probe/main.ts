@@ -28,9 +28,12 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `w`, `h` : taille ; `webgl` : repli WebGL 2 forcé ;
  * - `reveal`, `state`, `t` : apparence du pays (défaut : question, vague achevée) ;
  * - `borders` : frontières de vue d'ensemble ;
- * - `beacon=lng,lat` : balise.
+ * - `beacon=lng,lat` : balise ;
+ * - `k`, `margin`, `ctx` (θ_min) : cadrage autre que celui du jeu (contrôles de précision à cadrage serré).
  */
 const q = new URLSearchParams(location.search);
+const num = (name: string, fallback: number) => (q.has(name) ? Number(q.get(name)) : fallback);
+const framing = { ...FRAMING, k: num('k', FRAMING.k), margin: num('margin', FRAMING.margin), minContextDeg: num('ctx', FRAMING.minContextDeg ?? 0) };
 const lngLat = (s: string | null): LngLat | null => (s ? (s.split(',').map(Number) as LngLat) : null);
 const width = Number(q.get('w') ?? 960), height = Number(q.get('h') ?? 600);
 const canvas = document.createElement('canvas');
@@ -52,7 +55,7 @@ if (rec) {
   globe.setPatch(rec.patch, await loadPatchTexture(`/data/${rec.patch.sdf}`));
   globe.setLook({ visible: true, reveal: Number(q.get('reveal') ?? 1), state: (q.get('state') ?? 'question') as CountryState, stateTime: Number(q.get('t') ?? 0) });
   const director = new CameraDirector({
-    viewport: { width, height, fovYDeg: FOV_Y_DEG }, framing: FRAMING, flight: FLIGHT, reducedMotion: true, start: rec.cap.center,
+    viewport: { width, height, fovYDeg: FOV_Y_DEG }, framing, flight: FLIGHT, reducedMotion: true, start: rec.cap.center,
   });
   void director.flyTo(rec);
   pose = director.update(0);

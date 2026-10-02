@@ -82,7 +82,10 @@ export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'
   const withFill = mix(withLines, color, select(shown, fillA, float(0)));
   const withEdge = mix(withFill, mix(color, vec3(1, 1, 1), flash), select(shown, edgeA, float(0)));
 
-  const mask = select(shown, inside, float(0));
+  // Masque binaire (instrument des contrôles) : allumé si et seulement si la distance signée est positive. Une couverture
+  // anticrénelée y serait faussée par l'encodage sRGB de sortie (0,5 linéaire → 188 sur 255), qui déplace le seuil
+  // « allumé » d'environ 0,3 pixel vers l'extérieur (constaté au cadrage « B », 7 à 16 texels par pixel).
+  const mask = select(shown.and(sd.greaterThan(0)), float(1), float(0));
   const outputNode = select(u.maskMode.greaterThan(0.5), vec4(mask, mask, mask, 1), vec4(withEdge, base.a));
 
   return {

@@ -5,7 +5,7 @@ test('la page de calibration charge le globe et cadre un pays de référence', a
   await page.goto('/calibrate.html?webgl');
   await page.getByRole('button', { name: 'FRA' }).click({ timeout: 45_000 });
   await expect(page.getByText(/^France : θ = 4\.866°, altitude = /)).toBeVisible();
-  await expect(page.getByText('export const FRAMING: FramingParams = {k: 1, margin: 1.6, floor: 0.0003')).toBeVisible();
+  await expect(page.getByText('export const FRAMING: FramingParams = {k: 1, margin: 3, floor: 0.0003')).toBeVisible();
 });
 
 test('les réglages passent par l’URL, contexte minimal compris', async ({ page }) => {

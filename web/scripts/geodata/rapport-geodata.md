@@ -7,11 +7,14 @@
 Ajoutés : aucun
 Retirés : aucun
 
-- VAT : surface 1 → 0.51 km²
+- IND : calotte déplacée de 1.17°
+- ISR : surface 22083.18 → 20855.04 km²
+- MAR : calotte déplacée de 3.58° ; rayon 9.44° → 6.02° ; surface 592431.38 → 414206.19 km²
+- PAK : calotte déplacée de 0.96° ; surface 873936.31 → 796733.31 km²
 
 ## Centres de calotte hors du pays (informatif : archipels, pays en croissant)
 
-ARE ATG BHR BHS CHL CHN COM CPV CUB FIN FJI FSM GBR GIN GRC GRD HRV IDN ITA JPN KIR KNA MDV MHL MMR MOZ MYS NOR NZL PHL PLW SLB STP SYC THA TON TUV VNM VUT WSM
+ARE ATG BHR BHS CHL CHN COM CPV CUB FIN FJI FSM GBR GIN GRC GRD HRV IDN ISR ITA JPN KIR KNA MDV MHL MMR MOZ MYS NOR NZL PHL PLW SLB STP SYC THA TON TUV VNM VUT WSM
 
 ## Lisibles seulement par leur balise (balise à moins de 1,5 texel du bord : atolls, micro-territoires)
 
@@ -53,7 +56,7 @@ MDV MHL TUV
 | CAN | Canada | naturalearth | Natural Earth (domaine public) | 9894501 | 9984670 | 22.396 | 409 | 187846 | 996.39 | 7.296 |  |
 | CHE | Suisse | naturalearth | Natural Earth (domaine public) | 41326 | 41284 | 1.599 | 0 | 152309 | 69.08 | 0.521 | licence geoBoundaries refusée : Federal Office of Topography swisstopo License |
 | CHL | Chili | naturalearth | Natural Earth (domaine public) | 736362 | 756102 | 18.722 | 161 | 19927 | 137.42 | 6.099 |  |
-| CHN | Chine | naturalearth | Natural Earth (domaine public) | 9373435 | 9706961 | 22.745 | 69 | 172511 | 1052.15 | 7.409 |  |
+| CHN | Chine | naturalearth | Natural Earth (domaine public) | 9337124 | 9706961 | 22.747 | 69 | 171797 | 1052.12 | 7.410 | zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé |
 | CIV | Côte d'Ivoire | naturalearth | Natural Earth (domaine public) | 322038 | 322463 | 3.628 | 1 | 230639 | 256.08 | 1.182 |  |
 | CMR | Cameroun | naturalearth | Natural Earth (domaine public) | 466332 | 475442 | 6.053 | 0 | 120002 | 245.71 | 1.972 |  |
 | COD | Congo (Rép. dém.) | naturalearth | Natural Earth (domaine public) | 2335423 | 2344858 | 11.097 | 1 | 179033 | 627.62 | 3.615 |  |
@@ -98,12 +101,12 @@ MDV MHL TUV
 | HTI | Haïti | geoboundaries | Open Data Commons Open Database License 1.0 | 27003 | 27750 | 1.456 | 8 | 120038 | 49.27 | 0.474 |  |
 | HUN | Hongrie | naturalearth | Natural Earth (domaine public) | 92947 | 93028 | 2.361 | 0 | 157177 | 109.81 | 0.769 |  |
 | IDN | Indonésie | naturalearth | Natural Earth (domaine public) | 1888148 | 1904569 | 23.965 | 256 | 31265 | 249.04 | 7.807 |  |
-| IND | Inde | naturalearth | Natural Earth (domaine public) | 3158319 | 3287590 | 14.750 | 34 | 137254 | 652.41 | 4.805 |  |
+| IND | Inde | naturalearth | Natural Earth (domaine public) | 3051472 | 3287590 | 14.382 | 34 | 139534 | 652.41 | 4.685 | zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé |
 | IRL | Irlande | naturalearth | Natural Earth (domaine public) | 69160 | 70273 | 2.101 | 6 | 147703 | 92.82 | 0.684 |  |
 | IRN | Iran | naturalearth | Natural Earth (domaine public) | 1623489 | 1648195 | 10.240 | 11 | 146091 | 521.75 | 3.336 |  |
 | IRQ | Irak | naturalearth | Natural Earth (domaine public) | 437586 | 438317 | 4.666 | 0 | 189500 | 238.85 | 1.520 |  |
 | ISL | Islande | naturalearth | Natural Earth (domaine public) | 101722 | 103000 | 2.313 | 4 | 179113 | 115.29 | 0.754 |  |
-| ISR | Israël | geoboundaries | Open Data Commons Open Database License 1.0 | 22083 | 20770 | 1.959 | 0 | 54219 | 44.66 | 0.638 |  |
+| ISR | Israël | naturalearth | Natural Earth (domaine public) | 20855 | 20770 | 1.918 | 2 | 53413 | 44.81 | 0.625 | zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé |
 | ITA | Italie | naturalearth | Natural Earth (domaine public) | 300679 | 301336 | 5.557 | 27 | 91823 | 126.61 | 1.810 |  |
 | JAM | Jamaïque | geoboundaries | Public Domain | 11091 | 10991 | 1.053 | 13 | 94206 | 34.60 | 0.343 |  |
 | JOR | Jordanie | naturalearth | Natural Earth (domaine public) | 88941 | 89342 | 2.589 | 0 | 125015 | 99.71 | 0.844 |  |
@@ -127,7 +130,7 @@ MDV MHL TUV
 | LTU | Lituanie | naturalearth | Natural Earth (domaine public) | 64642 | 65300 | 1.692 | 1 | 212723 | 105.81 | 0.551 |  |
 | LUX | Luxembourg | geoboundaries | Open Data Commons Open Database License 1.0 | 2584 | 2586 | 0.381 | 0 | 168186 | 18.96 | 0.124 |  |
 | LVA | Lettonie | naturalearth | Natural Earth (domaine public) | 64259 | 64559 | 2.013 | 0 | 149495 | 81.76 | 0.656 |  |
-| MAR | Maroc | naturalearth | Natural Earth (domaine public) | 592431 | 446550 | 9.442 | 0 | 62734 | 234.20 | 3.076 |  |
+| MAR | Maroc | naturalearth | Natural Earth (domaine public) | 414206 | 446550 | 6.022 | 0 | 107692 | 234.14 | 1.962 | zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé |
 | MCO | Monaco | geoboundaries | Open Data Commons Open Database License 1.0 | 2 | 2.02 | 0.015 | 0 | 81007 | 0.35 | 0.005 |  |
 | MDA | Moldavie | geoboundaries | Creative Commons Attribution 4.0 International (CC BY 4.0) | 33903 | 33846 | 1.607 | 1 | 123649 | 56.94 | 0.524 |  |
 | MDG | Madagascar | naturalearth | Natural Earth (domaine public) | 594755 | 587041 | 7.098 | 2 | 111327 | 263.42 | 2.312 |  |
@@ -150,12 +153,12 @@ MDV MHL TUV
 | NGA | Nigéria | naturalearth | Natural Earth (domaine public) | 911220 | 923768 | 6.578 | 2 | 198569 | 399.88 | 2.143 |  |
 | NIC | Nicaragua | naturalearth | Natural Earth (domaine public) | 129176 | 130373 | 2.629 | 4 | 176136 | 154.35 | 0.856 |  |
 | NLD | Pays-Bas | geoboundaries | CC0 1.0 Universal (CC0 1.0) Public Domain Dedication | 41384 | 41850 | 1.557 | 8 | 160888 | 71.36 | 0.507 |  |
-| NOR | Norvège | naturalearth | Natural Earth (domaine public) | 379535 | 323802 | 11.507 | 117 | 27055 | 124.51 | 3.749 |  |
+| NOR | Norvège | naturalearth | Natural Earth (domaine public) | 379532 | 323802 | 11.506 | 117 | 27051 | 124.51 | 3.748 | zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé |
 | NPL | Népal | naturalearth | Natural Earth (domaine public) | 147323 | 147181 | 3.780 | 0 | 97192 | 109.04 | 1.231 |  |
 | NRU | Nauru | geoboundaries | Open Data Commons Open Database License 1.0 | 22 | 21 | 0.028 | 0 | 266074 | 2.20 | 0.009 |  |
 | NZL | Nouvelle-Zélande | naturalearth | Natural Earth (domaine public) | 268111 | 270467 | 6.430 | 24 | 61001 | 121.22 | 2.095 |  |
 | OMN | Oman | naturalearth | Natural Earth (domaine public) | 312090 | 309500 | 4.509 | 5 | 144709 | 184.88 | 1.469 |  |
-| PAK | Pakistan | naturalearth | Natural Earth (domaine public) | 873936 | 881912 | 8.384 | 1 | 117265 | 248.25 | 2.731 |  |
+| PAK | Pakistan | naturalearth | Natural Earth (domaine public) | 796733 | 881912 | 7.842 | 1 | 122193 | 248.23 | 2.555 | zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé |
 | PAN | Panama | naturalearth | Natural Earth (domaine public) | 74843 | 75417 | 2.958 | 14 | 80602 | 52.09 | 0.964 |  |
 | PER | Pérou | naturalearth | Natural Earth (domaine public) | 1295127 | 1285216 | 9.501 | 4 | 135399 | 341.80 | 3.095 |  |
 | PHL | Philippines | naturalearth | Natural Earth (domaine public) | 294430 | 342353 | 6.910 | 89 | 58165 | 102.21 | 2.251 |  |
@@ -165,12 +168,12 @@ MDV MHL TUV
 | PRK | Corée du Nord | naturalearth | Natural Earth (domaine public) | 122246 | 120538 | 3.216 | 9 | 111374 | 99.42 | 1.048 |  |
 | PRT | Portugal | naturalearth | Natural Earth (domaine public) | 91303 | 92090 | 2.638 | 16 | 119018 | 75.26 | 0.859 |  |
 | PRY | Paraguay | naturalearth | Natural Earth (domaine public) | 400858 | 406752 | 4.771 | 0 | 166026 | 228.71 | 1.554 |  |
-| PSE | Palestine | geoboundaries | Creative Commons Attribution 4.0 International (CC BY 4.0) | 5914 | 6220 | 0.619 | 8 | 145581 | 24.12 | 0.202 |  |
+| PSE | Palestine | naturalearth | Natural Earth (domaine public) | 6145 | 6220 | 0.613 | 1 | 153910 | 26.10 | 0.200 | zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé |
 | QAT | Qatar | geoboundaries | Open Data Commons Open Database License 1.0 | 11578 | 11586 | 0.849 | 6 | 151487 | 39.61 | 0.276 |  |
 | ROU | Roumanie | naturalearth | Natural Earth (domaine public) | 235805 | 238391 | 3.343 | 0 | 198857 | 216.35 | 1.089 |  |
-| RUS | Russie | naturalearth | Natural Earth (domaine public) | 16886313 | 17098242 | 35.529 | 213 | 128565 | 1217.61 | 11.574 |  |
+| RUS | Russie | naturalearth | Natural Earth (domaine public) | 16859281 | 17098242 | 35.521 | 212 | 128400 | 1217.61 | 11.572 | zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé |
 | RWA | Rwanda | geoboundaries | Creative Commons Attribution 4.0 (CC BY 4.0) | 23779 | 26338 | 1.132 | 307 | 174798 | 18.29 | 0.369 |  |
-| SAU | Arabie Saoudite | naturalearth | Natural Earth (domaine public) | 1926007 | 2149690 | 10.211 | 10 | 174357 | 591.79 | 3.326 |  |
+| SAU | Arabie Saoudite | naturalearth | Natural Earth (domaine public) | 1926006 | 2149690 | 10.211 | 10 | 174356 | 591.79 | 3.326 | zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé |
 | SDN | Soudan | naturalearth | Natural Earth (domaine public) | 1861994 | 1886068 | 9.246 | 1 | 205521 | 589.88 | 3.012 |  |
 | SEN | Sénégal | naturalearth | Natural Earth (domaine public) | 196942 | 196722 | 3.228 | 0 | 178124 | 154.64 | 1.052 |  |
 | SGP | Singapour | geoboundaries | Open Data Commons Open Database License 1.0 | 728 | 710 | 0.258 | 10 | 103149 | 9.15 | 0.084 |  |
@@ -188,7 +191,7 @@ MDV MHL TUV
 | SWE | Suède | naturalearth | Natural Earth (domaine public) | 443499 | 450295 | 7.051 | 40 | 84123 | 159.86 | 2.297 |  |
 | SWZ | Eswatini | geoboundaries | Open Data Commons Open Database License 1.0 | 17394 | 17364 | 0.841 | 0 | 231696 | 60.69 | 0.274 |  |
 | SYC | Seychelles | geoboundaries | Open Data Commons Open Database License 1.0 | 483 | 452 | 5.421 | 19 | 152 | 3.08 | 1.766 |  |
-| SYR | Syrie | naturalearth | Natural Earth (domaine public) | 185951 | 185180 | 3.511 | 0 | 142163 | 182.26 | 1.144 |  |
+| SYR | Syrie | naturalearth | Natural Earth (domaine public) | 187146 | 185180 | 3.578 | 0 | 137780 | 182.26 | 1.166 | zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé |
 | TCD | Tchad | naturalearth | Natural Earth (domaine public) | 1270723 | 1284000 | 8.037 | 0 | 185593 | 420.47 | 2.618 |  |
 | TGO | Togo | naturalearth | Natural Earth (domaine public) | 57102 | 56785 | 2.615 | 0 | 78724 | 60.47 | 0.852 |  |
 | THA | Thaïlande | naturalearth | Natural Earth (domaine public) | 516276 | 513120 | 7.430 | 19 | 88188 | 222.03 | 2.420 |  |
@@ -203,7 +206,7 @@ MDV MHL TUV
 | TWN | Taïwan | naturalearth | Natural Earth (domaine public) | 36281 | 36193 | 1.723 | 7 | 114947 | 67.51 | 0.561 | licence geoBoundaries refusée : Pixabay License for Content |
 | TZA | Tanzanie | naturalearth | Natural Earth (domaine public) | 945557 | 945087 | 6.835 | 6 | 190908 | 437.84 | 2.226 |  |
 | UGA | Ouganda | naturalearth | Natural Earth (domaine public) | 242936 | 241550 | 3.567 | 0 | 180013 | 192.98 | 1.162 |  |
-| UKR | Ukraine | naturalearth | Natural Earth (domaine public) | 570179 | 603500 | 5.936 | 3 | 152542 | 242.43 | 1.934 |  |
+| UKR | Ukraine | naturalearth | Natural Earth (domaine public) | 597213 | 603500 | 5.936 | 3 | 159766 | 242.42 | 1.934 | zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé |
 | UNK | Kosovo | geoboundaries | Creative Commons Attribution-ShareAlike 2.0 | 10889 | 10908 | 0.716 | 0 | 200075 | 44.75 | 0.233 |  |
 | URY | Uruguay | naturalearth | Natural Earth (domaine public) | 177440 | 181034 | 2.680 | 0 | 232885 | 199.19 | 0.873 |  |
 | USA | États-Unis | naturalearth | Natural Earth (domaine public) | 9447852 | 9372610 | 21.252 | 343 | 184173 | 1088.58 | 6.923 |  |

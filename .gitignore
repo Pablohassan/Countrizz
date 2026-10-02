@@ -4,3 +4,5 @@ dist/
 web/scripts/geodata/.cache/
 *.log
 .superpowers/
+.env
+*.env

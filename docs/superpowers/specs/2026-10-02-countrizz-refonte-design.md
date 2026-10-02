@@ -80,7 +80,8 @@ Le pipeline se lance à la main (`npm run geodata`) ; ses sorties sont versionn�
 - `overrides.json` :
   - `UNK ↔ KOS` (Kosovo) ;
   - fusions : Chypre du Nord → Chypre, Somaliland → Somalie (comme l'ancien jeu) ;
-  - **neutres** : les autres territoires et zones disputées (Groenland, Porto Rico, Sahara occidental, Cachemire…) — frontières tracées, jamais allumés ni demandés ;
+  - **frontières internationalement reconnues** (décision du 02/10, appliquée aux zones disputées de Natural Earth, `ne_10m_admin_0_disputed_areas`) : Crimée → Ukraine ; plateau du Golan → Syrie ; Palestine dans les lignes de 1967 (Cisjordanie, Jérusalem-Est comprise, et Gaza) ; Sahara occidental et Cachemire (toutes parties, Aksai Chin compris) **neutres** ;
+  - **neutres** : les autres territoires (Groenland, Porto Rico…) et les zones neutralisées ci-dessus — frontières tracées, jamais allumés ni demandés ;
   - les DOM, inclus dans la France chez Natural Earth, s'allument avec elle ;
   - capitales à arbitrer (une « capitale de jeu » par pays) : Afrique du Sud (3 capitales), Bolivie (2), Palestine (Ramallah / Jérusalem-Est), Kosovo (absent de la requête par code ISO).
 - Vérifié : avec Natural Earth 10m, **les 197 pays ont une géométrie**.

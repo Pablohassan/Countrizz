@@ -10,6 +10,7 @@ interface LockEntry { url: string; sha256: string }
 interface GbLock extends LockEntry { license: string; source: string; year: string; iso: string }
 interface Lock {
   naturalEarth?: LockEntry;
+  naturalEarthDisputed?: LockEntry;
   mledozeCountries?: LockEntry;
   flags: Record<string, LockEntry>;
   geoBoundaries: Record<string, GbLock | { unavailable: string }>;
@@ -31,6 +32,8 @@ async function pinned(key: string, url: string, previous: LockEntry | undefined,
 async function main(): Promise<void> {
   lock.naturalEarth = await pinned('naturalEarth', SOURCES.naturalEarth, lock.naturalEarth,
     path.join(CACHE_DIR, 'ne_10m_admin_0_countries.geojson'));
+  lock.naturalEarthDisputed = await pinned('naturalEarthDisputed', SOURCES.naturalEarthDisputed, lock.naturalEarthDisputed,
+    path.join(CACHE_DIR, 'ne_10m_admin_0_disputed_areas.geojson'));
   lock.mledozeCountries = await pinned('mledozeCountries', SOURCES.mledozeCountries, lock.mledozeCountries,
     path.join(CACHE_DIR, 'mledoze-countries.json'));
 

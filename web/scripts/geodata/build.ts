@@ -12,6 +12,7 @@ import { areaKm2, forD3, polygonsOf } from './lib/geometry';
 import { readJson, writeBytes, writeJson } from './lib/io';
 import { joinNaturalEarth, neCode, type NeProps, type Overrides } from './lib/join';
 import { mainBody } from './lib/mainBody';
+import { applyDisputed, type DisputedProps } from './lib/disputed';
 import { chooseOutline } from './lib/outline';
 import { buildPatch, patchExtentRad } from './lib/patch';
 import { selectPlayable, type MledozeCountry } from './lib/playable';
@@ -40,9 +41,15 @@ function main(): void {
   const join = joinNaturalEarth(ne, [...playableSet], overrides);
   if (join.unmatched.length) throw new Error(`Sans géométrie Natural Earth : ${join.unmatched.join(', ')}`);
 
+  // Frontières internationalement reconnues : réattribution des zones disputées (overrides.disputed).
+  const disputedFc = readJson<FeatureCollection<Polygon | MultiPolygon, DisputedProps>>(
+    path.join(CACHE_DIR, 'ne_10m_admin_0_disputed_areas.geojson'));
+  const disputed = applyDisputed(join.byCountry, disputedFc.features, overrides.disputed);
+
   const topo = buildTopology([
-    ...[...join.byCountry].map(([code, geometry]) => ({ code, geometry })),
+    ...[...disputed.byCountry].map(([code, geometry]) => ({ code, geometry })),
     ...join.neutral.map((f) => ({ code: neCode(f.properties), geometry: forD3(f.geometry) })),
+    ...disputed.neutral,
   ]);
 
   const previousPath = path.join(OUT_DIR, 'countries.json');
@@ -53,8 +60,12 @@ function main(): void {
 
   for (const [index, c] of playable.entries()) {
     const lower = c.cca3.toLowerCase();
-    const gb = loadGb(c.cca3);
-    const outline = chooseOutline(join.byCountry.get(c.cca3)!, gb, c.area, AREA_RATIO);
+    // Un pays dont une zone disputée a été réattribuée garde le contour Natural Earth ainsi modifié :
+    // le contour geoBoundaries (OSM) suit la situation de fait (ex. Israël avec Jérusalem-Est et le Golan).
+    const reassigned = disputed.touched.has(c.cca3);
+    const gb = reassigned ? undefined : loadGb(c.cca3);
+    const outline = chooseOutline(disputed.byCountry.get(c.cca3)!, gb, c.area, AREA_RATIO);
+    if (reassigned) outline.note = 'zones disputées réattribuées (frontières reconnues) : contour Natural Earth imposé';
     if (outline.source === 'geoboundaries' && gb) gbCredits.push({ cca3: c.cca3, license: gb.license, source: gb.source, year: gb.year });
 
     const area = areaKm2(outline.geometry);

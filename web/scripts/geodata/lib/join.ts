@@ -14,6 +14,8 @@ export interface Overrides {
   capitals: Record<string, string>;
   /** cca3 → raison d'accepter une surface hors de ×0,5–×2 */
   areaWhitelist: Record<string, string>;
+  /** zone disputée Natural Earth (« BRK_NAME|ADM0_A3 ») → cca3 auquel la rattacher, ou 'neutral' (frontières reconnues) */
+  disputed: Record<string, string>;
 }
 
 export interface JoinResult {

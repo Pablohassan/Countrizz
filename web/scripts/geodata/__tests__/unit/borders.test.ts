@@ -50,4 +50,20 @@ describe('frontières', () => {
     const count = (ls: number[][][]) => ls.reduce((s, l) => s + l.length, 0);
     expect(count(overviewBorders(fine, 0.12))).toBeLessThan(0.3 * count(overviewBorders(fine, 1)));
   });
+
+  it('n’invente pas de frontière le long de ±180° ni des pôles (coutures de projection)', () => {
+    const seamTopo = buildTopology([
+      { code: 'WWW', geometry: { type: 'Polygon', coordinates: [[[179, 0], [180, 0], [180, 1], [179, 1], [179, 0]]] } },
+      { code: 'EEE', geometry: { type: 'Polygon', coordinates: [[[-180, 0], [-179, 0], [-179, 1], [-180, 1], [-180, 0]]] } },
+      { code: 'ANT', geometry: { type: 'Polygon', coordinates: [[[-180, -90], [-180, -85], [180, -85], [180, -90], [-180, -90]]] } },
+    ]);
+    const seam = (a: number[], b: number[]) =>
+      (Math.abs(a[0]!) > 179.9999 && Math.abs(b[0]!) > 179.9999) || (Math.abs(a[1]!) > 89.9999 && Math.abs(b[1]!) > 89.9999);
+    for (const lines of [overviewBorders(seamTopo, 1), neighborLines(seamTopo, 'WWW')]) {
+      for (const l of lines) for (let i = 1; i < l.length; i++) expect(seam(l[i - 1]!, l[i]!), JSON.stringify([l[i - 1], l[i]])).toBe(false);
+    }
+    // les vrais côtés restent : la côte nord de WWW (y = 1) est toujours tracée
+    expect(hasPoint(overviewBorders(seamTopo, 1), 179, 1)).toBe(true);
+  });
 });
+

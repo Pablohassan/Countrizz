@@ -20,5 +20,18 @@
     "YEM": "Sanaa",
     "ZAF": "Pretoria"
   },
-  "areaWhitelist": {}
+  "areaWhitelist": {},
+  "disputed": {
+    "Crimea|RUS": "UKR",
+    "Golan Heights|ISR": "SYR",
+    "East Jerusalem|ISR": "PSE",
+    "No Man's Land (Jerusalem)|ISR": "neutral",
+    "W. Sahara|MAR": "neutral",
+    "Jammu and Kashmir|IND": "neutral",
+    "Demchok|IND": "neutral",
+    "Gilgit-Baltistan|PAK": "neutral",
+    "Azad Kashmir|PAK": "neutral",
+    "Aksai Chin|CHN": "neutral",
+    "Shaksam Valley|CHN": "neutral"
+  }
 }

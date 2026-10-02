@@ -174,12 +174,6 @@
    "year": "2017"
   },
   {
-   "cca3": "ISR",
-   "license": "Open Data Commons Open Database License 1.0",
-   "source": "OpenStreetMap, Wambacher",
-   "year": "2017"
-  },
-  {
    "cca3": "JAM",
    "license": "Public Domain",
    "source": "geoBoundaries, Wikimedia Commons",
@@ -292,12 +286,6 @@
    "license": "Open Data Commons Open Database License 1.0",
    "source": "OpenStreetMap, Wambacher",
    "year": "2017"
-  },
-  {
-   "cca3": "PSE",
-   "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
-   "source": "raster2polygon from Sentinel-2 10m Land Cover where Image Year = 2021 / exclude gridcode = 1 (water) / dissolve / erase adm0 overlap / processed by IMB",
-   "year": "2021"
   },
   {
    "cca3": "QAT",

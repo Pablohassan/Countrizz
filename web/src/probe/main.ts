@@ -26,7 +26,8 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `cca3` : pays cadré comme en jeu ; sinon `at=lng,lat` et `alt` : pose explicite ;
  * - `mode=game` : textures, halo, étoiles (sinon masque) ; `tier=haute` : textures 8K ; `sun=lng,lat` : soleil forcé ;
  * - `w`, `h` : taille ; `webgl` : repli WebGL 2 forcé ;
- * - `reveal`, `state`, `t` : apparence du pays (défaut : question, vague achevée).
+ * - `reveal`, `state`, `t` : apparence du pays (défaut : question, vague achevée) ;
+ * - `borders` : frontières de vue d'ensemble.
  */
 const q = new URLSearchParams(location.search);
 const lngLat = (s: string | null): LngLat | null => (s ? (s.split(',').map(Number) as LngLat) : null);
@@ -39,7 +40,8 @@ renderer.setSize(width, height);
 
 const mode = q.get('mode') === 'game' ? 'game' : 'mask';
 const textures = mode === 'game' ? await loadGlobeTextures(renderer, q.get('tier') === 'haute' ? 'haute' : 'standard') : undefined;
-const globe = new Globe(mode, { textures });
+const borders = q.has('borders') ? ((await (await fetch('/data/borders.json')).json()) as LngLat[][]) : undefined;
+const globe = new Globe(mode, { textures, borders });
 const camera = new THREE.PerspectiveCamera(FOV_Y_DEG, width / height, 0.001, 100);
 
 const rec = q.get('cca3') ? (await loadCountries('/')).find((c) => c.cca3 === q.get('cca3')) : undefined;

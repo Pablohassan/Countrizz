@@ -2,9 +2,10 @@ import * as THREE from 'three/webgpu';
 import { color } from 'three/tsl';
 import type { FramePose } from '../camera/director';
 import { sunDirection } from '../camera/sun';
-import type { PatchMeta } from '../data/types';
+import type { LngLat, PatchMeta } from '../data/types';
 import type { Vec3 } from '../geo/vec';
 import { createAtmosphere } from './atmosphere';
+import { createBorders } from './borders';
 import { createCountryLayer, STATE } from './countryLayer';
 import { createEarthMaterial } from './earth';
 import { tangentFrame } from './patchFrame';
@@ -15,7 +16,7 @@ export type GlobeMode = 'mask' | 'game';
 export type CountryState = keyof typeof STATE;
 
 /** Habillage du mode jeu ; absent en mode masque. */
-export interface GlobeParts { textures?: GlobeTextures }
+export interface GlobeParts { textures?: GlobeTextures; borders?: LngLat[][] }
 
 /** Apparence du pays visé à un instant donné (voir reveal.ts). */
 export interface CountryLook { visible: boolean; reveal: number; state: CountryState; stateTime: number }
@@ -30,6 +31,7 @@ export class Globe {
   readonly earthMaterial: THREE.MeshStandardNodeMaterial;
   private readonly sun = new THREE.DirectionalLight(0xffffff, 3);
   private readonly sunListeners: ((dir: Vec3) => void)[] = [];
+  private readonly altitudeListeners: ((altitude: number) => void)[] = [];
   private hasPatch = false;
 
   constructor(readonly mode: GlobeMode, parts: GlobeParts = {}) {
@@ -40,6 +42,11 @@ export class Globe {
       const atmosphere = createAtmosphere();
       this.sunListeners.push(earth.setSun, atmosphere.setSun);
       this.root.add(atmosphere.mesh, createStars());
+      if (parts.borders) {
+        const borders = createBorders(parts.borders);
+        this.root.add(borders.object);
+        this.altitudeListeners.push(borders.setAltitude);
+      }
     } else {
       this.earthMaterial = new THREE.MeshStandardNodeMaterial();
       this.earthMaterial.colorNode = color(0x0b1d3a);
@@ -82,6 +89,7 @@ export class Globe {
     camera.far = d + 60;
     camera.updateProjectionMatrix();
     this.setSun(sunDirection(pose));
+    for (const f of this.altitudeListeners) f(pose.altitude);
   }
 
   /** Direction du soleil (unitaire) ; applyPose la place par rapport à la caméra, la sonde peut la forcer. */

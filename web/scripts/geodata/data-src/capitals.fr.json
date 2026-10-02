@@ -1,0 +1,603 @@
+{
+ "AFG": [
+  "Kaboul"
+ ],
+ "AGO": [
+  "Luanda"
+ ],
+ "ALB": [
+  "Tirana"
+ ],
+ "AND": [
+  "Andorre-la-Vieille"
+ ],
+ "ARE": [
+  "Abou Dabi"
+ ],
+ "ARG": [
+  "Buenos Aires"
+ ],
+ "ARM": [
+  "Erevan"
+ ],
+ "ATG": [
+  "Saint John's"
+ ],
+ "AUS": [
+  "Canberra"
+ ],
+ "AUT": [
+  "Vienne"
+ ],
+ "AZE": [
+  "Bakou"
+ ],
+ "BDI": [
+  "Gitega"
+ ],
+ "BEL": [
+  "Bruxelles"
+ ],
+ "BEN": [
+  "Cotonou",
+  "Porto-Novo"
+ ],
+ "BFA": [
+  "Ouagadougou"
+ ],
+ "BGD": [
+  "Dacca"
+ ],
+ "BGR": [
+  "Sofia"
+ ],
+ "BHR": [
+  "Manama"
+ ],
+ "BHS": [
+  "Nassau"
+ ],
+ "BIH": [
+  "Sarajevo"
+ ],
+ "BLR": [
+  "Minsk"
+ ],
+ "BLZ": [
+  "Belmopan"
+ ],
+ "BOL": [
+  "La Paz",
+  "Sucre"
+ ],
+ "BRA": [
+  "Brasilia"
+ ],
+ "BRB": [
+  "Bridgetown"
+ ],
+ "BRN": [
+  "Bandar Seri Begawan"
+ ],
+ "BTN": [
+  "Thimphou"
+ ],
+ "BWA": [
+  "Gaborone"
+ ],
+ "CAF": [
+  "Bangui"
+ ],
+ "CAN": [
+  "Ottawa"
+ ],
+ "CHE": [
+  "Berne"
+ ],
+ "CHL": [
+  "Santiago"
+ ],
+ "CHN": [
+  "Pékin"
+ ],
+ "CIV": [
+  "Yamoussoukro"
+ ],
+ "CMR": [
+  "Yaoundé"
+ ],
+ "COD": [
+  "Kinshasa"
+ ],
+ "COG": [
+  "Brazzaville"
+ ],
+ "COL": [
+  "Bogota"
+ ],
+ "COM": [
+  "Moroni"
+ ],
+ "CPV": [
+  "Praia"
+ ],
+ "CRI": [
+  "San José"
+ ],
+ "CUB": [
+  "La Havane"
+ ],
+ "CYP": [
+  "Nicosie"
+ ],
+ "CZE": [
+  "Prague"
+ ],
+ "DEU": [
+  "Berlin"
+ ],
+ "DJI": [
+  "Djibouti"
+ ],
+ "DMA": [
+  "Roseau"
+ ],
+ "DNK": [
+  "Copenhague"
+ ],
+ "DOM": [
+  "Saint-Domingue"
+ ],
+ "DZA": [
+  "Alger"
+ ],
+ "ECU": [
+  "Quito"
+ ],
+ "EGY": [
+  "Le Caire"
+ ],
+ "ERI": [
+  "Asmara"
+ ],
+ "ESP": [
+  "Madrid"
+ ],
+ "EST": [
+  "Tallinn"
+ ],
+ "ETH": [
+  "Addis-Abeba"
+ ],
+ "FIN": [
+  "Helsinki"
+ ],
+ "FJI": [
+  "Suva"
+ ],
+ "FRA": [
+  "Paris"
+ ],
+ "FSM": [
+  "Palikir"
+ ],
+ "GAB": [
+  "Libreville"
+ ],
+ "GBR": [
+  "Londres"
+ ],
+ "GEO": [
+  "Tbilissi"
+ ],
+ "GHA": [
+  "Accra"
+ ],
+ "GIN": [
+  "Conakry"
+ ],
+ "GMB": [
+  "Banjul"
+ ],
+ "GNB": [
+  "Bissau"
+ ],
+ "GNQ": [
+  "Ciudad de la Paz"
+ ],
+ "GRC": [
+  "Athènes"
+ ],
+ "GRD": [
+  "Saint-Georges"
+ ],
+ "GTM": [
+  "Guatemala"
+ ],
+ "GUY": [
+  "Georgetown"
+ ],
+ "HND": [
+  "Tegucigalpa"
+ ],
+ "HRV": [
+  "Zagreb"
+ ],
+ "HTI": [
+  "Port-au-Prince"
+ ],
+ "HUN": [
+  "Budapest"
+ ],
+ "IDN": [
+  "Jakarta"
+ ],
+ "IND": [
+  "New Delhi"
+ ],
+ "IRL": [
+  "Dublin"
+ ],
+ "IRN": [
+  "Téhéran"
+ ],
+ "IRQ": [
+  "Bagdad"
+ ],
+ "ISL": [
+  "Reykjavik"
+ ],
+ "ISR": [
+  "Jérusalem"
+ ],
+ "ITA": [
+  "Rome"
+ ],
+ "JAM": [
+  "Kingston"
+ ],
+ "JOR": [
+  "Amman"
+ ],
+ "JPN": [
+  "Tokyo"
+ ],
+ "KAZ": [
+  "Astana"
+ ],
+ "KEN": [
+  "Nairobi"
+ ],
+ "KGZ": [
+  "Bichkek"
+ ],
+ "KHM": [
+  "Phnom Penh"
+ ],
+ "KIR": [
+  "Tarawa-Sud"
+ ],
+ "KNA": [
+  "Basseterre"
+ ],
+ "KOR": [
+  "Séoul"
+ ],
+ "KWT": [
+  "Koweït"
+ ],
+ "LAO": [
+  "Vientiane"
+ ],
+ "LBN": [
+  "Beyrouth"
+ ],
+ "LBR": [
+  "Monrovia"
+ ],
+ "LBY": [
+  "Tripoli"
+ ],
+ "LCA": [
+  "Castries"
+ ],
+ "LIE": [
+  "Vaduz"
+ ],
+ "LKA": [
+  "Colombo",
+  "Sri Jayawardenapura"
+ ],
+ "LSO": [
+  "Maseru"
+ ],
+ "LTU": [
+  "Vilnius"
+ ],
+ "LUX": [
+  "Luxembourg"
+ ],
+ "LVA": [
+  "Riga"
+ ],
+ "MAR": [
+  "Rabat"
+ ],
+ "MCO": [
+  "Monaco"
+ ],
+ "MDA": [
+  "Chișinău"
+ ],
+ "MDG": [
+  "Antananarivo"
+ ],
+ "MDV": [
+  "Malé"
+ ],
+ "MEX": [
+  "Mexico"
+ ],
+ "MHL": [
+  "Majuro"
+ ],
+ "MKD": [
+  "Skopje"
+ ],
+ "MLI": [
+  "Bamako"
+ ],
+ "MLT": [
+  "La Valette"
+ ],
+ "MMR": [
+  "Naypyidaw"
+ ],
+ "MNE": [
+  "Podgorica"
+ ],
+ "MNG": [
+  "Oulan-Bator"
+ ],
+ "MOZ": [
+  "Maputo"
+ ],
+ "MRT": [
+  "Nouakchott"
+ ],
+ "MUS": [
+  "Port-Louis"
+ ],
+ "MWI": [
+  "Lilongwe"
+ ],
+ "MYS": [
+  "Kuala Lumpur",
+  "Putrajaya"
+ ],
+ "NAM": [
+  "Windhoek"
+ ],
+ "NER": [
+  "Niamey"
+ ],
+ "NGA": [
+  "Abuja"
+ ],
+ "NIC": [
+  "Managua"
+ ],
+ "NLD": [
+  "Amsterdam"
+ ],
+ "NOR": [
+  "Oslo"
+ ],
+ "NPL": [
+  "Katmandou"
+ ],
+ "NRU": [
+  "Yaren"
+ ],
+ "NZL": [
+  "Wellington"
+ ],
+ "OMN": [
+  "Mascate"
+ ],
+ "PAK": [
+  "Islamabad",
+  "Rawalpindi"
+ ],
+ "PAN": [
+  "Panama"
+ ],
+ "PER": [
+  "Lima"
+ ],
+ "PHL": [
+  "Manille"
+ ],
+ "PLW": [
+  "Ngerulmud"
+ ],
+ "PNG": [
+  "Port Moresby"
+ ],
+ "POL": [
+  "Varsovie"
+ ],
+ "PRK": [
+  "Pyongyang"
+ ],
+ "PRT": [
+  "Lisbonne"
+ ],
+ "PRY": [
+  "Asuncion"
+ ],
+ "PSE": [
+  "Jérusalem-Est",
+  "Ramallah"
+ ],
+ "QAT": [
+  "Doha"
+ ],
+ "ROU": [
+  "Bucarest"
+ ],
+ "RUS": [
+  "Moscou"
+ ],
+ "RWA": [
+  "Kigali"
+ ],
+ "SAU": [
+  "Riyad"
+ ],
+ "SDN": [
+  "Khartoum"
+ ],
+ "SEN": [
+  "Dakar"
+ ],
+ "SGP": [
+  "Singapour"
+ ],
+ "SLB": [
+  "Honiara"
+ ],
+ "SLE": [
+  "Freetown"
+ ],
+ "SLV": [
+  "San Salvador"
+ ],
+ "SMR": [
+  "Saint-Marin"
+ ],
+ "SOM": [
+  "Mogadiscio"
+ ],
+ "SRB": [
+  "Belgrade"
+ ],
+ "SSD": [
+  "Djouba"
+ ],
+ "STP": [
+  "São Tomé"
+ ],
+ "SUR": [
+  "Paramaribo"
+ ],
+ "SVK": [
+  "Bratislava"
+ ],
+ "SVN": [
+  "Ljubljana"
+ ],
+ "SWE": [
+  "Stockholm"
+ ],
+ "SWZ": [
+  "Lobamba",
+  "Mbabane"
+ ],
+ "SYC": [
+  "Victoria"
+ ],
+ "SYR": [
+  "Damas"
+ ],
+ "TCD": [
+  "N'Djaména"
+ ],
+ "TGO": [
+  "Lomé"
+ ],
+ "THA": [
+  "Bangkok"
+ ],
+ "TJK": [
+  "Douchanbé"
+ ],
+ "TKM": [
+  "Achgabat"
+ ],
+ "TLS": [
+  "Dili"
+ ],
+ "TON": [
+  "Nukuʻalofa"
+ ],
+ "TTO": [
+  "Port-d'Espagne"
+ ],
+ "TUN": [
+  "Tunis"
+ ],
+ "TUR": [
+  "Ankara"
+ ],
+ "TUV": [
+  "Funafuti"
+ ],
+ "TWN": [
+  "Taipei"
+ ],
+ "TZA": [
+  "Dodoma"
+ ],
+ "UGA": [
+  "Kampala"
+ ],
+ "UKR": [
+  "Kiev"
+ ],
+ "UNK": [
+  "Pristina"
+ ],
+ "URY": [
+  "Montevideo"
+ ],
+ "USA": [
+  "Washington"
+ ],
+ "UZB": [
+  "Tachkent"
+ ],
+ "VAT": [
+  "Vatican"
+ ],
+ "VCT": [
+  "Kingstown"
+ ],
+ "VEN": [
+  "Caracas"
+ ],
+ "VNM": [
+  "Hanoï"
+ ],
+ "VUT": [
+  "Port-Vila"
+ ],
+ "WSM": [
+  "Apia"
+ ],
+ "YEM": [
+  "Aden",
+  "Sanaa"
+ ],
+ "ZAF": [
+  "Bloemfontein",
+  "Le Cap",
+  "Pretoria"
+ ],
+ "ZMB": [
+  "Lusaka"
+ ],
+ "ZWE": [
+  "Harare"
+ ]
+}

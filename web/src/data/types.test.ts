@@ -1,0 +1,12 @@
+import { describe, expectTypeOf, it } from 'vitest';
+import type { CountryRecord, LngLat } from './types';
+
+describe('contrat CountryRecord', () => {
+  it('expose la calotte, la balise et le patch en [lng, lat]', () => {
+    expectTypeOf<CountryRecord['cap']['center']>().toEqualTypeOf<LngLat>();
+    expectTypeOf<CountryRecord['beacon']>().toEqualTypeOf<LngLat>();
+    expectTypeOf<CountryRecord['beaconClearanceKm']>().toEqualTypeOf<number>();
+    expectTypeOf<CountryRecord['patch']['center']>().toEqualTypeOf<LngLat>();
+    expectTypeOf<CountryRecord['outlineSource']>().toEqualTypeOf<'geoboundaries' | 'naturalearth'>();
+  });
+});

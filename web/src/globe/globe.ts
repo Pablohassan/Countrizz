@@ -13,6 +13,7 @@ import { createEarthMaterial } from './earth';
 import type { createImageLayer } from './imageLayer';
 import { tangentFrame } from './patchFrame';
 import { createStars } from './stars';
+import { createSunDisc } from './sunDisc';
 import type { GlobeTextures } from './textures';
 
 export type GlobeMode = 'mask' | 'game';
@@ -53,8 +54,9 @@ export class Globe {
       this.image = earth.image;
       this.country = createCountryLayer(new THREE.Texture(), earth.base);
       const atmosphere = createAtmosphere();
-      this.sunListeners.push(earth.setSun, atmosphere.setSun);
-      this.root.add(atmosphere.mesh, createStars(), this.beacon.sprite);
+      const sunDisc = createSunDisc();
+      this.sunListeners.push(earth.setSun, atmosphere.setSun, sunDisc.setDirection);
+      this.root.add(atmosphere.mesh, createStars(), sunDisc.sprite, this.beacon.sprite);
       if (parts.borders) {
         const borders = createBorders(parts.borders);
         this.root.add(borders.object);
@@ -153,12 +155,17 @@ export class Globe {
     for (const f of this.altitudeListeners) f(pose.altitude);
   }
 
-  /** Libère les géométries et matériaux créés par le globe ; les textures prêtées (GlobeParts, patchs) restent à l'appelant. */
+  /**
+   * Libère les géométries et matériaux créés par le globe, une fois chacun (les sprites partagent la géométrie statique de
+   * three) ; les textures prêtées (GlobeParts, patchs) restent à l'appelant.
+   */
   dispose(): void {
+    const done = new Set<{ dispose(): void }>();
     this.root.traverse((o) => {
       const m = o as THREE.Mesh;
-      m.geometry?.dispose();
-      for (const mat of [m.material].flat()) (mat as THREE.Material | undefined)?.dispose();
+      for (const r of [m.geometry, ...[m.material].flat()] as ({ dispose(): void } | undefined)[]) {
+        if (r && !done.has(r)) { done.add(r); r.dispose(); }
+      }
     });
   }
 

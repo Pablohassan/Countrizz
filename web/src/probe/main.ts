@@ -21,6 +21,8 @@ export interface ProbeApi {
   project(points: LngLat[]): ([number, number] | null)[];
   /** Point du globe sous un pixel écran (coordonnées continues), `null` hors du globe. */
   unproject(pixels: [number, number][]): (LngLat | null)[];
+  /** Fragment shader généré pour chaque objet dessiné de la scène (contrôle de l'uniformité des dérivées). */
+  fragmentShaders(): Promise<{ name: string; code: string }[]>;
 }
 declare global { interface Window { __probe?: ProbeApi } }
 
@@ -111,4 +113,12 @@ window.__probe = {
     ray.setFromCamera(new THREE.Vector2((x / width) * 2 - 1, 1 - (y / height) * 2), camera);
     return ray.ray.intersectSphere(sphere, hit) ? toLngLat([hit.x, hit.y, hit.z]) : null;
   }),
+  fragmentShaders: async () => {
+    const drawn: THREE.Object3D[] = [];
+    scene.traverse((o) => { if ((o as THREE.Mesh).material) drawn.push(o); });
+    return Promise.all(drawn.map(async (o) => ({
+      name: `${o.type} ${(o as THREE.Mesh).geometry?.type ?? ''}`.trim(),
+      code: (await renderer.debug.getShaderAsync(scene, camera, o)).fragmentShader ?? '',
+    })));
+  },
 };

@@ -39,13 +39,17 @@ export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'
   const uv = frameXY(exactSpherePoint(), u).add(1).mul(0.5);
   const inFrame = uv.x.greaterThanEqual(0).and(uv.x.lessThanEqual(1)).and(uv.y.greaterThanEqual(0)).and(uv.y.lessThanEqual(1));
   const shown = inFrame.and(u.visible.greaterThan(0.5));
+  // Facteur 0/1, et non `select(shown, calcul, 0)` : TSL compilerait le calcul dans un `if (shown)`, et la lecture du patch et
+  // fwidth y seraient indéfinis sur les blocs de 2×2 pixels coupés par le bord du cadre — le liseré traçait alors des traits
+  // droits le long de ce bord (03/10 : Japon, Irlande au bord du cadre de la France ; GPU réel comme SwiftShader, WebGL 2
+  // comme WebGPU). Hors du cadre, la lecture est bornée au bord du patch (ClampToEdge), donc continue : dérivée sage.
+  const shownF = select(shown, float(1), float(0));
 
   const sample = sdfNode.sample(uv);
   const sd = sample.r.mul(255).sub(128).div(127).mul(u.rangeTexels); // texels, > 0 dedans
   const gd = sample.g.mul(u.rangeTexels); // texels jusqu'à la ligne voisine la plus proche
   // Distance au bord en pixels d'écran (anticrénelage). Une empreinte de pixel (fwidth) de plus de rangeTexels texels ne
-  // dit plus rien (champ saturé) : le bord devient net. Sous MSAA en WebGL 2 (SwiftShader), fwidth devient aberrant sur
-  // certains anneaux du maillage, et le bord anticrénelé débordait en un trait de la couleur du pays (03/10, jeu 1A compris).
+  // dit plus rien (le champ sature à rangeTexels : patch minuscule à l'écran) : le bord devient net.
   const toPx = (v: Node<'float'>) => {
     const fw = fwidth(v);
     return select(fw.greaterThan(u.rangeTexels), v.mul(1e3), v.div(max(fw, 1e-4)));
@@ -74,9 +78,9 @@ export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'
   const lineA = neighbor.mul(wave).mul(0.8);
 
   const lit = base.rgb;
-  const withLines = mix(lit, vec3(0.03, 0.03, 0.05), select(shown, lineA, float(0)));
-  const withFill = mix(withLines, color, select(shown, fillA, float(0)));
-  const withEdge = mix(withFill, mix(color, vec3(1, 1, 1), flash), select(shown, edgeA, float(0)));
+  const withLines = mix(lit, vec3(0.03, 0.03, 0.05), lineA.mul(shownF));
+  const withFill = mix(withLines, color, fillA.mul(shownF));
+  const withEdge = mix(withFill, mix(color, vec3(1, 1, 1), flash), edgeA.mul(shownF));
 
   // Masque binaire (instrument des contrôles) : allumé si et seulement si la distance signée est positive. Une couverture
   // anticrénelée y serait faussée par l'encodage sRGB de sortie (0,5 linéaire → 188 sur 255), qui déplace le seuil

@@ -8,8 +8,9 @@ import type { BackendName } from './sdf-check';
 const fra = (JSON.parse(readFileSync('public/data/countries.json', 'utf8')) as CountryRecord[]).find((c) => c.cca3 === 'FRA')!;
 const sdf = PNG.sync.read(readFileSync(`public/data/${fra.patch.sdf}`));
 
-// Sous MSAA (niveau standard : pass à 4 échantillons), fwidth devenait aberrant sur certains anneaux du maillage en WebGL 2 :
-// un trait de la couleur du pays traversait l'Irlande, au bord nord du cadre de la France (03/10, jeu 1A compris).
+// Un trait de la couleur du pays traversait l'Irlande, au bord nord du cadre de la France (03/10, jeu 1A compris), vu
+// d'abord sous MSAA en WebGL 2. Cause réelle : fwidth et la lecture du patch calculés dans un `if (dans le cadre)`, donc
+// indéfinis sur les blocs de 2×2 pixels coupés par le bord du cadre (voir shader-uniformity.spec.ts).
 for (const backend of ['webgl2', 'webgpu'] as BackendName[]) {
   test(`${backend} MSAA : aucun pixel de la couleur du pays hors du pays`, async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 640 });

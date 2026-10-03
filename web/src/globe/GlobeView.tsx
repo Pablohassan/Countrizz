@@ -7,6 +7,7 @@ import type { CountryRecord, LngLat } from '../data/types';
 import { toVec } from '../geo/vec';
 import { GlobeController } from './controller';
 import { Globe } from './globe';
+import { createImageSource, loadImageryIndex } from './imagePatch';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
 import { lookAt } from './reveal';
 import { withRetry } from './retry';
@@ -138,6 +139,18 @@ function GlobeScene({ controller, generation, onReady, onError, onCut }: { contr
       alive = false;
       controller.attach(null);
       if (built) { built.globe.dispose(); disposeGlobeTextures(built.textures); }
+    };
+  }, [renderer, controller]);
+
+  // Patchs image (Sentinel-2) : facultatifs — sans index ni fichier, la texture globale suffit.
+  useEffect(() => {
+    let alive = true;
+    const source = createImageSource(renderer, renderer.userData.tier);
+    void loadImageryIndex().then((index) => { if (alive) controller.setImagery(index, source); });
+    return () => {
+      alive = false;
+      controller.setImagery(null, null);
+      source.dispose();
     };
   }, [renderer, controller]);
 

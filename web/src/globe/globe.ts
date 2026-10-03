@@ -9,6 +9,7 @@ import { createBeacon } from './beacon';
 import { createBorders } from './borders';
 import { createCountryLayer, STATE } from './countryLayer';
 import { createEarthMaterial } from './earth';
+import type { createImageLayer } from './imageLayer';
 import { tangentFrame } from './patchFrame';
 import { createStars } from './stars';
 import type { GlobeTextures } from './textures';
@@ -37,11 +38,16 @@ export class Globe {
   private beaconDir: Vec3 | null = null;
   private readonly cameraPosition = new THREE.Vector3(0, 0, 3);
   private hasPatch = false;
+  /** Patch image (mode jeu) ; `null` en mode masque. */
+  private readonly image: ReturnType<typeof createImageLayer> | null = null;
+  private imageTexture: THREE.Texture | null = null;
+  private imageFade: { seconds: number; since: number | null } = { seconds: 0, since: null };
 
   constructor(readonly mode: GlobeMode, parts: GlobeParts = {}) {
     if (mode === 'game' && parts.textures) {
       const earth = createEarthMaterial(parts.textures);
       this.earthMaterial = earth.material;
+      this.image = earth.image;
       this.country = createCountryLayer(new THREE.Texture(), earth.base);
       const atmosphere = createAtmosphere();
       this.sunListeners.push(earth.setSun, atmosphere.setSun);
@@ -75,6 +81,26 @@ export class Globe {
     this.country.setTexture(sdf);
   }
 
+  /**
+   * Patch image du pays visé (Sentinel-2), fondu sur la texture globale ; `null` le retire (absent, en échec, autre pays).
+   * Un nouveau patch apparaît en `fadeSeconds` (horloge de `setTime`) ; le même patch redonné ne relance pas le fondu.
+   */
+  setImagePatch(meta: { center: LngLat; extentRad: number } | null, tex: THREE.Texture | null, fadeSeconds = 0): void {
+    const img = this.image;
+    if (!img) return;
+    if (!meta || !tex) { this.imageTexture = null; img.uniforms.opacity.value = 0; return; }
+    if (tex === this.imageTexture) return;
+    this.imageTexture = tex;
+    const f = tangentFrame(meta.center);
+    img.uniforms.center.value.set(...f.center);
+    img.uniforms.east.value.set(...f.east);
+    img.uniforms.north.value.set(...f.north);
+    img.uniforms.extentRad.value = meta.extentRad;
+    img.setTexture(tex);
+    this.imageFade = { seconds: fadeSeconds, since: null };
+    img.uniforms.opacity.value = fadeSeconds > 0 ? 0 : 1;
+  }
+
   setLook(look: CountryLook): void {
     const u = this.country.uniforms;
     u.visible.value = look.visible && this.hasPatch ? 1 : 0;
@@ -97,7 +123,14 @@ export class Globe {
   }
 
   /** Horloge des animations propres au globe (pulsation de la balise), en secondes. */
-  setTime(seconds: number): void { this.beacon.setTime(seconds); }
+  setTime(seconds: number): void {
+    this.beacon.setTime(seconds);
+    const f = this.imageFade;
+    if (this.image && this.imageTexture && f.seconds > 0) {
+      f.since ??= seconds;
+      this.image.uniforms.opacity.value = Math.min(1, (seconds - f.since) / f.seconds);
+    }
+  }
 
   /** Place la caméra (regard vers le centre, `up` en haut) et le soleil pour la pose de la frame. */
   applyPose(pose: FramePose, camera: THREE.PerspectiveCamera): void {

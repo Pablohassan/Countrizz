@@ -1,9 +1,7 @@
 import * as THREE from 'three/webgpu';
-import {
-  abs, atan, cameraPosition, clamp, cross, dot, exp, float, fwidth, length, max, mix, normalize, positionWorld, select, sin,
-  smoothstep, sqrt, texture, uniform, vec2, vec3, vec4, output,
-} from 'three/tsl';
+import { abs, clamp, exp, float, fwidth, length, max, mix, select, sin, smoothstep, texture, uniform, vec3, vec4, output } from 'three/tsl';
 import type Node from 'three/src/nodes/core/Node.js';
+import { exactSpherePoint, frameXY } from './frameNodes';
 
 /** Repère tangent du centre du patch : C (centre), E (est), N (nord) — voir le contrat de PatchMeta. */
 export interface TangentFrame { center: THREE.Vector3; east: THREE.Vector3; north: THREE.Vector3 }
@@ -38,16 +36,7 @@ export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'
   const u = makeUniforms();
   const sdfNode = texture(placeholder);
 
-  // Point exact de la sphère unité sous le pixel (intersection du rayon de vue), et non le point de la facette :
-  // au cadrage du Vatican, l'écart entre la facette (maillage 512×256) et la sphère atteint une vingtaine de texels.
-  const rayDir = normalize(positionWorld.sub(cameraPosition));
-  const b = dot(cameraPosition, rayDir);
-  const c = dot(cameraPosition, cameraPosition).sub(1);
-  const P = normalize(cameraPosition.add(rayDir.mul(b.negate().sub(sqrt(max(b.mul(b).sub(c), 0))))));
-  const cosC = dot(P, u.center);
-  const sinC = length(cross(P, u.center));
-  const k = select(sinC.greaterThan(1e-7), atan(sinC, cosC).div(sinC), float(1));
-  const uv = vec2(k.mul(dot(P, u.east)), k.mul(dot(P, u.north)).negate()).div(u.extentRad).add(1).mul(0.5);
+  const uv = frameXY(exactSpherePoint(), u).add(1).mul(0.5);
   const inFrame = uv.x.greaterThanEqual(0).and(uv.x.lessThanEqual(1)).and(uv.y.greaterThanEqual(0)).and(uv.y.lessThanEqual(1));
   const shown = inFrame.and(u.visible.greaterThan(0.5));
 

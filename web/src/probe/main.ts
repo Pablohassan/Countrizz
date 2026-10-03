@@ -9,6 +9,8 @@ import { Globe } from '../globe/globe';
 import { loadPatchTexture } from '../globe/patchTexture';
 import { createRenderer } from '../globe/renderer';
 import { loadGlobeTextures } from '../globe/textures';
+import { createImageSource, loadImageryIndex } from '../globe/imagePatch';
+import { imagePatchUrl } from '../data/imagery';
 
 /** API exposée aux contrôles Playwright (e2e/). */
 export interface ProbeApi {
@@ -29,7 +31,8 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `reveal`, `state`, `t` : apparence du pays (défaut : question, vague achevée) ;
  * - `borders` : frontières de vue d'ensemble ;
  * - `beacon=lng,lat` : balise ;
- * - `k`, `margin`, `ctx` (θ_min) : cadrage autre que celui du jeu (contrôles de précision à cadrage serré).
+ * - `k`, `margin`, `ctx` (θ_min) : cadrage autre que celui du jeu (contrôles de précision à cadrage serré) ;
+ * - `img` (avec `cca3`, mode jeu) : patch image du pays, à la taille du niveau (`img`) ou forcée (`img=1024`).
  */
 const q = new URLSearchParams(location.search);
 const num = (name: string, fallback: number) => (q.has(name) ? Number(q.get(name)) : fallback);
@@ -53,6 +56,15 @@ if (q.get('cca3') && !rec) throw new Error(`pays inconnu : ${q.get('cca3')}`);
 let pose: FramePose;
 if (rec) {
   globe.setPatch(rec.patch, await loadPatchTexture(`/data/${rec.patch.sdf}`));
+  if (q.has('img') && mode === 'game') {
+    const meta = (await loadImageryIndex())?.countries[rec.cca3];
+    const source = createImageSource(renderer, q.get('tier') === 'haute' ? 'haute' : 'standard');
+    const size = q.get('img') ? Number(q.get('img')) : source.size;
+    // Patch absent (404) : on garde la texture globale, comme le jeu.
+    const tex = meta ? await source.load(imagePatchUrl('/', rec.cca3, size)).catch(() => null) : null;
+    source.dispose();
+    globe.setImagePatch(meta ?? null, tex);
+  }
   globe.setLook({ visible: true, reveal: Number(q.get('reveal') ?? 1), state: (q.get('state') ?? 'question') as CountryState, stateTime: Number(q.get('t') ?? 0) });
   const director = new CameraDirector({
     viewport: { width, height, fovYDeg: FOV_Y_DEG }, framing, flight: FLIGHT, reducedMotion: true, start: rec.cap.center,

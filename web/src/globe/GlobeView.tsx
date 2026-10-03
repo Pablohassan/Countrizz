@@ -69,6 +69,10 @@ export function GlobeView({ ref, framing, onReady }: Props) {
   const [cuts, setCuts] = useState(0);
   // Textures globales ou frontières introuvables après les nouvelles tentatives : message et « Réessayer ».
   const [loadError, setLoadError] = useState<string | null>(null);
+  // Densité de pixels : celle de la résolution dynamique, en prop du Canvas — R3F réapplique sa prop `dpr` à chaque
+  // re-rendu, et une valeur posée par setDpr à côté était écrasée (03/10, revue finale). Renderer recréé : on repart de [1, 2].
+  const [dpr, setDprProp] = useState<number | [number, number]>([1, 2]);
+  const regenerate = () => { setDprProp([1, 2]); setGeneration((g) => g + 1); };
   const forceWebGL = new URLSearchParams(location.search).has('webgl');
 
   useEffect(() => { if (framing) controller.setFraming(framing); }, [controller, framing]);
@@ -88,23 +92,23 @@ export function GlobeView({ ref, framing, onReady }: Props) {
         <Canvas
           key={`gl-${generation}`}
           flat
-          dpr={[1, 2]}
+          dpr={dpr}
           camera={{ fov: FOV_Y_DEG, near: 0.001, far: 100 }}
           gl={async (props) => {
             const info = await createRenderer(props.canvas as HTMLCanvasElement, { forceWebGL });
             const tier = qualityTier({ backend: info.backend, coarsePointer: matchMedia('(pointer: coarse)').matches, maxTexture2D: info.maxTexture2D });
             // Perte du GPU : on recrée le renderer (nouveau Canvas) ; le contrôleur garde la partie.
-            info.renderer.onDeviceLost = () => setGeneration((g) => g + 1);
+            info.renderer.onDeviceLost = regenerate;
             Object.assign(info.renderer, { userData: { backend: info.backend, tier } });
             return info.renderer;
           }}
         >
-          <GlobeScene controller={controller} generation={generation} onReady={onReady} onError={(e) => setLoadError(String(e))} onCut={() => setCuts((c) => c + 1)} />
+          <GlobeScene controller={controller} generation={generation} onReady={onReady} onError={(e) => setLoadError(String(e))} onCut={() => setCuts((c) => c + 1)} onDpr={setDprProp} />
         </Canvas>
         {loadError && (
           <div role="alert" title={loadError} style={{ position: 'absolute', inset: 0, display: 'grid', placeContent: 'center', gap: 12, color: '#f7dc6f', background: '#16173a', textAlign: 'center', fontFamily: 'sans-serif' }}>
             <p>Le globe n’a pas pu se charger (réseau ?).</p>
-            <button onClick={() => { setLoadError(null); setGeneration((g) => g + 1); }}>Réessayer</button>
+            <button onClick={() => { setLoadError(null); regenerate(); }}>Réessayer</button>
           </div>
         )}
         <ImageryCredit />
@@ -118,14 +122,13 @@ export function GlobeView({ ref, framing, onReady }: Props) {
   );
 }
 
-function GlobeScene({ controller, generation, onReady, onError, onCut }: { controller: GlobeController; generation: number; onReady?: Props['onReady']; onError(e: unknown): void; onCut(): void }) {
+function GlobeScene({ controller, generation, onReady, onError, onCut, onDpr }: { controller: GlobeController; generation: number; onReady?: Props['onReady']; onError(e: unknown): void; onCut(): void; onDpr(dpr: number): void }) {
   const renderer = useThree((s) => s.gl) as unknown as THREE.WebGPURenderer & { userData: { backend: Backend; tier: QualityTier } };
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const scene = useThree((s) => s.scene) as unknown as THREE.Scene;
   const size = useThree((s) => s.size);
   const [globe, setGlobe] = useState<Globe | null>(null);
   const [post, setPost] = useState<ReturnType<typeof createPostProcessing> | null>(null);
-  const setDpr = useThree((s) => s.setDpr);
   const setFrameloop = useThree((s) => s.setFrameloop);
   // Résolution dynamique : niveau « standard » seulement (spec §4.1).
   const governor = useMemo(() => (renderer.userData.tier === 'standard' ? createDprGovernor(dprOptions(window.devicePixelRatio)) : null), [renderer]);
@@ -209,8 +212,8 @@ function GlobeScene({ controller, generation, onReady, onError, onCut }: { contr
   useFrame((_, delta) => {
     if (governor) {
       const before = governor.dpr;
-      const dpr = governor.update(window.__globe?.frameMsOverride ?? delta * 1000);
-      if (dpr !== before) setDpr(dpr);
+      const dpr = governor.update(window.__globe?.frameMsOverride ?? delta * 1000, performance.now());
+      if (dpr !== before) onDpr(dpr);
     }
     if (!globe) return;
     const now = performance.now();

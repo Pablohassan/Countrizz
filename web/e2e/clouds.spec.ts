@@ -17,6 +17,17 @@ for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
   });
 }
 
+// Gros plan (texel de nuages agrandi ≈ 6 fois : la fin de la descente vers un petit pays) : les blocs de la compression
+// ETC1S se voyaient en carrés nets pendant la dernière seconde du vol (03/10, revue finale). Ils s'effacent avant.
+for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
+  test(`${backend} nuages : effacés quand un texel couvre plusieurs pixels (gros plan)`, async ({ page }) => {
+    const clear = meanLuma(await shoot(page, backend, 'mode=game&at=-20,5&alt=0.15'));
+    const cloudy = meanLuma(await shoot(page, backend, 'mode=game&at=-20,5&alt=0.15&clouds=1'));
+    console.log(backend, 'gros plan : luminance sans nuages', clear.toFixed(1), 'avec', cloudy.toFixed(1));
+    expect(Math.abs(cloudy - clear)).toBeLessThan(1);
+  });
+}
+
 test.describe('en jeu', () => {
   test.use({ viewport: { width: 960, height: 600 } });
   test('les nuages s’effacent à l’arrivée sur le pays (spec §4.2)', async ({ page }) => {

@@ -1,6 +1,12 @@
 import type * as THREE from 'three/webgpu';
-import { texture, uniform, vec2 } from 'three/tsl';
+import { float, fwidth, length, max, positionWorld, smoothstep, texture, uniform, vec2 } from 'three/tsl';
 import type Node from 'three/src/nodes/core/Node.js';
+
+/**
+ * Grossissement (pixels par texel de nuages) entre lequel les nuages s'effacent : au-delà de 3, les blocs de la
+ * compression ETC1S se voyaient en carrés nets pendant la fin de la descente vers un petit pays (03/10, revue finale).
+ */
+export const CLOUD_MAGNIFY = { from: 1.5, to: 3 } as const;
 
 /** Effacement des nuages à l'arrivée sur un pays, et retour au vol suivant. */
 export const CLOUD_FADE_MS = 800;
@@ -22,9 +28,17 @@ export function cloudOpacity(f: CloudFade, nowMs: number): number {
  */
 export function createClouds(tex: THREE.Texture) {
   const opacity = uniform(1), drift = uniform(0);
+  // Texel de nuages (rad, sens des latitudes) contre empreinte du pixel sur la sphère unité, mesurée sur la position et
+  // non sur les uv (la couture u = 0/1 y ferait sauter la dérivée).
+  const texelRad = (2 * Math.PI) / ((tex.image as { width?: number } | undefined)?.width ?? 4096);
+  const magnify = float(texelRad).div(max(length(fwidth(positionWorld)), 1e-7));
+  const visible = smoothstep(float(CLOUD_MAGNIFY.from), float(CLOUD_MAGNIFY.to), magnify).oneMinus();
   return {
-    /** Couverture (0 → 1) au point de coordonnées sphériques `u` ; la dérive décale la lecture vers l'ouest : le motif avance vers l'est. */
-    coverageAt: (u: Node<'vec2'>) => texture(tex, u.sub(vec2(drift, 0))).r.mul(opacity),
+    /**
+     * Couverture (0 → 1) au point de coordonnées sphériques `u` ; la dérive décale la lecture vers l'ouest : le motif
+     * avance vers l'est. Effacée en gros plan (CLOUD_MAGNIFY).
+     */
+    coverageAt: (u: Node<'vec2'>) => texture(tex, u.sub(vec2(drift, 0))).r.mul(opacity).mul(visible),
     set(o: number, d: number) { opacity.value = o; drift.value = d; },
   };
 }

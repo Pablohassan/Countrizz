@@ -1,4 +1,4 @@
-import { Component, useEffect, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from 'react';
+import { Component, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode, type Ref } from 'react';
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three/webgpu';
 import { FOV_Y_DEG } from '../camera/config';
@@ -9,6 +9,7 @@ import { GlobeController } from './controller';
 import { Globe } from './globe';
 import { CLOUD_DRIFT_TURNS_PER_S } from './clouds';
 import { ImageryCredit } from './credits';
+import { createDprGovernor, dprOptions } from './dynamicResolution';
 import { createImageSource, loadImageryIndex } from './imagePatch';
 import { createPostProcessing, postOptions } from './postprocessing';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
@@ -35,6 +36,10 @@ export interface GlobeDebug {
   frames: number;
   /** Opacité des nuages à la dernière frame. */
   cloudOpacity: number;
+  /** Densité de pixels du renderer. */
+  dpr(): number;
+  /** Remplace le temps de frame vu par la résolution dynamique (contrôles headless). */
+  frameMsOverride?: number;
   project(p: LngLat): [number, number] | null;
   simulateDeviceLost(): void;
 }
@@ -120,6 +125,17 @@ function GlobeScene({ controller, generation, onReady, onError, onCut }: { contr
   const size = useThree((s) => s.size);
   const [globe, setGlobe] = useState<Globe | null>(null);
   const [post, setPost] = useState<ReturnType<typeof createPostProcessing> | null>(null);
+  const setDpr = useThree((s) => s.setDpr);
+  const setFrameloop = useThree((s) => s.setFrameloop);
+  // Résolution dynamique : niveau « standard » seulement (spec §4.1).
+  const governor = useMemo(() => (renderer.userData.tier === 'standard' ? createDprGovernor(dprOptions(window.devicePixelRatio)) : null), [renderer]);
+
+  // Onglet caché : plus aucune frame (spec §6.6) ; la boucle reprend au retour.
+  useEffect(() => {
+    const onVisibility = () => setFrameloop(document.visibilityState === 'hidden' ? 'never' : 'always');
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, [setFrameloop]);
   // onReady passe par une ref : un parent qui le donne en flèche inline ne doit pas reconstruire le globe à chaque rendu.
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
@@ -178,6 +194,7 @@ function GlobeScene({ controller, generation, onReady, onError, onCut }: { contr
       generation,
       frames: 0,
       cloudOpacity: 1,
+      dpr: () => renderer.getPixelRatio(),
       project(p) {
         const v = new THREE.Vector3(...toVec(p));
         if (v.dot(camera.position) <= 1) return null;
@@ -189,7 +206,12 @@ function GlobeScene({ controller, generation, onReady, onError, onCut }: { contr
     window.__globe = debug;
   }, [renderer, camera, size.width, size.height, generation]);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
+    if (governor) {
+      const before = governor.dpr;
+      const dpr = governor.update(window.__globe?.frameMsOverride ?? delta * 1000);
+      if (dpr !== before) setDpr(dpr);
+    }
     if (!globe) return;
     const now = performance.now();
     const pose = controller.director.update(now);

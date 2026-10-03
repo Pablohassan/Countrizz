@@ -10,6 +10,7 @@ import { Globe } from './globe';
 import { CLOUD_DRIFT_TURNS_PER_S } from './clouds';
 import { ImageryCredit } from './credits';
 import { createImageSource, loadImageryIndex } from './imagePatch';
+import { createPostProcessing, postOptions } from './postprocessing';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
 import { lookAt } from './reveal';
 import { withRetry } from './retry';
@@ -115,8 +116,10 @@ export function GlobeView({ ref, framing, onReady }: Props) {
 function GlobeScene({ controller, generation, onReady, onError, onCut }: { controller: GlobeController; generation: number; onReady?: Props['onReady']; onError(e: unknown): void; onCut(): void }) {
   const renderer = useThree((s) => s.gl) as unknown as THREE.WebGPURenderer & { userData: { backend: Backend; tier: QualityTier } };
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
+  const scene = useThree((s) => s.scene) as unknown as THREE.Scene;
   const size = useThree((s) => s.size);
   const [globe, setGlobe] = useState<Globe | null>(null);
+  const [post, setPost] = useState<ReturnType<typeof createPostProcessing> | null>(null);
   // onReady passe par une ref : un parent qui le donne en flèche inline ne doit pas reconstruire le globe à chaque rendu.
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
@@ -146,6 +149,13 @@ function GlobeScene({ controller, generation, onReady, onError, onCut }: { contr
       if (built) { built.globe.dispose(); disposeGlobeTextures(built.textures); }
     };
   }, [renderer, controller]);
+
+  // Post-traitement (spec §4.1) : un par renderer ; recréé avec lui après une perte du GPU.
+  useEffect(() => {
+    const p = createPostProcessing(renderer, scene, camera, postOptions(renderer.userData.tier));
+    setPost(p);
+    return () => { setPost(null); p.dispose(); };
+  }, [renderer, scene, camera]);
 
   // Patchs image (Sentinel-2) : facultatifs — sans index ni fichier, la texture globale suffit.
   useEffect(() => {
@@ -190,8 +200,10 @@ function GlobeScene({ controller, generation, onReady, onError, onCut }: { contr
     // Mouvement réduit : les nuages ne dérivent pas.
     globe.setClouds(clouds, controller.reducedMotion ? 0 : (now / 1000) * CLOUD_DRIFT_TURNS_PER_S);
     if (pose.cut) onCut();
+    if (post) post.render();
+    else renderer.render(scene, camera);
     if (window.__globe) { window.__globe.frames++; window.__globe.cloudOpacity = clouds; }
-  });
+  }, 1); // priorité 1 : R3F ne rend plus lui-même, la boucle passe par le post-traitement
 
   return globe ? <primitive object={globe.root} /> : null;
 }

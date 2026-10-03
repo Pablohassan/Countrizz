@@ -10,6 +10,7 @@ import { loadPatchTexture } from '../globe/patchTexture';
 import { createRenderer } from '../globe/renderer';
 import { loadGlobeTextures } from '../globe/textures';
 import { createImageSource, loadImageryIndex } from '../globe/imagePatch';
+import { createPostProcessing, postOptions } from '../globe/postprocessing';
 import { imagePatchUrl } from '../data/imagery';
 
 /** API exposée aux contrôles Playwright (e2e/). */
@@ -33,7 +34,8 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `beacon=lng,lat` : balise ;
  * - `k`, `margin`, `ctx` (θ_min) : cadrage autre que celui du jeu (contrôles de précision à cadrage serré) ;
  * - `img` (avec `cca3`, mode jeu) : patch image du pays, à la taille du niveau (`img`) ou forcée (`img=1024`) ;
- * - `clouds=x` : opacité des nuages (0 par défaut), sans dérive.
+ * - `clouds=x` : opacité des nuages (0 par défaut), sans dérive ;
+ * - `post` : post-traitement du niveau (`tier`), rendu sur `frames` images (16 par défaut : TRAA converge).
  */
 const q = new URLSearchParams(location.search);
 const num = (name: string, fallback: number) => (q.has(name) ? Number(q.get(name)) : fallback);
@@ -83,7 +85,15 @@ const sun = lngLat(q.get('sun'));
 if (sun) globe.setSun(toVec(sun));
 const scene = new THREE.Scene();
 scene.add(globe.root);
-renderer.render(scene, camera);
+if (q.has('post')) {
+  const post = createPostProcessing(renderer, scene, camera, postOptions(q.get('tier') === 'haute' ? 'haute' : 'standard'));
+  for (let i = 0, n = Number(q.get('frames') ?? 16); i < n; i++) {
+    post.render();
+    await new Promise((r) => requestAnimationFrame(r));
+  }
+} else {
+  renderer.render(scene, camera);
+}
 
 const ray = new THREE.Raycaster();
 const sphere = new THREE.Sphere(new THREE.Vector3(), 1);

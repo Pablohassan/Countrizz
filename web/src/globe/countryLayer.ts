@@ -43,8 +43,15 @@ export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'
   const sample = sdfNode.sample(uv);
   const sd = sample.r.mul(255).sub(128).div(127).mul(u.rangeTexels); // texels, > 0 dedans
   const gd = sample.g.mul(u.rangeTexels); // texels jusqu'à la ligne voisine la plus proche
-  const sdPx = sd.div(max(fwidth(sd), 1e-4)); // distance au bord en pixels d'écran
-  const gdPx = gd.div(max(fwidth(gd), 1e-4));
+  // Distance au bord en pixels d'écran (anticrénelage). Une empreinte de pixel (fwidth) de plus de rangeTexels texels ne
+  // dit plus rien (champ saturé) : le bord devient net. Sous MSAA en WebGL 2 (SwiftShader), fwidth devient aberrant sur
+  // certains anneaux du maillage, et le bord anticrénelé débordait en un trait de la couleur du pays (03/10, jeu 1A compris).
+  const toPx = (v: Node<'float'>) => {
+    const fw = fwidth(v);
+    return select(fw.greaterThan(u.rangeTexels), v.mul(1e3), v.div(max(fw, 1e-4)));
+  };
+  const sdPx = toPx(sd);
+  const gdPx = toPx(gd);
 
   // vague depuis le centre du patch : rayon en unités de demi-cadre, 0 → √2
   const radial = length(uv.sub(0.5)).mul(2);

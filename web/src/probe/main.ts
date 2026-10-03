@@ -46,7 +46,9 @@ const lngLat = (s: string | null): LngLat | null => (s ? (s.split(',').map(Numbe
 const width = Number(q.get('w') ?? 960), height = Number(q.get('h') ?? 600);
 const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
-const { renderer, backend } = await createRenderer(canvas, { forceWebGL: q.has('webgl'), antialias: false });
+// Avec `post`, le renderer du jeu (antialiasé : la passe hérite de ses échantillons si on ne les fixe pas) ; sans, pas
+// d'antialias, pour des masques exacts au pixel.
+const { renderer, backend } = await createRenderer(canvas, { forceWebGL: q.has('webgl'), antialias: q.has('post') });
 renderer.setPixelRatio(1);
 renderer.setSize(width, height);
 

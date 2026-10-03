@@ -15,7 +15,9 @@ export function qualityTier(i: { backend: Backend; coarsePointer: boolean; maxTe
  * n'est disponible — l'appelant affiche alors « navigateur non compatible ».
  */
 export async function createRenderer(canvas: HTMLCanvasElement, opts: { forceWebGL?: boolean; antialias?: boolean } = {}): Promise<RendererInfo> {
-  const renderer = new THREE.WebGPURenderer({ canvas, antialias: opts.antialias ?? true, forceWebGL: opts.forceWebGL ?? false });
+  // Pas d'antialias de canvas par défaut : tout passe par le post-traitement, dont la passe porte son MSAA (« standard »)
+  // ou le TRAA (« haute ») ; un canvas multi-échantillonné doublerait la mémoire et le travail de la sortie pour rien.
+  const renderer = new THREE.WebGPURenderer({ canvas, antialias: opts.antialias ?? false, forceWebGL: opts.forceWebGL ?? false });
   await renderer.init();
   // Le type public de Backend n'expose ni le drapeau ni le device : on lit ce que three pose (WebGPUBackend.js / WebGLBackend.js).
   const raw = renderer.backend as unknown as {

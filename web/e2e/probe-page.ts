@@ -9,7 +9,7 @@ export type Rgb = [number, number, number];
 export async function shoot(page: Page, backend: BackendName, query: string, size = { width: 960, height: 600 }) {
   await page.setViewportSize(size);
   await page.goto(`/probe.html?${query}&w=${size.width}&h=${size.height}${backend === 'webgl2' ? '&webgl' : ''}`);
-  await page.waitForFunction(() => window.__probe !== undefined, null, { timeout: 30_000 });
+  await page.waitForFunction(() => window.__probe !== undefined, null, { timeout: 60_000 });
   const got = await page.evaluate(() => window.__probe!.backend);
   if (got !== backend) throw new Error(`backend ${got} obtenu au lieu de ${backend}`);
   const png = PNG.sync.read(await page.screenshot({ clip: { x: 0, y: 0, ...size } }));

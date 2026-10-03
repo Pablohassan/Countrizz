@@ -37,7 +37,8 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `k`, `margin`, `ctx` (θ_min) : cadrage autre que celui du jeu (contrôles de précision à cadrage serré) ;
  * - `img` (avec `cca3`, mode jeu) : patch image du pays, à la taille du niveau (`img`) ou forcée (`img=1024`) ;
  * - `clouds=x` : opacité des nuages (0 par défaut), sans dérive ;
- * - `post` : post-traitement du niveau (`tier`), rendu sur `frames` images (16 par défaut : TRAA converge).
+ * - `post` : post-traitement du niveau (`tier`), rendu sur `frames` images (16 par défaut : TRAA converge) ;
+ * - `aa` : renderer antialiasé (canvas multi-échantillonné ; le jeu n'en a pas).
  */
 const q = new URLSearchParams(location.search);
 const num = (name: string, fallback: number) => (q.has(name) ? Number(q.get(name)) : fallback);
@@ -46,9 +47,9 @@ const lngLat = (s: string | null): LngLat | null => (s ? (s.split(',').map(Numbe
 const width = Number(q.get('w') ?? 960), height = Number(q.get('h') ?? 600);
 const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
-// Avec `post`, le renderer du jeu (antialiasé : la passe hérite de ses échantillons si on ne les fixe pas) ; sans, pas
-// d'antialias, pour des masques exacts au pixel.
-const { renderer, backend } = await createRenderer(canvas, { forceWebGL: q.has('webgl'), antialias: q.has('post') });
+// Sans antialias de canvas, comme le jeu (et des masques exacts au pixel) ; `aa` en force un : la passe du post-traitement ne
+// doit pas hériter de ses échantillons (contrôle de post.spec).
+const { renderer, backend } = await createRenderer(canvas, { forceWebGL: q.has('webgl'), antialias: q.has('aa') });
 renderer.setPixelRatio(1);
 renderer.setSize(width, height);
 

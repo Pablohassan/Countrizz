@@ -5,15 +5,15 @@ import type { BackendName } from './sdf-check';
 // Nuit sur Paris (même pose que earth.spec) : le bloom fait déborder la lumière des villes autour d'elles.
 const NIGHT = 'mode=game&at=2.35,48.85&alt=1.4&sun=-177.65,-48.85';
 
-// Le renderer du jeu est antialiasé (4 échantillons) : en « haute », une passe sans `samples` en héritait, et la copie de la
+// Un renderer antialiasé a 4 échantillons : en « haute », une passe sans `samples` en héritait, et la copie de la
 // profondeur multi-échantillonnée vers l'historique du TRAA était refusée à chaque image (03/10, revue finale de la 1B).
 for (const [backend, tier] of [['webgpu', 'haute'], ['webgpu', 'standard'], ['webgl2', 'standard']] as [BackendName, string][]) {
-  test(`${backend} ${tier} : post-traitement sans erreur du GPU (renderer antialiasé, comme le jeu)`, async ({ page }) => {
+  test(`${backend} ${tier} : post-traitement sans erreur du GPU, même avec un renderer antialiasé`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(String(e)));
     page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text().slice(0, 300)); });
     await page.setViewportSize({ width: 800, height: 450 });
-    await page.goto(`/probe.html?${NIGHT}&tier=${tier}&post&w=800&h=450${backend === 'webgl2' ? '&webgl' : ''}`);
+    await page.goto(`/probe.html?${NIGHT}&tier=${tier}&post&aa&w=800&h=450${backend === 'webgl2' ? '&webgl' : ''}`);
     await page.waitForFunction(() => window.__probe !== undefined, null, { timeout: 60_000 });
     expect(await page.evaluate(() => window.__probe!.backend)).toBe(backend);
     expect(errors).toEqual([]);

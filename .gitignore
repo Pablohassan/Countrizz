@@ -4,6 +4,7 @@ dist/
 web/scripts/geodata/.cache/
 web/scripts/textures/.cache/
 web/scripts/imagery/.cache/
+web/public/data/patches/img/
 web/public/basis/
 *.log
 .superpowers/

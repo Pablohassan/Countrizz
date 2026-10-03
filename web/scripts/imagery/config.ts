@@ -11,3 +11,9 @@ export const EOX = {
   license: 'CC BY-NC-SA 4.0',
   attribution: 'EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)',
 } as const;
+
+/**
+ * Patchs image (spec §4.3, amendé le 02/10) : emprise = vue d'arrivée (lib/patchImage.ts), 2048 texels en « haute »,
+ * 1024 en « standard » (réduction du 2048) ; ETC1S sRGB, alpha = masque d'eau ; fichiers HORS dépôt.
+ */
+export const IMAGE_PATCH = { sizes: [2048, 1024] as const, viewFactor: 2.2, maxExtentDeg: 30, qlevel: 192 } as const;

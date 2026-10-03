@@ -7,6 +7,7 @@ import type { CountryRecord, LngLat } from '../data/types';
 import { toVec } from '../geo/vec';
 import { GlobeController } from './controller';
 import { Globe } from './globe';
+import { ImageryCredit } from './credits';
 import { createImageSource, loadImageryIndex } from './imagePatch';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
 import { lookAt } from './reveal';
@@ -97,6 +98,7 @@ export function GlobeView({ ref, framing, onReady }: Props) {
             <button onClick={() => { setLoadError(null); setGeneration((g) => g + 1); }}>Réessayer</button>
           </div>
         )}
+        <ImageryCredit />
         <style>{'@keyframes countrizz-cut { from { opacity: 1 } to { opacity: 0 } }'}</style>
         <div
           key={`cut-${cuts}`}

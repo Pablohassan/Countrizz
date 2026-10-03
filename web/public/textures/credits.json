@@ -14,5 +14,9 @@
  {
   "layer": "océans",
   "text": "Masque terre/mer dérivé de Natural Earth (domaine public)."
+ },
+ {
+  "layer": "nuages",
+  "text": "Blue Marble: Clouds, NASA Earth Observatory (Reto Stöckli)."
  }
 ]

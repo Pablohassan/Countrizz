@@ -8,6 +8,7 @@ import { needsBeacon } from './beacon';
 import type { Globe } from './globe';
 import { createPatchCache } from './patchCache';
 import { disposePatchTexture, loadPatchTexture } from './patchTexture';
+import { cloudOpacity, type CloudFade } from './clouds';
 import type { RevealTimeline } from './reveal';
 
 /** Fondu d'apparition d'un patch image arrivé en cours de route. */
@@ -38,7 +39,9 @@ export class GlobeController {
   private image: THREE.Texture | null = null;
   private readonly images = createPatchCache((url: string) => this.imageSource!.load(url), (t: THREE.Texture) => t.dispose());
 
-  constructor(private readonly baseUrl = '/', reducedMotion = false) {
+  private cloudFade: CloudFade = { from: 1, to: 1, atMs: 0 };
+
+  constructor(private readonly baseUrl = '/', readonly reducedMotion = false, private readonly clock: () => number = () => performance.now()) {
     this.viewport = { width: 960, height: 600, fovYDeg: FOV_Y_DEG };
     this.framing = FRAMING;
     this.director = new CameraDirector({ viewport: this.viewport, framing: FRAMING, flight: FLIGHT, reducedMotion, start: [2.35, 30] });
@@ -86,9 +89,10 @@ export class GlobeController {
     );
     this.image = null;
     this.requestImage();
+    this.fadeClouds(1);
     this.apply();
     return this.director.flyTo(rec).then(() => {
-      if (this.target === rec) { this.arrived = true; this.apply(); }
+      if (this.target === rec) { this.arrived = true; this.fadeClouds(0); this.apply(); }
     });
   }
 
@@ -120,7 +124,16 @@ export class GlobeController {
     if (this.timeline) this.timeline = { ...this.timeline, answer: { kind, atMs: nowMs } };
   }
 
+  /** Opacité des nuages pour la frame (horloge de la boucle de rendu). */
+  cloudOpacityAt(nowMs: number): number { return cloudOpacity(this.cloudFade, nowMs); }
+
+  private fadeClouds(to: number): void {
+    const now = this.clock();
+    this.cloudFade = { from: cloudOpacity(this.cloudFade, now), to, atMs: now };
+  }
+
   clear(): void {
+    this.fadeClouds(1);
     this.target = null;
     this.timeline = null;
     this.apply();

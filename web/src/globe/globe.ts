@@ -7,6 +7,7 @@ import { toVec, type Vec3 } from '../geo/vec';
 import { createAtmosphere } from './atmosphere';
 import { createBeacon } from './beacon';
 import { createBorders } from './borders';
+import { createClouds } from './clouds';
 import { createCountryLayer, STATE } from './countryLayer';
 import { createEarthMaterial } from './earth';
 import type { createImageLayer } from './imageLayer';
@@ -40,12 +41,14 @@ export class Globe {
   private hasPatch = false;
   /** Patch image (mode jeu) ; `null` en mode masque. */
   private readonly image: ReturnType<typeof createImageLayer> | null = null;
+  private readonly clouds: ReturnType<typeof createClouds> | null = null;
   private imageTexture: THREE.Texture | null = null;
   private imageFade: { seconds: number; since: number | null } = { seconds: 0, since: null };
 
   constructor(readonly mode: GlobeMode, parts: GlobeParts = {}) {
     if (mode === 'game' && parts.textures) {
-      const earth = createEarthMaterial(parts.textures);
+      this.clouds = parts.textures.clouds ? createClouds(parts.textures.clouds) : null;
+      const earth = createEarthMaterial(parts.textures, this.clouds);
       this.earthMaterial = earth.material;
       this.image = earth.image;
       this.country = createCountryLayer(new THREE.Texture(), earth.base);
@@ -100,6 +103,9 @@ export class Globe {
     this.imageFade = { seconds: fadeSeconds, since: null };
     img.uniforms.opacity.value = fadeSeconds > 0 ? 0 : 1;
   }
+
+  /** Nuages : opacité (0 → effacés) et dérive en fraction de tour ; sans texture de nuages, sans effet. */
+  setClouds(opacity: number, driftTurns: number): void { this.clouds?.set(opacity, driftTurns % 1); }
 
   setLook(look: CountryLook): void {
     const u = this.country.uniforms;

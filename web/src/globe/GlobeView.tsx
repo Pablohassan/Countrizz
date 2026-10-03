@@ -7,6 +7,7 @@ import type { CountryRecord, LngLat } from '../data/types';
 import { toVec } from '../geo/vec';
 import { GlobeController } from './controller';
 import { Globe } from './globe';
+import { CLOUD_DRIFT_TURNS_PER_S } from './clouds';
 import { ImageryCredit } from './credits';
 import { createImageSource, loadImageryIndex } from './imagePatch';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
@@ -31,6 +32,8 @@ export interface GlobeDebug {
   backend: Backend;
   generation: number;
   frames: number;
+  /** Opacité des nuages à la dernière frame. */
+  cloudOpacity: number;
   project(p: LngLat): [number, number] | null;
   simulateDeviceLost(): void;
 }
@@ -164,6 +167,7 @@ function GlobeScene({ controller, generation, onReady, onError, onCut }: { contr
       backend: renderer.userData.backend,
       generation,
       frames: 0,
+      cloudOpacity: 1,
       project(p) {
         const v = new THREE.Vector3(...toVec(p));
         if (v.dot(camera.position) <= 1) return null;
@@ -182,8 +186,11 @@ function GlobeScene({ controller, generation, onReady, onError, onCut }: { contr
     globe.setLook(lookAt(controller.timeline, now));
     globe.setTime(now / 1000);
     globe.applyPose(pose, camera);
+    const clouds = controller.cloudOpacityAt(now);
+    // Mouvement réduit : les nuages ne dérivent pas.
+    globe.setClouds(clouds, controller.reducedMotion ? 0 : (now / 1000) * CLOUD_DRIFT_TURNS_PER_S);
     if (pose.cut) onCut();
-    if (window.__globe) window.__globe.frames++;
+    if (window.__globe) { window.__globe.frames++; window.__globe.cloudOpacity = clouds; }
   });
 
   return globe ? <primitive object={globe.root} /> : null;

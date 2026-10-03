@@ -4,7 +4,7 @@ import { Globe } from './globe';
 
 describe('Globe.dispose', () => {
   it('libère ses géométries et ses matériaux, pas les textures prêtées par l’appelant', () => {
-    const textures = { day: new THREE.Texture(), night: new THREE.Texture(), surface: new THREE.Texture() };
+    const textures = { day: new THREE.Texture(), night: new THREE.Texture(), surface: new THREE.Texture(), clouds: new THREE.Texture() };
     const globe = new Globe('game', { textures, borders: [[[0, 0], [1, 1], [2, 1]]] });
     const owned: { dispatchEvent: unknown; addEventListener(type: 'dispose', cb: () => void): void }[] = [];
     globe.root.traverse((o) => {

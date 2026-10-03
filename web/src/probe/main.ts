@@ -32,7 +32,8 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `borders` : frontières de vue d'ensemble ;
  * - `beacon=lng,lat` : balise ;
  * - `k`, `margin`, `ctx` (θ_min) : cadrage autre que celui du jeu (contrôles de précision à cadrage serré) ;
- * - `img` (avec `cca3`, mode jeu) : patch image du pays, à la taille du niveau (`img`) ou forcée (`img=1024`).
+ * - `img` (avec `cca3`, mode jeu) : patch image du pays, à la taille du niveau (`img`) ou forcée (`img=1024`) ;
+ * - `clouds=x` : opacité des nuages (0 par défaut), sans dérive.
  */
 const q = new URLSearchParams(location.search);
 const num = (name: string, fallback: number) => (q.has(name) ? Number(q.get(name)) : fallback);
@@ -77,6 +78,7 @@ if (rec) {
 }
 globe.applyPose(pose, camera);
 globe.setBeacon(lngLat(q.get('beacon')));
+globe.setClouds(Number(q.get('clouds') ?? 0), 0);
 const sun = lngLat(q.get('sun'));
 if (sun) globe.setSun(toVec(sun));
 const scene = new THREE.Scene();

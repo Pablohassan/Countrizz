@@ -9,7 +9,7 @@ import { EOX } from '../imagery/config';
 import { snapGrid } from '../imagery/lib/grid';
 import { loadMosaic } from '../imagery/lib/mosaic';
 import { IMG_CACHE_DIR } from '../imagery/paths';
-import { BUDGET_BYTES, COLOR_SIZES, CREDITS, DAY_S2, SURFACE_SIZE, TEXTURE_SOURCES } from './config';
+import { BUDGET_BYTES, CLOUDS_SIZE, COLOR_SIZES, CREDITS, DAY_S2, SURFACE_SIZE, TEXTURE_SOURCES } from './config';
 import { polarFill } from './lib/polarFill';
 import { rasterizeLandMask } from './lib/landMask';
 import { NE_COUNTRIES, TEX_CACHE_DIR, TEX_OUT_DIR, TEX_REPORT_PATH } from './paths';
@@ -70,6 +70,15 @@ async function surfaceTexture(size: number): Promise<string> {
   return name;
 }
 
+/** Nuages : couverture (luminance du canal R) en un canal, ETC1S linéaire, mipmaps, origine en bas à gauche. */
+async function cloudsTexture(size: number): Promise<string> {
+  const png = path.join(TMP, `clouds-${size}.png`);
+  await sharp(source('clouds'), { limitInputPixels: false }).extractChannel(0).resize(size, size / 2, { kernel: 'lanczos3' }).toColourspace('b-w').png({ compressionLevel: 6 }).toFile(png);
+  const name = outName('clouds', size);
+  toktx(['--t2', '--encode', 'etc1s', '--clevel', '2', '--qlevel', '128', '--genmipmap', '--assign_oetf', 'linear', '--lower_left_maps_to_s0t0', path.join(TEX_OUT_DIR, name), png]);
+  return name;
+}
+
 async function main(): Promise<void> {
   checkToktx();
   mkdirSync(TMP, { recursive: true });
@@ -81,16 +90,17 @@ async function main(): Promise<void> {
     names.push(await colorTexture('night', size, 128, source('night')));
   }
   names.push(await surfaceTexture(SURFACE_SIZE));
+  names.push(await cloudsTexture(CLOUDS_SIZE));
   writeJson(path.join(TEX_OUT_DIR, 'credits.json'), CREDITS);
 
   const bytes = Object.fromEntries(names.map((n) => [n, statSync(path.join(TEX_OUT_DIR, n)).size]));
-  const tier = (s: string) => bytes[`day-${s}.ktx2`]! + bytes[`night-${s}.ktx2`]! + bytes['surface-4k.ktx2']!;
+  const tier = (s: string) => bytes[`day-${s}.ktx2`]! + bytes[`night-${s}.ktx2`]! + bytes['surface-4k.ktx2']! + bytes['clouds-4k.ktx2']!;
   const lines = [
     '# Textures globales — rapport de génération', '',
     '| Fichier | Octets |', '|---|---:|',
     ...names.map((n) => `| ${n} | ${bytes[n]} |`), '',
-    `- Niveau « standard » (day-4k + night-4k + surface-4k) : ${tier('4k')} octets (budget ${BUDGET_BYTES.standard})`,
-    `- Niveau « haute » (day-8k + night-8k + surface-4k) : ${tier('8k')} octets (budget ${BUDGET_BYTES.haute})`, '',
+    `- Niveau « standard » (day-4k + night-4k + surface-4k + clouds-4k) : ${tier('4k')} octets (budget ${BUDGET_BYTES.standard})`,
+    `- Niveau « haute » (day-8k + night-8k + surface-4k + clouds-4k) : ${tier('8k')} octets (budget ${BUDGET_BYTES.haute})`, '',
   ];
   writeFileSync(TEX_REPORT_PATH, lines.join('\n'));
   rmSync(TMP, { recursive: true, force: true });

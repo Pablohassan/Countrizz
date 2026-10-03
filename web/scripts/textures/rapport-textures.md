@@ -7,6 +7,7 @@
 | day-4k.ktx2 | 1096801 |
 | night-4k.ktx2 | 323745 |
 | surface-4k.ktx2 | 2042258 |
+| clouds-4k.ktx2 | 1283240 |
 
-- Niveau « standard » (day-4k + night-4k + surface-4k) : 3462804 octets (budget 15000000)
-- Niveau « haute » (day-8k + night-8k + surface-4k) : 7038737 octets (budget 25000000)
+- Niveau « standard » (day-4k + night-4k + surface-4k + clouds-4k) : 4746044 octets (budget 15000000)
+- Niveau « haute » (day-8k + night-8k + surface-4k + clouds-4k) : 8321977 octets (budget 25000000)

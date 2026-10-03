@@ -11,6 +11,7 @@ const FILES = [
   { name: 'night-8k.ktx2', width: 8192, supercompression: 1 },
   { name: 'night-4k.ktx2', width: 4096, supercompression: 1 },
   { name: 'surface-4k.ktx2', width: 4096, supercompression: 2 },
+  { name: 'clouds-4k.ktx2', width: 4096, supercompression: 1 },
 ];
 const size = (n: string) => statSync(path.join(TEX_OUT_DIR, n)).size;
 
@@ -27,11 +28,11 @@ describe('textures globales générées', () => {
     });
   }
   it('tient dans le budget de chaque niveau de qualité', () => {
-    expect(size('day-4k.ktx2') + size('night-4k.ktx2') + size('surface-4k.ktx2')).toBeLessThanOrEqual(BUDGET_BYTES.standard);
-    expect(size('day-8k.ktx2') + size('night-8k.ktx2') + size('surface-4k.ktx2')).toBeLessThanOrEqual(BUDGET_BYTES.haute);
+    expect(size('day-4k.ktx2') + size('night-4k.ktx2') + size('surface-4k.ktx2') + size('clouds-4k.ktx2')).toBeLessThanOrEqual(BUDGET_BYTES.standard);
+    expect(size('day-8k.ktx2') + size('night-8k.ktx2') + size('surface-4k.ktx2') + size('clouds-4k.ktx2')).toBeLessThanOrEqual(BUDGET_BYTES.haute);
   });
-  it('publie les crédits des quatre couches', () => {
-    expect(JSON.parse(readFileSync(path.join(TEX_OUT_DIR, 'credits.json'), 'utf8'))).toHaveLength(4);
+  it('publie les crédits des cinq couches', () => {
+    expect((JSON.parse(readFileSync(path.join(TEX_OUT_DIR, 'credits.json'), 'utf8')) as { layer: string }[]).map((c) => c.layer)).toEqual(['jour', 'nuit', 'relief', 'océans', 'nuages']);
   });
   it('le jour crédite EOxCloudless 2025 avec l’attribution exacte (spec §9)', () => {
     const credits = JSON.parse(readFileSync(path.join(TEX_OUT_DIR, 'credits.json'), 'utf8')) as { layer: string; text: string }[];

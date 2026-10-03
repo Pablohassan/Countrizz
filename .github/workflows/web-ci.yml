@@ -1,4 +1,7 @@
 name: web
+# GitHub ne lance que les types et les tests unitaires. La suite complète (e2e, régression visuelle, budget) tourne sur
+# le Mac, CI de référence, avant toute construction d'image (décision du 03/10) : sur les runners hébergés, le GPU
+# logiciel ne suit plus le rendu du jeu de la 1B (runs 37143066453 et 37146411714 : captures bloquées à 180 s).
 on:
   push:
     paths: ['web/**', '.github/workflows/web-ci.yml']
@@ -19,24 +22,3 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - run: npm ci
       - run: npm run check
-  e2e:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run e2e
-      - run: npm run budget
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright
-          path: web/test-results/

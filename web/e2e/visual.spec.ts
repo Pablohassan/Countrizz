@@ -3,8 +3,8 @@ import type { BackendName } from './sdf-check';
 
 /**
  * Non-régression visuelle (spec §8) : six plans de référence rendus par la sonde (déterministes : pas d'horloge, nuages
- * sans dérive, TRAA convergé sur 16 images), WebGPU et WebGL 2, téléphone et bureau. Références par plateforme
- * (`-darwin`, `-linux`) : celles de Linux se génèrent sur le runner de la CI (.github/workflows/visual-baselines.yml).
+ * sans dérive, TRAA convergé sur 16 images), WebGPU et WebGL 2, téléphone et bureau. Références macOS (`-darwin`) : la
+ * suite complète tourne sur le Mac, CI de référence (03/10) ; les runners Linux de GitHub ne suivent plus le rendu.
  * Tolérance de 20 pixels : le rendu est déterministe sur une plateforme, et un trait d'un pixel sur 100 (liseré tracé le
  * long du bord du cadre du patch, 03/10) doit se voir.
  */

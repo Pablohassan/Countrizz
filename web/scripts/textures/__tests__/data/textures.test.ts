@@ -33,4 +33,8 @@ describe('textures globales générées', () => {
   it('publie les crédits des quatre couches', () => {
     expect(JSON.parse(readFileSync(path.join(TEX_OUT_DIR, 'credits.json'), 'utf8'))).toHaveLength(4);
   });
+  it('le jour crédite EOxCloudless 2025 avec l’attribution exacte (spec §9)', () => {
+    const credits = JSON.parse(readFileSync(path.join(TEX_OUT_DIR, 'credits.json'), 'utf8')) as { layer: string; text: string }[];
+    expect(credits.find((c) => c.layer === 'jour')!.text).toContain('EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)');
+  });
 });

@@ -13,5 +13,19 @@
   "url": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/topography/gebco_08_rev_elev_21600x10800.tif",
   "sha256": "d74416ee4de4b9b2cbc20f25f8975e213a4148f6810d1d60e104a4ed6150dbcf",
   "bytes": 233345166
- }
+ },
+ "s2day": [
+  {
+   "url": "https://tiles.maps.eox.at/wms?service=WMS&version=1.1.1&request=GetMap&layers=s2cloudless-2025&styles=&srs=EPSG:4326&bbox=-180,-90,0,90&width=4096&height=4096&format=image/jpeg",
+   "file": "e1825526661122b0d4877f3c.img",
+   "sha256": "fa474523fd9959c3dc98ad099e1ca0555b3b3efefacc499d6d85527bcdd7abdb",
+   "bytes": 1326458
+  },
+  {
+   "url": "https://tiles.maps.eox.at/wms?service=WMS&version=1.1.1&request=GetMap&layers=s2cloudless-2025&styles=&srs=EPSG:4326&bbox=0,-90,180,90&width=4096&height=4096&format=image/jpeg",
+   "file": "535fb4db99b68db2909eaaa5.img",
+   "sha256": "f3bde1adf78be3193ebc8260f42312f590dbb73335e31945354eb44ebf4c1022",
+   "bytes": 1782376
+  }
+ ]
 }

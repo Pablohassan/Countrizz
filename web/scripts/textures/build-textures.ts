@@ -5,7 +5,12 @@ import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import sharp from 'sharp';
 import { polygonsOf } from '../geodata/lib/geometry';
 import { readJson, writeJson } from '../geodata/lib/io';
-import { BUDGET_BYTES, COLOR_SIZES, CREDITS, SURFACE_SIZE, TEXTURE_SOURCES } from './config';
+import { EOX } from '../imagery/config';
+import { snapGrid } from '../imagery/lib/grid';
+import { loadMosaic } from '../imagery/lib/mosaic';
+import { IMG_CACHE_DIR } from '../imagery/paths';
+import { BUDGET_BYTES, COLOR_SIZES, CREDITS, DAY_S2, SURFACE_SIZE, TEXTURE_SOURCES } from './config';
+import { polarFill } from './lib/polarFill';
 import { rasterizeLandMask } from './lib/landMask';
 import { NE_COUNTRIES, TEX_CACHE_DIR, TEX_OUT_DIR, TEX_REPORT_PATH } from './paths';
 
@@ -26,10 +31,21 @@ function checkToktx(): void {
   }
 }
 
+/** Jour pleine résolution (8192 × 4096) : mosaïque Sentinel-2 2025 du cache, glaces polaires de Blue Marble. */
+async function daySource(): Promise<string> {
+  const png = path.join(TMP, 'day-source.png');
+  const { mosaic } = await loadMosaic(snapGrid(DAY_S2.box, DAY_S2.maxStepDeg), { service: EOX.service, cacheDir: IMG_CACHE_DIR, maxPx: EOX.maxPx, offline: true });
+  const { width, height } = mosaic.grid;
+  const { data: bm } = await sharp(source('day'), { limitInputPixels: false }).resize(width, height, { kernel: 'lanczos3' }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const rgb = polarFill(mosaic.rgb, bm, width, height);
+  await sharp(rgb, { raw: { width, height, channels: 3 } }).png({ compressionLevel: 6 }).toFile(png);
+  return png;
+}
+
 /** Couleur (jour, nuit) : ETC1S sRGB, mipmaps, origine en bas à gauche (sinon le globe sort retourné nord-sud). */
-async function colorTexture(key: 'day' | 'night', size: number, qlevel: number): Promise<string> {
+async function colorTexture(key: 'day' | 'night', size: number, qlevel: number, from: string): Promise<string> {
   const png = path.join(TMP, `${key}-${size}.png`);
-  await sharp(source(key), { limitInputPixels: false }).resize(size, size / 2, { kernel: 'lanczos3' }).removeAlpha().png({ compressionLevel: 6 }).toFile(png);
+  await sharp(from, { limitInputPixels: false }).resize(size, size / 2, { kernel: 'lanczos3' }).removeAlpha().png({ compressionLevel: 6 }).toFile(png);
   const name = outName(key, size);
   toktx(['--t2', '--encode', 'etc1s', '--clevel', '2', '--qlevel', String(qlevel), '--genmipmap', '--assign_oetf', 'srgb', '--lower_left_maps_to_s0t0', path.join(TEX_OUT_DIR, name), png]);
   return name;
@@ -59,9 +75,10 @@ async function main(): Promise<void> {
   mkdirSync(TMP, { recursive: true });
   mkdirSync(TEX_OUT_DIR, { recursive: true });
   const names: string[] = [];
+  const day = await daySource();
   for (const size of COLOR_SIZES) {
-    names.push(await colorTexture('day', size, 192));
-    names.push(await colorTexture('night', size, 128));
+    names.push(await colorTexture('day', size, 192, day));
+    names.push(await colorTexture('night', size, 128, source('night')));
   }
   names.push(await surfaceTexture(SURFACE_SIZE));
   writeJson(path.join(TEX_OUT_DIR, 'credits.json'), CREDITS);

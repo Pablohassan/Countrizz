@@ -48,12 +48,10 @@ export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'
   const sample = sdfNode.sample(uv);
   const sd = sample.r.mul(255).sub(128).div(127).mul(u.rangeTexels); // texels, > 0 dedans
   const gd = sample.g.mul(u.rangeTexels); // texels jusqu'à la ligne voisine la plus proche
-  // Distance au bord en pixels d'écran (anticrénelage). Une empreinte de pixel (fwidth) de plus de rangeTexels texels ne
-  // dit plus rien (le champ sature à rangeTexels : patch minuscule à l'écran) : le bord devient net.
-  const toPx = (v: Node<'float'>) => {
-    const fw = fwidth(v);
-    return select(fw.greaterThan(u.rangeTexels), v.mul(1e3), v.div(max(fw, 1e-4)));
-  };
+  // Distance au bord en pixels d'écran (anticrénelage). Pas de garde sur les grandes empreintes : là où le champ sature,
+  // il est constant et fwidth vaut 0 (aucun liseré) ; une garde « fw > rangeTexels → bord net » (Task 7, diagnostic MSAA
+  // invalidé le 03/10) rendait en escalier le bord des petits pays à l'arrivée.
+  const toPx = (v: Node<'float'>) => v.div(max(fwidth(v), 1e-4));
   const sdPx = toPx(sd);
   const gdPx = toPx(gd);
 
@@ -92,5 +90,7 @@ export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'
     uniforms: u,
     outputNode,
     setTexture(t: THREE.Texture) { sdfNode.value = t; },
+    /** Texture liée au matériau. */
+    get texture() { return sdfNode.value as THREE.Texture; },
   };
 }

@@ -40,8 +40,13 @@ export class Globe {
   private beaconDir: Vec3 | null = null;
   private readonly cameraPosition = new THREE.Vector3(0, 0, 3);
   private hasPatch = false;
+  /**
+   * Liée à la place d'un patch retiré : le cache libère les patchs qu'il ne garde plus, et une texture libérée mais encore
+   * liée serait réenvoyée par three (SDF depuis un ImageBitmap fermé ; KTX2 recréé, jamais libéré).
+   */
+  private readonly placeholder = new THREE.Texture();
   /** Patch image (mode jeu) ; `null` en mode masque. */
-  private readonly image: ReturnType<typeof createImageLayer> | null = null;
+  readonly image: ReturnType<typeof createImageLayer> | null = null;
   private readonly clouds: ReturnType<typeof createClouds> | null = null;
   private imageTexture: THREE.Texture | null = null;
   private imageFade: { seconds: number; since: number | null } = { seconds: 0, since: null };
@@ -52,7 +57,7 @@ export class Globe {
       const earth = createEarthMaterial(parts.textures, this.clouds);
       this.earthMaterial = earth.material;
       this.image = earth.image;
-      this.country = createCountryLayer(new THREE.Texture(), earth.base);
+      this.country = createCountryLayer(this.placeholder, earth.base);
       const atmosphere = createAtmosphere();
       const sunDisc = createSunDisc();
       this.sunListeners.push(earth.setSun, atmosphere.setSun, sunDisc.setDirection);
@@ -65,7 +70,7 @@ export class Globe {
     } else {
       this.earthMaterial = new THREE.MeshStandardNodeMaterial();
       this.earthMaterial.colorNode = color(0x0b1d3a);
-      this.country = createCountryLayer(new THREE.Texture());
+      this.country = createCountryLayer(this.placeholder);
     }
     this.earthMaterial.outputNode = this.country.outputNode;
     this.country.uniforms.maskMode.value = mode === 'mask' ? 1 : 0;
@@ -76,7 +81,7 @@ export class Globe {
   /** Patch du pays visé ; `null` efface le remplissage (patch absent ou en échec). */
   setPatch(meta: PatchMeta | null, sdf: THREE.Texture | null): void {
     this.hasPatch = meta !== null && sdf !== null;
-    if (!meta || !sdf) { this.country.uniforms.visible.value = 0; return; }
+    if (!meta || !sdf) { this.country.uniforms.visible.value = 0; this.country.setTexture(this.placeholder); return; }
     const u = this.country.uniforms, f = tangentFrame(meta.center);
     u.center.value.set(...f.center);
     u.east.value.set(...f.east);
@@ -93,7 +98,7 @@ export class Globe {
   setImagePatch(meta: { center: LngLat; extentRad: number } | null, tex: THREE.Texture | null, fadeSeconds = 0): void {
     const img = this.image;
     if (!img) return;
-    if (!meta || !tex) { this.imageTexture = null; img.uniforms.opacity.value = 0; return; }
+    if (!meta || !tex) { this.imageTexture = null; img.uniforms.opacity.value = 0; img.setTexture(this.placeholder); return; }
     if (tex === this.imageTexture) return;
     this.imageTexture = tex;
     const f = tangentFrame(meta.center);
@@ -167,6 +172,7 @@ export class Globe {
         if (r && !done.has(r)) { done.add(r); r.dispose(); }
       }
     });
+    this.placeholder.dispose();
   }
 
   /** Direction du soleil (unitaire) ; applyPose la place par rapport à la caméra, la sonde peut la forcer. */

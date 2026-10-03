@@ -26,5 +26,10 @@ export function createImageLayer(P: Node<'vec3'>) {
   const front = select(dot(P, u.center).greaterThan(0), float(1), float(0));
   const weight = edge(xy.x).mul(edge(xy.y)).mul(front).mul(u.opacity);
   const sample = node.sample(xy.add(1).mul(0.5));
-  return { uniforms: u, weight, color: sample.rgb, sea: sample.a, setTexture(t: THREE.Texture) { node.value = t; } };
+  return {
+    uniforms: u, weight, color: sample.rgb, sea: sample.a,
+    setTexture(t: THREE.Texture) { node.value = t; },
+    /** Texture liée au matériau. */
+    get texture() { return node.value as THREE.Texture; },
+  };
 }

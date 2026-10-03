@@ -1,0 +1,26 @@
+name: visual-baselines
+# Références visuelles Linux de web/e2e/visual.spec.ts, rendues sur le runner de la CI (x86_64 ; le poste est arm64).
+# Déclenchement : gh workflow run visual-baselines.yml --ref <branche> ; puis
+# gh run download <id> -n visual-linux -D web/e2e/visual.spec.ts-snapshots, relire, commiter.
+on:
+  workflow_dispatch:
+jobs:
+  baselines:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test e2e/visual.spec.ts --update-snapshots
+      - uses: actions/upload-artifact@v4
+        with:
+          name: visual-linux
+          path: web/e2e/visual.spec.ts-snapshots/*-linux.png

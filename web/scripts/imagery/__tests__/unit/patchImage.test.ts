@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { makeProjector } from '../../../geodata/lib/patch';
 import { snapGrid } from '../../lib/grid';
-import { frameBox, imageExtentRad, rasterizeLandGrid, renderPatch } from '../../lib/patchImage';
+import { downsamplePatch, frameBox, imageExtentRad, rasterizeLandGrid, renderPatch } from '../../lib/patchImage';
 
 const RAD = Math.PI / 180;
 const B = { margin: 3, minContextDeg: 3 };
@@ -46,6 +46,21 @@ describe('masque terre sur une grille déroulée', () => {
     expect(at(176.5, -15.5)).toBe(1);
     expect(at(181.5, -15.5)).toBe(1); // −178,5°
     expect(at(183.5, -15.5)).toBe(0);
+  });
+});
+
+describe('réduction du patch au petit niveau (2048 → 1024)', () => {
+  it('la couleur de la terre (alpha 0) est conservée : l’alpha est un masque, pas une transparence', async () => {
+    // 8 × 8 : terre (alpha 0) à gauche en brun, mer (alpha 255) à droite en bleu
+    const n = 8, rgba = new Uint8Array(n * n * 4);
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) rgba.set(x < n / 2 ? [120, 98, 60, 0] : [20, 40, 90, 255], (y * n + x) * 4);
+    const out = await downsamplePatch(rgba, n, n / 2);
+    expect(out.length).toBe((n / 2) * (n / 2) * 4);
+    const px = (x: number, y: number) => [...out.subarray((y * 4 + x) * 4, (y * 4 + x) * 4 + 4)];
+    for (const c of px(0, 1).slice(0, 3).map((v, i) => v - [120, 98, 60][i]!)) expect(Math.abs(c)).toBeLessThanOrEqual(3);
+    expect(px(0, 1)[3]).toBeLessThanOrEqual(3);
+    for (const c of px(3, 1).slice(0, 3).map((v, i) => v - [20, 40, 90][i]!)) expect(Math.abs(c)).toBeLessThanOrEqual(3);
+    expect(px(3, 1)[3]).toBeGreaterThanOrEqual(252);
   });
 });
 

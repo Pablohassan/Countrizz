@@ -13,7 +13,7 @@ import { NE_COUNTRIES } from '../textures/paths';
 import { EOX, IMAGE_PATCH } from './config';
 import { snapGrid } from './lib/grid';
 import { loadMosaic, sampleBilinear } from './lib/mosaic';
-import { frameBox, imageExtentRad, rasterizeLandGrid, renderPatch, sampleMask } from './lib/patchImage';
+import { downsamplePatch, frameBox, imageExtentRad, rasterizeLandGrid, renderPatch, sampleMask } from './lib/patchImage';
 import { IMG_CACHE_DIR, IMG_INDEX_PATH, IMG_OUT_DIR, IMG_REPORT_PATH } from './paths';
 
 sharp.cache(false);
@@ -56,7 +56,7 @@ async function main(): Promise<void> {
     const id = rec.cca3.toLowerCase();
     const png = path.join(TMP, `${id}-${big}.png`), pngSmall = path.join(TMP, `${id}-${small}.png`);
     await sharp(rgba, { raw: { width: big, height: big, channels: 4 } }).png({ compressionLevel: 6 }).toFile(png);
-    await sharp(png).resize(small, small, { kernel: 'lanczos3' }).png({ compressionLevel: 6 }).toFile(pngSmall);
+    await sharp(await downsamplePatch(rgba, big, small), { raw: { width: small, height: small, channels: 4 } }).png({ compressionLevel: 6 }).toFile(pngSmall);
     const files: Record<string, { bytes: number; sha256: string }> = {};
     for (const [size, src] of [[big, png], [small, pngSmall]] as const) {
       const out = path.join(IMG_OUT_DIR, `${id}-${size}.ktx2`);

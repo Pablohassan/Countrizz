@@ -1,3 +1,4 @@
+import sharp from 'sharp';
 import { makeProjector, type PatchFrame } from '../../geodata/lib/patch';
 import type { GeoBox, Grid } from './grid';
 
@@ -89,6 +90,26 @@ export function renderPatch(frame: PatchFrame, color: (lon: number, lat: number)
     const [r, g, b] = color(lon, lat);
     const k = (j * n + i) * 4;
     out[k] = r; out[k + 1] = g; out[k + 2] = b; out[k + 3] = Math.round(255 * (1 - land(lon, lat)));
+  }
+  return out;
+}
+
+/**
+ * Réduction d'un patch RVBA (2048 → 1024). L'alpha est un masque mer/terre, pas une transparence : réduire le RVBA d'un
+ * bloc laisse sharp prémultiplier, et la couleur de la terre (alpha 0) sortait noire (03/10, 191 pays sur 197). Couleur
+ * et masque se réduisent donc séparément, séparés ici : `removeAlpha()` de sharp s'applique après le redimensionnement.
+ */
+export async function downsamplePatch(rgba: Uint8Array, from: number, to: number): Promise<Uint8Array> {
+  const color = new Uint8Array(from * from * 3), mask = new Uint8Array(from * from);
+  for (let i = 0; i < from * from; i++) {
+    color[i * 3] = rgba[i * 4]!; color[i * 3 + 1] = rgba[i * 4 + 1]!; color[i * 3 + 2] = rgba[i * 4 + 2]!; mask[i] = rgba[i * 4 + 3]!;
+  }
+  const rgb = await sharp(color, { raw: { width: from, height: from, channels: 3 } }).resize(to, to, { kernel: 'lanczos3' }).raw().toBuffer({ resolveWithObject: true });
+  const a = await sharp(mask, { raw: { width: from, height: from, channels: 1 } }).resize(to, to, { kernel: 'lanczos3' }).toColourspace('b-w').raw().toBuffer({ resolveWithObject: true });
+  if (rgb.info.channels !== 3 || a.info.channels !== 1) throw new Error(`réduction : ${rgb.info.channels} + ${a.info.channels} canaux`);
+  const out = new Uint8Array(to * to * 4);
+  for (let i = 0; i < to * to; i++) {
+    out[i * 4] = rgb.data[i * 3]!; out[i * 4 + 1] = rgb.data[i * 3 + 1]!; out[i * 4 + 2] = rgb.data[i * 3 + 2]!; out[i * 4 + 3] = a.data[i]!;
   }
   return out;
 }

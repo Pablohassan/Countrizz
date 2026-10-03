@@ -1,5 +1,8 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { PNG } from 'pngjs';
 import { describe, expect, it } from 'vitest';
 import { FRAMING } from '../../../../src/camera/config';
 import type { ImageryIndex } from '../../../../src/data/imagery';
@@ -51,4 +54,27 @@ describe('fichiers des patchs image (hors dépôt : web/public/data/patches/img)
     }
     expect(missing, 'patchs absents : lancer `npm run imagery`').toEqual([]);
   });
+
+  it('le petit niveau garde la couleur de la terre du grand (réduction sans prémultiplier le masque)', () => {
+    // 03/10 : la terre des 1024 sortait noire (alpha = masque mer/terre, prémultiplié par sharp). Décodage par `ktx extract`.
+    const tmp = mkdtempSync(path.join(tmpdir(), 'patch-'));
+    const landMean = (cca3: string, size: number) => {
+      const out = path.join(tmp, `${cca3}-${size}.png`);
+      const r = spawnSync('ktx', ['extract', '--transcode', 'rgba8', path.join(IMG_OUT_DIR, `${cca3.toLowerCase()}-${size}.ktx2`), out]);
+      if (r.status !== 0) throw new Error(`ktx extract ${cca3}-${size} : ${r.stderr}`);
+      const png = PNG.sync.read(readFileSync(out));
+      let sum = 0, n = 0;
+      for (let i = 0; i < png.width * png.height; i++) {
+        if (png.data[i * 4 + 3]! > 8) continue; // terre : alpha ≈ 0
+        sum += (png.data[i * 4]! + png.data[i * 4 + 1]! + png.data[i * 4 + 2]!) / 3; n++;
+      }
+      return sum / n;
+    };
+    const rows = ['ITA', 'FRA', 'JPN', 'EGY', 'BRA', 'NOR'].map((c) => ({ c, big: landMean(c, 2048), small: landMean(c, 1024) }));
+    rmSync(tmp, { recursive: true, force: true });
+    for (const { c, big, small } of rows) {
+      expect(big, `${c} 2048 : terre`).toBeGreaterThan(20);
+      expect(Math.abs(small - big) / big, `${c} : terre 1024 ${small.toFixed(1)} contre 2048 ${big.toFixed(1)}`).toBeLessThan(0.1);
+    }
+  }, 60_000);
 });

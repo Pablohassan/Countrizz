@@ -3,6 +3,7 @@
 - **Date** : 02/10/2026
 - **Branche** : `refonte-webgpu` (part de `2d62fc2`, instantané de l'ancien code sur `newcountri`)
 - **Statut** : design validé section par section avec l'utilisateur ; ce document attend sa relecture avant le plan d'implémentation.
+- **Amendements** : 02/10 au soir, avant la phase 1B — imagerie (§1, §3.1, §4.2, §4.3, §9) : millésime EOX 2025, Sentinel-2 en texture de jour mondiale et en patchs image, patchs image hors dépôt (décisions de l'utilisateur).
 
 ---
 
@@ -32,7 +33,7 @@ Countrizz est un jeu de géographie : un globe 3D vole vers un pays mis en évid
 | Pays jouables | **197** : les 194 entrées marquées `unMember` de `mledoze/countries` (Vatican inclus) + Palestine, Kosovo, Taïwan |
 | Hébergement | site **statique** + **service de scores sur le cluster K3s** (PostgreSQL) ; plus d'appel à restcountries |
 | Couche pays | **patchs locaux par pays** (champ de distance + image), lignes vectorielles pour la vue d'ensemble, balises pour les micro-États |
-| Imagerie des patchs | **Sentinel-2 cloudless (EOX)** — le jeu reste **non commercial** |
+| Imagerie | **Sentinel-2 cloudless (EOX), millésime 2025** : texture de jour mondiale **et** patchs image des pays ; le jeu reste **non commercial** ; patchs image **hors dépôt** (générés sur le poste, déposés sur Garage au déploiement) — amendé le 02/10 |
 | Style | **globe photoréaliste + interface cartoon** (l'esthétique actuelle des boutons et polices) |
 | Application | **PWA**, conçue **mobile d'abord** |
 | Intro | recréée en **three.js** ; plus de Lottie, plus de vélos |
@@ -69,8 +70,8 @@ countrizz/                      (branche refonte-webgpu ; frontend/ et backend/ 
 | `mledoze/countries` @ `c2ac0049c1` (29/09/2026) | noms FR, `cca2`, région, sous-région, voisins, drapeaux SVG (250) | ODbL 1.0 (vérifiée) |
 | geoBoundaries `gbOpen` ADM0 | contours fins des patchs (ex. Monaco : 840 sommets, segments de 19 m) | ODbL 1.0 pour MCO/SMR/LUX (source OSM) ; **à relever pays par pays** (`boundaryLicense`) |
 | Wikidata (instantané SPARQL) | capitales en français (P36) | à confirmer au plan |
-| EOX Sentinel-2 cloudless | imagerie des patchs (10 m) | CC BY-NC-SA 4.0, non commercial (vérifiée) |
-| NASA Blue Marble / Black Marble | textures globales jour / nuit | à confirmer au plan |
+| EOX Sentinel-2 cloudless 2025 | texture de jour mondiale et patchs image | CC BY-NC-SA 4.0, non commercial (vérifiée le 02/10 ; 2017, dernier millésime CC BY, ne couvre que l'Europe ; 2016 a des bandes nuageuses) |
+| NASA Blue Marble / Black Marble / nuages | glaces polaires du jour, nuit, relief, nuages | crédits NASA (plans 1A et 1B) |
 
 Le pipeline se lance à la main (`npm run geodata`) ; ses sorties sont versionnées. Le build et l'exécution n'appellent aucune API.
 
@@ -128,7 +129,7 @@ Le patch SDF fait **1024 px à tous les niveaux** : l'interpolation bilinéaire 
 
 ### 4.2 La Terre (matériau TSL, une sphère)
 
-1. jour — Blue Marble ;
+1. jour — Sentinel-2 cloudless 2025 (glaces polaires de Blue Marble, que Sentinel-2 rend en blanc plat), précisé par le patch image du pays visé (§4.3) ;
 2. nuit — lumières des villes (Black Marble) sur la face nocturne, transition douce au terminateur, alimentant le bloom ;
 3. relief — normal map issue de l'altimétrie (remplace le `bumpScale 10` actuel) ;
 4. océan — masque de rugosité (remplace la carte spéculaire `shininess 18`), reflet du soleil, léger Fresnel ;
@@ -143,7 +144,7 @@ Autour : champ d'étoiles, soleil et halo.
 |---|---|
 | frontières vues de loin | lignes vectorielles Natural Earth simplifiées, estompées avec l'altitude |
 | pays à deviner | **patch SDF local** lu dans le shader de la Terre : remplissage animé `#ffee03a1`, bord sans crénelage, lueur intérieure, révélation en vague depuis le centre ; frontières voisines nettes (canal G) |
-| imagerie en gros plan | **patch image local** (Sentinel-2 cloudless) fondu sur la texture globale à l'intérieur de son emprise |
+| imagerie en gros plan | **patch image local** (Sentinel-2 cloudless 2025) fondu sur la texture globale à l'intérieur de son emprise ; emprise = **la vue d'arrivée** (max(θ, θ_min) × m × 2,2, plafonnée à 30°), et non celle du patch SDF ; alpha = masque d'eau (amendé le 02/10) |
 | micro-États | **balise** : anneau pulsant + faisceau vertical au pôle d'inaccessibilité, dimensionnés en pixels d'écran |
 | révélation | bonne réponse : vert + flash du contour ; mauvaise : pulsation rouge |
 
@@ -260,7 +261,7 @@ IP `.101` et `.102` déclarées par `loadBalancerIP` uniquement, Services créé
 
 ## 9. Crédits et licences — conséquences
 
-- **Sentinel-2 cloudless** : attribution obligatoire, visible dans l'interface de la carte : « Data & Viewing Products: EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data "year") ». Licence NC-SA : les patchs dérivés restent sous CC BY-NC-SA 4.0 ; **tout passage au commercial impose la licence payante EOX**.
+- **Sentinel-2 cloudless** : attribution obligatoire, visible dans l'interface de la carte : « Data & Viewing Products: EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data "year") ». Licence NC-SA : les patchs dérivés restent sous CC BY-NC-SA 4.0 ; **tout passage au commercial impose la licence payante EOX**. Millésime retenu le 02/10 : **2025** (« … Copernicus Sentinel data 2025) »).
 - **ODbL** (mledoze, geoBoundaries) : `countries.json` et les contours dérivés sont publiés avec le site, donc partagés sous ODbL avec attribution ; page « Crédits » dans l'application.
 - Natural Earth : domaine public (vérifié le 02/10).
 - À confirmer au plan : Wikidata, NASA, police Chango, licence des drapeaux SVG de mledoze.

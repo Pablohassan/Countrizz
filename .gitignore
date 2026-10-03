@@ -3,6 +3,7 @@ dist/
 .DS_Store
 web/scripts/geodata/.cache/
 web/scripts/textures/.cache/
+web/scripts/imagery/.cache/
 web/public/basis/
 *.log
 .superpowers/

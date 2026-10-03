@@ -90,6 +90,8 @@ export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'
     uniforms: u,
     outputNode,
     setTexture(t: THREE.Texture) { sdfNode.value = t; },
+    /** Revient à la texture vide de la couche (patch retiré, avant que le cache ne le libère). */
+    clear() { sdfNode.value = placeholder; },
     /** Texture liée au matériau. */
     get texture() { return sdfNode.value as THREE.Texture; },
   };

@@ -20,7 +20,8 @@ export function createImageLayer(P: Node<'vec3'>) {
     /** 0 = aucun patch ; monte à 1 en fondu quand le patch arrive. */
     opacity: uniform(0),
   };
-  const node = texture(new THREE.Texture());
+  const empty = new THREE.Texture();
+  const node = texture(empty);
   const xy = frameXY(P, u);
   const edge = (t: Node<'float'>) => smoothstep(float(1 - IMAGE_FEATHER), float(1), abs(t)).oneMinus();
   const front = select(dot(P, u.center).greaterThan(0), float(1), float(0));
@@ -29,6 +30,9 @@ export function createImageLayer(P: Node<'vec3'>) {
   return {
     uniforms: u, weight, color: sample.rgb, sea: sample.a,
     setTexture(t: THREE.Texture) { node.value = t; },
+    /** Revient à la texture vide de la couche (patch retiré, avant que le cache ne le libère). */
+    clear() { node.value = empty; },
+    dispose() { empty.dispose(); },
     /** Texture liée au matériau. */
     get texture() { return node.value as THREE.Texture; },
   };

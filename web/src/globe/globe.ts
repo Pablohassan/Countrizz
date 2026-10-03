@@ -41,8 +41,10 @@ export class Globe {
   private readonly cameraPosition = new THREE.Vector3(0, 0, 3);
   private hasPatch = false;
   /**
-   * Liée à la place d'un patch retiré : le cache libère les patchs qu'il ne garde plus, et une texture libérée mais encore
-   * liée serait réenvoyée par three (SDF depuis un ImageBitmap fermé ; KTX2 recréé, jamais libéré).
+   * Texture vide de la couche pays. Un patch retiré est remplacé par la texture vide DE SA couche (`clear`) avant que le
+   * cache ne le libère : libérée mais encore liée, three la réenverrait (SDF depuis un ImageBitmap fermé ; KTX2 recréé,
+   * jamais libéré). Jamais un même objet Texture dans deux couches : partagé, il éteignait le remplissage du pays sous
+   * SwiftShader (FRA → JPN → FJI, 03/10).
    */
   private readonly placeholder = new THREE.Texture();
   /** Patch image (mode jeu) ; `null` en mode masque. */
@@ -81,7 +83,7 @@ export class Globe {
   /** Patch du pays visé ; `null` efface le remplissage (patch absent ou en échec). */
   setPatch(meta: PatchMeta | null, sdf: THREE.Texture | null): void {
     this.hasPatch = meta !== null && sdf !== null;
-    if (!meta || !sdf) { this.country.uniforms.visible.value = 0; this.country.setTexture(this.placeholder); return; }
+    if (!meta || !sdf) { this.country.uniforms.visible.value = 0; this.country.clear(); return; }
     const u = this.country.uniforms, f = tangentFrame(meta.center);
     u.center.value.set(...f.center);
     u.east.value.set(...f.east);
@@ -98,7 +100,7 @@ export class Globe {
   setImagePatch(meta: { center: LngLat; extentRad: number } | null, tex: THREE.Texture | null, fadeSeconds = 0): void {
     const img = this.image;
     if (!img) return;
-    if (!meta || !tex) { this.imageTexture = null; img.uniforms.opacity.value = 0; img.setTexture(this.placeholder); return; }
+    if (!meta || !tex) { this.imageTexture = null; img.uniforms.opacity.value = 0; img.clear(); return; }
     if (tex === this.imageTexture) return;
     this.imageTexture = tex;
     const f = tangentFrame(meta.center);
@@ -173,6 +175,7 @@ export class Globe {
       }
     });
     this.placeholder.dispose();
+    this.image?.dispose();
   }
 
   /** Direction du soleil (unitaire) ; applyPose la place par rapport à la caméra, la sonde peut la forcer. */

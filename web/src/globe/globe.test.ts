@@ -16,6 +16,9 @@ describe('patchs retirés (pays suivant pas prêt, 404)', () => {
     globe.setImagePatch(null, null);
     expect(globe.country.texture).not.toBe(sdf);
     expect(globe.image!.texture).not.toBe(img);
+    // Jamais le même objet Texture dans les deux couches : partagé, il éteignait le remplissage du pays sous SwiftShader
+    // (FRA → JPN → FJI, 03/10) — chaque couche a sa propre texture vide.
+    expect(globe.country.texture).not.toBe(globe.image!.texture);
   });
 });
 

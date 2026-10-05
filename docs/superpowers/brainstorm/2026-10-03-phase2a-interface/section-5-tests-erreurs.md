@@ -57,9 +57,20 @@ d'élévation, ≈ 60 Ko visés) et le précache du service worker.
 
 Scores en ligne (API, file IndexedDB) : hors 2A (le chart ne déploie que `web`).
 
-## Questions pour l'utilisateur
+## Décisions de l'utilisateur (05/10)
 
-1. **Stockage indisponible** : les scores vivent le temps de la session et l'écran de fin affiche discrètement
-   « Ton score ne peut pas être gardé sur cet appareil » ? (Proposé.)
-2. **Vibration** : le spec la demande (§6.3), la passation dit seulement « pas de son ». Une vibration courte sur une
-   mauvaise réponse, là où le téléphone le permet (Android ; iPhone n'expose pas la vibration au web) ? Ou rien ?
+1. **Stockage indisponible** : scores gardés le temps de la visite ; l'écran de fin affiche discrètement « Ton score ne
+   peut pas être gardé sur cet appareil ».
+2. **Haptique poussée** (demande : « simulation de pression quand on appuie sur un bouton et retour de force vibreur en
+   cas de mauvaise réponse ») — module `ecrans/haptique.js`, essai `ecrans/haptique.html` :
+   - **Android** (`navigator.vibrate`) : appui 9 ms (« clic » synchronisé avec l'enfoncement visuel du bouton dans
+     son ombre), relâcher 4 ms, bonne réponse 14·60·22 ms (double tape), **mauvaise réponse
+     70·25·(8·2)×4·25·140 ms** (choc, grondement haché, long retour de force, synchronisé avec la secousse rouge),
+     3-2-1 18 ms par chiffre, « GO ! » 45 ms, « Nouveau record ! » 20·40·20·40·20·40·90 ms ;
+   - **iPhone iOS 18+** : « tic » système (interrupteur `switch` caché basculé pendant le geste) à l'appui et aux
+     réponses ; ni intensité ni vibration longue possibles sur le web ;
+   - **ordinateur** : rien, effets visuels seuls ;
+   - réglage « Vibrations » (oui par défaut, mémorisé) — à placer dans l'écran « À propos » ;
+   - tests : module unitaire avec `navigator.vibrate` simulé (motifs par événement, réglage coupé, aucune erreur sans
+     API) ; e2e avec un espion injecté (appui, réponses, 3-2-1) ; **ressenti vérifié à la main sur un vrai Android et
+     un vrai iPhone** (aucun automate ne sent une vibration).

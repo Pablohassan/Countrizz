@@ -32,8 +32,8 @@ export const REGLAGES = Object.freeze({
     [139.69, 35.69, 0xe8413a], [-47.88, -15.79, 0x2fbf4a], [36.82, -1.29, 0xf7dc6f], [-77.04, 38.9, 0x6225e6],
     [116.4, 39.9, 0xf7dc6f], [149.13, -35.28, 0x6225e6], [-99.13, 19.43, 0xe8413a], [31.24, 30.04, 0x2fbf4a],
   ],
-  avion: { rayon: 1.4, vitesse: 0.25, inclinaison: 28, taille: 1 }, // orbite (rayon de la Terre = 1), rad/s, degrés ;
-                             // 05/10 : altitude −20 % (0,5 → 0,4 au-dessus du sol), vitesse ÷ 3 (0,75 → 0,25 : un tour en ≈ 25 s)
+  avion: { rayon: 1.4, vitesse: 0.25, inclinaison: 28, taille: 0.7 }, // orbite (rayon de la Terre = 1), rad/s, degrés ;
+                             // 05/10 : altitude −20 % (0,5 → 0,4 au-dessus du sol), vitesse ÷ 3 (0,75 → 0,25 : un tour en ≈ 25 s) ; taille −30 %
 });
 
 /** Couleurs par altitude (sRGB) : océan, plage, plaine, colline, montagne, neige. */

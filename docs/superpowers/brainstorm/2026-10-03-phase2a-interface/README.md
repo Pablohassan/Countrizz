@@ -7,7 +7,7 @@ pour qu'une session cloud reprenne au même endroit (avant, tout vivait hors du 
 ## Où on en est, exactement
 
 **Avion de l'accueil réglé** (05/10, session cloud ; décision 8) : A2 · cartoon, dosage **E2**, réduit de 30 %, tour du monde en boucle avec bulles « Pays · Capitale » aux escales.
-**Section 3 (interface) close** (décisions 1 à 17). **En cours : section 4, données bilingues** — proposition et 4 questions dans `section-4-donnees-bilingues.md`.
+**Section 3 (interface) close** (décisions 1 à 17). **Section 4 (données bilingues) réglée** : `section-4-donnees-bilingues.md` (Kiev en FR, Ciudad de la Paz, noms EN de mledoze tels quels, RD Congo / Cap-Vert / Vatican). **En cours : section 5, tests et erreurs** — proposition et 2 questions dans `section-5-tests-erreurs.md`. Puis : spec, auto-relecture, relecture par l'utilisateur, plan.
 
 Dans l'ordre : ~~choix du mode~~ → ~~HUD et chrono~~ → ~~3-2-1~~ → ~~fin de partie~~ → ~~scores~~ → crédits → erreurs et chargement →
 « Tourne ton téléphone » ; puis section 4 (données bilingues), section 5 (tests et erreurs), écriture du spec

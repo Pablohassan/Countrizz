@@ -71,12 +71,15 @@ vieille ville, ≈ 35,235° E, 31,78° N ; Ngerulmud : NE a l'ancienne capitale 
 - les catalogues d'interface `i18n/fr.ts` et `en.ts` (décidés en section 2) portent tous les textes des maquettes, y
   compris erreurs et « Tourne ton téléphone ».
 
-## Questions pour l'utilisateur
+## Décisions de l'utilisateur (05/10)
 
-1. **Ukraine** : capitale FR « Kiev » (libellé Wikidata actuel) ou « Kyiv » ? EN : Kyiv.
-2. **Guinée équatoriale** : « Ciudad de la Paz » (Wikidata : capitale désignée) ou « Malabo » (siège effectif,
-   ce que mledoze et la plupart des quiz donnent) ?
-3. **Noms EN de mledoze** à garder tels quels ? Ex. « DR Congo », « Ivory Coast », « Türkiye », « Czechia »,
-   « Vatican City », « Timor-Leste », « Cape Verde ».
-4. **Noms FR peu naturels sur un bouton** : « Congo (Rép. dém.) » → « RD Congo » ? « Îles du Cap-Vert » → « Cap-Vert » ?
-   « Cité du Vatican » → « Vatican » ?
+1. **Ukraine** : « **Kiev** » en français (libellé Wikidata actuel, inchangé) ; « Kyiv » en anglais (mledoze).
+2. **Guinée équatoriale** : « **Ciudad de la Paz** » dans les deux langues (EN imposé dans `overrides.capitals.GNQ`,
+   mledoze disant Malabo). Natural Earth ne la connaît pas : **point imposé** dans `overrides.capitalPoints`
+   (≈ 10,82° E, 1,59° N, à confirmer sur Wikidata P625 depuis le Mac), comme Jérusalem-Est et Ngerulmud.
+3. **Noms anglais de mledoze gardés tels quels** (« DR Congo », « Ivory Coast », « Türkiye », « Czechia »,
+   « Vatican City », « Timor-Leste », « Cape Verde »…).
+4. **Noms français raccourcis** (nouvelle table `overrides.names.fr`) : « Congo (Rép. dém.) » → « **RD Congo** »,
+   « Îles du Cap-Vert » → « **Cap-Vert** », « Cité du Vatican » → « **Vatican** ».
+
+La table des arbitrages EN ci-dessus gagne donc une ligne : GNQ | Ciudad de la Paz | Ciudad de la Paz | Malabo.

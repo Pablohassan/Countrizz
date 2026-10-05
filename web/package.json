@@ -22,6 +22,7 @@
     "e2e": "playwright test",
     "e2e:countries": "playwright test e2e/countries.spec.ts",
     "imagery": "tsx scripts/imagery/build-patches.ts",
+    "imagery:fetch": "tsx scripts/imagery/fetch-patches.ts",
     "budget": "playwright test -c playwright.budget.config.ts"
   },
   "dependencies": {

@@ -8,7 +8,7 @@
  *   g.dispose();
  *
  * Doit s'afficher AVANT le vrai globe : donc léger et autonome. Une carte de 360 × 180 px (49 Ko) porte l'élévation (R)
- * et le masque d'eau (G) ; tout le reste est procédural. Icosaèdre subdivisé, sommets déplacés selon l'élévation (× 20
+ * et le masque d'eau (G) ; tout le reste est procédural. Icosaèdre subdivisé (2 000 facettes), sommets déplacés selon l'élévation (× 20
  * environ : l'Himalaya monte à 24 % du rayon), aplats toon à 3 tons en facettes, contour noir par coque inversée (comme
  * l'avion A2), épingles géantes sur quelques capitales, trois nuages en boules qui tournent autour.
  * Données : earth-topology.png et earth-water.png du paquet npm three-globe (MIT), dérivés de NASA Blue Marble
@@ -21,10 +21,11 @@ const toVec = (lng, lat, r = 1) => new THREE.Vector3(
   r * Math.cos(lat * RAD) * Math.cos(lng * RAD), r * Math.sin(lat * RAD), -r * Math.cos(lat * RAD) * Math.sin(lng * RAD));
 
 export const REGLAGES = Object.freeze({
-  detail: 6,                 // icosaèdre : 81 920 facettes
+  detail: 9,                 // icosaèdre : 20 × (detail + 1)² = 2 000 facettes (le double des 980 du niveau 6, demande du 05/10)
   exageration: 0.24,         // hauteur du plus haut sommet (rayon = 1)
   socle: 0.016,              // les terres basses dépassent un peu de l'océan
-  vitesse: 0.32,             // rad/s
+  vitesse: 0.384,            // rad/s : 0,32 + 20 % (demande du 05/10)
+  echelle: 0.7,              // taille à l'écran : −30 % (demande du 05/10)
   inclinaison: 23.4,
   epingles: [                // [lng, lat, couleur de la tête]
     [2.35, 48.86, 0xf7dc6f], [-6.84, 34.02, 0xe8413a], [-3.7, 40.42, 0x6225e6], [23.73, 37.98, 0x2fbf4a],
@@ -126,7 +127,7 @@ export async function mount(canvas, { relief, reglages = {} } = {}) {
   // halo bleu derrière le contour : sur le fond noir de l'espace, le trait noir ne se verrait pas sans lui
   const halo = new THREE.Mesh(garde(new THREE.SphereGeometry(1, 64, 32)),
     garde(new THREE.MeshBasicMaterial({ color: 0x9fd6ff, side: THREE.BackSide, transparent: true, opacity: 0.85 })));
-  halo.scale.setScalar(1.075);
+  halo.scale.setScalar(1.075 * R.echelle);
   scene.add(halo);
 
   const monde = new THREE.Group();
@@ -183,6 +184,7 @@ export async function mount(canvas, { relief, reglages = {} } = {}) {
   const axe = new THREE.Group();
   axe.rotation.z = -R.inclinaison * RAD;
   axe.add(monde);
+  axe.scale.setScalar(R.echelle);
   scene.add(axe);
 
   const taille = () => {

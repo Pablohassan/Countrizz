@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr"><head><meta charset="utf-8"><title>Avion A2 : escales</title>
+<html lang="fr"><head><meta charset="utf-8"><title>Avion A2 : tour du monde</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}</script>
 <style>
@@ -22,8 +22,8 @@
   .legende i { width:12px; height:12px; border-radius:3px; border:1px solid #0003; display:inline-block }
   .d5 canvas.av { position: absolute; left: 0; top: 0; width: 390px; height: 844px; z-index: 8; pointer-events: none; }
 </style></head><body><main>
-<h2>Accueil G5 · A2 cartoon : le tour Rabat → Madrid → Paris → Athènes</h2>
-<p class="sub">L'avion A2 décolle de Rabat aux couleurs du Maroc, passe en rase-mottes au-dessus de Madrid puis de Paris et se pose devant la balise d'Athènes. À chaque escale, il prend les couleurs du pays (≈ 0,4 s, léger gonflement). Les étapes sont trop courtes à l'écran pour un vrai atterrissage à Madrid et à Paris : seul Athènes en est un. Dosage retenu : E2, avion réduit de 30 % et vol ralenti de 30 %.</p>
+<h2>Accueil G5 · A2 cartoon (E2) : le tour du monde en boucle</h2>
+<p class="sub">Aucun nom au départ. L'avion arrive par la gauche, passe en rase-mottes au-dessus de Rabat, Madrid, Paris et Athènes : à chaque escale il prend les couleurs du pays et la bulle « Pays · Capitale » apparaît, avec un petit point vert (bonne réponse). Après la Grèce, il file vers la droite, fait le tour du globe par derrière et revient vers Rabat par la gauche ; les bulles et la traînée s'effacent quand il quitte l'écran.</p>
 <div class="cards">
 <div class="card" data-choice="bande" onclick="toggleSelect(this)"><div class="pw"><div class="scaler"><div class="d5 phone"><canvas class="av" id="av-bande" aria-hidden="true"></canvas>
 <style>
@@ -108,6 +108,13 @@
  .d5 .plane,.d5 .pshadow{animation:none;offset-distance:44%}
  .d5 .ring.p{display:none}
 }
+/* bulles des escales : cachées au départ, apparaissent au passage de l'avion */
+.d5 .esc{position:absolute;z-index:9;white-space:nowrap;background:#fff8e7;color:#16173a;border:2px solid #000;border-radius:7px;box-shadow:2px 2px 0 #000;padding:2px 7px 3px;font-size:11px;line-height:1.1;opacity:0;transform:rotate(-3deg) scale(.55);transform-origin:20% 50%;transition:opacity .25s ease,transform .45s cubic-bezier(.3,1.7,.5,1)}
+.d5 .esc.on{opacity:1;transform:rotate(-3deg) scale(1)}
+.d5 .esc i{font-style:normal;color:#6225e6}
+.d5 .esc .sep{color:#6225e6;margin:0 3px}
+.d5 .esc .pt{display:inline-block;width:6px;height:6px;border-radius:50%;background:#2fbf4a;box-shadow:0 0 0 1.25px #000;margin-right:5px;vertical-align:1px}
+@media (prefers-reduced-motion:reduce){.d5 .esc{transition:none}}
 </style>
 
 <div class="stars"></div><div class="globe"></div><div class="notch"></div>
@@ -126,11 +133,11 @@
  <g class="go"><path class="h" d="M149.2 568.4Q259.8 543.1 296.4 650.5"/><path class="c" d="M149.2 568.4Q259.8 543.1 296.4 650.5"/></g>
 </svg>
 <!-- Maroc · Rabat (trouvé) -->
-<div class="mk" style="left:64.3px;top:683.6px;--f:.845;--n:-43.4deg;--t:-26deg"><div class="ground"></div><div class="stem"><div class="needle"></div><div class="head" style="background-image:url('/files/mar.svg')"></div><div class="ok"><svg viewBox="0 0 10 10"><path d="M2 5.2l2 2L8 2.8" fill="none" stroke="#fff8e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
-<div class="chip" style="left:38px;top:692px">Rabat</div>
+<div class="mk" style="left:64.3px;top:683.6px;--f:.845;--n:-43.4deg;--t:-26deg"><div class="ground"></div><div class="stem"><div class="needle"></div><div class="head" style="background-image:url('/files/mar.svg')"></div></div></div>
+<div class="esc" data-escale="0" style="left:22px;top:694px"><b class="pt" aria-hidden="true"></b>Maroc<span class="sep">·</span><i>Rabat</i></div>
 <!-- Espagne · Madrid (trouvé) -->
-<div class="mk" style="left:98.1px;top:630.4px;--f:.8;--n:-26.8deg;--t:-16deg"><div class="ground"></div><div class="stem"><div class="needle"></div><div class="head" style="background-image:url('/files/esp.svg')"></div><div class="ok"><svg viewBox="0 0 10 10"><path d="M2 5.2l2 2L8 2.8" fill="none" stroke="#fff8e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
-<div class="chip" style="right:311px;top:601px">Madrid</div>
+<div class="mk" style="left:98.1px;top:630.4px;--f:.8;--n:-26.8deg;--t:-16deg"><div class="ground"></div><div class="stem"><div class="needle"></div><div class="head" style="background-image:url('/files/esp.svg')"></div></div></div>
+<div class="esc" data-escale="1" style="left:112px;top:637px"><b class="pt" aria-hidden="true"></b>Espagne<span class="sep">·</span><i>Madrid</i></div>
 <!-- Islande · Reykjavik (près du bord, estompé) -->
 <div class="mk" style="left:87.6px;top:487.3px;--f:.338;--n:-17.8deg;--t:-11deg"><div class="ground"></div><div class="stem"><div class="needle"></div><div class="head" style="background-image:url('/files/isl.svg')"></div></div></div>
 <!-- France · Paris : drapeau planté -->
@@ -144,7 +151,7 @@
   <path class="fp" d="M1 1C11 -2 22 4 33 1V23C22 26 11 20 1 23Z" fill="#fff8e7" stroke="#fff8e7" stroke-width="3.5" stroke-linejoin="round"/>
   <g clip-path="url(#d5-fclip)"><image href="/files/fra.svg" x="1" y="-2" width="32" height="28" preserveAspectRatio="none"/><rect class="shade" x="1" y="-3" width="66" height="30"/></g>
  </svg></div></div>
-<div class="tag paris" style="left:192px;top:512px">France<span class="sep">·</span><i>Paris</i></div>
+<div class="esc" data-escale="2" style="left:190px;top:516px"><b class="pt" aria-hidden="true"></b>France<span class="sep">·</span><i>Paris</i></div>
 <span class="spark" style="left:138px;top:512px"><svg viewBox="-5 -5 10 10"><path d="M0-5C.6-1.2 1.2-.6 5 0 1.2.6.6 1.2 0 5-.6 1.2-1.2.6-5 0-1.2-.6-.6-1.2 0-5Z" fill="#f7dc6f" stroke="#000" stroke-width=".9"/></svg></span>
 <span class="spark" style="left:132px;top:540px;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;animation-delay:-1.2s"><svg viewBox="-5 -5 10 10"><path d="M0-5C.6-1.2 1.2-.6 5 0 1.2.6.6 1.2 0 5-.6 1.2-1.2.6-5 0-1.2-.6-.6-1.2 0-5Z" fill="#fff8e7" stroke="#000" stroke-width=".9"/></svg></span>
 <!-- avion en papier -->
@@ -152,14 +159,14 @@
 <div class="plane" aria-hidden="true"><svg viewBox="0 0 40 26" width="40" height="26"><path d="M38 10L8 0 15 9Z" fill="#cfc3a6" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/><path d="M38 10L15 13 20 23Z" fill="#6225e6" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/><path d="M38 10L1 5 15 13Z" fill="#fff8e7" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
 <!-- Grèce · ? : balise cible -->
 <div class="mk" style="left:296.4px;top:650.5px;--f:.829;--n:30.6deg"><div class="ring p"></div><div class="ring"></div><div class="core"></div></div>
-<div class="tag athenes" style="left:252px;top:671px"><img src="/files/grc.svg" alt="">Grèce<span class="sep">·</span><span class="q">?</span></div>
+<div class="esc" data-escale="3" style="left:246px;top:673px"><b class="pt" aria-hidden="true"></b>Grèce<span class="sep">·</span><i>Athènes</i></div>
 
 </div>
-</div></div><h3>E2 · Quille + bande (retenu)</h3><p>La quille prend la couleur principale du drapeau, une bande au bord de fuite la seconde : France = quille bleue, ailes crème, bande rouge. Avion réduit de 30 % et vol ralenti de 30 % (boucle de 15,7 s) pour rester discret.</p><div class="legende"><span>Rabat <i style="background:#c1272d"></i><i style="background:#006233"></i></span><span>Madrid <i style="background:#c60b1e"></i><i style="background:#ffc400"></i></span><span>Paris <i style="background:#002395"></i><i style="background:#ed2939"></i></span><span>Athènes <i style="background:#0d5eaf"></i><i style="background:#0d5eaf"></i></span></div></div>
+</div></div><h3>E2 · Quille + bande, en boucle</h3><p>Quille à la couleur principale du drapeau, bande au bord de fuite à la seconde (France : bleu, crème, rouge). Avion réduit de 30 %, même vitesse lente qu'avant à l'écran ; hors de l'écran, il revient en ≈ 2,4 s.</p><div class="legende"><span>Rabat <i style="background:#c1272d"></i><i style="background:#006233"></i></span><span>Madrid <i style="background:#c60b1e"></i><i style="background:#ffc400"></i></span><span>Paris <i style="background:#002395"></i><i style="background:#ed2939"></i></span><span>Athènes <i style="background:#0d5eaf"></i><i style="background:#0d5eaf"></i></span></div></div>
 
 </div></main>
 <script type="module">
 import { mount } from '/files/avion-cartoon-escales.js';
-try { mount(document.getElementById('av-bande'), { variante: 'bande' }); } catch (e) { console.error('bande', e); }
+try { window.vol = mount(document.getElementById('av-bande'), { etiquettes: [0, 1, 2, 3].map((i) => document.querySelector(`.esc[data-escale="${i}"]`)) }); } catch (e) { console.error('escales', e); }
 </script>
 </body></html>

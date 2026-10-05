@@ -2,6 +2,8 @@
 
 À lire en premier par la prochaine session. Ce document dit **où on en est**, **ce qui a été décidé avec l'utilisateur**, **ce qui reste**, et **les pièges déjà payés**.
 
+> **REPRISE (05/10, session cloud) — prime sur le bandeau suivant.** Avion **A2 · cartoon** choisi ; à la demande de l'utilisateur, il fait le tour Rabat → Madrid → Paris → Athènes en prenant les couleurs du pays à chaque escale (`ecrans/accueil-avion-escales.html`). **Question en attente** : dosage E1 (bande seule) ou E2 (quille + bande). Puis la suite du README du dossier de conception.
+>
 > **REPRISE (05/10, fin de la 5ᵉ session) — prime sur tout le reste. Lire d'abord `docs/superpowers/brainstorm/2026-10-03-phase2a-interface/README.md`.**
 >
 > - **Section 3 (interface) de la conception de la 2A en cours**, au compagnon visuel. **7 décisions prises** par l'utilisateur (question A + grille 2×2 partout, drapeaux P1 à aire égale en « autocollant », révélation R3 avec étiquette « Pays · capitale », L1 + portrait imposé sur téléphone, accueil H3 « lever de Terre », repères G5 « Escales », avion en papier en vraie 3D) : tableau, écrans, captures, prototypes et recherches dans ce dossier.

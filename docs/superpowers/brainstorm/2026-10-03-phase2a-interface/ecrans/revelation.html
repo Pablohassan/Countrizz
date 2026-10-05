@@ -1,0 +1,130 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+<style>
+  .vars { display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 1.2rem; align-items: start; }
+  .var { cursor: pointer; border: 2px solid var(--border); border-radius: 18px; padding: 12px; background: var(--bg-secondary); }
+  .var:hover { border-color: var(--accent); }
+  .var.selected { border-color: var(--selected-border); background: var(--selected-bg); }
+  .var h3 { margin: 10px 0 2px; font-size: 1rem; }
+  .var p { font-size: .82rem; color: var(--text-secondary); margin: 0 0 4px; }
+  .pair { display: flex; gap: 14px; justify-content: center; }
+  .cap { text-align: center; font-size: .72rem; color: var(--text-secondary); margin-top: 6px; text-transform: uppercase; letter-spacing: .05em; }
+  .tag { display: inline-block; font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; padding: 1px 7px; border-radius: 6px; background: var(--bg-tertiary); color: var(--text-secondary); margin-top: 8px; }
+
+  /* Téléphone réel 390×844 affiché à 55 % */
+  .pw { width: 214.5px; height: 464.2px; }
+  .phone { position: relative; width: 390px; height: 844px; transform: scale(.55); transform-origin: 0 0; border-radius: 46px; overflow: hidden;
+           box-shadow: 0 0 0 12px #0b0b10; background: #000; font-family: 'Chango', system-ui; }
+  .globe { position: absolute; inset: 0; background: center -64px / 390px 844px no-repeat; }
+  .g-ok { background-image: url('/files/rev-ok-FRA.jpg'); }
+  .g-ko { background-image: url('/files/rev-faux-FRA.jpg'); }
+  .notch { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; border-radius: 18px; background: #000; z-index: 9; }
+  .veil { position: absolute; left: 0; right: 0; bottom: 0; height: 300px; background: linear-gradient(to bottom, rgba(22,23,58,0), rgba(22,23,58,.94) 34%); z-index: 3; }
+  .hud { position: absolute; top: 54px; left: 16px; right: 16px; display: flex; align-items: center; justify-content: space-between; z-index: 5; }
+  .pill { position: relative; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 4px 4px 0 #000; border-radius: 12px; padding: 4px 12px; font-size: 17px; transform: skewX(-15deg); }
+  .pill > span { display: inline-block; transform: skewX(15deg); }
+  .plus { position: absolute; left: 92px; top: 30px; color: #2fbf4a; font-size: 22px; text-shadow: 3px 2px 0 #000; transform: skewX(15deg); }
+  .timer { color: #f7dc6f; font-size: 34px; text-shadow: 5px 2px 1px #000; letter-spacing: 1px; }
+  .quit { width: 44px; height: 44px; border-radius: 50%; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 3px 3px 0 #000; display: grid; place-items: center; font-size: 17px; }
+  .stack { position: absolute; left: 16px; right: 16px; bottom: 0; padding-bottom: 34px; z-index: 5; display: flex; flex-direction: column; gap: 12px; }
+  .prompt { text-align: center; color: #f7dc6f; font-size: 19px; text-shadow: 4px 2px 1px #000; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+  .ans { position: relative; min-height: 56px; background: #6225e6; color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; transform: skewX(-15deg);
+         display: grid; place-items: center; padding: 4px 10px; font-size: 15px; text-align: center; }
+  .ans > span { transform: skewX(15deg); display: block; }
+  .ans.ok { background: #2fbf4a; }
+  .ans.ko { background: #e8413a; }
+  .ans.dim { opacity: .35; }
+  .badge { position: absolute; right: -10px; top: -14px; width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid #000; display: grid; place-items: center;
+           color: #fff; font: 700 17px system-ui; box-shadow: 2px 2px 0 #000; transform: skewX(15deg); }
+  .badge.v { background: #2fbf4a; } .badge.x { background: #e8413a; }
+  .credit { font: 10px/1.3 system-ui, sans-serif; color: rgba(255,255,255,.7); text-shadow: 0 0 2px #000; text-align: right; }
+  .credit u { text-decoration: underline; }
+
+  /* R2 : bandeau sous le HUD */
+  .banner { position: absolute; top: 118px; left: 50%; transform: translateX(-50%) skewX(-15deg); z-index: 6; white-space: nowrap;
+            background: #16173a; border: 3px solid #000; box-shadow: 6px 6px 0 #000; padding: 8px 18px; color: #f7dc6f; font-size: 20px; }
+  .banner > span { display: inline-block; transform: skewX(15deg); }
+  .banner.ok { border-left: 12px solid #2fbf4a; } .banner.ko { border-left: 12px solid #e8413a; }
+  .banner small { display: block; font-size: 14px; color: #fff; margin-top: 2px; }
+  /* R3 : étiquette posée sur le pays */
+  .label { position: absolute; top: 258px; left: 50%; transform: translateX(-50%) rotate(-3deg); z-index: 6; white-space: nowrap;
+           background: #fff8e7; color: #16173a; border: 3px solid #000; box-shadow: 5px 5px 0 #000; border-radius: 10px; padding: 6px 14px; font-size: 19px; }
+  .label::after { content: ''; position: absolute; left: 50%; bottom: -14px; transform: translateX(-50%); border: 10px solid transparent; border-top: 12px solid #000; }
+  .label small { font-size: 15px; color: #6225e6; }
+</style>
+
+<h2>La révélation (1,5 s) : que montre-t-on en plus des boutons ?</h2>
+<p class="subtitle">Exemple en mode Capitale, la question où l'on apprend le plus : le pays est la France. Dans chaque carte, à gauche le joueur a touché « Paris » (juste), à droite « Bruxelles » (faux). Déjà acquis dans les trois : le globe passe au vert ou pulse en rouge (ta décision du 03/10, captures réelles), le bon bouton devient vert avec ✓, le mauvais choix rouge avec ✗ et une petite secousse, les autres s'estompent, « +10 » saute près du score, et le résultat est lu par les lecteurs d'écran. Seul ce qui s'ajoute change.</p>
+
+<div class="cards vars">
+  <div class="card var" data-choice="r1-boutons-seuls" onclick="toggleSelect(this)">
+    <div class="pair">
+      <div><div class="pw"><div class="phone">
+        <div class="globe g-ok"></div><div class="notch"></div><div class="veil"></div>
+        <div class="hud"><div class="pill"><span>★ 130</span><span class="plus">+10</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+        <div class="stack"><div class="prompt">Quelle est sa capitale ?</div>
+          <div class="grid"><div class="ans dim"><span>Bruxelles</span></div><div class="ans ok"><span>Paris</span><span class="badge v">✓</span></div><div class="ans dim"><span>Berne</span></div><div class="ans dim"><span>Luxembourg</span></div></div>
+          <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div></div>
+      </div></div><div class="cap">juste</div></div>
+      <div><div class="pw"><div class="phone">
+        <div class="globe g-ko"></div><div class="notch"></div><div class="veil"></div>
+        <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+        <div class="stack"><div class="prompt">Quelle est sa capitale ?</div>
+          <div class="grid"><div class="ans ko"><span>Bruxelles</span><span class="badge x">✕</span></div><div class="ans ok"><span>Paris</span><span class="badge v">✓</span></div><div class="ans dim"><span>Berne</span></div><div class="ans dim"><span>Luxembourg</span></div></div>
+          <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div></div>
+      </div></div><div class="cap">faux</div></div>
+    </div>
+    <span class="tag">ma recommandation</span>
+    <h3>R1 · Les boutons seuls</h3>
+    <p>Rien de plus : l'œil reste sur la grille pendant 1,5 s. On n'apprend pas le nom du pays en mode Capitale ou Drapeau.</p>
+  </div>
+
+  <div class="card var" data-choice="r2-bandeau" onclick="toggleSelect(this)">
+    <div class="pair">
+      <div><div class="pw"><div class="phone">
+        <div class="globe g-ok"></div><div class="notch"></div><div class="veil"></div>
+        <div class="hud"><div class="pill"><span>★ 130</span><span class="plus">+10</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+        <div class="banner ok"><span>Bravo !<small>France : Paris</small></span></div>
+        <div class="stack"><div class="prompt">Quelle est sa capitale ?</div>
+          <div class="grid"><div class="ans dim"><span>Bruxelles</span></div><div class="ans ok"><span>Paris</span><span class="badge v">✓</span></div><div class="ans dim"><span>Berne</span></div><div class="ans dim"><span>Luxembourg</span></div></div>
+          <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div></div>
+      </div></div><div class="cap">juste</div></div>
+      <div><div class="pw"><div class="phone">
+        <div class="globe g-ko"></div><div class="notch"></div><div class="veil"></div>
+        <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+        <div class="banner ko"><span>Raté !<small>France : Paris</small></span></div>
+        <div class="stack"><div class="prompt">Quelle est sa capitale ?</div>
+          <div class="grid"><div class="ans ko"><span>Bruxelles</span><span class="badge x">✕</span></div><div class="ans ok"><span>Paris</span><span class="badge v">✓</span></div><div class="ans dim"><span>Berne</span></div><div class="ans dim"><span>Luxembourg</span></div></div>
+          <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div></div>
+      </div></div><div class="cap">faux</div></div>
+    </div>
+    <span class="tag">variante</span>
+    <h3>R2 · Bandeau sous le HUD</h3>
+    <p>« Bravo ! » ou « Raté ! », avec « Pays : capitale » (ou le nom du pays en mode Drapeau). Pas de « c'était la France » : l'article (la, le, les, l') demanderait une donnée par pays et par langue.</p>
+  </div>
+
+  <div class="card var" data-choice="r3-etiquette-sur-le-pays" onclick="toggleSelect(this)">
+    <div class="pair">
+      <div><div class="pw"><div class="phone">
+        <div class="globe g-ok"></div><div class="notch"></div><div class="veil"></div>
+        <div class="hud"><div class="pill"><span>★ 130</span><span class="plus">+10</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+        <div class="label">France · <small>Paris</small></div>
+        <div class="stack"><div class="prompt">Quelle est sa capitale ?</div>
+          <div class="grid"><div class="ans dim"><span>Bruxelles</span></div><div class="ans ok"><span>Paris</span><span class="badge v">✓</span></div><div class="ans dim"><span>Berne</span></div><div class="ans dim"><span>Luxembourg</span></div></div>
+          <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div></div>
+      </div></div><div class="cap">juste</div></div>
+      <div><div class="pw"><div class="phone">
+        <div class="globe g-ko"></div><div class="notch"></div><div class="veil"></div>
+        <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+        <div class="label">France · <small>Paris</small></div>
+        <div class="stack"><div class="prompt">Quelle est sa capitale ?</div>
+          <div class="grid"><div class="ans ko"><span>Bruxelles</span><span class="badge x">✕</span></div><div class="ans ok"><span>Paris</span><span class="badge v">✓</span></div><div class="ans dim"><span>Berne</span></div><div class="ans dim"><span>Luxembourg</span></div></div>
+          <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div></div>
+      </div></div><div class="cap">faux</div></div>
+    </div>
+    <span class="tag">variante</span>
+    <h3>R3 · Étiquette posée sur le pays</h3>
+    <p>Un autocollant « Pays · capitale » pointe le pays sur le globe : on apprend où il est et comment il s'appelle. Il faut que le globe donne la position du pays à l'écran (nouvelle méthode), et éviter que l'étiquette masque un micro-État.</p>
+  </div>
+</div>

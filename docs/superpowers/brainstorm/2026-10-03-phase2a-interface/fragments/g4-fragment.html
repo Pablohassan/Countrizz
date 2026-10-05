@@ -1,0 +1,135 @@
+<div class="d4 phone">
+  <style>
+    /* ===== Designer 4 · Balises lumineuses — tout est préfixé .d4 ===== */
+    .d4.phone{position:relative;width:390px;height:844px;overflow:hidden;border-radius:46px;background:#000;font-family:'Chango',system-ui;isolation:isolate;box-sizing:border-box}
+    .d4 *,.d4 *::before,.d4 *::after{box-sizing:border-box}
+    .d4 i{font-style:normal}
+    .d4 .d4-stars{position:absolute;inset:0;background-image:
+      radial-gradient(1px 1px at 30px 60px,#fff,transparent),radial-gradient(1px 1px at 120px 140px,#ddd,transparent),radial-gradient(1.5px 1.5px at 300px 90px,#fff,transparent),
+      radial-gradient(1px 1px at 250px 220px,#ccc,transparent),radial-gradient(1px 1px at 60px 300px,#fff,transparent),radial-gradient(1px 1px at 350px 330px,#bbb,transparent),
+      radial-gradient(1.5px 1.5px at 180px 380px,#fff,transparent),radial-gradient(1px 1px at 20px 400px,#ccc,transparent),radial-gradient(1px 1px at 330px 20px,#fff,transparent)}
+    .d4 .d4-globe{position:absolute;inset:0;background:url('ASSET/acc-16.png') center 400px / 390px 844px no-repeat}
+    .d4 .d4-notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:18px;background:#000;z-index:9}
+    .d4 .d4-lang{position:absolute;top:56px;right:18px;z-index:6;display:flex;border:2px solid #000;box-shadow:3px 3px 0 #000;border-radius:10px;overflow:hidden;font-size:14px}
+    .d4 .d4-lang span{padding:5px 10px;background:#16173a;color:#f7dc6f}
+    .d4 .d4-lang span.on{background:#f7dc6f;color:#16173a}
+    .d4 .d4-title{position:absolute;left:0;right:0;top:110px;text-align:center;z-index:5;color:#f7dc6f;font-size:54px;text-shadow:-6px 4px 2px rgb(11,13,15);letter-spacing:1px}
+    .d4 .d4-controls{position:absolute;left:28px;right:28px;top:215px;z-index:5;display:flex;flex-direction:column;align-items:stretch;gap:18px}
+    .d4 .d4-name{background:#16173a;border:3px solid #f7dc6f;box-shadow:4px 4px 0 #000;color:rgba(247,220,111,.55);padding:12px 14px;font-size:16px;border-radius:4px}
+    .d4 .d4-name b{color:#f7dc6f;font-weight:normal}
+    .d4 .d4-play{align-self:center;display:flex;align-items:center;gap:18px;background:#6225e6;color:#fff;border:2px solid #000;box-shadow:6px 6px 0 #000;transform:skewX(-15deg);padding:12px 30px;font-size:30px}
+    .d4 .d4-play>span{transform:skewX(15deg);display:inline-block}
+    .d4 .d4-play svg{width:40px;height:26px;transform:skewX(15deg)}
+    .d4 .d4-row2{display:flex;justify-content:center;gap:18px}
+    .d4 .d4-sec{background:#16173a;color:#f7dc6f;border:2px solid #000;box-shadow:4px 4px 0 #000;transform:skewX(-15deg);padding:9px 18px;font-size:15px}
+    .d4 .d4-sec>span{transform:skewX(15deg);display:inline-block}
+    .d4 .d4-credit{position:absolute;left:12px;right:10px;bottom:38px;z-index:6;font:10px/1.3 system-ui,sans-serif;color:rgba(255,255,255,.7);text-shadow:0 0 2px #000;text-align:right}
+    .d4 .d4-credit u{text-decoration:underline}
+
+    /* ----- calque des repères ----- */
+    .d4 .d4-marks{position:absolute;inset:0;z-index:2;pointer-events:none}
+
+    /* balise : anneau couché sur la surface (raccourci radial), cœur blanc, faisceau selon la normale */
+    .d4 .bk{position:absolute;left:var(--x);top:var(--y);width:0;height:0;opacity:var(--o)}
+    .d4 .bk .disc{position:absolute;left:-14px;top:-14px;width:28px;height:28px;transform:rotate(var(--a)) scaleY(var(--f)) scale(var(--s))}
+    .d4 .bk .glow{position:absolute;inset:-8px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,238,3,.38),rgba(255,238,3,.10) 60%,rgba(255,238,3,0))}
+    .d4 .bk .ring{position:absolute;inset:4px;border-radius:50%;border:2px solid #ffee03;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 6px rgba(255,238,3,.75)}
+    .d4 .bk .ring.r2{inset:0;border-width:1.5px;box-shadow:0 0 6px rgba(255,238,3,.6);opacity:0;animation:d4-pulse 2.6s cubic-bezier(.2,.6,.3,1) infinite;animation-delay:var(--d)}
+    .d4 .bk .core{position:absolute;left:-3.5px;top:-3.5px;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px #ffee03,0 0 0 2.5px rgba(0,0,0,.35),0 0 10px 2px rgba(255,238,3,.6);transform:scale(var(--s))}
+    .d4 .bk .beam{position:absolute;left:-1px;bottom:0;width:2px;height:var(--beam);transform-origin:50% 100%;transform:rotate(var(--a));border-radius:1px;
+      background:linear-gradient(to top,#fff 0%,#fff6b0 30%,rgba(255,238,3,.85) 100%);box-shadow:0 0 0 .5px rgba(0,0,0,.35)}
+    .d4 .bk .beam::before{content:'';position:absolute;left:-5px;right:-5px;top:-2px;bottom:0;border-radius:6px;
+      background:linear-gradient(to top,rgba(255,238,3,.55),rgba(255,238,3,.18));filter:blur(3px)}
+    .d4 .bk .tip{position:absolute;left:50%;top:0;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:#ffee03;box-shadow:0 0 6px 1px rgba(255,238,3,.8)}
+
+    /* drapeau planté (Paris) : mât crème cerné de noir, pommeau jaune, autocollant qui ondule */
+    .d4 .mast{position:absolute;left:var(--x);top:var(--y);width:0;height:0;z-index:3}
+    .d4 .mast .shadow{position:absolute;left:-2px;top:-3px;width:18px;height:6px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),rgba(0,0,0,0));transform:rotate(calc(var(--a) + 14deg)) scaleY(.7);transform-origin:0 50%}
+    .d4 .mast .rig{position:absolute;left:0;bottom:0;width:0;height:54px;transform-origin:0 100%;transform:rotate(var(--a)) scale(var(--s))}
+    .d4 .mast .pole{position:absolute;left:-2px;bottom:0;width:4px;height:54px;border:1.5px solid #000;border-radius:2px;background:linear-gradient(90deg,#fff8e7 0 50%,#d8ceb3 50%)}
+    .d4 .mast .knob{position:absolute;left:-4.5px;top:-6px;width:9px;height:9px;border-radius:50%;background:#ffee03;border:1.5px solid #000;box-shadow:0 0 8px rgba(255,238,3,.7)}
+    .d4 .mast .cloth{position:absolute;left:3px;top:3px;width:38px;height:26px;border:3px solid #fff8e7;border-radius:3px;overflow:hidden;
+      box-shadow:0 0 0 2.5px #000,3px 3px 0 2.5px #000;transform-origin:0 50%;animation:d4-wave 2.8s ease-in-out infinite}
+    .d4 .mast .cloth img{display:block;width:100%;height:100%;object-fit:cover}
+    .d4 .mast .cloth::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.32) 46%,transparent 62%);background-size:220% 100%;animation:d4-sheen 2.8s ease-in-out infinite}
+
+    /* enseignes lumineuses : verre de nuit, Chango jaune à halo, capitale en petites capitales */
+    .d4 .lab{position:absolute;display:flex;align-items:center;gap:6px;padding:4px 9px 4px 5px;border-radius:9px;white-space:nowrap;opacity:var(--o,1);z-index:4;
+      background:linear-gradient(180deg,rgba(30,31,74,.74),rgba(14,15,40,.74));border:1px solid rgba(247,220,111,.38);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 0 0 1px rgba(0,0,0,.3),0 0 16px rgba(247,220,111,.17),0 4px 10px rgba(0,0,0,.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+      animation:d4-light .7s cubic-bezier(.2,.8,.3,1) both;animation-delay:var(--d,0s)}
+    .d4 .lab.a-bc{transform:translate(-50%,calc(-100% - 3px))}
+    .d4 .lab.a-bx{transform:translate(calc(-1 * var(--ax)),calc(-100% - 3px))}
+    .d4 .lab.a-bl{transform:translate(-3px,calc(-100% - 3px));border-bottom-left-radius:2px}
+    .d4 .lab.a-br{transform:translate(calc(-100% + 3px),calc(-100% - 3px));border-bottom-right-radius:2px}
+    .d4 .lab .mini{flex:none;width:20px;height:14px;border:2px solid #fff8e7;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1.5px #000,2px 2px 0 1.5px #000;transform:rotate(-4deg)}
+    .d4 .lab .mini img{display:block;width:100%;height:100%;object-fit:cover}
+    .d4 .lab .txt{display:flex;flex-direction:column;line-height:1}
+    .d4 .lab b{font-weight:normal;font-size:12px;letter-spacing:.3px;color:#f7dc6f;text-shadow:0 0 8px rgba(247,220,111,.62),0 0 2px rgba(247,220,111,.5),0 1px 0 rgba(0,0,0,.6)}
+    .d4 .lab em{font:600 7.5px/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,248,231,.9);margin-top:4px;font-style:normal}
+    .d4 .lab em::before{content:'\2605\00a0';color:#ffee03;letter-spacing:0}
+    .d4 .tether{position:absolute;height:1px;margin-top:-.5px;transform-origin:0 50%;transform:rotate(var(--t));z-index:3;
+      background:linear-gradient(90deg,#ffee03,rgba(255,238,3,.55));box-shadow:0 0 4px rgba(255,238,3,.7),0 0 0 .5px rgba(0,0,0,.35)}
+    .d4 .lab.hero{padding:5px 11px 5px 9px;transform:translate(0,-100%);border-bottom-left-radius:2px}
+    .d4 .lab.hero b{font-size:15px}
+    .d4 .lab.hero em{font-size:8.5px}
+
+    /* pays mystère : pastille autocollante « ? » au sommet d'une balise */
+    .d4 .quiz{position:absolute;left:var(--x);top:var(--y);width:0;height:0;z-index:3}
+    .d4 .quiz .bubble{position:absolute;left:-17px;bottom:5px;width:34px;height:34px;border-radius:50%;background:#fff8e7;border:2.5px solid #000;box-shadow:3px 3px 0 #000;
+      display:grid;place-items:center;transform:rotate(-8deg);animation:d4-bob 2.4s ease-in-out infinite}
+    .d4 .quiz .bubble::after{content:'';position:absolute;left:50%;bottom:-12px;transform:translateX(-50%);border:6px solid transparent;border-top:8px solid #000}
+    .d4 .quiz b{font-weight:normal;font-size:19px;line-height:1;color:#6225e6}
+    .d4 .quiz .hint{position:absolute;right:25px;bottom:22px;transform:rotate(-5deg);font-size:11px;color:#f7dc6f;white-space:nowrap;text-shadow:0 0 6px rgba(247,220,111,.5),0 1px 2px #000,0 0 3px #000}
+
+    @keyframes d4-pulse{0%{transform:scale(.4);opacity:0}18%{opacity:.95}100%{transform:scale(1.55);opacity:0}}
+    @keyframes d4-wave{0%,100%{transform:perspective(90px) rotateY(0) skewY(0)}50%{transform:perspective(90px) rotateY(-16deg) skewY(-3deg)}}
+    @keyframes d4-sheen{0%{background-position:120% 0}100%{background-position:-20% 0}}
+    @keyframes d4-light{0%{opacity:0;filter:brightness(1.8);translate:0 4px}100%{opacity:var(--o,1);filter:none;translate:0 0}}
+    @keyframes d4-bob{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-4px) rotate(-4deg)}}
+    @media (prefers-reduced-motion: reduce){
+      .d4 .bk .ring.r2,.d4 .mast .cloth,.d4 .mast .cloth::after,.d4 .quiz .bubble,.d4 .lab{animation:none}
+    }
+
+  </style>
+  <div class="d4-stars"></div>
+  <div class="d4-globe"></div>
+  <div class="d4-marks" aria-hidden="true">
+    <div class="bk k-flag" style="--x:149.2px;--y:568.4px;--f:0.702;--a:-10.2deg;--o:1;--s:0.917;--beam:0px;--d:0.00s">
+      <i class="disc"><i class="glow"></i><i class="ring"></i><i class="ring r2"></i></i><i class="core"></i>
+    </div>
+    <div class="bk k-lab" style="--x:98.1px;--y:630.4px;--f:0.8;--a:-26.8deg;--o:1;--s:0.944;--beam:28.8px;--d:0.45s">
+      <i class="disc"><i class="glow"></i><i class="ring"></i><i class="ring r2"></i></i><i class="beam"><i class="tip"></i></i><i class="core"></i>
+    </div>
+    <div class="bk k-lab" style="--x:212.6px;--y:620.1px;--f:0.823;--a:5deg;--o:1;--s:0.95;--beam:27.3px;--d:0.90s">
+      <i class="disc"><i class="glow"></i><i class="ring"></i><i class="ring r2"></i></i><i class="beam"><i class="tip"></i></i><i class="core"></i>
+    </div>
+    <div class="bk k-quiz" style="--x:284.4px;--y:759.5px;--f:0.95;--a:55deg;--o:1;--s:0.986;--beam:15px;--d:1.35s">
+      <i class="disc"><i class="glow"></i><i class="ring"></i><i class="ring r2"></i></i><i class="beam"><i class="tip"></i></i><i class="core"></i>
+    </div>
+    <div class="bk k-far" style="--x:87.6px;--y:487.3px;--f:0.338;--a:-17.8deg;--o:0.424;--s:0.815;--beam:45.2px;--d:1.80s">
+      <i class="disc"><i class="glow"></i><i class="ring"></i><i class="ring r2"></i></i><i class="beam"><i class="tip"></i></i><i class="core"></i>
+    </div>
+    <div class="mast" style="--x:149.2px;--y:568.4px;--a:-10.2deg;--s:0.917">
+      <i class="shadow"></i><span class="rig"><i class="pole"></i><span class="cloth"><img src="ASSET/fra.svg" alt=""></span><i class="knob"></i></span>
+    </div>
+    <i class="tether" style="left:140.4px;top:519.7px;width:14.5px;--t:-31deg"></i>
+    <div class="lab hero" style="left:155.4px;top:510.7px;--d:.25s" data-c="FRA"><span class="txt"><b>France</b><em>Paris</em></span></div>
+    <div class="quiz" style="--x:296.7px;--y:750.9px" data-c="quiz"><span class="hint">Et ici&nbsp;?</span><span class="bubble"><b>?</b></span></div>
+    <div class="lab a-bx" style="left:85.1px;top:604.7px;--o:1;--ax:60%;--d:0.40s" data-c="ESP">
+      <span class="mini"><img src="ASSET/esp.svg" alt=""></span><span class="txt"><b>Espagne</b><em>Madrid</em></span>
+    </div>
+    <div class="lab a-bl" style="left:215px;top:592.9px;--o:1;--d:0.65s" data-c="ITA">
+      <span class="mini"><img src="ASSET/ita.svg" alt=""></span><span class="txt"><b>Italie</b><em>Rome</em></span>
+    </div>
+  </div>
+  <div class="d4-notch"></div>
+  <div class="d4-lang"><span class="on">FR</span><span>EN</span></div>
+  <div class="d4-title">Countrizz</div>
+  <div class="d4-controls">
+    <div class="d4-name">Ton nom : <b>Globetrotteur</b></div>
+    <div class="d4-play"><span>Jouer</span><svg viewBox="0 0 66 43"><path fill="#fff" d="M40 0l26 21.5L40 43H30l26-21.5L30 0z"/><path fill="#fff" opacity=".8" d="M20 0l26 21.5L20 43H10l26-21.5L10 0z"/><path fill="#f7dc6f" d="M0 0l26 21.5L0 43h0l16-21.5L0 0z"/></svg></div>
+    <div class="d4-row2"><div class="d4-sec"><span>Scores</span></div><div class="d4-sec"><span>Crédits</span></div></div>
+  </div>
+  <div class="d4-credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+</div>

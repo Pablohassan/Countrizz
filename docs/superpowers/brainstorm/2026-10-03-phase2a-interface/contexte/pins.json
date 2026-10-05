@@ -1,0 +1,434 @@
+[
+ {
+  "cca3": "FRA",
+  "pays": "France",
+  "capitale": "Paris",
+  "drapeau": "/files/fra.svg",
+  "capitaleXY": [
+   149.2,
+   568.4
+  ],
+  "capitaleFacing": 0.702,
+  "coeurXY": [
+   147.8,
+   579.7
+  ],
+  "coeurFacing": 0.729
+ },
+ {
+  "cca3": "ESP",
+  "pays": "Espagne",
+  "capitale": "Madrid",
+  "drapeau": "/files/esp.svg",
+  "capitaleXY": [
+   98.1,
+   630.4
+  ],
+  "capitaleFacing": 0.8,
+  "coeurXY": [
+   96.6,
+   638.7
+  ],
+  "coeurFacing": 0.813
+ },
+ {
+  "cca3": "ITA",
+  "pays": "Italie",
+  "capitale": "Rome",
+  "drapeau": "/files/ita.svg",
+  "capitaleXY": [
+   212.6,
+   620.1
+  ],
+  "capitaleFacing": 0.823,
+  "coeurXY": [
+   198.6,
+   595.2
+  ],
+  "coeurFacing": 0.775
+ },
+ {
+  "cca3": "DEU",
+  "pays": "Allemagne",
+  "capitale": "Berlin",
+  "drapeau": "/files/deu.svg",
+  "capitaleXY": [
+   213.6,
+   545
+  ],
+  "capitaleFacing": 0.647,
+  "coeurXY": [
+   194.7,
+   550.4
+  ],
+  "coeurFacing": 0.665
+ },
+ {
+  "cca3": "GBR",
+  "pays": "Royaume-Uni",
+  "capitale": "Londres",
+  "drapeau": "/files/gbr.svg",
+  "capitaleXY": [
+   138.6,
+   551
+  ],
+  "capitaleFacing": 0.649,
+  "coeurXY": [
+   132.8,
+   544.1
+  ],
+  "coeurFacing": 0.625
+ },
+ {
+  "cca3": "PRT",
+  "pays": "Portugal",
+  "capitale": "Lisbonne",
+  "drapeau": "/files/prt.svg",
+  "capitaleXY": [
+   58.3,
+   642.6
+  ],
+  "capitaleFacing": 0.778,
+  "coeurXY": [
+   69.9,
+   630.2
+  ],
+  "coeurFacing": 0.77
+ },
+ {
+  "cca3": "MAR",
+  "pays": "Maroc",
+  "capitale": "Rabat",
+  "drapeau": "/files/mar.svg",
+  "capitaleXY": [
+   64.3,
+   683.6
+  ],
+  "capitaleFacing": 0.845,
+  "coeurXY": [
+   61.6,
+   704.7
+  ],
+  "coeurFacing": 0.866
+ },
+ {
+  "cca3": "DZA",
+  "pays": "Algérie",
+  "capitale": "Alger",
+  "drapeau": "/files/dza.svg",
+  "capitaleXY": [
+   141.8,
+   662.6
+  ],
+  "capitaleFacing": 0.88,
+  "coeurXY": [
+   133,
+   749.4
+  ],
+  "coeurFacing": 0.962
+ },
+ {
+  "cca3": "TUN",
+  "pays": "Tunisie",
+  "capitale": "Tunis",
+  "drapeau": "/files/tun.svg",
+  "capitaleXY": [
+   196.4,
+   662.7
+  ],
+  "capitaleFacing": 0.893,
+  "coeurXY": [
+   194.2,
+   699
+  ],
+  "coeurFacing": 0.937
+ },
+ {
+  "cca3": "EGY",
+  "pays": "Égypte",
+  "capitale": "Le Caire",
+  "drapeau": "/files/egy.svg",
+  "capitaleXY": [
+   364.9,
+   716.7
+  ],
+  "capitaleFacing": 0.828,
+  "coeurXY": [
+   358.6,
+   755.3
+  ],
+  "coeurFacing": 0.867
+ },
+ {
+  "cca3": "SEN",
+  "pays": "Sénégal",
+  "capitale": "Dakar",
+  "drapeau": "/files/sen.svg",
+  "capitaleXY": [
+   -41.4,
+   851.3
+  ],
+  "capitaleFacing": 0.75,
+  "coeurXY": [
+   -23.1,
+   850.3
+  ],
+  "coeurFacing": 0.789
+ },
+ {
+  "cca3": "NER",
+  "pays": "Niger",
+  "capitale": "Niamey",
+  "drapeau": "/files/ner.svg",
+  "capitaleXY": [
+   120.2,
+   883.6
+  ],
+  "capitaleFacing": 0.961,
+  "coeurXY": [
+   198.2,
+   845.9
+  ],
+  "coeurFacing": 0.998
+ },
+ {
+  "cca3": "MLI",
+  "pays": "Mali",
+  "capitale": "Bamako",
+  "drapeau": "/files/mli.svg",
+  "capitaleXY": [
+   29.9,
+   883.2
+  ],
+  "capitaleFacing": 0.868,
+  "coeurXY": [
+   85.2,
+   832.2
+  ],
+  "coeurFacing": 0.949
+ },
+ {
+  "cca3": "NGA",
+  "pays": "Nigéria",
+  "capitale": "Abuja",
+  "drapeau": "/files/nga.svg",
+  "capitaleXY": [
+   170.8,
+   927.9
+  ],
+  "capitaleFacing": 0.951,
+  "coeurXY": [
+   168.9,
+   924.6
+  ],
+  "coeurFacing": 0.953
+ },
+ {
+  "cca3": "GRC",
+  "pays": "Grèce",
+  "capitale": "Athènes",
+  "drapeau": "/files/grc.svg",
+  "capitaleXY": [
+   296.4,
+   650.5
+  ],
+  "capitaleFacing": 0.829,
+  "coeurXY": [
+   278.6,
+   636.3
+  ],
+  "coeurFacing": 0.821
+ },
+ {
+  "cca3": "TUR",
+  "pays": "Turquie",
+  "capitale": "Ankara",
+  "drapeau": "/files/tur.svg",
+  "capitaleXY": [
+   352.1,
+   631.4
+  ],
+  "capitaleFacing": 0.729,
+  "coeurXY": [
+   359.7,
+   635.7
+  ],
+  "coeurFacing": 0.725
+ },
+ {
+  "cca3": "POL",
+  "pays": "Pologne",
+  "capitale": "Varsovie",
+  "drapeau": "/files/pol.svg",
+  "capitaleXY": [
+   255,
+   546.5
+  ],
+  "capitaleFacing": 0.634,
+  "coeurXY": [
+   247.4,
+   547
+  ],
+  "coeurFacing": 0.64
+ },
+ {
+  "cca3": "SWE",
+  "pays": "Suède",
+  "capitale": "Stockholm",
+  "drapeau": "/files/swe.svg",
+  "capitaleXY": [
+   230.4,
+   507.9
+  ],
+  "capitaleFacing": 0.515,
+  "coeurXY": [
+   222.2,
+   484.8
+  ],
+  "coeurFacing": 0.414
+ },
+ {
+  "cca3": "NOR",
+  "pays": "Norvège",
+  "capitale": "Oslo",
+  "drapeau": "/files/nor.svg",
+  "capitaleXY": [
+   198.2,
+   505.2
+  ],
+  "capitaleFacing": 0.512,
+  "coeurXY": [
+   194.8,
+   500.4
+  ],
+  "coeurFacing": 0.492
+ },
+ {
+  "cca3": "UKR",
+  "pays": "Ukraine",
+  "capitale": "Kiev",
+  "drapeau": "/files/ukr.svg",
+  "capitaleXY": [
+   308.7,
+   556.7
+  ],
+  "capitaleFacing": 0.613,
+  "coeurXY": [
+   321.4,
+   563.2
+  ],
+  "coeurFacing": 0.615
+ },
+ {
+  "cca3": "SDN",
+  "pays": "Soudan",
+  "capitale": "Khartoum",
+  "drapeau": "/files/sdn.svg",
+  "capitaleXY": [
+   394.8,
+   850.8
+  ],
+  "capitaleFacing": 0.824,
+  "coeurXY": [
+   370.2,
+   843.3
+  ],
+  "coeurFacing": 0.867
+ },
+ {
+  "cca3": "LBY",
+  "pays": "Libye",
+  "capitale": "Tripoli",
+  "drapeau": "/files/lby.svg",
+  "capitaleXY": [
+   221,
+   697.6
+  ],
+  "capitaleFacing": 0.932,
+  "coeurXY": [
+   284.4,
+   759.5
+  ],
+  "coeurFacing": 0.95
+ },
+ {
+  "cca3": "MRT",
+  "pays": "Mauritanie",
+  "capitale": "Nouakchott",
+  "drapeau": "/files/mrt.svg",
+  "capitaleXY": [
+   -27.9,
+   822.3
+  ],
+  "capitaleFacing": 0.783,
+  "coeurXY": [
+   19.9,
+   818.2
+  ],
+  "coeurFacing": 0.869
+ },
+ {
+  "cca3": "TCD",
+  "pays": "Tchad",
+  "capitale": "N'Djaména",
+  "drapeau": "/files/tcd.svg",
+  "capitaleXY": [
+   243.2,
+   898.1
+  ],
+  "capitaleFacing": 0.966,
+  "coeurXY": [
+   283.3,
+   844.5
+  ],
+  "coeurFacing": 0.965
+ },
+ {
+  "cca3": "ISL",
+  "pays": "Islande",
+  "capitale": "Reykjavik",
+  "drapeau": "/files/isl.svg",
+  "capitaleXY": [
+   87.6,
+   487.3
+  ],
+  "capitaleFacing": 0.338,
+  "coeurXY": [
+   98.4,
+   485.3
+  ],
+  "coeurFacing": 0.346
+ },
+ {
+  "cca3": "IRL",
+  "pays": "Irlande",
+  "capitale": "Dublin",
+  "drapeau": "/files/irl.svg",
+  "capitaleXY": [
+   110.4,
+   539.5
+  ],
+  "capitaleFacing": 0.592,
+  "coeurXY": [
+   103.4,
+   541.1
+  ],
+  "coeurFacing": 0.591
+ },
+ {
+  "cca3": "FIN",
+  "pays": "Finlande",
+  "capitale": "Helsinki",
+  "drapeau": "/files/fin.svg",
+  "capitaleXY": [
+   257.7,
+   503.9
+  ],
+  "capitaleFacing": 0.481,
+  "coeurXY": [
+   256.9,
+   493.7
+  ],
+  "coeurFacing": 0.435
+ }
+]

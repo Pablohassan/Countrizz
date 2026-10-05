@@ -1,0 +1,146 @@
+<div class="d2 phone">
+<style>
+  .d2.phone { position: relative; width: 390px; height: 844px; overflow: hidden; border-radius: 46px; font-family: 'Chango', system-ui; background: #000; }
+  .d2 .stars { position: absolute; inset: 0; background-image:
+      radial-gradient(1px 1px at 30px 60px, #fff, transparent), radial-gradient(1px 1px at 120px 140px, #ddd, transparent), radial-gradient(1.5px 1.5px at 300px 90px, #fff, transparent),
+      radial-gradient(1px 1px at 250px 220px, #ccc, transparent), radial-gradient(1px 1px at 60px 300px, #fff, transparent), radial-gradient(1px 1px at 350px 330px, #bbb, transparent),
+      radial-gradient(1.5px 1.5px at 180px 380px, #fff, transparent), radial-gradient(1px 1px at 20px 400px, #ccc, transparent), radial-gradient(1px 1px at 330px 20px, #fff, transparent); }
+  .d2 .globe { position: absolute; inset: 0; background: url('ASSET/acc-16.png') center 400px / 390px 844px no-repeat; }
+  .d2 .notch { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; border-radius: 18px; background: #000; z-index: 9; }
+  .d2 .lang { position: absolute; top: 56px; right: 18px; z-index: 6; display: flex; border: 2px solid #000; box-shadow: 3px 3px 0 #000; border-radius: 10px; overflow: hidden; font-size: 14px; }
+  .d2 .lang span { padding: 5px 10px; background: #16173a; color: #f7dc6f; }
+  .d2 .lang span.on { background: #f7dc6f; color: #16173a; }
+  .d2 .title { position: absolute; top: 110px; left: 0; right: 0; text-align: center; z-index: 5; color: #f7dc6f; font-size: 54px; text-shadow: -6px 4px 2px rgb(11,13,15); letter-spacing: 1px; }
+  .d2 .controls { position: absolute; top: 215px; left: 28px; right: 28px; z-index: 5; display: flex; flex-direction: column; align-items: stretch; gap: 18px; }
+  .d2 .name { background: #16173a; border: 3px solid #f7dc6f; box-shadow: 4px 4px 0 #000; color: rgba(247,220,111,.55); padding: 12px 14px; font-size: 16px; border-radius: 4px; }
+  .d2 .name b { color: #f7dc6f; font-weight: normal; }
+  .d2 .play { align-self: center; display: flex; align-items: center; gap: 18px; background: #6225e6; color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; transform: skewX(-15deg); padding: 12px 30px; font-size: 30px; }
+  .d2 .play > span { transform: skewX(15deg); display: inline-block; }
+  .d2 .play svg { width: 40px; height: 26px; transform: skewX(15deg); }
+  .d2 .row2 { display: flex; justify-content: center; gap: 18px; }
+  .d2 .sec { background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 4px 4px 0 #000; transform: skewX(-15deg); padding: 9px 18px; font-size: 15px; }
+  .d2 .sec > span { transform: skewX(15deg); display: inline-block; }
+  .d2 .credit { position: absolute; left: 12px; right: 10px; bottom: 38px; z-index: 6; font: 10px/1.3 system-ui, sans-serif; color: rgba(255,255,255,.7); text-shadow: 0 0 2px #000; text-align: right; }
+  .d2 .credit u { text-decoration: underline; }
+
+  /* ---------- Drapeaux plantés ---------- */
+  .d2 .pins { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+  /* --x --y : pied du mât (coeurXY). --s : échelle = (0,5 + 0,5 × facing) × taille du pays.
+     --t : inclinaison du mât le long de la normale (angle radial × 0,45 × √(1−facing²)). --o : estompe au bord. --tz : corrige le fanion pour rester lisible. */
+  .d2 .pin { position: absolute; left: calc(var(--x) * 1px); top: calc(var(--y) * 1px); width: 0; height: 0; opacity: var(--o, 1); }
+  .d2 .g { position: absolute; left: 0; top: 0; transform: scale(var(--s)); transform-origin: 0 0; }
+  /* au sol : socle (petit disque crème couché dans le plan du sol), ombre du mât vers le bas-droite (soleil en haut à gauche) */
+  .d2 .base { position: absolute; left: -10px; top: -4px; width: 20px; height: 8px; border-radius: 50%; box-sizing: border-box; transform: rotate(calc(var(--t) * 1deg));
+              border: 1.2px solid rgba(255,248,231,.78); background: radial-gradient(closest-side, rgba(10,8,4,.7), rgba(10,8,4,.35) 70%, rgba(10,8,4,.15));
+              box-shadow: 0 0 0 .8px rgba(0,0,0,.6); animation: d2-ground .7s cubic-bezier(.3,1.5,.5,1) both; animation-delay: calc(var(--d) + .3s); }
+  .d2 .cast { position: absolute; left: 0; top: -1px; width: 17px; height: 2.4px; border-radius: 2px; transform-origin: 0 50%; transform: rotate(22deg); background: linear-gradient(90deg, rgba(0,0,0,.7), rgba(0,0,0,0)); animation: d2-fade .5s ease-out both; animation-delay: calc(var(--d) + .35s); }
+  .d2 .drop { position: absolute; left: 0; top: 0; animation: d2-plant .65s cubic-bezier(.35,1.45,.55,1) both; animation-delay: var(--d); }
+  .d2 .pole { position: absolute; left: -1.5px; top: -40px; width: 3px; height: 40.5px; transform-origin: 50% 100%; transform: rotate(calc(var(--t) * 1deg)); }
+  .d2 .mast { position: absolute; inset: 0; border-radius: 1.5px 1.5px 0 0;
+              background: linear-gradient(90deg, #000 0 .7px, #fffaf0 .7px 1.7px, #c8bc9f 1.7px 2.3px, #000 2.3px); }
+  .d2 .mast::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: linear-gradient(to top, rgba(30,20,8,.95), rgba(30,20,8,0)); }
+  .d2 .knob { position: absolute; left: 50%; top: -5px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; box-sizing: border-box; border: 1px solid #000;
+              background: radial-gradient(circle at 35% 30%, #fffbe0 0 18%, #f7dc6f 45%, #c49a1c); }
+  /* le drapeau réel (SVG), découpé en 6 lés qui ondulent en décalé ; liseré noir + ombre nette comme les autocollants */
+  .d2 .flag { position: absolute; left: 2.2px; top: 1px; width: 26px; height: var(--fh, 17.3px); transform-origin: 0 50%;
+              filter: drop-shadow(.75px 0 0 #000) drop-shadow(-.75px 0 0 #000) drop-shadow(0 .75px 0 #000) drop-shadow(0 -.75px 0 #000) drop-shadow(1.6px 1.8px 0 rgba(0,0,0,.45)); }
+  .d2 .flag i { position: absolute; top: 0; height: 100%; width: calc(100% / 6 + .35px); background-image: var(--f); background-size: 600% 100%; background-repeat: no-repeat;
+                animation: d2-wave 1.5s ease-in-out infinite; }
+  .d2 .flag i::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,255,255,.28), rgba(0,0,0,.22)); opacity: 0; animation: d2-fold 1.5s ease-in-out infinite; animation-delay: inherit; }
+  .d2 .flag i:nth-child(1) { left: 0;              background-position: 0 0;    --k: 0;   animation-delay: 0s; }
+  .d2 .flag i:nth-child(2) { left: calc(100%/6);   background-position: 20% 0;  --k: .35; animation-delay: -.2s; }
+  .d2 .flag i:nth-child(3) { left: calc(200%/6);   background-position: 40% 0;  --k: .6;  animation-delay: -.4s; }
+  .d2 .flag i:nth-child(4) { left: calc(300%/6);   background-position: 60% 0;  --k: .8;  animation-delay: -.6s; }
+  .d2 .flag i:nth-child(5) { left: calc(400%/6);   background-position: 80% 0;  --k: .95; animation-delay: -.8s; }
+  .d2 .flag i:nth-child(6) { left: calc(500%/6);   background-position: 100% 0; --k: 1.1; animation-delay: -1s; }
+  /* fanion crème (queue d'aronde) au nom du pays, sous le drapeau */
+  .d2 .tagw { position: absolute; left: 2.2px; top: calc(var(--fh, 17.3px) + 3.5px); transform-origin: 0 50%; animation: d2-sway 3.2s ease-in-out infinite; animation-delay: var(--d);
+              filter: drop-shadow(.75px 0 0 #000) drop-shadow(-.75px 0 0 #000) drop-shadow(0 .75px 0 #000) drop-shadow(0 -.75px 0 #000) drop-shadow(1.6px 1.8px 0 rgba(0,0,0,.55)); }
+  .d2 .tag { display: block; font: calc(8.5px * var(--tz, 1))/1.5 'Chango', system-ui; height: 1.45em; padding: 0 1.1em 0 .45em; background: #fff8e7; color: #16173a; white-space: nowrap;
+             clip-path: polygon(0 0, 100% 0, calc(100% - .6em) 50%, 100% 100%, 0 100%); }
+  /* étincelles du drapeau « tout juste planté » */
+  .d2 .spark { position: absolute; width: 10px; height: 10px; overflow: visible; animation: d2-spark 1.8s ease-in-out infinite; }
+  /* drapeau mystère : un pays pas encore « planté » — le prochain à conquérir */
+  .d2 .pin.q .mast { background: linear-gradient(90deg, #000 0 .7px, #8b62f5 .7px 1.7px, #6225e6 1.7px 2.3px, #000 2.3px); }
+  .d2 .pin.q .flag { filter: drop-shadow(1.6px 1.8px 0 rgba(0,0,0,.45)); }
+  .d2 .qf { position: absolute; inset: 0; box-sizing: border-box; border: 1.3px dashed #fff8e7; border-radius: 1.5px; background: rgba(22,23,58,.72);
+            display: grid; place-items: center; color: #f7dc6f; font: 12px/1 'Chango', system-ui; text-shadow: 1px 1px 0 #000; animation: d2-ask 2.4s ease-in-out infinite; transform-origin: 0 50%; }
+  .d2 .pin.q .base { border-color: rgba(247,220,111,.95); background: radial-gradient(closest-side, rgba(98,37,230,.55), rgba(98,37,230,.15)); }
+  .d2 .pin.q .base::after { content: ''; position: absolute; inset: -1.2px; border-radius: 50%; border: 1.2px solid #f7dc6f; animation: d2-call 2.4s ease-out infinite; }
+
+  /* capitale : point étoilé + nom */
+  .d2 .cap { position: absolute; left: calc(var(--x) * 1px); top: calc(var(--y) * 1px); width: 0; height: 0; }
+  .d2 .cap .cg { position: absolute; left: 0; top: 0; transform: scale(var(--s)); transform-origin: 0 0; animation: d2-pop .5s cubic-bezier(.3,1.6,.5,1) both; animation-delay: var(--d); }
+  .d2 .cap svg { position: absolute; left: -5.5px; top: -5.5px; width: 11px; height: 11px; overflow: visible; filter: drop-shadow(1px 1.2px 0 rgba(0,0,0,.6)); animation: d2-twinkle 3.4s ease-in-out infinite; animation-delay: var(--d); }
+  .d2 .cap .halo { position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; box-sizing: border-box; border: 1.5px solid rgba(247,220,111,.9); opacity: 0; animation: d2-ring 3.4s ease-out infinite; animation-delay: var(--d); }
+  .d2 .cap b { position: absolute; top: -6px; left: 7.5px; font: italic 600 9px/12px system-ui, sans-serif; color: #fff8e7; white-space: nowrap; letter-spacing: .25px;
+               text-shadow: .9px 0 0 #000, -.9px 0 0 #000, 0 .9px 0 #000, 0 -.9px 0 #000, 1.3px 1.3px 0 #000; }
+  .d2 .cap.l b { left: auto; right: 7.5px; }
+  .d2 .cap.u b { left: 0; top: 5px; transform: translateX(-50%); }
+
+  @keyframes d2-wave { 0%, 100% { transform: translateY(calc(var(--k) * -1px)); } 50% { transform: translateY(calc(var(--k) * 1px)); } }
+  @keyframes d2-fold { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+  @keyframes d2-sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+  @keyframes d2-plant { 0% { transform: translateY(-30px); opacity: 0; } 40% { opacity: 1; } 100% { transform: none; opacity: 1; } }
+  @keyframes d2-ground { 0% { transform: rotate(calc(var(--t) * 1deg)) scale(.2); opacity: 0; } 100% { transform: rotate(calc(var(--t) * 1deg)) scale(1); opacity: 1; } }
+  @keyframes d2-fade { 0% { opacity: 0; } 100% { opacity: 1; } }
+  @keyframes d2-pop { 0% { transform: scale(0); } 100% { transform: scale(var(--s)); } }
+  @keyframes d2-twinkle { 0%, 72%, 100% { transform: rotate(0) scale(1); } 82% { transform: rotate(36deg) scale(1.25); } }
+  @keyframes d2-ring { 0%, 60% { transform: scale(.6); opacity: 0; } 68% { opacity: .9; } 100% { transform: scale(2); opacity: 0; } }
+  @keyframes d2-ask { 0%, 100% { transform: skewY(-3deg); } 50% { transform: skewY(3deg) scaleX(.94); } }
+  @keyframes d2-call { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(2.2); opacity: 0; } }
+  @keyframes d2-spark { 0%, 100% { transform: scale(.8) rotate(0); opacity: .75; } 50% { transform: scale(1.1) rotate(45deg); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .d2 *, .d2 *::after { animation: none !important; }
+  }
+</style>
+  <div class="stars"></div>
+  <div class="globe"></div>
+
+  <div class="pins">
+    <!-- Islande — au bord du disque (facing 0,35) : petit, estompé, sans fanion -->
+    <div class="pin" style="--x:98.4;--y:485.3;--s:0.606;--t:-6.8;--d:0.05s;--tz:1;--o:0.5;--fh:18.7px;--f:url('ASSET/isl.svg')">
+      <div class="g"><i class="base"></i><i class="cast"></i><div class="drop"><div class="pole"><i class="mast"></i><i class="knob"></i>
+        <div class="flag"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div></div></div>
+    <!-- Portugal — petit pays : mât court -->
+    <div class="pin" style="--x:69.9;--y:630.2;--s:0.726;--t:-9.5;--d:0.2s;--tz:1.23;--f:url('ASSET/prt.svg')">
+      <div class="g"><i class="base"></i><i class="cast"></i><div class="drop"><div class="pole"><i class="mast"></i><i class="knob"></i>
+        <div class="flag"><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="tagw"><span class="tag">Portugal</span></span></div></div></div></div>
+    <!-- Italie -->
+    <div class="pin" style="--x:198.6;--y:595.2;--s:0.887;--t:0.3;--d:0.1s;--tz:1.06;--f:url('ASSET/ita.svg')">
+      <div class="g"><i class="base"></i><i class="cast"></i><div class="drop"><div class="pole"><i class="mast"></i><i class="knob"></i>
+        <div class="flag"><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="tagw"><span class="tag">Italie</span></span></div></div></div></div>
+    <!-- Grèce -->
+    <div class="pin" style="--x:278.6;--y:636.3;--s:0.837;--t:6.2;--d:0.35s;--tz:1.12;--f:url('ASSET/grc.svg')">
+      <div class="g"><i class="base"></i><i class="cast"></i><div class="drop"><div class="pole"><i class="mast"></i><i class="knob"></i>
+        <div class="flag"><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="tagw"><span class="tag">Grèce</span></span></div></div></div></div>
+    <!-- Algérie — grand pays face caméra : le plus grand mât, « tout juste planté » -->
+    <div class="pin" style="--x:133;--y:749.4;--s:1.128;--t:-5;--d:0.5s;--tz:0.9;--f:url('ASSET/dza.svg')">
+      <div class="g"><i class="base"></i><i class="cast"></i><div class="drop"><div class="pole"><i class="mast"></i><i class="knob"></i>
+        <div class="flag"><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="tagw"><span class="tag">Algérie</span></span><svg class="spark" style="left:26px;top:-13px;animation-delay:-.2s" viewBox="-4 -4 8 8"><path d="M0-4 .9-.9 4 0 .9.9 0 4-.9.9-4 0-.9-.9z" fill="#f7dc6f" stroke="#000" stroke-width=".55" stroke-linejoin="round"/></svg><svg class="spark" style="left:34px;top:-3px;width:7px;height:7px;animation-delay:-1s" viewBox="-4 -4 8 8"><path d="M0-4 .9-.9 4 0 .9.9 0 4-.9.9-4 0-.9-.9z" fill="#fff8e7" stroke="#000" stroke-width=".55" stroke-linejoin="round"/></svg><svg class="spark" style="left:19px;top:-17px;width:6px;height:6px;animation-delay:-.6s" viewBox="-4 -4 8 8"><path d="M0-4 .9-.9 4 0 .9.9 0 4-.9.9-4 0-.9-.9z" fill="#fff8e7" stroke="#000" stroke-width=".55" stroke-linejoin="round"/></svg></div></div></div></div>
+    <!-- Libye -->
+    <div class="pin" style="--x:284.4;--y:759.5;--s:1.092;--t:7.7;--d:0.65s;--tz:0.93;--fh:13px;--f:url('ASSET/lby.svg')">
+      <div class="g"><i class="base"></i><i class="cast"></i><div class="drop"><div class="pole"><i class="mast"></i><i class="knob"></i>
+        <div class="flag"><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="tagw"><span class="tag">Libye</span></span></div></div></div></div>
+    <!-- Drapeau mystère au cœur de l'Ukraine : pays pas encore découvert, ni nom ni capitale -->
+    <div class="pin q" style="--x:321.4;--y:563.2;--s:.807;--t:9.2;--d:.8s">
+      <div class="g"><i class="base"></i><i class="cast"></i><div class="drop"><div class="pole"><i class="mast"></i><i class="knob"></i>
+        <div class="flag"><span class="qf">?</span></div></div></div></div></div>
+    <!-- capitales (capitaleXY, échelle 0,5 + 0,5 × facing) -->
+    <div class="cap u" style="--x:58.3;--y:642.6;--s:0.889;--d:0.55s"><div class="cg"><i class="halo"></i><svg viewBox="-6 -6 12 12"><path d="M0-5.6 1.5-1.9 5.4-1.8 2.3.7 3.4 4.6 0 2.4-3.4 4.6-2.3.7-5.4-1.8-1.5-1.9z" fill="#f7dc6f" stroke="#000" stroke-width="1.1" stroke-linejoin="round"/><circle r="1.1" fill="#fff"/></svg><b>Lisbonne</b></div></div>
+    <div class="cap" style="--x:212.6;--y:620.1;--s:0.911;--d:0.45s"><div class="cg"><i class="halo"></i><svg viewBox="-6 -6 12 12"><path d="M0-5.6 1.5-1.9 5.4-1.8 2.3.7 3.4 4.6 0 2.4-3.4 4.6-2.3.7-5.4-1.8-1.5-1.9z" fill="#f7dc6f" stroke="#000" stroke-width="1.1" stroke-linejoin="round"/><circle r="1.1" fill="#fff"/></svg><b>Rome</b></div></div>
+    <div class="cap" style="--x:296.4;--y:650.5;--s:0.914;--d:0.7s"><div class="cg"><i class="halo"></i><svg viewBox="-6 -6 12 12"><path d="M0-5.6 1.5-1.9 5.4-1.8 2.3.7 3.4 4.6 0 2.4-3.4 4.6-2.3.7-5.4-1.8-1.5-1.9z" fill="#f7dc6f" stroke="#000" stroke-width="1.1" stroke-linejoin="round"/><circle r="1.1" fill="#fff"/></svg><b>Athènes</b></div></div>
+    <div class="cap" style="--x:141.8;--y:662.6;--s:0.94;--d:0.85s"><div class="cg"><i class="halo"></i><svg viewBox="-6 -6 12 12"><path d="M0-5.6 1.5-1.9 5.4-1.8 2.3.7 3.4 4.6 0 2.4-3.4 4.6-2.3.7-5.4-1.8-1.5-1.9z" fill="#f7dc6f" stroke="#000" stroke-width="1.1" stroke-linejoin="round"/><circle r="1.1" fill="#fff"/></svg><b>Alger</b></div></div>
+    <div class="cap" style="--x:221;--y:697.6;--s:0.966;--d:1s"><div class="cg"><i class="halo"></i><svg viewBox="-6 -6 12 12"><path d="M0-5.6 1.5-1.9 5.4-1.8 2.3.7 3.4 4.6 0 2.4-3.4 4.6-2.3.7-5.4-1.8-1.5-1.9z" fill="#f7dc6f" stroke="#000" stroke-width="1.1" stroke-linejoin="round"/><circle r="1.1" fill="#fff"/></svg><b>Tripoli</b></div></div>
+  </div>
+
+  <div class="notch"></div>
+  <div class="lang"><span class="on">FR</span><span>EN</span></div>
+  <div class="title">Countrizz</div>
+  <div class="controls">
+    <div class="name">Ton nom : <b>Globetrotteur</b></div>
+    <div class="play"><span>Jouer</span><svg viewBox="0 0 66 43"><path fill="#fff" d="M40 0l26 21.5L40 43H30l26-21.5L30 0z"/><path fill="#fff" opacity=".8" d="M20 0l26 21.5L20 43H10l26-21.5L10 0z"/><path fill="#f7dc6f" d="M0 0l26 21.5L0 43h0l16-21.5L0 0z"/></svg></div>
+    <div class="row2"><div class="sec"><span>Scores</span></div><div class="sec"><span>Crédits</span></div></div>
+  </div>
+  <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+</div>

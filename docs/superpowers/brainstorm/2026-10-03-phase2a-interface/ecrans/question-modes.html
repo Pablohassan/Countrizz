@@ -1,0 +1,119 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+<style>
+  .phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; align-items: start; }
+  .phone-card { cursor: default; border: 2px solid var(--border); border-radius: 18px; padding: 12px; background: var(--bg-secondary); }
+  .phone-card.pick { cursor: pointer; }
+  .phone-card.pick:hover { border-color: var(--accent); }
+  .phone-card.selected { border-color: var(--selected-border); background: var(--selected-bg); }
+  .phone-card h3 { margin: 10px 0 2px; font-size: 1rem; }
+  .phone-card p { font-size: .82rem; color: var(--text-secondary); margin: 0; }
+  .tag { display: inline-block; font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; padding: 1px 7px; border-radius: 6px; background: var(--bg-tertiary); color: var(--text-secondary); margin-bottom: 4px; }
+
+  .phone { position: relative; width: 300px; height: 649px; margin: 0 auto; border-radius: 34px; overflow: hidden;
+           box-shadow: 0 0 0 8px #0b0b10, 0 10px 30px rgba(0,0,0,.45); background: #000; font-family: 'Chango', system-ui; }
+  .globe { position: absolute; inset: 0; background: url('/files/tel-q-FRA.jpg') center / 300px 649px no-repeat; }
+  .notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 92px; height: 24px; border-radius: 14px; background: #000; z-index: 9; }
+  .veil { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(22,23,58,0), rgba(22,23,58,.93) 38%); z-index: 3; }
+
+  .hud { position: absolute; top: 38px; left: 12px; right: 12px; display: flex; align-items: center; justify-content: space-between; z-index: 5; }
+  .pill { background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 3px 3px 0 #000; border-radius: 10px; padding: 3px 9px; font-size: 13px; transform: skewX(-15deg); }
+  .pill > span { display: inline-block; transform: skewX(15deg); }
+  .timer { color: #f7dc6f; font-size: 26px; text-shadow: 4px 2px 1px #000; letter-spacing: 1px; }
+  .quit { width: 34px; height: 34px; border-radius: 50%; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 2px 2px 0 #000; display: grid; place-items: center; font-size: 13px; }
+
+  .stack { position: absolute; left: 14px; right: 14px; bottom: 6px; z-index: 5; display: flex; flex-direction: column; gap: 10px; }
+  .prompt { text-align: center; color: #f7dc6f; font-size: 15px; text-shadow: 3px 2px 1px #000; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  .ans { min-height: 50px; background: #6225e6; color: #fff; border: 2px solid #000; box-shadow: 5px 5px 0 #000; transform: skewX(-15deg);
+         display: grid; place-items: center; padding: 4px 8px; font-size: 11px; line-height: 1.15; text-align: center; }
+  .ans > span { transform: skewX(15deg); display: block; }
+  .ans.long { font-size: 9px; }
+  .credit { font: 7.5px/1.25 system-ui, sans-serif; color: rgba(255,255,255,.75); text-shadow: 0 0 2px #000; text-align: right; }
+  .credit u { text-decoration: underline; }
+
+  /* Drapeaux */
+  .flag .ans { min-height: 70px; padding: 6px 10px; }
+  .fx { transform: skewX(15deg); display: grid; place-items: center; }
+  .fixed .fx { width: 96px; height: 64px; background: #0e0f26; border: 2px solid #fff; box-shadow: 0 0 0 1px #000; }
+  .fixed .fx img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .free .fx { width: 100px; height: 58px; }
+  .free .fx img { max-width: 100%; max-height: 100%; display: block; border: 2px solid #fff; box-shadow: 0 0 0 1px #000; }
+</style>
+
+<h2>La disposition A dans les trois modes</h2>
+<p class="subtitle">La question est maintenant juste au-dessus de la grille, et le crédit EOX sur sa propre ligne en dessous. Les libellés viennent des vraies données : « Saint-Vincent-et-les-Grenadines » (31 caractères) est le nom le plus long, « Sri Jayawardenapura » (19) la capitale la plus longue. <strong>La seule question de cet écran porte sur le mode Drapeau</strong> : faut-il mettre les drapeaux dans un cadre fixe ou leur laisser leurs proportions ? Les proportions vont de 0,82 (Népal) à 2,55 (Qatar). Clique sur D1 ou D2.</p>
+
+<div class="cards phones">
+  <div class="card phone-card">
+    <div class="phone">
+      <div class="globe" style="background-position: center -41px"></div><div class="notch"></div><div class="veil" style="height:230px"></div>
+      <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+      <div class="stack">
+        <div class="prompt">Quel est ce pays ?</div>
+        <div class="grid">
+          <div class="ans"><span>Belgique</span></div><div class="ans"><span>France</span></div>
+          <div class="ans long"><span>Saint-Vincent-et-les-Grenadines</span></div><div class="ans long"><span>République centrafricaine</span></div>
+        </div>
+        <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+      </div>
+    </div>
+    <span class="tag">validé · rappel</span>
+    <h3>Pays</h3>
+    <p>À partir de 20 caractères (6 noms sur 197), le texte passe sur deux lignes en plus petit.</p>
+  </div>
+
+  <div class="card phone-card">
+    <div class="phone">
+      <div class="globe" style="background-position: center -41px"></div><div class="notch"></div><div class="veil" style="height:230px"></div>
+      <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+      <div class="stack">
+        <div class="prompt">Quelle est sa capitale ?</div>
+        <div class="grid">
+          <div class="ans"><span>Bruxelles</span></div><div class="ans"><span>Sri Jayawardenapura</span></div>
+          <div class="ans"><span>Paris</span></div><div class="ans"><span>Andorre-la-Vieille</span></div>
+        </div>
+        <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+      </div>
+    </div>
+    <span class="tag">validé · rappel</span>
+    <h3>Capitale</h3>
+    <p>Les capitales gardent la taille normale, sur deux lignes au plus (19 caractères au maximum).</p>
+  </div>
+
+  <div class="card phone-card pick" data-choice="d1-cadre-fixe" onclick="toggleSelect(this)">
+    <div class="phone flag fixed">
+      <div class="globe" style="background-position: center -58px"></div><div class="notch"></div><div class="veil" style="height:270px"></div>
+      <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+      <div class="stack">
+        <div class="prompt">Quel est son drapeau ?</div>
+        <div class="grid">
+          <div class="ans"><span class="fx"><img src="/files/npl.svg" alt=""></span></div><div class="ans"><span class="fx"><img src="/files/qat.svg" alt=""></span></div>
+          <div class="ans"><span class="fx"><img src="/files/fra.svg" alt=""></span></div><div class="ans"><span class="fx"><img src="/files/che.svg" alt=""></span></div>
+        </div>
+        <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+      </div>
+    </div>
+    <span class="tag">à choisir</span>
+    <h3>D1 · Drapeau dans un cadre fixe 3:2</h3>
+    <p>Les quatre cases ont la même taille ; le Népal, le Qatar et la Suisse ont des bandes sombres.</p>
+  </div>
+
+  <div class="card phone-card pick" data-choice="d2-proportions-libres" onclick="toggleSelect(this)">
+    <div class="phone flag free">
+      <div class="globe" style="background-position: center -58px"></div><div class="notch"></div><div class="veil" style="height:270px"></div>
+      <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+      <div class="stack">
+        <div class="prompt">Quel est son drapeau ?</div>
+        <div class="grid">
+          <div class="ans"><span class="fx"><img src="/files/npl.svg" alt=""></span></div><div class="ans"><span class="fx"><img src="/files/qat.svg" alt=""></span></div>
+          <div class="ans"><span class="fx"><img src="/files/fra.svg" alt=""></span></div><div class="ans"><span class="fx"><img src="/files/che.svg" alt=""></span></div>
+        </div>
+        <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+      </div>
+    </div>
+    <span class="tag">à choisir · ma recommandation</span>
+    <h3>D2 · Proportions libres</h3>
+    <p>Chaque drapeau garde sa forme dans la case, avec un liseré blanc. Le Népal reste haut et étroit, le Qatar large et bas.</p>
+  </div>
+</div>

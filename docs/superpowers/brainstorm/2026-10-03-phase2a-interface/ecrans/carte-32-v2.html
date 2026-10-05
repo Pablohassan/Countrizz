@@ -1,0 +1,133 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+<style>
+  .phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 1.2rem; align-items: start; }
+  .phone-card { cursor: pointer; border: 2px solid var(--border); border-radius: 18px; padding: 12px; background: var(--bg-secondary); }
+  .phone-card:hover { border-color: var(--accent); }
+  .phone-card.selected { border-color: var(--selected-border); background: var(--selected-bg); }
+  .phone-card h3 { margin: 10px 0 2px; font-size: 1rem; }
+  .phone-card p { font-size: .82rem; color: var(--text-secondary); margin: 0 0 4px; }
+  .tag { display: inline-block; font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; padding: 1px 7px; border-radius: 6px; background: var(--bg-tertiary); color: var(--text-secondary); margin-top: 8px; }
+
+  .pw { width: 300px; height: 649px; margin: 0 auto; }
+  .phone { position: relative; width: 390px; height: 844px; transform: scale(.769); transform-origin: 0 0; border-radius: 46px; overflow: hidden;
+           box-shadow: 0 0 0 10px #0b0b10, 0 12px 36px rgba(0,0,0,.45); background: #000; font-family: 'Chango', system-ui; }
+  .globe { position: absolute; inset: 0; background: url('/files/tel-q-FRA.jpg') center -117px / 390px 844px no-repeat; }
+  .notch { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; border-radius: 18px; background: #000; z-index: 9; }
+  .veil { position: absolute; left: 0; right: 0; bottom: 0; height: 380px; background: linear-gradient(to bottom, rgba(22,23,58,0), rgba(22,23,58,.94) 34%); z-index: 3; }
+  .hud { position: absolute; top: 54px; left: 16px; right: 16px; display: flex; align-items: center; justify-content: space-between; z-index: 5; }
+  .pill { background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 4px 4px 0 #000; border-radius: 12px; padding: 4px 12px; font-size: 17px; transform: skewX(-15deg); }
+  .pill > span { display: inline-block; transform: skewX(15deg); }
+  .timer { color: #f7dc6f; font-size: 34px; text-shadow: 5px 2px 1px #000; letter-spacing: 1px; }
+  .quit { width: 44px; height: 44px; border-radius: 50%; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 3px 3px 0 #000; display: grid; place-items: center; font-size: 17px; }
+  .stack { position: absolute; left: 16px; right: 16px; bottom: 0; padding-bottom: 34px; z-index: 5; display: flex; flex-direction: column; gap: 12px; }
+  .prompt { text-align: center; color: #f7dc6f; font-size: 19px; text-shadow: 4px 2px 1px #000; }
+  .credit { font: 10px/1.3 system-ui, sans-serif; color: rgba(255,255,255,.7); text-shadow: 0 0 2px #000; text-align: right; }
+  .credit u { text-decoration: underline; }
+
+  .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+  .cell { height: 112px; display: grid; place-items: center; position: relative; }
+  /* La carte 3:2 garde toujours la même taille */
+  .c32 { width: 132px; height: 88px; background: #fff; border-radius: 10px; box-shadow: 0 6px 14px rgba(0,0,0,.45); overflow: hidden; display: grid; place-items: center; }
+  .c32 img { display: block; max-width: none; }
+  .c32 img.inset { box-shadow: 0 0 0 1px rgba(0,0,0,.22); }
+
+  .planche { margin: 1.8rem 0 .4rem; }
+  .row { display: flex; align-items: stretch; margin-bottom: 10px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+  .row .lab { width: 170px; flex: none; background: var(--bg-secondary); padding: 10px; font-size: .8rem; color: var(--text-secondary); }
+  .row .lab b { color: var(--text-primary); display: block; font-size: .85rem; }
+  .row .strip { flex: 1; background: #16173a; display: flex; flex-wrap: wrap; align-items: center; padding: 6px 4px; zoom: .62; }
+  .row .strip .cell { width: 172px; height: 112px; }
+</style>
+
+<h2>P3 sans rogner : trois lectures de ta consigne</h2>
+<p class="subtitle">Dans les trois cas, la carte blanche 3:2 garde exactement la même taille (132×88 px sur un téléphone de 390 px). Seule change la façon d'y poser un drapeau qui n'est pas en 3:2. Ce choix vaut pour le Qatar, mais aussi pour les 55 drapeaux en 2:1 (Royaume-Uni, États-Unis…), que P3 rognait, et pour le Népal et la Suisse. La planche en bas les montre. Clique sur la lecture qui correspond à ce que tu avais en tête.</p>
+
+<div class="cards phones">
+  <div class="card phone-card" data-choice="v1-plein-cadre-sauf-hors-format" onclick="toggleSelect(this)">
+    <div class="pw"><div class="phone">
+      <div class="globe"></div><div class="notch"></div><div class="veil"></div>
+      <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+      <div class="stack">
+        <div class="prompt">Quel est son drapeau ?</div>
+        <div class="fgrid" data-rule="v1">
+          <div class="cell"><div class="c32"><img src="/files/npl.svg" data-r="0.8203" alt=""></div></div><div class="cell"><div class="c32"><img src="/files/qat.svg" data-r="2.5455" alt=""></div></div>
+          <div class="cell"><div class="c32"><img src="/files/fra.svg" data-r="1.5" alt=""></div></div><div class="cell"><div class="c32"><img src="/files/che.svg" data-r="1" alt=""></div></div>
+        </div>
+        <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+      </div>
+    </div></div>
+    <span class="tag">lecture 1</span>
+    <h3>V1 · Plein cadre, sauf les hors-format</h3>
+    <p>Les drapeaux proches du 3:2 (de 1,4 à 1,6) remplissent la carte, comme dans P3. Les autres sont posés entiers sur la carte, à 90 % de sa taille, avec un filet gris pour que leurs bords blancs (Qatar) ne se fondent pas dans la carte.</p>
+  </div>
+
+  <div class="card phone-card" data-choice="v2-passe-partout-pour-tous" onclick="toggleSelect(this)">
+    <div class="pw"><div class="phone">
+      <div class="globe"></div><div class="notch"></div><div class="veil"></div>
+      <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+      <div class="stack">
+        <div class="prompt">Quel est son drapeau ?</div>
+        <div class="fgrid" data-rule="v2">
+          <div class="cell"><div class="c32"><img src="/files/npl.svg" data-r="0.8203" alt=""></div></div><div class="cell"><div class="c32"><img src="/files/qat.svg" data-r="2.5455" alt=""></div></div>
+          <div class="cell"><div class="c32"><img src="/files/fra.svg" data-r="1.5" alt=""></div></div><div class="cell"><div class="c32"><img src="/files/che.svg" data-r="1" alt=""></div></div>
+        </div>
+        <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+      </div>
+    </div></div>
+    <span class="tag">lecture 2</span>
+    <h3>V2 · Marge blanche pour tous</h3>
+    <p>Chaque drapeau, France comprise, est posé entier à 90 % de la carte, comme une photo dans un passe-partout. Toutes les cartes ont le même aspect.</p>
+  </div>
+
+  <div class="card phone-card" data-choice="v3-moins-rogne" onclick="toggleSelect(this)">
+    <div class="pw"><div class="phone">
+      <div class="globe"></div><div class="notch"></div><div class="veil"></div>
+      <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+      <div class="stack">
+        <div class="prompt">Quel est son drapeau ?</div>
+        <div class="fgrid" data-rule="v3">
+          <div class="cell"><div class="c32"><img src="/files/npl.svg" data-r="0.8203" alt=""></div></div><div class="cell"><div class="c32"><img src="/files/qat.svg" data-r="2.5455" alt=""></div></div>
+          <div class="cell"><div class="c32"><img src="/files/fra.svg" data-r="1.5" alt=""></div></div><div class="cell"><div class="c32"><img src="/files/che.svg" data-r="1" alt=""></div></div>
+        </div>
+        <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+      </div>
+    </div></div>
+    <span class="tag">lecture 3</span>
+    <h3>V3 · Moins rogné : 90 % de la hauteur</h3>
+    <p>Le Qatar prend 90 % de la hauteur de la carte et reste rogné sur les côtés : on en voit 66 % au lieu de 59 %. Le Népal et la Suisse sont rognés en haut et en bas.</p>
+  </div>
+</div>
+
+<div class="planche">
+  <h3>Planche : les mêmes quatorze drapeaux difficiles</h3>
+  <p class="subtitle" style="margin-bottom:.6rem">Népal, Suisse, Vatican, Belgique, Niger, Danemark, Brésil, Japon, Corée, Estonie, Allemagne, États-Unis, Royaume-Uni, Qatar.</p>
+  <div class="row"><div class="lab"><b>P3 d'origine</b>plein cadre, rogné</div><div class="strip" data-rule="p3" data-planche></div></div>
+  <div class="row"><div class="lab"><b>V1</b>plein cadre sauf hors-format</div><div class="strip" data-rule="v1" data-planche></div></div>
+  <div class="row"><div class="lab"><b>V2</b>marge blanche pour tous</div><div class="strip" data-rule="v2" data-planche></div></div>
+  <div class="row"><div class="lab"><b>V3</b>moins rogné (90 %)</div><div class="strip" data-rule="v3" data-planche></div></div>
+</div>
+
+<script>
+(function () {
+  var PL = [['npl',0.8203],['che',1],['vat',1],['bel',1.1538],['ner',1.1667],['dnk',1.3214],['bra',1.4286],['jpn',1.5],['kor',1.5],['est',1.5714],['deu',1.6667],['usa',1.9],['gbr',2],['qat',2.5455]];
+  document.querySelectorAll('[data-planche]').forEach(function (s) {
+    s.innerHTML = PL.map(function (f) { return '<div class="cell"><div class="c32"><img src="/files/' + f[0] + '.svg" data-r="' + f[1] + '" alt=""></div></div>'; }).join('');
+  });
+  var W = 132, H = 88;
+  function cover(r, k) { var s = Math.max(W / r, H) * k; return [s * r, s]; }      // [w, h] ; s = hauteur
+  function contain(r, k) { var s = Math.min(W / r, H) * k; return [s * r, s, 1]; }
+  function size(rule, r) {
+    if (rule === 'p3') return cover(r, 1);
+    if (rule === 'v1') return (r >= 1.4 && r <= 1.6) ? cover(r, 1) : contain(r, 0.9);
+    if (rule === 'v2') return contain(r, 0.9);
+    if (rule === 'v3') return (r >= 1.4 && r <= 1.6) ? cover(r, 1) : cover(r, 0.9);
+  }
+  document.querySelectorAll('[data-rule]').forEach(function (g) {
+    g.querySelectorAll('img[data-r]').forEach(function (img) {
+      var s = size(g.dataset.rule, +img.dataset.r);
+      img.style.width = s[0].toFixed(1) + 'px'; img.style.height = s[1].toFixed(1) + 'px'; if (s[2] && img.src.indexOf('npl') < 0) img.classList.add('inset');
+    });
+  });
+})();
+</script>

@@ -1,0 +1,195 @@
+<div class="d3 phone">
+<style>
+/* ——— Gabarit H3 · Lever de Terre ——— */
+.d3.phone{position:relative;width:390px;height:844px;overflow:hidden;border-radius:46px;font-family:'Chango',system-ui;background:#000;box-shadow:0 0 0 10px #0b0b10,0 12px 36px rgba(0,0,0,.45)}
+.d3 .stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 30px 60px,#fff,transparent),radial-gradient(1px 1px at 120px 140px,#ddd,transparent),radial-gradient(1.5px 1.5px at 300px 90px,#fff,transparent),radial-gradient(1px 1px at 250px 220px,#ccc,transparent),radial-gradient(1px 1px at 60px 300px,#fff,transparent),radial-gradient(1px 1px at 350px 330px,#bbb,transparent),radial-gradient(1.5px 1.5px at 180px 380px,#fff,transparent),radial-gradient(1px 1px at 20px 400px,#ccc,transparent),radial-gradient(1px 1px at 330px 20px,#fff,transparent)}
+.d3 .globe{position:absolute;inset:0;background:url('ASSET/acc-16.png') center 400px/390px 844px no-repeat}
+.d3 .notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:18px;background:#000;z-index:9}
+.d3 .lang{position:absolute;top:56px;right:18px;z-index:6;display:flex;border:2px solid #000;box-shadow:3px 3px 0 #000;border-radius:10px;overflow:hidden;font-size:14px}
+.d3 .lang span{padding:5px 10px;background:#16173a;color:#f7dc6f}
+.d3 .lang span.on{background:#f7dc6f;color:#16173a}
+.d3 .title{position:absolute;left:0;right:0;top:110px;text-align:center;z-index:5;color:#f7dc6f;font-size:54px;text-shadow:-6px 4px 2px rgb(11,13,15);letter-spacing:1px}
+.d3 .controls{position:absolute;left:28px;right:28px;top:215px;z-index:5;display:flex;flex-direction:column;align-items:stretch;gap:18px}
+.d3 .name{background:#16173a;border:3px solid #f7dc6f;box-shadow:4px 4px 0 #000;color:rgba(247,220,111,.55);padding:12px 14px;font-size:16px;border-radius:4px}
+.d3 .name b{color:#f7dc6f;font-weight:normal}
+.d3 .play{align-self:center;display:flex;align-items:center;gap:18px;background:#6225e6;color:#fff;border:2px solid #000;box-shadow:6px 6px 0 #000;transform:skewX(-15deg);padding:12px 30px;font-size:30px}
+.d3 .play>span{transform:skewX(15deg);display:inline-block}
+.d3 .play svg{width:40px;height:26px;transform:skewX(15deg)}
+.d3 .row2{display:flex;justify-content:center;gap:18px}
+.d3 .sec{background:#16173a;color:#f7dc6f;border:2px solid #000;box-shadow:4px 4px 0 #000;transform:skewX(-15deg);padding:9px 18px;font-size:15px}
+.d3 .sec>span{transform:skewX(15deg);display:inline-block}
+.d3 .credit{position:absolute;left:12px;right:10px;bottom:38px;z-index:6;font:10px/1.3 system-ui,sans-serif;color:rgba(255,255,255,.7);text-shadow:0 0 2px #000;text-align:right}
+.d3 .credit u{text-decoration:underline}
+
+/* ——— Étiquettes de voyage ——— */
+.d3 .pins{position:absolute;inset:0;z-index:4;pointer-events:none}
+.d3 .rp{position:absolute;width:0;height:0}
+.d3 .pop{position:absolute;left:0;top:0;transform-origin:0 0;animation:d3-pop .7s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(.15s + var(--i) * .13s)}
+.d3 .sc{position:absolute;left:0;top:0;transform:scale(var(--s));transform-origin:0 0;opacity:var(--o)}
+.d3 .sway{position:absolute;left:0;top:0;width:0;height:0;transform-origin:0 0;animation:d3-sway calc(4.2s + var(--i) * .6s) ease-in-out infinite alternate;animation-delay:calc(var(--i) * -1.7s)}
+
+/* ficelle pointillée : perles crème cerclées de noir */
+.d3 .str{position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible}
+.d3 .str path{fill:none;stroke-linecap:round;stroke-dasharray:0 5.6}
+.d3 .str path:first-child{stroke:#000;stroke-width:3.8}
+.d3 .str path:last-child{stroke:#fff8e7;stroke-width:2}
+
+/* point de capitale ◉ */
+.d3 .cap{position:absolute;left:-6.5px;top:-6.5px;width:13px;height:13px;box-sizing:border-box;border-radius:50%;border:2px solid #000;background:radial-gradient(circle,#6225e6 0 2.7px,#fff8e7 3.1px);box-shadow:1.5px 1.5px 0 rgba(0,0,0,.6)}
+
+.d3 .lab{position:absolute;transform:rotate(var(--r));
+  filter:drop-shadow(1.2px 0 0 #000) drop-shadow(-1.2px 0 0 #000) drop-shadow(0 1.2px 0 #000) drop-shadow(0 -1.2px 0 #000) drop-shadow(3px 3px 0 #000) drop-shadow(4px 9px 5px rgba(0,0,0,.35))}
+
+/* timbre-poste dentelé */
+.d3 .stamp{width:72px;height:84px}
+.d3 .perf{position:absolute;inset:0;background:#fff8e7;
+  -webkit-mask:radial-gradient(circle at 3px 3px,#0000 1.9px,#000 2.3px) -3px -3px/6px 6px repeat,linear-gradient(#000 0 0) 3px 3px/66px 78px no-repeat;
+  mask:radial-gradient(circle at 3px 3px,#0000 1.9px,#000 2.3px) -3px -3px/6px 6px repeat,linear-gradient(#000 0 0) 3px 3px/66px 78px no-repeat}
+.d3 .frame{position:absolute;inset:6px;border:1px solid rgba(22,23,58,.3);padding:3px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center}
+.d3 .stamp img{display:block;width:100%;height:30px;object-fit:cover;border:1.5px solid #000;border-radius:1.5px;box-sizing:border-box}
+.d3 .stamp b{font:10px/1 'Chango',system-ui;color:#16173a;margin-top:6px;white-space:nowrap}
+.d3 .stamp i{font:800 7.2px/1 system-ui,sans-serif;font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:#6225e6;margin-top:4px;white-space:nowrap}
+.d3 .pm{position:absolute;right:-4px;top:-3px;width:40px;height:30px;fill:none;stroke:rgba(22,23,58,.42);stroke-width:1}
+
+/* étiquette de bagage (largeur auto, œillet à 11,18) */
+.d3 .tag{height:36px;white-space:nowrap}
+.d3 .tag .body{position:relative;height:36px;box-sizing:border-box;display:flex;align-items:center;gap:5px;padding:0 15px 0 23px;
+  background:linear-gradient(90deg,#fff8e7 0 calc(100% - 8px),#6225e6 0);
+  clip-path:polygon(13px 0,100% 0,100% 100%,13px 100%,0 25px,0 11px);
+  -webkit-mask:radial-gradient(circle 3.4px at 11px 18px,#0000 96%,#000);mask:radial-gradient(circle 3.4px at 11px 18px,#0000 96%,#000)}
+.d3 .tag.flip .body{padding:0 23px 0 15px;background:linear-gradient(90deg,#6225e6 0 8px,#fff8e7 0);
+  clip-path:polygon(0 0,calc(100% - 13px) 0,100% 11px,100% 25px,calc(100% - 13px) 100%,0 100%);
+  -webkit-mask:radial-gradient(circle 3.4px at calc(100% - 11px) 18px,#0000 96%,#000);mask:radial-gradient(circle 3.4px at calc(100% - 11px) 18px,#0000 96%,#000)}
+.d3 .tag .eye{position:absolute;left:5.5px;top:12.5px;width:11px;height:11px;box-sizing:border-box;border-radius:50%;border:2.2px solid #f7dc6f}
+.d3 .tag.flip .eye{left:auto;right:5.5px}
+.d3 .tag img{flex:none;display:block;width:22px;height:15px;object-fit:cover;border:1.5px solid #000;border-radius:2px;box-sizing:border-box}
+.d3 .tag b{display:block;font:10.5px/1 'Chango',system-ui;color:#16173a}
+.d3 .tag i{display:block;font:800 7px/1 system-ui,sans-serif;font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:#6225e6;margin-top:3px}
+
+/* tampon de passeport */
+.d3 .visa{width:68px;height:68px;filter:drop-shadow(3px 3px 0 #000) drop-shadow(4px 9px 5px rgba(0,0,0,.35))}
+.d3 .visa svg{display:block;width:100%;height:100%;overflow:visible}
+.d3 .visa .disc{fill:#fff8e7;stroke:#000;stroke-width:2.5}
+.d3 .visa .ink{fill:none;stroke:#6225e6}
+.d3 .visa .arc{font:8.4px 'Chango',system-ui;fill:#6225e6;letter-spacing:.4px}
+.d3 .visa .arc.s{font:800 6.9px system-ui,sans-serif;letter-spacing:1.3px}
+.d3 .visa .star{font:6px system-ui;fill:#6225e6;text-anchor:middle}
+.d3 .visa .fb{fill:none;stroke:#000;stroke-width:1.3}
+
+/* drapeau planté (Paris) */
+.d3 .home .shadow{position:absolute;left:-2px;top:-3px;width:24px;height:6px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),transparent);transform:skewX(-35deg)}
+.d3 .home .pole{position:absolute;left:-2px;top:-48px;width:4px;height:48px;border-radius:1px;background:linear-gradient(90deg,#000 0 .8px,#fff8e7 .8px 1.8px,#16173a 1.8px 3.2px,#000 3.2px)}
+.d3 .home .knob{position:absolute;left:-4.5px;top:-55px;width:9px;height:9px;box-sizing:border-box;border-radius:50%;border:1.5px solid #000;background:radial-gradient(circle at 35% 35%,#fff 0 1px,#f7dc6f 1.6px)}
+.d3 .home .cloth{position:absolute;left:2px;top:-47px;width:34px;height:23px;box-sizing:border-box;border:1.5px solid #000;border-left:0;overflow:hidden;transform-origin:0 50%;animation:d3-wave 1.7s ease-in-out infinite alternate;box-shadow:2.5px 2.5px 0 rgba(0,0,0,.7)}
+.d3 .home .cloth img{display:block;width:100%;height:100%;object-fit:cover}
+.d3 .home .cloth::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.38) 25%,rgba(0,0,0,.2) 55%,rgba(255,255,255,.28) 80%,rgba(255,255,255,0)) 0 0/34px 100%;animation:d3-ripple 1.1s linear infinite}
+.d3 .home .cap::before{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid #f7dc6f;animation:d3-ping 2.4s ease-out infinite}
+
+/* trajet Paris → Le Caire */
+.d3 .route{position:absolute;left:0;top:0;width:390px;height:844px;z-index:3;pointer-events:none}
+.d3 .route path{fill:none;stroke-linecap:round;stroke-dasharray:5 6}
+.d3 .route path:first-child{stroke:rgba(0,0,0,.5);stroke-width:3.4}
+.d3 .route path:last-child{stroke:#fff8e7;stroke-width:1.6;animation:d3-march 1.2s linear infinite}
+.d3 .plane{position:absolute;left:0;top:0;z-index:4;width:17px;height:17px;offset-path:path('M149.2 568.4Q280 575 364.9 716.7');offset-rotate:auto;offset-distance:62%;animation:d3-fly 10s linear infinite;animation-delay:-5.5s}
+.d3 .plane svg{display:block;width:100%;height:100%;overflow:visible}
+.d3 .plane path{fill:#fff8e7;stroke:#000;stroke-width:2.2;stroke-linejoin:round;paint-order:stroke}
+
+@keyframes d3-pop{from{transform:scale(0);opacity:0}50%{opacity:1}to{transform:scale(1);opacity:1}}
+@keyframes d3-sway{from{transform:rotate(-2deg)}to{transform:rotate(2deg)}}
+@keyframes d3-wave{from{transform:skewY(-6deg) scaleX(.93)}to{transform:skewY(4deg) scaleX(1)}}
+@keyframes d3-ripple{to{background-position:-34px 0}}
+@keyframes d3-ping{from{transform:scale(1);opacity:.9}to{transform:scale(2.6);opacity:0}}
+@keyframes d3-march{to{stroke-dashoffset:-11}}
+@keyframes d3-fly{0%{offset-distance:6%;opacity:0}12%{opacity:1}86%{opacity:1}100%{offset-distance:93%;opacity:0}}
+
+@media (prefers-reduced-motion:reduce){
+  .d3 .pop,.d3 .sway,.d3 .home .cloth,.d3 .home .cloth::after,.d3 .home .cap::before,.d3 .route path,.d3 .plane{animation:none}
+  .d3 .home .cap::before{display:none}
+}
+
+</style>
+  <div class="stars"></div>
+  <div class="globe"></div>
+  <svg class="route" viewBox="0 0 390 844" aria-hidden="true"><path d="M149.2 568.4Q280 575 364.9 716.7"/><path d="M149.2 568.4Q280 575 364.9 716.7"/></svg>
+  <div class="plane" aria-hidden="true"><svg viewBox="-12 -12 24 24"><path d="M11 0c0-1.3-1-2-2.2-2H3.6L-2.6-10.5h-2.6l3 8.5h-5.6l-2.4-3h-2l1.5 5-1.5 5h2l2.4-3h5.6l-3 8.5h2.6L3.6 2h5.2C10 2 11 1.3 11 0z"/></svg></div>
+  <div class="pins" aria-hidden="true">
+  <div class="rp" style="left:87.6px;top:487.3px;--s:0.7020000000000001;--o:0.6890000000000001;--i:4" data-r="ISL">
+    <div class="pop"><div class="sc">
+      <div class="sway">
+        <svg class="str" aria-hidden="true"><path d="M0 0Q-33.3 -8 -59.3 -30.2"/><path d="M0 0Q-33.3 -8 -59.3 -30.2"/></svg>
+        <div class="lab stamp" style="left:-95.3px;top:-112.2px;transform-origin:36px 82px;--r:-8deg">
+          <div class="perf"><div class="frame"><img src="ASSET/isl.svg" alt=""><b>Islande</b><i>Reykjavik</i></div><svg class="pm" viewBox="0 0 40 30" aria-hidden="true"><circle cx="27" cy="11" r="9"/><path d="M-2 4c5-3 9 3 14 0s9 3 14 0 9 3 14 0M-2 10c5-3 9 3 14 0M-2 16c5-3 9 3 14 0"/></svg></div>
+        </div>
+      </div>
+      <span class="cap"></span>
+    </div></div>
+  </div>
+  <div class="rp" style="left:230.4px;top:507.9px;--s:0.782;--o:0.92;--i:3" data-r="SWE">
+    <div class="pop"><div class="sc">
+      <div class="sway">
+        <svg class="str" aria-hidden="true"><path d="M0 0Q44.4 -36.6 67.3 -89.4"/><path d="M0 0Q44.4 -36.6 67.3 -89.4"/></svg>
+        <div class="lab tag" style="left:56.3px;top:-107.4px;transform-origin:11px 18px;--r:5deg">
+          <div class="body"><img src="ASSET/swe.svg" alt=""><span><b>Suède</b><i>Stockholm</i></span></div><span class="eye"></span>
+        </div>
+      </div>
+      <span class="cap"></span>
+    </div></div>
+  </div>
+  <div class="rp home" style="left:149.2px;top:568.4px;--s:0.866;--o:1;--i:0" data-r="FRA">
+    <div class="pop"><div class="sc">
+      <span class="shadow"></span>
+      <div class="sway" style="left:0px;top:-26px">
+        <svg class="str" aria-hidden="true"><path d="M0 0Q-26.4 27.8 -62.6 40.6"/><path d="M0 0Q-26.4 27.8 -62.6 40.6"/></svg>
+        <div class="lab tag flip" style="right:51.6px;top:22.6px;transform-origin:calc(100% - 11px) 18px;--r:-5deg">
+          <div class="body"><span><b>France</b><i>Paris</i></span></div><span class="eye"></span>
+        </div>
+      </div>
+      <span class="pole"></span><span class="knob"></span>
+      <span class="cloth"><img src="ASSET/fra.svg" alt=""></span>
+      <span class="cap"></span>
+    </div></div>
+  </div>
+  <div class="rp" style="left:364.9px;top:716.7px;--s:0.9229999999999999;--o:1;--i:2" data-r="EGY">
+    <div class="pop"><div class="sc">
+      <div class="sway">
+        <svg class="str" aria-hidden="true"><path d="M0 0Q-19.9 -8.4 -33.8 -24.8"/><path d="M0 0Q-19.9 -8.4 -33.8 -24.8"/></svg>
+        <div class="lab stamp" style="left:-99.8px;top:-30.8px;transform-origin:66px 6px;--r:7deg">
+          <div class="perf"><div class="frame"><img src="ASSET/egy.svg" alt=""><b>Égypte</b><i>Le Caire</i></div><svg class="pm" viewBox="0 0 40 30" aria-hidden="true"><circle cx="27" cy="11" r="9"/><path d="M-2 4c5-3 9 3 14 0s9 3 14 0 9 3 14 0M-2 10c5-3 9 3 14 0M-2 16c5-3 9 3 14 0"/></svg></div>
+        </div>
+      </div>
+      <span class="cap"></span>
+    </div></div>
+  </div>
+  <div class="rp" style="left:64.3px;top:683.6px;--s:0.93;--o:1;--i:1" data-r="MAR">
+    <div class="pop"><div class="sc">
+      <div class="sway">
+        <svg class="str" aria-hidden="true"><path d="M0 0Q5 19.9 18.5 35.4"/><path d="M0 0Q5 19.9 18.5 35.4"/></svg>
+        <div class="lab visa" style="left:6.5px;top:23.4px;transform-origin:12px 12px;--r:-12deg">
+          <svg viewBox="0 0 68 68" aria-hidden="true">
+      <defs><path id="d3-v-mar-t" d="M14.2 34a19.8 19.8 0 0 1 39.6 0"/><path id="d3-v-mar-b" d="M10 34a24 24 0 0 0 48 0"/>
+      <clipPath id="d3-v-mar-c"><rect x="23" y="27.5" width="22" height="14.7" rx="1.5"/></clipPath></defs>
+      <circle class="disc" cx="34" cy="34" r="31.5"/>
+      <circle class="ink" cx="34" cy="34" r="27.5" stroke-width="2.2"/>
+      <circle class="ink" cx="34" cy="34" r="17.8" stroke-width="1" stroke-dasharray="2 2"/>
+      <text class="arc"><textPath href="#d3-v-mar-t" startOffset="50%" text-anchor="middle">MAROC</textPath></text>
+      <text class="arc s"><textPath href="#d3-v-mar-b" startOffset="50%" text-anchor="middle">RABAT</textPath></text>
+      <text class="star" x="10.6" y="36.2">★</text><text class="star" x="57.4" y="36.2">★</text>
+      <image href="ASSET/mar.svg" x="23" y="27.5" width="22" height="14.7" preserveAspectRatio="xMidYMid slice" clip-path="url(#d3-v-mar-c)"/>
+      <rect x="23" y="27.5" width="22" height="14.7" rx="1.5" class="fb"/>
+    </svg>
+        </div>
+      </div>
+      <span class="cap"></span>
+    </div></div>
+  </div>
+  </div>
+  <div class="notch"></div>
+  <div class="lang"><span class="on">FR</span><span>EN</span></div>
+  <div class="title">Countrizz</div>
+  <div class="controls">
+    <div class="name">Ton nom : <b>Globetrotteur</b></div>
+    <div class="play"><span>Jouer</span><svg viewBox="0 0 66 43"><path fill="#fff" d="M40 0l26 21.5L40 43H30l26-21.5L30 0z"/><path fill="#fff" opacity=".8" d="M20 0l26 21.5L20 43H10l26-21.5L10 0z"/><path fill="#f7dc6f" d="M0 0l26 21.5L0 43h0l16-21.5L0 0z"/></svg></div>
+    <div class="row2"><div class="sec"><span>Scores</span></div><div class="sec"><span>Crédits</span></div></div>
+  </div>
+  <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+</div>

@@ -1,0 +1,115 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+<style>
+  .phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 1.5rem; align-items: start; }
+  .phone-card { cursor: pointer; border: 2px solid var(--border); border-radius: 18px; padding: 14px; background: var(--bg-secondary); transition: border-color .15s; }
+  .phone-card:hover { border-color: var(--accent); }
+  .phone-card.selected { border-color: var(--selected-border); background: var(--selected-bg); }
+  .phone-card h3 { margin: 12px 0 4px; }
+  .phone-card p { font-size: .85rem; color: var(--text-secondary); margin: 0 0 6px; }
+  .phone-card ul { font-size: .8rem; color: var(--text-secondary); margin: 0 0 0 1.1rem; }
+
+  /* Téléphone 390×844 réduit à 300×649 (×0,769) */
+  .phone { position: relative; width: 300px; height: 649px; margin: 0 auto; border-radius: 34px; overflow: hidden;
+           box-shadow: 0 0 0 8px #0b0b10, 0 10px 30px rgba(0,0,0,.45); background: #000; font-family: 'Chango', system-ui; }
+  .globe { position: absolute; inset: 0; background: url('/files/tel-q-FRA.jpg') center / 300px 649px no-repeat; }
+  .notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 92px; height: 24px; border-radius: 14px; background: #000; z-index: 9; }
+
+  .hud { position: absolute; top: 38px; left: 12px; right: 12px; display: flex; align-items: center; justify-content: space-between; z-index: 5; }
+  .pill { background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 3px 3px 0 #000; border-radius: 10px; padding: 3px 9px; font-size: 13px; transform: skewX(-15deg); }
+  .pill > span { display: inline-block; transform: skewX(15deg); }
+  .timer { color: #f7dc6f; font-size: 26px; text-shadow: 4px 2px 1px #000; letter-spacing: 1px; }
+  .quit { width: 34px; height: 34px; border-radius: 50%; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 2px 2px 0 #000; display: grid; place-items: center; font-size: 13px; }
+  .prompt { position: absolute; left: 0; right: 0; text-align: center; color: #f7dc6f; font-size: 15px; text-shadow: 3px 2px 1px #000; z-index: 5; }
+
+  .grid { position: absolute; left: 14px; right: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; z-index: 5; }
+  .ans { min-height: 50px; background: #6225e6; color: #fff; border: 2px solid #000; box-shadow: 5px 5px 0 #000; transform: skewX(-15deg);
+         display: grid; place-items: center; padding: 4px 8px; font-size: 11px; line-height: 1.15; text-align: center; }
+  .ans > span { transform: skewX(15deg); display: block; }
+  .ans.long { font-size: 9px; }
+
+  .credit { position: absolute; font: 7.5px/1.25 system-ui, sans-serif; color: rgba(255,255,255,.75); text-shadow: 0 0 2px #000; z-index: 6; }
+  .credit u { text-decoration: underline; }
+  .zone { position: absolute; left: 0; right: 0; border: 1.5px dashed rgba(247,220,111,.9); z-index: 4; pointer-events: none; }
+  .zone::after { content: attr(data-l); position: absolute; right: 4px; top: 2px; font: 8px system-ui; color: #f7dc6f; background: rgba(22,23,58,.8); padding: 1px 4px; border-radius: 3px; }
+
+  /* A : globe plein écran, voile en bas */
+  .a .globe { background-position: center -47px; }
+  .a .veil { position: absolute; left: 0; right: 0; bottom: 0; height: 220px; background: linear-gradient(to bottom, rgba(22,23,58,0), rgba(22,23,58,.92) 45%); z-index: 3; }
+  .a .grid { bottom: 34px; }
+  .a .credit { left: 10px; right: 10px; bottom: 8px; text-align: center; }
+  .a .prompt { top: 80px; }
+
+  /* B : panneau cartoon en bas, globe dans la moitié haute */
+  .b .globe { bottom: 214px; background-position: center -67px; }
+  .b .panel { position: absolute; left: 0; right: 0; bottom: 0; height: 230px; background: #16173a; border-top: 3px solid #000; z-index: 3;
+              border-radius: 26px 26px 0 0; box-shadow: 0 -4px 0 #6225e6; }
+  .b .grid { bottom: 26px; }
+  .b .prompt { top: auto; bottom: 168px; font-size: 14px; }
+  .b .credit { right: 10px; left: 10px; bottom: 240px; text-align: right; }
+
+  /* C : quatre réponses en colonne */
+  .c .globe { background-position: center -67px; }
+  .c .veil { position: absolute; left: 0; right: 0; bottom: 0; height: 300px; background: linear-gradient(to bottom, rgba(22,23,58,0), rgba(22,23,58,.94) 35%); z-index: 3; }
+  .c .grid { grid-template-columns: 1fr; gap: 9px; bottom: 34px; left: 26px; right: 26px; }
+  .c .ans { min-height: 42px; font-size: 12px; }
+  .c .credit { left: 10px; right: 10px; bottom: 8px; text-align: center; }
+  .c .prompt { top: 80px; }
+</style>
+
+<h2>Écran de question sur téléphone : où placer le HUD, les réponses et le crédit ?</h2>
+<p class="subtitle">Le fond est une vraie capture du jeu (France, cadrage B, téléphone 390×844), réduite à 77 %. Le mode « Pays » est montré avec le nom le plus long que j'ai en tête pour éprouver la grille. Le pointillé jaune marque la zone libre dans laquelle la caméra devrait centrer le pays. Clique sur la variante qui te parle ; les remarques se font dans le terminal.</p>
+
+<div class="cards phones">
+  <div class="card phone-card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="phone a">
+      <div class="globe"></div><div class="notch"></div><div class="veil"></div>
+      <div class="zone" data-l="zone libre" style="top:104px;bottom:200px"></div>
+      <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+      <div class="prompt">Quel est ce pays ?</div>
+      <div class="grid">
+        <div class="ans"><span>Belgique</span></div><div class="ans"><span>France</span></div>
+        <div class="ans long"><span>Saint-Vincent-et-les-Grenadines</span></div><div class="ans"><span>Suisse</span></div>
+      </div>
+      <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+    </div>
+    <h3>A · Globe plein écran, grille sur un voile</h3>
+    <p>Le globe occupe tout l'écran ; un dégradé #16173a monte sous la grille 2×2 pour la lisibilité.</p>
+    <ul><li>Le plus immersif ; c'est la lecture directe du spec §6.3</li><li>Crédit EOX en bas, sous la grille, sur une ligne à lui</li><li>Le pays est recentré dans la zone libre (décalage de vue)</li></ul>
+  </div>
+
+  <div class="card phone-card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="phone b">
+      <div class="globe"></div><div class="notch"></div>
+      <div class="zone" data-l="zone libre" style="top:104px;bottom:262px"></div>
+      <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+      <div class="panel"></div>
+      <div class="prompt">Quel est ce pays ?</div>
+      <div class="grid">
+        <div class="ans"><span>Belgique</span></div><div class="ans"><span>France</span></div>
+        <div class="ans long"><span>Saint-Vincent-et-les-Grenadines</span></div><div class="ans"><span>Suisse</span></div>
+      </div>
+      <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+    </div>
+    <h3>B · Panneau cartoon en bas</h3>
+    <p>Un panneau plein #16173a, bord arrondi et liseré violet, porte la question et la grille ; le globe vit au-dessus.</p>
+    <ul><li>Le plus lisible, le plus « jeu mobile »</li><li>Crédit EOX posé au bas du globe, jamais sous un bouton</li><li>Globe plus petit, le pays reste bien visible</li></ul>
+  </div>
+
+  <div class="card phone-card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="phone c">
+      <div class="globe"></div><div class="notch"></div><div class="veil"></div>
+      <div class="zone" data-l="zone libre" style="top:104px;bottom:240px"></div>
+      <div class="hud"><div class="pill"><span>★ 120</span></div><div class="timer">0:42</div><div class="quit">✕</div></div>
+      <div class="prompt">Quel est ce pays ?</div>
+      <div class="grid">
+        <div class="ans"><span>Belgique</span></div><div class="ans"><span>France</span></div>
+        <div class="ans"><span>Saint-Vincent-et-les-Grenadines</span></div><div class="ans"><span>Suisse</span></div>
+      </div>
+      <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+    </div>
+    <h3>C · Quatre réponses en colonne</h3>
+    <p>Une réponse par ligne, pleine largeur : les noms longs tiennent sur une ligne.</p>
+    <ul><li>Lit le mieux les noms et capitales longs</li><li>S'écarte du 2×2 du spec ; le haut de la colonne est moins « à portée de pouce »</li><li>Le globe libre est le plus court des trois</li></ul>
+  </div>
+</div>

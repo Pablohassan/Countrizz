@@ -1,0 +1,99 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+<style>
+  .phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.2rem; align-items: start; }
+  .phone-card { cursor: pointer; border: 2px solid var(--border); border-radius: 18px; padding: 12px; background: var(--bg-secondary); }
+  .phone-card:hover { border-color: var(--accent); }
+  .phone-card.selected { border-color: var(--selected-border); background: var(--selected-bg); }
+  .phone-card h3 { margin: 10px 0 2px; font-size: 1rem; }
+  .phone-card p { font-size: .82rem; color: var(--text-secondary); margin: 0 0 4px; }
+  .tag { display: inline-block; font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; padding: 1px 7px; border-radius: 6px; background: var(--bg-tertiary); color: var(--text-secondary); margin-top: 8px; }
+
+  .pw { width: 300px; height: 649px; margin: 0 auto; }
+  .phone { position: relative; width: 390px; height: 844px; transform: scale(.769); transform-origin: 0 0; border-radius: 46px; overflow: hidden;
+           box-shadow: 0 0 0 10px #0b0b10, 0 12px 36px rgba(0,0,0,.45); background: #000; font-family: 'Chango', system-ui; }
+  .globe { position: absolute; inset: 0; background-repeat: no-repeat; background-size: 390px 844px; background-color: #000; }
+  .stars { position: absolute; inset: 0; background-image:
+      radial-gradient(1px 1px at 30px 60px, #fff, transparent), radial-gradient(1px 1px at 120px 140px, #ddd, transparent), radial-gradient(1.5px 1.5px at 300px 90px, #fff, transparent),
+      radial-gradient(1px 1px at 250px 220px, #ccc, transparent), radial-gradient(1px 1px at 60px 300px, #fff, transparent), radial-gradient(1px 1px at 350px 330px, #bbb, transparent),
+      radial-gradient(1.5px 1.5px at 180px 380px, #fff, transparent), radial-gradient(1px 1px at 20px 400px, #ccc, transparent), radial-gradient(1px 1px at 330px 20px, #fff, transparent); }
+  .notch { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; border-radius: 18px; background: #000; z-index: 9; }
+  .veil-b { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(22,23,58,0), rgba(22,23,58,.95) 35%); z-index: 3; }
+  .veil-t { position: absolute; left: 0; right: 0; top: 0; background: linear-gradient(to top, rgba(22,23,58,0), rgba(22,23,58,.85) 45%); z-index: 3; }
+
+  .lang { position: absolute; top: 56px; right: 18px; z-index: 6; display: flex; border: 2px solid #000; box-shadow: 3px 3px 0 #000; border-radius: 10px; overflow: hidden; font-size: 14px; }
+  .lang span { padding: 5px 10px; background: #16173a; color: #f7dc6f; }
+  .lang span.on { background: #f7dc6f; color: #16173a; }
+  .title { position: absolute; left: 0; right: 0; text-align: center; z-index: 5; color: #f7dc6f; font-size: 54px; text-shadow: -6px 4px 2px rgb(11,13,15); letter-spacing: 1px; }
+  .controls { position: absolute; left: 28px; right: 28px; z-index: 5; display: flex; flex-direction: column; align-items: stretch; gap: 18px; }
+  .name { background: #16173a; border: 3px solid #f7dc6f; box-shadow: 4px 4px 0 #000; color: rgba(247,220,111,.55); padding: 12px 14px; font-size: 16px; border-radius: 4px; }
+  .name b { color: #f7dc6f; font-weight: normal; }
+  .play { align-self: center; display: flex; align-items: center; gap: 18px; background: #6225e6; color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000;
+          transform: skewX(-15deg); padding: 12px 30px; font-size: 30px; }
+  .play > span { transform: skewX(15deg); display: inline-block; }
+  .play svg { width: 40px; height: 26px; transform: skewX(15deg); }
+  .row2 { display: flex; justify-content: center; gap: 18px; }
+  .sec { background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 4px 4px 0 #000; transform: skewX(-15deg); padding: 9px 18px; font-size: 15px; }
+  .sec > span { transform: skewX(15deg); display: inline-block; }
+  .credit { position: absolute; left: 12px; right: 10px; bottom: 38px; z-index: 6; font: 10px/1.3 system-ui, sans-serif; color: rgba(255,255,255,.7); text-shadow: 0 0 2px #000; text-align: right; }
+  .credit u { text-decoration: underline; }
+</style>
+
+<h2>Écran d'accueil : quelle place pour le globe ?</h2>
+<p class="subtitle">Contenu fixé par le déroulé du 03/10 : le titre, le nom mémorisé, FR/EN, « Jouer », l'accès aux scores et aux crédits, et le crédit EOX. Le globe tourne lentement. Les trois fonds sont de vraies captures de la page de sonde, à trois altitudes. Le titre reprend l'ombre réelle de l'ancien jeu (−6px 4px 2px), pas celle écrite dans le spec.</p>
+
+<div class="cards phones">
+  <div class="card phone-card" data-choice="h1-globe-deborde" onclick="toggleSelect(this)">
+    <div class="pw"><div class="phone">
+      <div class="globe" style="background-image:url('/files/acc-22.jpg');background-position:center 40px"></div><div class="notch"></div>
+      <div class="veil-t" style="height:230px"></div><div class="veil-b" style="height:430px"></div>
+      <div class="lang"><span class="on">FR</span><span>EN</span></div>
+      <div class="title" style="top:112px">Countrizz</div>
+      <div class="controls" style="bottom:110px">
+        <div class="name">Ton nom : <b>Globetrotteur</b></div>
+        <div class="play"><span>Jouer</span><svg viewBox="0 0 66 43"><path fill="#fff" d="M40 0l26 21.5L40 43H30l26-21.5L30 0z"/><path fill="#fff" opacity=".8" d="M20 0l26 21.5L20 43H10l26-21.5L10 0z"/><path fill="#f7dc6f" d="M0 0l26 21.5L0 43h0l16-21.5L0 0z"/></svg></div>
+        <div class="row2"><div class="sec"><span>Scores</span></div><div class="sec"><span>Crédits</span></div></div>
+      </div>
+      <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+    </div></div>
+    <span class="tag">altitude actuelle (2,2)</span>
+    <h3>H1 · Globe qui déborde</h3>
+    <p>C'est la vue d'ensemble actuelle en portrait : le globe est plus large que l'écran (595 px pour 390). Les commandes sont posées sur un voile en bas. Rien à changer côté globe.</p>
+  </div>
+
+  <div class="card phone-card" data-choice="h2-globe-entier" onclick="toggleSelect(this)">
+    <div class="pw"><div class="phone">
+      <div class="globe" style="background-image:url('/files/acc-46.jpg');background-position:center -60px"></div><div class="notch"></div>
+      <div class="veil-b" style="height:300px"></div>
+      <div class="lang"><span class="on">FR</span><span>EN</span></div>
+      <div class="title" style="top:120px">Countrizz</div>
+      <div class="controls" style="bottom:110px">
+        <div class="name">Ton nom : <b>Globetrotteur</b></div>
+        <div class="play"><span>Jouer</span><svg viewBox="0 0 66 43"><path fill="#fff" d="M40 0l26 21.5L40 43H30l26-21.5L30 0z"/><path fill="#fff" opacity=".8" d="M20 0l26 21.5L20 43H10l26-21.5L10 0z"/><path fill="#f7dc6f" d="M0 0l26 21.5L0 43h0l16-21.5L0 0z"/></svg></div>
+        <div class="row2"><div class="sec"><span>Scores</span></div><div class="sec"><span>Crédits</span></div></div>
+      </div>
+      <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+    </div></div>
+    <span class="tag">nouvelle altitude d'accueil</span>
+    <h3>H2 · La planète entière</h3>
+    <p>Le globe recule jusqu'à tenir entier dans l'écran, comme une planète dans l'espace, entre le titre et les commandes. Il faut une altitude d'accueil propre (4,6 ici), donc une petite évolution du globe.</p>
+  </div>
+
+  <div class="card phone-card" data-choice="h3-lever-de-terre" onclick="toggleSelect(this)">
+    <div class="pw"><div class="phone">
+      <div class="stars"></div>
+      <div class="globe" style="background-image:url('/files/acc-16.jpg');background-position:center 400px;background-color:transparent"></div><div class="notch"></div>
+      <div class="lang"><span class="on">FR</span><span>EN</span></div>
+      <div class="title" style="top:110px">Countrizz</div>
+      <div class="controls" style="top:215px">
+        <div class="name">Ton nom : <b>Globetrotteur</b></div>
+        <div class="play"><span>Jouer</span><svg viewBox="0 0 66 43"><path fill="#fff" d="M40 0l26 21.5L40 43H30l26-21.5L30 0z"/><path fill="#fff" opacity=".8" d="M20 0l26 21.5L20 43H10l26-21.5L10 0z"/><path fill="#f7dc6f" d="M0 0l26 21.5L0 43h0l16-21.5L0 0z"/></svg></div>
+        <div class="row2"><div class="sec"><span>Scores</span></div><div class="sec"><span>Crédits</span></div></div>
+      </div>
+      <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+    </div></div>
+    <span class="tag">décalage du globe</span>
+    <h3>H3 · Lever de Terre</h3>
+    <p>Le globe, plus proche, se lève dans la moitié basse et tourne lentement ; le titre et les commandes flottent dans l'espace au-dessus. Il réutilise le décalage de cadrage qu'il faut de toute façon construire pour les questions.</p>
+  </div>
+</div>

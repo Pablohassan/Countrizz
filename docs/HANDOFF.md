@@ -2,7 +2,7 @@
 
 À lire en premier par la prochaine session. Ce document dit **où on en est**, **ce qui a été décidé avec l'utilisateur**, **ce qui reste**, et **les pièges déjà payés**.
 
-> **REPRISE (05/10, session cloud) — prime sur le bandeau suivant.** Avion de l'accueil réglé : **A2 · cartoon, dosage E2** (quille et bande aux couleurs du pays à chaque escale, tour Rabat → Madrid → Paris → Athènes), **réduit et ralenti de 30 %** pour rester discret, **en boucle** autour du globe avec une bulle « Pays · Capitale » à point vert à chaque escale (`ecrans/accueil-avion-escales.html`, décision 8 du README). Choix du mode : **A** (boutons inclinés empilés, décision 9). HUD : **H2** (barre + jauge, décision 10). **Suite** : compte à rebours 3-2-1 (`ecrans/compte-a-rebours.html`, C1/C2/C3 en attente), puis le reste de la liste du README du dossier de conception.
+> **REPRISE (05/10, session cloud) — prime sur le bandeau suivant.** Avion de l'accueil réglé : **A2 · cartoon, dosage E2** (quille et bande aux couleurs du pays à chaque escale, tour Rabat → Madrid → Paris → Athènes), **réduit et ralenti de 30 %** pour rester discret, **en boucle** autour du globe avec une bulle « Pays · Capitale » à point vert à chaque escale (`ecrans/accueil-avion-escales.html`, décision 8 du README). Choix du mode : **A** (boutons inclinés empilés, décision 9). HUD : **H2** (barre + jauge, décision 10). 3-2-1 : **C1** (décision 11 ; vol pendant le décompte proposé, à confirmer). **Suite** : écran de fin (`ecrans/fin.html`, F1/F2/F3 en attente), puis le reste de la liste du README du dossier de conception.
 >
 > **REPRISE (05/10, fin de la 5ᵉ session) — prime sur tout le reste. Lire d'abord `docs/superpowers/brainstorm/2026-10-03-phase2a-interface/README.md`.**
 >

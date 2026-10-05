@@ -32,6 +32,7 @@ export const REGLAGES = Object.freeze({
     [139.69, 35.69, 0xe8413a], [-47.88, -15.79, 0x2fbf4a], [36.82, -1.29, 0xf7dc6f], [-77.04, 38.9, 0x6225e6],
     [116.4, 39.9, 0xf7dc6f], [149.13, -35.28, 0x6225e6], [-99.13, 19.43, 0xe8413a], [31.24, 30.04, 0x2fbf4a],
   ],
+  avion: { rayon: 1.5, vitesse: 0.75, inclinaison: 28, taille: 1 }, // orbite (rayon de la Terre = 1), rad/s, degrés
 });
 
 /** Couleurs par altitude (sRGB) : océan, plage, plaine, colline, montagne, neige. */
@@ -72,6 +73,48 @@ function carteToon() {
   t.generateMipmaps = false;
   t.needsUpdate = true;
   return t;
+}
+
+/**
+ * Avion rouge à hélice, cartoon : quelques formes simples (pas de modèle importé : pas de fichier ni de chargeur en plus
+ * sur l'écran de chargement, et le même rendu que la Terre). Repère local : x = avant, y = haut, z = droite.
+ * Chaque pièce a son contour noir : une copie un peu plus grosse, faces arrière seules (coque inversée).
+ */
+function avionRouge(garde, grad, matNoir) {
+  const groupe = new THREE.Group();
+  const toon = (couleur) => garde(new THREE.MeshToonMaterial({ color: couleur, gradientMap: grad, flatShading: true }));
+  const rouge = toon(0xe8413a), creme = toon(0xfff8e7), jaune = toon(0xf7dc6f), nuit = toon(0x16173a), gris = toon(0x3a3a4a);
+  const t = 0.008; // épaisseur du contour
+  const piece = (geo, contour, mat, x = 0, y = 0, z = 0, parent = groupe) => {
+    garde(geo); garde(contour);
+    const m = new THREE.Mesh(geo, mat), c = new THREE.Mesh(contour, matNoir);
+    m.position.set(x, y, z); c.position.set(x, y, z);
+    parent.add(m, c);
+    return m;
+  };
+  const boite = (a, b, c, mat, x, y, z, parent) => piece(new THREE.BoxGeometry(a, b, c), new THREE.BoxGeometry(a + 2 * t, b + 2 * t, c + 2 * t), mat, x, y, z, parent);
+  const fuselage = (r1, r2, l) => { const g = new THREE.CylinderGeometry(r1, r2, l, 12); g.rotateZ(-Math.PI / 2); return g; };
+  piece(fuselage(0.05, 0.026, 0.27), fuselage(0.05 + t, 0.026 + t, 0.27 + 2 * t), rouge, -0.02, 0, 0);   // fuselage
+  piece(fuselage(0.055, 0.052, 0.04), fuselage(0.055 + t, 0.052 + t, 0.04 + 2 * t), creme, 0.13, 0, 0);  // capot
+  const cone = new THREE.ConeGeometry(0.026, 0.05, 12); cone.rotateZ(-Math.PI / 2);
+  const coneC = new THREE.ConeGeometry(0.026 + t, 0.05 + 2 * t, 12); coneC.rotateZ(-Math.PI / 2);
+  piece(cone, coneC, jaune, 0.17, 0, 0);                                                                   // cône d'hélice
+  boite(0.085, 0.014, 0.42, rouge, 0.03, -0.012, 0);                                                       // aile
+  boite(0.03, 0.016, 0.06, creme, 0.03, -0.011, 0.17); boite(0.03, 0.016, 0.06, creme, 0.03, -0.011, -0.17); // bouts d'aile crème
+  boite(0.05, 0.01, 0.15, rouge, -0.135, 0.01, 0);                                                         // stabilisateur
+  boite(0.055, 0.07, 0.01, rouge, -0.14, 0.045, 0);                                                        // dérive
+  const verriere = new THREE.SphereGeometry(0.036, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2);
+  piece(verriere, new THREE.SphereGeometry(0.036 + t, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2), nuit, 0.0, 0.035, 0); // cockpit
+  const roue = () => new THREE.SphereGeometry(0.018, 10, 8);
+  piece(roue(), new THREE.SphereGeometry(0.018 + t, 10, 8), gris, 0.06, -0.06, 0.045);
+  piece(roue(), new THREE.SphereGeometry(0.018 + t, 10, 8), gris, 0.06, -0.06, -0.045);
+  boite(0.008, 0.05, 0.008, gris, 0.06, -0.04, 0.045); boite(0.008, 0.05, 0.008, gris, 0.06, -0.04, -0.045); // jambes du train
+  const helice = new THREE.Group();
+  helice.position.set(0.19, 0, 0);
+  boite(0.008, 0.2, 0.024, gris, 0, 0, 0, helice);
+  groupe.add(helice);
+  groupe.traverse((o) => { o.castShadow = false; });
+  return { groupe, helice };
 }
 
 export async function mount(canvas, { relief, reglages = {} } = {}) {
@@ -187,6 +230,25 @@ export async function mount(canvas, { relief, reglages = {} } = {}) {
   axe.scale.setScalar(R.echelle);
   scene.add(axe);
 
+  // ── avion rouge à hélice en orbite (demande du 05/10) ──
+  const { groupe: avion, helice } = avionRouge(garde, grad, matNoir);
+  avion.scale.setScalar(R.avion.taille);
+  const orbite = new THREE.Group();
+  orbite.rotation.set(R.avion.inclinaison * RAD, 0, -12 * RAD); // orbite inclinée, indépendante de la rotation de la Terre
+  orbite.add(avion);
+  axe.add(orbite);
+  const ox = new THREE.Vector3(), oy = new THREE.Vector3(), oz = new THREE.Vector3(), mb = new THREE.Matrix4();
+  const placerAvion = (theta, s) => {
+    const r = R.avion.rayon + 0.03 * Math.sin(s * 1.7);              // léger tangage de l'altitude
+    avion.position.set(Math.cos(theta) * r, 0, -Math.sin(theta) * r);
+    oy.copy(avion.position).normalize();                             // haut = verticale locale
+    ox.set(-Math.sin(theta), 0, -Math.cos(theta));                   // avant = sens du vol
+    oz.crossVectors(ox, oy);
+    avion.quaternion.setFromRotationMatrix(mb.makeBasis(ox, oy, oz));
+    avion.rotateX(-0.22 + 0.08 * Math.sin(s * 1.3));                 // inclinaison dans le virage permanent
+    helice.rotation.x = s * 38;
+  };
+
   const taille = () => {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     renderer.setSize(w, h, false);
@@ -204,6 +266,7 @@ export async function mount(canvas, { relief, reglages = {} } = {}) {
     const s = reduit.matches ? 0 : (now - t0) / 1000;
     monde.rotation.y = -1.83 + s * R.vitesse; // départ : lng 15° face à la caméra (θ = −90° − 15°)
     nuages.forEach((p, i) => { p.rotation.y = s * (0.12 + i * 0.03); });
+    placerAvion(reduit.matches ? -Math.PI / 2 + 0.55 : -Math.PI / 2 + 0.55 + s * R.avion.vitesse, s);
     renderer.render(scene, camera);
     if (!canvas.dataset.ready) canvas.dataset.ready = '1';
     raf = requestAnimationFrame(image);

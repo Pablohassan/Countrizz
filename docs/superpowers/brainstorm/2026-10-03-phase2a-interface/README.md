@@ -7,7 +7,7 @@ pour qu'une session cloud reprenne au même endroit (avant, tout vivait hors du 
 ## Où on en est, exactement
 
 **Avion de l'accueil réglé** (05/10, session cloud ; décision 8) : A2 · cartoon, dosage **E2**, réduit de 30 %, tour du monde en boucle avec bulles « Pays · Capitale » aux escales.
-**Section 3 (interface) close** (décisions 1 à 17). **Section 4 (données bilingues) réglée** : `section-4-donnees-bilingues.md` (Kiev en FR, Ciudad de la Paz, noms EN de mledoze tels quels, RD Congo / Cap-Vert / Vatican). **Section 5 (tests et erreurs) presque réglée** : `section-5-tests-erreurs.md` (scores en mémoire si stockage indisponible ; **haptique poussée**, essai `ecrans/haptique.html` à valider au doigt). Puis : spec, auto-relecture, relecture par l'utilisateur, plan.
+**Section 3 (interface) close** (décisions 1 à 17). **Section 4 (données bilingues) réglée** : `section-4-donnees-bilingues.md` (Kiev en FR, Ciudad de la Paz, noms EN de mledoze tels quels, RD Congo / Cap-Vert / Vatican). **Section 5 (tests et erreurs) réglée** : `section-5-tests-erreurs.md` (scores en mémoire si stockage indisponible ; haptique poussée, réglage fin au doigt). **Spec écrit** : `docs/superpowers/specs/2026-10-05-countrizz-phase2a-design.md`, en relecture. Puis : spec, auto-relecture, relecture par l'utilisateur, plan.
 
 Dans l'ordre : ~~choix du mode~~ → ~~HUD et chrono~~ → ~~3-2-1~~ → ~~fin de partie~~ → ~~scores~~ → crédits → erreurs et chargement →
 « Tourne ton téléphone » ; puis section 4 (données bilingues), section 5 (tests et erreurs), écriture du spec

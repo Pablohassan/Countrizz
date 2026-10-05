@@ -2,7 +2,7 @@
 
 À lire en premier par la prochaine session. Ce document dit **où on en est**, **ce qui a été décidé avec l'utilisateur**, **ce qui reste**, et **les pièges déjà payés**.
 
-> **REPRISE (05/10, session cloud) — prime sur le bandeau suivant.** Avion **A2 · cartoon** choisi ; à la demande de l'utilisateur, il fait le tour Rabat → Madrid → Paris → Athènes en prenant les couleurs du pays à chaque escale (`ecrans/accueil-avion-escales.html`). **Question en attente** : dosage E1 (bande seule) ou E2 (quille + bande). Puis la suite du README du dossier de conception.
+> **REPRISE (05/10, session cloud) — prime sur le bandeau suivant.** Avion de l'accueil réglé : **A2 · cartoon, dosage E2** (quille et bande aux couleurs du pays à chaque escale, tour Rabat → Madrid → Paris → Athènes), **réduit et ralenti de 30 %** pour rester discret (`ecrans/accueil-avion-escales.html`, décision 8 du README). **Suite** : écran du choix du mode, puis le reste de la liste du README du dossier de conception.
 >
 > **REPRISE (05/10, fin de la 5ᵉ session) — prime sur tout le reste. Lire d'abord `docs/superpowers/brainstorm/2026-10-03-phase2a-interface/README.md`.**
 >

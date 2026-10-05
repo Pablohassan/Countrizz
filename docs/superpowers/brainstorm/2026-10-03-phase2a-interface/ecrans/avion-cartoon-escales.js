@@ -42,9 +42,9 @@ export const ESCALES = Object.freeze([
 ]);
 
 export const REGLAGES = Object.freeze({
-  periode: 11,              // s : trois étapes au lieu d'une
-  longueur: 0.075,          // un peu plus court qu'A2 (0,09) : l'étape Rabat → Madrid est courte à l'écran
-  uArrivee: 0.825,          // atterrissage sur Paris → Athènes, comme A2 (nez au bord de l'anneau de la balise)
+  periode: 15.7,            // s : 11 s ralenties de 30 % (vitesse × 0,7) à la demande de l'utilisateur : rester discret
+  longueur: 0.0525,         // 0,075 réduit de 30 % à la demande de l'utilisateur (≈ 27 px à l'écran) : rester discret
+  uArrivee: 0.857,          // nez au bord de l'anneau de la balise d'Athènes (A2 : 0,825 pour un avion de 0,09)
   altSol: 0.02,             // départ et arrivée
   altPassage: 0.027,        // rase-mottes au-dessus de Madrid et de Paris
   bosse: { k: 0.075, max: 0.022 }, // hauteur de la bosse d'une étape = k × longueur de l'étape (rad), plafonnée
@@ -55,7 +55,7 @@ export const REGLAGES = Object.freeze({
   morph: [-0.012, 0.022],   // fenêtre du changement de couleur autour du passage (en progression e)
   gonfle: 0.06,
   perles: { pas: 0.0146, rayon: 0.0029, cerne: 0.0017 },
-  contour: { bord: 2.3, pli: 1.25 },
+  contour: { bord: 1.9, pli: 1.0 }, // px CSS, affinés avec l'avion (2,3 / 1,25 dans A2)
   ombre: { couleur: 0x120c33, opacite: 0.45 },
   balise: { rayon: 0.026, hauteur: 0.0004 },
 });
@@ -146,7 +146,7 @@ function pose(e, sec, tr, R, gain) {
   const q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(fw, haut, droite));
   const enveloppe = 1 - 0.3 * lisse(lin(e, 0.9, 1));
   const roulis = (Math.atan(gain * courbure) + R.roulisBase * RAD) * enveloppe;
-  const tangage = R.arrondi * RAD * lisse(lin(e, 0.88, 1)) + 1.2 * RAD * Math.sin(sec * 2.9 + 0.7);
+  const tangage = R.arrondi * RAD * lisse(lin(e, 0.88, 1)) + 1.2 * RAD * Math.sin(sec * 2.9 * 0.7 + 0.7);
   q.multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(roulis, 0, tangage, 'XZY')));
   return { position, quaternion: q };
 }

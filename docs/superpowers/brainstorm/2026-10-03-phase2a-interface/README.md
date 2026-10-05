@@ -6,13 +6,10 @@ pour qu'une session cloud reprenne au même endroit (avant, tout vivait hors du 
 
 ## Où on en est, exactement
 
-**Question en attente de l'utilisateur** (05/10, session cloud) : l'avion est **A2 · cartoon premium** (décision 8). Sur sa
-demande, il fait maintenant le tour **Rabat → Madrid → Paris → Athènes** et prend les couleurs du pays à chaque escale ; reste à
-choisir le dosage : **E1 · bande seule** (quille violette du jeu, bande au bord de fuite à la couleur principale du drapeau) ou
-**E2 · quille + bande** (quille à la couleur principale, bande à la seconde). Écran : `ecrans/accueil-avion-escales.html`
-(prototype `ecrans/avion-cartoon-escales.js`). Le reprendre en premier.
+**Avion de l'accueil réglé** (05/10, session cloud ; décision 8) : A2 · cartoon, dosage **E2**, réduit et ralenti de 30 %.
+**Prochain écran à concevoir : le choix du mode.**
 
-Puis, dans l'ordre : choix du mode → HUD et chrono → 3-2-1 → fin de partie → scores → crédits → erreurs et chargement →
+Dans l'ordre : choix du mode → HUD et chrono → 3-2-1 → fin de partie → scores → crédits → erreurs et chargement →
 « Tourne ton téléphone » ; puis section 4 (données bilingues), section 5 (tests et erreurs), écriture du spec
 `docs/superpowers/specs/2026-10-0X-countrizz-phase2a-design.md` (il amende aussi le spec de refonte : §6.3 ombre des titres,
 §7 build sur le Mac), auto-relecture, relecture par l'utilisateur, puis skill `writing-plans`. **Aucun code avant la
@@ -29,7 +26,7 @@ validation du spec et du plan.** Les 17 questions de conception recensées sont 
 | 5 | Paysage / bureau | **L1** : la même grille 2×2 en bas partout (bureau compris, touches 1-4 rappelées sur les boutons) ; **smartphone : portrait imposé** → en 2A écran cartoon « Tourne ton téléphone » (chrono en pause), en 2B manifeste PWA `orientation: portrait` (un navigateur ne peut pas verrouiller l'orientation, iOS Safari) | paysage.html |
 | 6 | Accueil | **H3 · Lever de Terre** : globe proche qui se lève dans la moitié basse et tourne lentement ; titre, nom, FR/EN, « Jouer » (chevrons), Scores, Crédits au-dessus dans l'espace ; titre en ombre −6px 4px 2px rgb(11,13,15) (valeur réelle de l'ancien jeu ; corriger le spec §6.3, sans objection de l'utilisateur) | accueil.html |
 | 7 | Repères de l'accueil | **G5 · Escales** : le globe raconte une partie — épingles-drapeaux ✓ des pays trouvés (Maroc, Espagne, route pointillée crème), drapeau planté qui ondule à Paris + étiquette « France · Paris », balise jaune du jeu sur la prochaine question « Grèce · ? » ; repères en calque DOM projeté (échelle et estompe selon l'orientation de la surface, suivent la rotation) ; **l'avion en papier en vraie 3D haute qualité** (objet three.js dans la scène du globe, sur le grand cercle, ombre réelle) — style en attente (ci-dessus) | accueil-reperes.html, accueil-avion-3d.html |
-| 8 | Avion 3D | **A2 · cartoon premium** (aplats à 3 tons, contour noir épais, ombre nette). L'avion fait le tour **Rabat → Madrid → Paris → Athènes** sur une courbe lisse (Catmull-Rom sphérique) : passages en rase-mottes à Madrid et Paris (étapes trop courtes à l'écran pour atterrir), atterrissage à Athènes ; **il prend les couleurs du pays à chaque escale** (≈ 0,4 s, gonflement de 6 %) ; roulis permanent de −25° pour montrer la quille. Dosage E1/E2 en attente | accueil-avion-escales.html |
+| 8 | Avion 3D | **A2 · cartoon premium** (aplats à 3 tons, contour noir épais, ombre nette). L'avion fait le tour **Rabat → Madrid → Paris → Athènes** sur une courbe lisse (Catmull-Rom sphérique) : passages en rase-mottes à Madrid et Paris (étapes trop courtes à l'écran pour atterrir), atterrissage à Athènes ; **il prend les couleurs du pays à chaque escale** (≈ 0,4 s, gonflement de 6 %) ; roulis permanent de −25° pour montrer la quille. Dosage **E2** retenu : quille = couleur principale du drapeau, bande au bord de fuite = seconde (France : bleu, crème, rouge). **Discret** : avion réduit de 30 % (longueur 0,0525, ≈ 27 px), vol ralenti de 30 % (boucle de 15,7 s), contours affinés (1,9 / 1,0 px) | accueil-avion-escales.html |
 
 Le portrait imposé, les repères G5 et la révélation R3 demandent des **coordonnées de capitales**, que les données n'ont pas
 encore (à traiter en section 4). Les positions utilisées par les maquettes sont dans `contexte/pins.json` (projection exacte

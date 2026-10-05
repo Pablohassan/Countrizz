@@ -7,9 +7,9 @@ pour qu'une session cloud reprenne au même endroit (avant, tout vivait hors du 
 ## Où on en est, exactement
 
 **Avion de l'accueil réglé** (05/10, session cloud ; décision 8) : A2 · cartoon, dosage **E2**, réduit de 30 %, tour du monde en boucle avec bulles « Pays · Capitale » aux escales.
-**Prochain écran à concevoir : le choix du mode.**
+Choix du mode réglé (décision 9). **Question en attente : le HUD et le chrono** (H1 pastille ronde, H2 barre + jauge, H3 pastille à anneau), écran `ecrans/hud.html`.
 
-Dans l'ordre : choix du mode → HUD et chrono → 3-2-1 → fin de partie → scores → crédits → erreurs et chargement →
+Dans l'ordre : ~~choix du mode~~ → HUD et chrono → 3-2-1 → fin de partie → scores → crédits → erreurs et chargement →
 « Tourne ton téléphone » ; puis section 4 (données bilingues), section 5 (tests et erreurs), écriture du spec
 `docs/superpowers/specs/2026-10-0X-countrizz-phase2a-design.md` (il amende aussi le spec de refonte : §6.3 ombre des titres,
 §7 build sur le Mac), auto-relecture, relecture par l'utilisateur, puis skill `writing-plans`. **Aucun code avant la
@@ -27,6 +27,7 @@ validation du spec et du plan.** Les 17 questions de conception recensées sont 
 | 6 | Accueil | **H3 · Lever de Terre** : globe proche qui se lève dans la moitié basse et tourne lentement ; titre, nom, FR/EN, « Jouer » (chevrons), Scores, Crédits au-dessus dans l'espace ; titre en ombre −6px 4px 2px rgb(11,13,15) (valeur réelle de l'ancien jeu ; corriger le spec §6.3, sans objection de l'utilisateur) | accueil.html |
 | 7 | Repères de l'accueil | **G5 · Escales** : le globe raconte une partie — épingles-drapeaux ✓ des pays trouvés (Maroc, Espagne, route pointillée crème), drapeau planté qui ondule à Paris + étiquette « France · Paris », balise jaune du jeu sur la prochaine question « Grèce · ? » ; repères en calque DOM projeté (échelle et estompe selon l'orientation de la surface, suivent la rotation) ; **l'avion en papier en vraie 3D haute qualité** (objet three.js dans la scène du globe, sur le grand cercle, ombre réelle) — style en attente (ci-dessus) | accueil-reperes.html, accueil-avion-3d.html |
 | 8 | Avion 3D | **A2 · cartoon premium** (aplats à 3 tons, contour noir épais, ombre nette). L'avion fait le tour **Rabat → Madrid → Paris → Athènes** sur une courbe lisse (Catmull-Rom sphérique) : passages en rase-mottes à Madrid et Paris (étapes trop courtes à l'écran pour atterrir), atterrissage à Athènes ; **il prend les couleurs du pays à chaque escale** (≈ 0,4 s, gonflement de 6 %) ; roulis permanent de −25° pour montrer la quille. Dosage **E2** retenu : quille = couleur principale du drapeau, bande au bord de fuite = seconde (France : bleu, crème, rouge). **Discret** : avion réduit de 30 % (longueur 0,0525, ≈ 27 px), vol ralenti de 30 % (boucle de 15,7 s), contours affinés (1,9 / 1,0 px). **Boucle** : aucun nom au départ ; à chaque escale, bulle « Pays · Capitale » avec un petit point vert #2fbf4a (bonne réponse ; remplace les ✓ des épingles et la bulle « Grèce · ? ») ; après Athènes, l'avion file vers la droite (élan), fait le tour du globe par derrière (≈ 2,4 s) et revient vers Rabat par la gauche ; bulles et traînée s'effacent à la sortie de l'écran ; boucle ≈ 20 s | accueil-avion-escales.html |
+| 9 | Choix du mode | **A · boutons inclinés empilés** : Drapeau / Pays / Capitale, les mêmes boutons violets que « Jouer » ; étoiles de difficulté discrètes (1 à 3) sous le nom, record en pastille jaune à droite (« Nouveau » sombre pour un mode jamais joué) ; « ‹ Retour » en haut à gauche, nom du joueur en haut à droite ; décor de l'accueil (lever de Terre, crédit EOX en bas) | mode.html |
 
 Le portrait imposé, les repères G5 et la révélation R3 demandent des **coordonnées de capitales**, que les données n'ont pas
 encore (à traiter en section 4). Les positions utilisées par les maquettes sont dans `contexte/pins.json` (projection exacte

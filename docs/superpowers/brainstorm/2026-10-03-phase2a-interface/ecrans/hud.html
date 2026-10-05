@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>HUD et chrono</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+<style>
+  :root { --page: #f5f5f7; --ink: #1d1d1f; --muted: #6e6e73; --card: #fff; --line: #d1d1d6; --strip: #e9e9ee; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6; --card: #2d2d2f; --line: #424245; --strip: #3a3a3d; } }
+  :root[data-theme="dark"] { --page: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6; --card: #2d2d2f; --line: #424245; --strip: #3a3a3d; }
+  html, body { margin: 0; background: var(--page); color: var(--ink); font-family: system-ui, -apple-system, sans-serif; }
+  main { padding: 28px 16px 60px; max-width: 1200px; margin: 0 auto; }
+  h2 { font-size: 1.5rem; margin: 0 0 .4rem; }
+  .sub { color: var(--muted); margin: 0 0 1.4rem; max-width: 1000px; line-height: 1.5; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 1.4rem; align-items: start; }
+  .card { border: 2px solid var(--line); border-radius: 18px; padding: 14px; background: var(--card); }
+  .card h3 { margin: 12px 0 4px; font-size: 1rem; }
+  .card p { margin: 0; font-size: .84rem; color: var(--muted); line-height: 1.45; }
+  .etat { margin: 12px 0 0; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .strip { position: relative; width: 300px; height: 70px; margin: 4px auto 0; border-radius: 14px; overflow: hidden; background: #0a0d1c url('/files/tel-q-FRA.jpg') center -300px / 300px 649px no-repeat; }
+
+  /* ===== téléphone : écran de question validé (disposition A, mode Pays) ===== */
+  .phone { position: relative; width: 300px; height: 649px; margin: 0 auto; border-radius: 34px; overflow: hidden; box-shadow: 0 0 0 8px #0b0b10, 0 10px 30px rgba(0,0,0,.45); background: #000; font-family: 'Chango', system-ui; }
+  .globe { position: absolute; inset: 0; background: url('/files/tel-q-FRA.jpg') center -41px / 300px 649px no-repeat; }
+  .notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 92px; height: 24px; border-radius: 14px; background: #000; z-index: 9; }
+  .veil { position: absolute; left: 0; right: 0; bottom: 0; height: 230px; background: linear-gradient(to bottom, rgba(22,23,58,0), rgba(22,23,58,.93) 38%); z-index: 3; }
+  .stack { position: absolute; left: 14px; right: 14px; bottom: 6px; z-index: 5; display: flex; flex-direction: column; gap: 10px; }
+  .prompt { text-align: center; color: #f7dc6f; font-size: 15px; text-shadow: 3px 2px 1px #000; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  .ans { min-height: 50px; background: #6225e6; color: #fff; border: 2px solid #000; box-shadow: 5px 5px 0 #000; transform: skewX(-15deg); display: grid; place-items: center; padding: 4px 8px; font-size: 11px; line-height: 1.15; text-align: center; }
+  .ans > span { transform: skewX(15deg); display: block; }
+  .ans.long { font-size: 9px; }
+  .credit { font: 7.5px/1.25 system-ui, sans-serif; color: rgba(255,255,255,.75); text-shadow: 0 0 2px #000; text-align: right; }
+  .credit u { text-decoration: underline; }
+  .vol .stack .grid, .vol .stack .prompt { visibility: hidden; }
+
+  /* éléments communs du HUD */
+  .hud { position: absolute; top: 38px; left: 12px; right: 12px; z-index: 6; font-family: 'Chango', system-ui; }
+  .strip .hud { top: 12px; }
+  .quit { width: 32px; height: 32px; border-radius: 50%; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 2px 2px 0 #000; display: grid; place-items: center; font-size: 12px; flex: none; }
+  .pill { background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 3px 3px 0 #000; padding: 3px 10px; font-size: 14px; transform: skewX(-15deg); white-space: nowrap; }
+  .pill > span { display: inline-block; transform: skewX(15deg); }
+  .plus { position: absolute; font-size: 12px; color: #2fbf4a; text-shadow: 1.5px 1.5px 0 #000; }
+
+  /* ===== H1 · une barre, pastille ronde ===== */
+  .h1 .hud { display: flex; align-items: center; justify-content: space-between; }
+  .h1 .rond { width: 50px; height: 50px; border-radius: 50%; background: #ff5722; color: #fff; border: 2.5px solid #000; box-shadow: 3px 3px 0 #000; display: grid; place-items: center; font-size: 17px; }
+  .h1 .rond.pause { background: #16173a; color: rgba(247,220,111,.85); font-size: 15px; }
+  .h1 .rond.urgent { background: #e8413a; animation: bat 1s ease-in-out infinite; }
+
+  /* ===== H2 · barre + jauge pleine largeur ===== */
+  .h2 .hud .l1 { display: flex; align-items: center; gap: 10px; }
+  .h2 .hud .l1 .pill { margin-left: auto; }
+  .h2 .jauge { position: relative; margin-top: 10px; height: 12px; background: rgba(22,23,58,.85); border: 2px solid #000; border-radius: 8px; box-shadow: 2px 2px 0 #000; overflow: hidden; }
+  .h2 .jauge i { position: absolute; left: 0; top: 0; bottom: 0; background: #f7dc6f; border-right: 2px solid #000; }
+  .h2 .jauge.pause i { background: repeating-linear-gradient(-45deg, rgba(247,220,111,.55) 0 6px, rgba(247,220,111,.3) 6px 12px); }
+  .h2 .jauge.urgent i { background: #e8413a; animation: clign 1s steps(2) infinite; }
+  .h2 .sec { color: #f7dc6f; font-size: 20px; text-shadow: 3px 2px 1px #000; min-width: 44px; }
+  .h2 .sec.pause { color: rgba(247,220,111,.75); font-size: 14px; }
+  .h2 .sec.urgent { color: #ff8a80; }
+
+  /* ===== H3 · pastille à anneau ===== */
+  .h3 .hud { display: flex; align-items: center; gap: 10px; }
+  .h3 .score { color: #f7dc6f; font-size: 26px; text-shadow: 3px 2px 1px #000; line-height: 1; }
+  .h3 .score small { display: block; font: 600 9px/1 system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: rgba(247,220,111,.75); text-shadow: none; margin-bottom: 3px; }
+  .h3 .anneau { position: relative; width: 56px; height: 56px; margin-left: auto; }
+  .h3 .anneau svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .h3 .anneau b { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-weight: normal; font-size: 16px; }
+  .h3 .anneau.urgent { animation: bat 1s ease-in-out infinite; }
+  .h3 .quit { margin-left: 4px; }
+
+  @keyframes bat { 50% { transform: scale(1.08); } }
+  @keyframes clign { 50% { opacity: .55; } }
+  @media (prefers-reduced-motion: reduce) { .h1 .rond.urgent, .h2 .jauge.urgent i, .h3 .anneau.urgent { animation: none; } }
+</style></head><body><main>
+<h2>HUD et chrono : trois pistes</h2>
+<p class="sub">Sur l'écran de question validé (disposition A, mode Pays). Partie de 60 s nettes : le chrono est en pause pendant chaque vol et quand l'onglet est caché. Chaque piste montre la question (0:42, score 120), puis deux états : en vol (pause) et les 10 dernières secondes. Le « +10 » vert est le gain de la révélation R3.</p>
+<div class="cards">
+
+<!-- ================= H1 ================= -->
+<div class="card">
+ <div class="phone h1"><div class="globe"></div><div class="notch"></div><div class="veil"></div>
+  <div class="hud"><div class="quit">✕</div><div class="pill"><span>★ 120</span></div><div class="rond">42</div></div>
+  <div class="stack"><div class="prompt">Quel est ce pays&nbsp;?</div><div class="grid"><div class="ans"><span>Belgique</span></div><div class="ans"><span>France</span></div><div class="ans long"><span>Saint-Vincent-et-les-Grenadines</span></div><div class="ans long"><span>République centrafricaine</span></div></div>
+  <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div></div>
+ </div>
+ <div class="etat">En vol · chrono en pause</div>
+ <div class="strip h1"><div class="hud"><div class="quit">✕</div><div class="pill"><span>★ 130</span></div><div class="rond pause">❚❚</div></div><span class="plus" style="left:178px;top:4px">+10</span></div>
+ <div class="etat">10 dernières secondes</div>
+ <div class="strip h1"><div class="hud"><div class="quit">✕</div><div class="pill"><span>★ 190</span></div><div class="rond urgent">7</div></div></div>
+ <h3>H1 · Une barre, pastille ronde</h3><p>Quitter à gauche, score au centre, secondes dans une pastille ronde orange #ff5722 (l'ancien jeu) à droite ; pause = pastille sombre ❚❚ ; fin = rouge qui bat. Compact, mais le temps ne se lit qu'en chiffres.</p>
+</div>
+
+<!-- ================= H2 ================= -->
+<div class="card">
+ <div class="phone h2"><div class="globe"></div><div class="notch"></div><div class="veil"></div>
+  <div class="hud"><div class="l1"><div class="quit">✕</div><span class="sec">42</span><div class="pill"><span>★ 120</span></div></div><div class="jauge"><i style="width:70%"></i></div></div>
+  <div class="stack"><div class="prompt">Quel est ce pays&nbsp;?</div><div class="grid"><div class="ans"><span>Belgique</span></div><div class="ans"><span>France</span></div><div class="ans long"><span>Saint-Vincent-et-les-Grenadines</span></div><div class="ans long"><span>République centrafricaine</span></div></div>
+  <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div></div>
+ </div>
+ <div class="etat">En vol · chrono en pause</div>
+ <div class="strip h2"><div class="hud"><div class="l1"><div class="quit">✕</div><span class="sec pause">❚❚ 38</span><div class="pill"><span>★ 130</span></div></div><div class="jauge pause"><i style="width:63%"></i></div></div><span class="plus" style="left:206px;top:2px">+10</span></div>
+ <div class="etat">10 dernières secondes</div>
+ <div class="strip h2"><div class="hud"><div class="l1"><div class="quit">✕</div><span class="sec urgent">7</span><div class="pill"><span>★ 190</span></div></div><div class="jauge urgent"><i style="width:12%"></i></div></div></div>
+ <h3>H2 · Barre + jauge pleine largeur</h3><p>Quitter, secondes et score sur une ligne, puis une jauge jaune de 12 px qui se vide sur toute la largeur. Pause = jauge hachurée et ❚❚ ; fin = jauge rouge qui clignote. Le temps se lit du coin de l'œil sans quitter le globe.</p>
+</div>
+
+<!-- ================= H3 ================= -->
+<div class="card">
+ <div class="phone h3"><div class="globe"></div><div class="notch"></div><div class="veil"></div>
+  <div class="hud"><div class="score"><small>Score</small>120</div>
+   <div class="anneau"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="#6225e6" stroke="#000" stroke-width="2"/><circle cx="28" cy="28" r="20" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="6"/><circle cx="28" cy="28" r="20" fill="none" stroke="#f7dc6f" stroke-width="6" stroke-dasharray="125.66" stroke-dashoffset="37.7"/></svg><b>42</b></div>
+   <div class="quit">✕</div></div>
+  <div class="stack"><div class="prompt">Quel est ce pays&nbsp;?</div><div class="grid"><div class="ans"><span>Belgique</span></div><div class="ans"><span>France</span></div><div class="ans long"><span>Saint-Vincent-et-les-Grenadines</span></div><div class="ans long"><span>République centrafricaine</span></div></div>
+  <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div></div>
+ </div>
+ <div class="etat">En vol · chrono en pause</div>
+ <div class="strip h3"><div class="hud"><div class="score"><small>Score</small>130</div>
+  <div class="anneau"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="#16173a" stroke="#000" stroke-width="2"/><circle cx="28" cy="28" r="20" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="6"/><circle cx="28" cy="28" r="20" fill="none" stroke="rgba(247,220,111,.55)" stroke-width="6" stroke-dasharray="125.66" stroke-dashoffset="46.5"/></svg><b style="font-size:13px;color:rgba(247,220,111,.85)">❚❚</b></div>
+  <div class="quit">✕</div></div><span class="plus" style="left:70px;top:8px">+10</span></div>
+ <div class="etat">10 dernières secondes</div>
+ <div class="strip h3"><div class="hud"><div class="score"><small>Score</small>190</div>
+  <div class="anneau urgent"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="#e8413a" stroke="#000" stroke-width="2"/><circle cx="28" cy="28" r="20" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="6"/><circle cx="28" cy="28" r="20" fill="none" stroke="#fff8e7" stroke-width="6" stroke-dasharray="125.66" stroke-dashoffset="111"/></svg><b>7</b></div>
+  <div class="quit">✕</div></div></div>
+ <h3>H3 · Score en grand, pastille à anneau</h3><p>Score en grand à gauche ; à droite, une pastille violette dont l'anneau jaune se vide, les secondes au centre. Pause = pastille sombre ❚❚ ; fin = pastille rouge qui bat. La plus « jeu », mais la plus haute (56 px) : elle prend un peu de place au pays.</p>
+</div>
+
+</div></main></body></html>

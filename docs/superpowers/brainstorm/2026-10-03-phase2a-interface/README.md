@@ -56,8 +56,9 @@ trois avions prêts, aucune erreur).
 
 ## Limites hors du Mac
 
-- Les **patchs image** des pays (`web/public/data/patches/img/*.ktx2`, 394 fichiers) et les caches des pipelines sont hors
-  dépôt : une session cloud ne peut pas refaire de captures fidèles du jeu (`npm ci`, puis `npm run geodata:fetch` avant
-  `test:data`). Les captures déjà faites sont dans `ecrans/`.
+- Les **patchs image** des pays (`web/public/data/patches/img/*.ktx2`, 394 fichiers) restent hors dépôt, mais sont publiés
+  sur la Release GitHub `imagerie-2025` : `cd web && npm ci && npm run imagery:fetch` les télécharge et contrôle chaque
+  fichier contre `imagery.json` (vérifié le 05/10 depuis une copie neuve : 394 patchs conformes). Les caches des pipelines
+  restent à refaire (`npm run geodata:fetch` avant `test:data`).
 - La CI de référence est **le Mac** (rendu GPU réel, références visuelles `-darwin`) : aucune suite e2e ne fait foi ailleurs.
 - `.superpowers/` reste ignoré par git ; l'original non converti (PNG) et les brouillons des agents sont restés sur le Mac.

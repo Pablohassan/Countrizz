@@ -6,7 +6,7 @@
 >
 > - **Section 3 (interface) de la conception de la 2A en cours**, au compagnon visuel. **7 décisions prises** par l'utilisateur (question A + grille 2×2 partout, drapeaux P1 à aire égale en « autocollant », révélation R3 avec étiquette « Pays · capitale », L1 + portrait imposé sur téléphone, accueil H3 « lever de Terre », repères G5 « Escales », avion en papier en vraie 3D) : tableau, écrans, captures, prototypes et recherches dans ce dossier.
 > - **Question en attente** : le style de l'avion 3D (A1 papier, A2 cartoon, A3 origami) — écran `ecrans/accueil-avion-3d.html`. Puis : choix du mode, HUD/chrono, 3-2-1, fin, scores, crédits, erreurs/chargement, « Tourne ton téléphone » ; sections 4 (données bilingues, + coordonnées des capitales) et 5 ; spec ; relecture ; plan. Le bandeau du 03/10 ci-dessous reste valable pour le reste (décisions d'architecture, déploiement, déroulé).
-> - **Branche** : `newcountri`, poussée sur `countriz` le 05/10 pour la session cloud. Hors du Mac : pas de patchs image KTX2 ni de GPU réel (voir le README du dossier).
+> - **Branche** : `newcountri`, poussée sur `countriz` le 05/10 pour la session cloud. Hors du Mac : patchs image KTX2 par `cd web && npm ci && npm run imagery:fetch` (Release GitHub `imagerie-2025`, contrôlés contre `imagery.json`) ; pas de GPU réel, le Mac reste la référence du rendu (voir le README du dossier).
 >
 > **REPRISE — conception de la phase 2A en cours (fin de la 4ᵉ session, 03/10). À lire avant tout.**
 >

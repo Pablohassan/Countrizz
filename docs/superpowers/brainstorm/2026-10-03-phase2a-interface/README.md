@@ -7,9 +7,9 @@ pour qu'une session cloud reprenne au même endroit (avant, tout vivait hors du 
 ## Où on en est, exactement
 
 **Avion de l'accueil réglé** (05/10, session cloud ; décision 8) : A2 · cartoon, dosage **E2**, réduit de 30 %, tour du monde en boucle avec bulles « Pays · Capitale » aux escales.
-Choix du mode, HUD et 3-2-1 réglés (décisions 9 à 11). **Questions en attente** : l'écran de fin (F1 carte en haut + globe en bas, F2 panneau plein écran, F3 feuille basse), écran `ecrans/fin.html` ; et la confirmation du premier vol pendant le décompte (décision 11).
+Choix du mode, HUD, 3-2-1 et fin réglés (décisions 9 à 12). **Questions en attente** : l'écran des scores (S1 tableau à bordure jaune, S2 cartes inclinées, S3 podium + liste), écran `ecrans/scores.html` ; et la confirmation du premier vol pendant le décompte (décision 11).
 
-Dans l'ordre : ~~choix du mode~~ → ~~HUD et chrono~~ → ~~3-2-1~~ → fin de partie → scores → crédits → erreurs et chargement →
+Dans l'ordre : ~~choix du mode~~ → ~~HUD et chrono~~ → ~~3-2-1~~ → ~~fin de partie~~ → scores → crédits → erreurs et chargement →
 « Tourne ton téléphone » ; puis section 4 (données bilingues), section 5 (tests et erreurs), écriture du spec
 `docs/superpowers/specs/2026-10-0X-countrizz-phase2a-design.md` (il amende aussi le spec de refonte : §6.3 ombre des titres,
 §7 build sur le Mac), auto-relecture, relecture par l'utilisateur, puis skill `writing-plans`. **Aucun code avant la
@@ -30,6 +30,7 @@ validation du spec et du plan.** Les 17 questions de conception recensées sont 
 | 9 | Choix du mode | **A · boutons inclinés empilés** : Drapeau / Pays / Capitale, les mêmes boutons violets que « Jouer » ; étoiles de difficulté discrètes (1 à 3) sous le nom, record en pastille jaune à droite (« Nouveau » sombre pour un mode jamais joué) ; « ‹ Retour » en haut à gauche, nom du joueur en haut à droite ; décor de l'accueil (lever de Terre, crédit EOX en bas) | mode.html |
 | 10 | HUD et chrono | **H2 · barre + jauge pleine largeur** : ✕ Quitter à gauche, secondes, score en pastille inclinée à droite ; dessous, une jauge jaune #f7dc6f de 12 px (bord noir) qui se vide sur 60 s nettes. Pause (vol, onglet caché) = jauge hachurée et « ❚❚ » devant les secondes ; 10 dernières secondes = jauge et chiffres rouges #e8413a qui clignotent (pas en mouvement réduit) ; « +10 » vert près du score à la révélation | hud.html |
 | 11 | Compte à rebours | **C1 · chiffres géants jaunes** : 3, 2, 1 (une seconde chacun) en Chango #f7dc6f cerné de noir, ombre du titre ; chaque chiffre surgit puis s'envole en grossissant ; « GO ! » dans un pavé violet incliné (le bouton « Jouer »). HUD H2 déjà affiché, jauge pleine en pause. Mouvement réduit : chiffres sans animation. *Proposé, à confirmer* : le premier vol part pendant le décompte | compte-a-rebours.html |
+| 12 | Fin de partie | **F1 · carte en haut, globe en bas** (la mise en page de l'accueil et du choix du mode) : « Temps écoulé ! », mode et nom du joueur ; carte crème avec le score en grand, « 19 bonnes réponses sur 24 », ancien record ; tampon jaune « Nouveau record ! » (pas d'animation en mouvement réduit) ; rangée des drapeaux de la partie (erreurs grisées avec ✗ rouge) ; Rejouer (violet), Changer de mode et Scores (bleu nuit) ; le globe repasse en vue d'ensemble et tourne, crédit EOX à sa place | fin.html |
 
 Le portrait imposé, les repères G5 et la révélation R3 demandent des **coordonnées de capitales**, que les données n'ont pas
 encore (à traiter en section 4). Les positions utilisées par les maquettes sont dans `contexte/pins.json` (projection exacte

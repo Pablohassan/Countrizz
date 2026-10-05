@@ -29,13 +29,15 @@
 
   /* À propos */
   .apropos .titre { position: absolute; top: 100px; left: 0; right: 0; font-size: 30px; z-index: 5; }
-  .apropos .bloc { position: absolute; top: 160px; left: 26px; right: 26px; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+  .apropos .bloc { position: absolute; top: 180px; left: 26px; right: 26px; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 24px; }
   .bulle { width: 100%; box-sizing: border-box; background: #fff8e7; color: #16173a; border: 3px solid #000; border-radius: 16px; box-shadow: 6px 6px 0 #000; padding: 18px 18px 16px; text-align: center; font: 14px/1.45 system-ui, sans-serif; transform: rotate(-1.5deg); }
   .bulle .nom { font: 28px/1.1 'Chango', system-ui; color: #6225e6; margin: 6px 0 4px; text-shadow: 2px 2px 0 #000; -webkit-text-stroke: 1px #000; }
   .bulle .qui { font: 600 11px/1 system-ui, sans-serif; text-transform: uppercase; letter-spacing: .08em; color: #6e6e85; }
   .bulle .note { color: #4b4b63; margin-top: 8px; }
   .cta { display: inline-flex; align-items: center; gap: 12px; background: #6225e6; color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; transform: skewX(-15deg); padding: 11px 24px; font-size: 22px; }
   .cta svg { transform: skewX(15deg); }
+  .cta.partage { background: #f7dc6f; color: #16173a; font-size: 20px; }
+  .github { display: inline-flex; align-items: center; gap: 8px; font: 600 14px/1 system-ui, sans-serif; color: #fff8e7; text-decoration: underline; text-underline-offset: 3px; margin-top: 4px; }
   .apropos .plus { font: 13px/1.4 system-ui, sans-serif; color: rgba(255,248,231,.85); text-align: center; margin-top: -10px; }
   .ios { width: 100%; box-sizing: border-box; background: rgba(22,23,58,.92); border: 2px dashed rgba(247,220,111,.6); border-radius: 12px; padding: 10px 14px; font: 13px/1.45 system-ui, sans-serif; color: #fff8e7; text-align: center; }
   .ios b { color: #f7dc6f; }
@@ -52,23 +54,25 @@
   @media (prefers-reduced-motion: reduce) { .barre i { animation: none; width: 64%; } }
 </style></head><body><main>
 <h2>À propos (installer le jeu) et chargement en 3D</h2>
-<p class="sub">Deux écrans revus selon tes retours. « Crédits » devient « À propos » : qui a fait le jeu et un gros bouton pour installer l'appli (PWA). Le chargement montre une petite Terre cartoon en 3D (reliefs très exagérés, épingles géantes, nuages en boules) qui tourne au-dessus de la jauge.</p>
+<p class="sub">Deux écrans revus selon tes retours. « Crédits » devient « À propos » : installer l'appli (PWA), partager le jeu, et le lien vers ton GitHub. Le chargement montre une petite Terre cartoon en 3D (reliefs très exagérés, épingles géantes, nuages en boules) qui tourne au-dessus de la jauge.</p>
 <div class="cards">
 
 <div class="card"><div class="pw"><div class="scaler"><div class="ph apropos">
  <div class="stars"></div><div class="globe"></div><div class="notch"></div>
  <div class="back"><span>‹ Retour</span></div><div class="titre">À propos</div>
  <div class="bloc">
-  <div class="bulle"><div class="qui">Un jeu imaginé et créé par</div><div class="nom">Rusmir Sadikovic</div><div class="note">Trouve les 197 pays du monde, leurs drapeaux et leurs capitales.</div></div>
   <span class="cta"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6.5 10l5.5 5.5 5.5-5.5M4 20h16"/></svg><span>Installer l'appli</span></span>
   <div class="plus">Countrizz sur ton écran d'accueil, jouable même sans réseau.</div>
   <div class="ios">Sur iPhone et iPad : touche <b>Partager</b> ⬆︎ puis <b>« Sur l'écran d'accueil »</b>.</div>
+  <span class="cta partage"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16173a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg><span>Partager le jeu</span></span>
+  <div class="plus">Envoie Countrizz à tes amis et à ta famille.</div>
+  <a class="github"><svg width="22" height="22" viewBox="0 0 16 16" aria-hidden="true"><path fill="#fff8e7" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>github.com/Pablohassan</a>
  </div>
  <div class="mentions">Mentions et licences</div>
  <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
 </div></div></div>
 <h3>À propos</h3>
-<p>Le nom de l'auteur dans une bulle crème, puis « Installer l'appli » (le bouton du navigateur s'il propose l'installation ; sinon, sur iPhone et iPad, l'astuce « Partager → Sur l'écran d'accueil », Safari n'ayant pas de bouton d'installation). Si l'appli est déjà installée, le bouton disparaît.</p>
+<p>Plus de présentation : deux boutons et un lien. « Installer l'appli » (l'invite du navigateur ; sur iPhone et iPad, l'astuce « Partager → Sur l'écran d'accueil » ; masqué si déjà installée). « Partager le jeu » ouvre le partage du téléphone (WhatsApp, SMS, mail…) avec le lien countrizz.fr ; là où le partage n'existe pas (ordinateur), il copie le lien et affiche « Lien copié ! ». Puis le lien vers github.com/Pablohassan.</p>
 <p>Je garde un petit lien « Mentions et licences » en bas : les licences des données (ODbL de mledoze, CC BY de certaines frontières, CC BY-NC-SA d'EOX) exigent que l'attribution reste accessible quelque part. Il ouvre la liste complète, sans effort de mise en page.</p></div>
 
 <div class="card"><div class="pw"><div class="scaler"><div class="ph charge">

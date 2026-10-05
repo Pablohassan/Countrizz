@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Choix du mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+<style>
+  :root { --page: #f5f5f7; --ink: #1d1d1f; --muted: #6e6e73; --card: #fff; --line: #d1d1d6; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6; --card: #2d2d2f; --line: #424245; } }
+  :root[data-theme="dark"] { --page: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6; --card: #2d2d2f; --line: #424245; }
+  html, body { margin: 0; background: var(--page); color: var(--ink); font-family: system-ui, -apple-system, sans-serif; }
+  main { padding: 28px 16px 60px; max-width: 1200px; margin: 0 auto; }
+  h2 { font-size: 1.5rem; margin: 0 0 .4rem; }
+  .sub { color: var(--muted); margin: 0 0 1.4rem; max-width: 1000px; line-height: 1.5; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 1.4rem; align-items: start; }
+  .card { border: 2px solid var(--line); border-radius: 18px; padding: 14px; background: var(--card); }
+  .card h3 { margin: 12px 0 4px; font-size: 1rem; }
+  .card p { margin: 0; font-size: .84rem; color: var(--muted); line-height: 1.45; }
+  .pw { width: 280px; height: 606px; margin: 0 auto; border-radius: 34px; overflow: hidden; box-shadow: 0 0 0 8px #0b0b10, 0 10px 30px rgba(0,0,0,.4); }
+  .scaler { width: 390px; height: 844px; transform: scale(.718); transform-origin: 0 0; }
+
+  /* ===== téléphone (même décor que l'accueil H3 · lever de Terre) ===== */
+  .ph { position: relative; width: 390px; height: 844px; overflow: hidden; font-family: 'Chango', system-ui; background: #000; }
+  .ph .stars { position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 30px 60px,#fff,transparent), radial-gradient(1px 1px at 120px 140px,#ddd,transparent), radial-gradient(1.5px 1.5px at 300px 90px,#fff,transparent), radial-gradient(1px 1px at 250px 220px,#ccc,transparent), radial-gradient(1px 1px at 60px 300px,#fff,transparent), radial-gradient(1px 1px at 350px 330px,#bbb,transparent), radial-gradient(1px 1px at 180px 40px,#fff,transparent), radial-gradient(1px 1px at 340px 180px,#eee,transparent); }
+  .ph .globe { position: absolute; inset: 0; background: url('/files/acc-16.jpg') center 400px / 390px 844px no-repeat; }
+  .ph .notch { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; border-radius: 18px; background: #000; z-index: 9; }
+  .ph .back { position: absolute; top: 58px; left: 18px; z-index: 6; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 3px 3px 0 #000; transform: skewX(-15deg); padding: 6px 12px; font-size: 14px; }
+  .ph .back > span { display: inline-block; transform: skewX(15deg); }
+  .ph .joueur { position: absolute; top: 62px; right: 18px; z-index: 6; font: 12px/1.2 system-ui, sans-serif; color: rgba(247,220,111,.8); }
+  .ph .joueur b { color: #f7dc6f; }
+  .ph .title { position: absolute; top: 112px; left: 0; right: 0; text-align: center; z-index: 5; color: #f7dc6f; font-size: 30px; line-height: 1.15; text-shadow: -4px 3px 2px rgb(11,13,15); }
+  .ph .credit { position: absolute; left: 12px; right: 10px; bottom: 38px; z-index: 6; font: 10px/1.3 system-ui, sans-serif; color: rgba(255,255,255,.7); text-shadow: 0 0 2px #000; text-align: right; }
+  .ph .credit u { text-decoration: underline; }
+  .ph .list { position: absolute; left: 30px; right: 30px; top: 178px; z-index: 5; display: flex; flex-direction: column; gap: 20px; }
+
+  /* record : pastille jaune */
+  .rec { display: inline-flex; align-items: center; gap: 5px; background: #f7dc6f; color: #16173a; border: 2px solid #000; border-radius: 999px; padding: 2px 9px 3px; font-size: 13px; box-shadow: 2px 2px 0 #000; white-space: nowrap; }
+  .rec small { font: 600 10px/1 system-ui, sans-serif; text-transform: uppercase; letter-spacing: .04em; }
+  .rec.vide { background: #16173a; color: rgba(247,220,111,.75); }
+  .etoiles { color: #f7dc6f; font-size: 13px; letter-spacing: 2px; -webkit-text-stroke: .8px #000; }
+  .etoiles .off { color: rgba(255,255,255,.18); -webkit-text-stroke: .8px rgba(0,0,0,.5); }
+
+  /* ===== A · boutons inclinés empilés ===== */
+  .a .btn { display: flex; align-items: center; justify-content: space-between; background: #6225e6; color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; transform: skewX(-15deg); padding: 12px 16px 12px 20px; font-size: 24px; }
+  .a .btn > * { transform: skewX(15deg); }
+  .a .btn .g { display: flex; flex-direction: column; gap: 3px; }
+  .a .btn .g .etoiles { font-size: 11px; }
+  .a .btn.focus { outline: 3px solid #f7dc6f; outline-offset: 4px; }
+
+  /* ===== B · cartes autocollant ===== */
+  .b .list { gap: 16px; }
+  .b .carte { display: grid; grid-template-columns: 58px 1fr auto; align-items: center; gap: 12px; background: #fff8e7; color: #16173a; border: 2.5px solid #000; border-radius: 14px; box-shadow: 5px 5px 0 #000; padding: 10px 12px; }
+  .b .carte:nth-child(1) { transform: rotate(-1.5deg); }
+  .b .carte:nth-child(2) { transform: rotate(1deg); }
+  .b .carte:nth-child(3) { transform: rotate(-1deg); }
+  .b .ico { width: 58px; height: 58px; display: grid; place-items: center; background: #6225e6; border: 2px solid #000; border-radius: 12px; }
+  .b .nom { font-size: 20px; line-height: 1.1; }
+  .b .q { font: 11px/1.3 system-ui, sans-serif; color: #4b4b63; margin-top: 2px; }
+  .b .etoiles { font-size: 12px; display: block; margin-top: 3px; }
+  .b .etoiles .off { color: #d9d2c0; -webkit-text-stroke: .8px #a79f8c; }
+  .b .r { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+
+  /* ===== C · Niv 1/2/3 ===== */
+  .c .btn { display: flex; align-items: center; gap: 14px; background: #6225e6; color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; transform: skewX(-15deg); padding: 10px 14px; }
+  .c .btn > * { transform: skewX(15deg); }
+  .c .niv { flex: none; width: 50px; height: 50px; display: grid; place-items: center; background: #f7dc6f; color: #16173a; border: 2px solid #000; font-size: 13px; line-height: 1; text-align: center; }
+  .c .niv b { display: block; font-size: 22px; font-weight: normal; }
+  .c .t { flex: 1; font-size: 20px; line-height: 1.1; }
+  .c .t small { display: block; font: 12px/1.3 system-ui, sans-serif; color: rgba(255,255,255,.8); margin-top: 3px; }
+  .c .rec { font-size: 12px; }
+</style></head><body><main>
+<h2>Choix du mode : trois pistes</h2>
+<p class="sub">Même décor que l'accueil (lever de Terre, le globe continue de tourner, le crédit EOX reste en bas). En haut : retour et nom du joueur. Le meilleur score local de chaque mode est affiché ; pour un mode jamais joué, une pastille sombre « Nouveau ». Le mode Pays est montré au focus clavier (contour jaune) sur la piste A.</p>
+<div class="cards">
+
+<!-- ================= A ================= -->
+<div class="card"><div class="pw"><div class="scaler"><div class="ph a">
+ <div class="stars"></div><div class="globe"></div><div class="notch"></div>
+ <div class="back"><span>‹ Retour</span></div>
+ <div class="joueur">Joueur : <b>Globetrotteur</b></div>
+ <div class="title">Choisis ton mode</div>
+ <div class="list">
+  <div class="btn"><div class="g"><span>Drapeau</span><span class="etoiles">★<span class="off">★★</span></span></div><span class="rec"><small>Record</small> 18</span></div>
+  <div class="btn focus"><div class="g"><span>Pays</span><span class="etoiles">★★<span class="off">★</span></span></div><span class="rec"><small>Record</small> 11</span></div>
+  <div class="btn"><div class="g"><span>Capitale</span><span class="etoiles">★★★</span></div><span class="rec vide">Nouveau</span></div>
+ </div>
+ <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+</div></div></div>
+<h3>A · Boutons inclinés empilés</h3><p>Les mêmes boutons que « Jouer » (violet, inclinés, ombre noire 6 px). Nom du mode, étoiles de difficulté discrètes dessous, record en pastille jaune à droite. Le plus cohérent avec l'accueil, le plus rapide à lire.</p></div>
+
+<!-- ================= B ================= -->
+<div class="card"><div class="pw"><div class="scaler"><div class="ph b">
+ <div class="stars"></div><div class="globe"></div><div class="notch"></div>
+ <div class="back"><span>‹ Retour</span></div>
+ <div class="joueur">Joueur : <b>Globetrotteur</b></div>
+ <div class="title">Choisis ton mode</div>
+ <div class="list">
+  <div class="carte">
+   <div class="ico"><svg width="36" height="30" viewBox="0 0 36 30" aria-hidden="true"><path d="M5 2v27" stroke="#fff8e7" stroke-width="3" stroke-linecap="round"/><path d="M6 3c6-3 12 3 18 0s8 0 9 0v14c-1 0-3-3-9 0s-12-3-18 0z" fill="#f7dc6f" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg></div>
+   <div><div class="nom">Drapeau</div><div class="q">Quel est ce drapeau&nbsp;?</div><span class="etoiles">★<span class="off">★★</span></span></div>
+   <div class="r"><span class="rec"><small>Record</small> 18</span></div>
+  </div>
+  <div class="carte">
+   <div class="ico"><svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="15" fill="#2f6fd6" stroke="#000" stroke-width="2"/><path d="M11 12c3-2 6 1 8 0s4 3 3 5-4 1-5 4 1 5-2 6-4-4-5-6 0-5 1-9zM24 24c2-1 4 0 4 2s-2 3-3 2-2-3-1-4z" fill="#f7dc6f" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+   <div><div class="nom">Pays</div><div class="q">Quel est ce pays&nbsp;?</div><span class="etoiles">★★<span class="off">★</span></span></div>
+   <div class="r"><span class="rec"><small>Record</small> 11</span></div>
+  </div>
+  <div class="carte">
+   <div class="ico"><svg width="36" height="38" viewBox="0 0 36 38" aria-hidden="true"><path d="M18 36s-11-12-11-21a11 11 0 0 1 22 0c0 9-11 21-11 21z" fill="#fff8e7" stroke="#000" stroke-width="2"/><path d="M18 8l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7z" fill="#f7dc6f" stroke="#000" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+   <div><div class="nom">Capitale</div><div class="q">Quelle est sa capitale&nbsp;?</div><span class="etoiles">★★★</span></div>
+   <div class="r"><span class="rec vide">Nouveau</span></div>
+  </div>
+ </div>
+ <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+</div></div></div>
+<h3>B · Cartes autocollant</h3><p>Cartes crème au bord noir (la famille des étiquettes « Pays · Capitale » et des drapeaux autocollants), légèrement de travers. Icône, nom, la question posée, 1 à 3 étoiles, record. La plus explicite pour un nouveau joueur, mais elle mélange deux familles de boutons.</p></div>
+
+<!-- ================= C ================= -->
+<div class="card"><div class="pw"><div class="scaler"><div class="ph c">
+ <div class="stars"></div><div class="globe"></div><div class="notch"></div>
+ <div class="back"><span>‹ Retour</span></div>
+ <div class="joueur">Joueur : <b>Globetrotteur</b></div>
+ <div class="title">Choisis ton niveau</div>
+ <div class="list">
+  <div class="btn"><div class="niv">Niv<b>1</b></div><div class="t">Drapeau<small>Trouve le drapeau</small></div><span class="rec">18</span></div>
+  <div class="btn"><div class="niv">Niv<b>2</b></div><div class="t">Pays<small>Trouve le pays</small></div><span class="rec">11</span></div>
+  <div class="btn"><div class="niv">Niv<b>3</b></div><div class="t">Capitale<small>Trouve la capitale</small></div><span class="rec vide">—</span></div>
+ </div>
+ <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+</div></div></div>
+<h3>C · Niveaux 1, 2, 3</h3><p>Reprend « Niv 1/2/3 » de l'ancien jeu (et du spec) : pavé jaune du niveau, nom du mode et consigne. Laisse entendre une progression à suivre dans l'ordre, alors que les trois modes sont indépendants.</p></div>
+
+</div></main></body></html>

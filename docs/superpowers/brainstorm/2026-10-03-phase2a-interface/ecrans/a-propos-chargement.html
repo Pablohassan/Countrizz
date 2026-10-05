@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>À propos et chargement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"}}</script>
+<style>
+  :root { --page: #f5f5f7; --ink: #1d1d1f; --muted: #6e6e73; --card: #fff; --line: #d1d1d6; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6; --card: #2d2d2f; --line: #424245; } }
+  :root[data-theme="dark"] { --page: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6; --card: #2d2d2f; --line: #424245; }
+  html, body { margin: 0; background: var(--page); color: var(--ink); font-family: system-ui, -apple-system, sans-serif; }
+  main { padding: 28px 16px 60px; max-width: 1000px; margin: 0 auto; }
+  h2 { font-size: 1.5rem; margin: 0 0 .4rem; }
+  .sub { color: var(--muted); margin: 0 0 1.4rem; line-height: 1.5; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.4rem; align-items: start; }
+  .card { border: 2px solid var(--line); border-radius: 18px; padding: 14px; background: var(--card); }
+  .card h3 { margin: 12px 0 4px; font-size: 1rem; }
+  .card p { margin: 0 0 .5rem; font-size: .84rem; color: var(--muted); line-height: 1.45; }
+  .pw { width: 280px; height: 606px; margin: 0 auto; border-radius: 34px; overflow: hidden; box-shadow: 0 0 0 8px #0b0b10, 0 10px 30px rgba(0,0,0,.4); }
+  .scaler { width: 390px; height: 844px; transform: scale(.718); transform-origin: 0 0; }
+
+  .ph { position: relative; width: 390px; height: 844px; overflow: hidden; font-family: 'Chango', system-ui; background: #000; color: #fff8e7; }
+  .stars { position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 30px 60px,#fff,transparent), radial-gradient(1px 1px at 120px 140px,#ddd,transparent), radial-gradient(1.5px 1.5px at 300px 90px,#fff,transparent), radial-gradient(1px 1px at 250px 220px,#ccc,transparent), radial-gradient(1px 1px at 60px 300px,#fff,transparent), radial-gradient(1px 1px at 350px 330px,#bbb,transparent), radial-gradient(1px 1px at 90px 700px,#fff,transparent), radial-gradient(1px 1px at 320px 760px,#ddd,transparent), radial-gradient(1px 1px at 200px 620px,#ccc,transparent); }
+  .globe { position: absolute; inset: 0; background: url('/files/acc-16.jpg') center 560px / 390px 844px no-repeat; }
+  .notch { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; border-radius: 18px; background: #000; z-index: 9; }
+  .credit { position: absolute; left: 12px; right: 10px; bottom: 38px; z-index: 6; font: 10px/1.3 system-ui, sans-serif; color: rgba(255,255,255,.7); text-shadow: 0 0 2px #000; text-align: right; }
+  .credit u { text-decoration: underline; }
+  .back { position: absolute; top: 58px; left: 18px; z-index: 6; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 3px 3px 0 #000; transform: skewX(-15deg); padding: 6px 12px; font-size: 14px; }
+  .back > span, .cta > span { display: inline-block; transform: skewX(15deg); }
+  .titre { color: #f7dc6f; text-align: center; text-shadow: -4px 3px 2px rgb(11,13,15); }
+
+  /* À propos */
+  .apropos .titre { position: absolute; top: 100px; left: 0; right: 0; font-size: 30px; z-index: 5; }
+  .apropos .bloc { position: absolute; top: 160px; left: 26px; right: 26px; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+  .bulle { width: 100%; box-sizing: border-box; background: #fff8e7; color: #16173a; border: 3px solid #000; border-radius: 16px; box-shadow: 6px 6px 0 #000; padding: 18px 18px 16px; text-align: center; font: 14px/1.45 system-ui, sans-serif; transform: rotate(-1.5deg); }
+  .bulle .nom { font: 28px/1.1 'Chango', system-ui; color: #6225e6; margin: 6px 0 4px; text-shadow: 2px 2px 0 #000; -webkit-text-stroke: 1px #000; }
+  .bulle .qui { font: 600 11px/1 system-ui, sans-serif; text-transform: uppercase; letter-spacing: .08em; color: #6e6e85; }
+  .bulle .note { color: #4b4b63; margin-top: 8px; }
+  .cta { display: inline-flex; align-items: center; gap: 12px; background: #6225e6; color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; transform: skewX(-15deg); padding: 11px 24px; font-size: 22px; }
+  .cta svg { transform: skewX(15deg); }
+  .apropos .plus { font: 13px/1.4 system-ui, sans-serif; color: rgba(255,248,231,.85); text-align: center; margin-top: -10px; }
+  .ios { width: 100%; box-sizing: border-box; background: rgba(22,23,58,.92); border: 2px dashed rgba(247,220,111,.6); border-radius: 12px; padding: 10px 14px; font: 13px/1.45 system-ui, sans-serif; color: #fff8e7; text-align: center; }
+  .ios b { color: #f7dc6f; }
+  .mentions { position: absolute; left: 0; right: 0; bottom: 70px; z-index: 6; text-align: center; font: 12px/1 system-ui, sans-serif; color: rgba(247,220,111,.75); text-decoration: underline; }
+
+  /* Chargement */
+  .charge .titre { position: absolute; top: 120px; left: 0; right: 0; font-size: 48px; z-index: 5; }
+  .charge canvas { position: absolute; left: 0; top: 190px; width: 390px; height: 420px; z-index: 4; display: block; }
+  .charge .bas { position: absolute; left: 50px; right: 50px; top: 640px; z-index: 5; text-align: center; }
+  .barre { height: 14px; background: #16173a; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; overflow: hidden; }
+  .barre i { display: block; height: 100%; width: 0; background: #f7dc6f; border-right: 2px solid #000; animation: charge 6s ease-in-out infinite; }
+  @keyframes charge { 0% { width: 4%; } 85%, 100% { width: 100%; } }
+  .msg { font: 14px/1.4 system-ui, sans-serif; color: rgba(247,220,111,.85); margin-top: 12px; }
+  @media (prefers-reduced-motion: reduce) { .barre i { animation: none; width: 64%; } }
+</style></head><body><main>
+<h2>À propos (installer le jeu) et chargement en 3D</h2>
+<p class="sub">Deux écrans revus selon tes retours. « Crédits » devient « À propos » : qui a fait le jeu et un gros bouton pour installer l'appli (PWA). Le chargement montre une petite Terre cartoon en 3D (reliefs très exagérés, épingles géantes, nuages en boules) qui tourne au-dessus de la jauge.</p>
+<div class="cards">
+
+<div class="card"><div class="pw"><div class="scaler"><div class="ph apropos">
+ <div class="stars"></div><div class="globe"></div><div class="notch"></div>
+ <div class="back"><span>‹ Retour</span></div><div class="titre">À propos</div>
+ <div class="bloc">
+  <div class="bulle"><div class="qui">Un jeu imaginé et créé par</div><div class="nom">[ton nom]</div><div class="note">Trouve les 197 pays du monde, leurs drapeaux et leurs capitales.</div></div>
+  <span class="cta"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6.5 10l5.5 5.5 5.5-5.5M4 20h16"/></svg><span>Installer l'appli</span></span>
+  <div class="plus">Countrizz sur ton écran d'accueil, jouable même sans réseau.</div>
+  <div class="ios">Sur iPhone et iPad : touche <b>Partager</b> ⬆︎ puis <b>« Sur l'écran d'accueil »</b>.</div>
+ </div>
+ <div class="mentions">Mentions et licences</div>
+ <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+</div></div></div>
+<h3>À propos</h3>
+<p>Le nom de l'auteur dans une bulle crème, puis « Installer l'appli » (le bouton du navigateur s'il propose l'installation ; sinon, sur iPhone et iPad, l'astuce « Partager → Sur l'écran d'accueil », Safari n'ayant pas de bouton d'installation). Si l'appli est déjà installée, le bouton disparaît.</p>
+<p>Je garde un petit lien « Mentions et licences » en bas : les licences des données (ODbL de mledoze, CC BY de certaines frontières, CC BY-NC-SA d'EOX) exigent que l'attribution reste accessible quelque part. Il ouvre la liste complète, sans effort de mise en page.</p></div>
+
+<div class="card"><div class="pw"><div class="scaler"><div class="ph charge">
+ <div class="stars"></div><div class="notch"></div>
+ <div class="titre">Countrizz</div>
+ <canvas id="terre" aria-hidden="true"></canvas>
+ <div class="bas"><div class="barre"><i></i></div><div class="msg">Préparation du globe…</div></div>
+</div></div></div>
+<h3>Chargement</h3>
+<p>Une petite Terre en three.js, à part du vrai globe : aplats à 3 tons en facettes nettes et contour noir sur un halo bleu (la famille de l'avion A2), relief multiplié par ≈ 20 (l'Himalaya monte à 24 % du rayon), sommets enneigés, 12 épingles géantes sur des capitales, nuages en boules. Elle ne pèse que 49 Ko de données (une carte d'élévation de 360 × 180 px) et se dessine en WebGL simple, pour s'afficher avant le vrai globe. Mouvement réduit : elle reste immobile.</p></div>
+
+</div></main>
+<script type="module">
+import { mount } from '/files/globe-chargement.js';
+mount(document.getElementById('terre'), { relief: '/files/relief-360.png' }).catch((e) => console.error('globe-chargement', e));
+</script>
+</body></html>

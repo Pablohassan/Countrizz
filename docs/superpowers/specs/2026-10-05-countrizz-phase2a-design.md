@@ -102,7 +102,7 @@ suffit pas. Il faut :
 - FR : inchangé, sauf `overrides.names.fr` : **RD Congo**, **Cap-Vert**, **Vatican** ; Ukraine : **Kiev** ;
   Guinée équatoriale : **Ciudad de la Paz** (FR et EN).
 - Coordonnées : Natural Earth `populated_places` (épinglé), 188/197 directs ; alias ou points imposés pour 9 cas
-  (dont Jérusalem-Est, Ngerulmud, Ciudad de la Paz — ce dernier à confirmer sur Wikidata depuis le Mac).
+  (dont Jérusalem-Est, Ngerulmud, Ciudad de la Paz : 1,5925° N, 10,8236° E).
 - Contrôles : libellés complets et uniques par langue, arbitrages complets, capitale dans le pays et dans le cadre de
   la caméra à l'arrivée (règle le cadrage de Kiribati).
 
@@ -114,7 +114,7 @@ Module unique (`ui/haptics`, prototype `ecrans/haptique.js`), réglage « Vibrat
   chiffre, « GO ! » 45, record 20·40·20·40·20·40·90 (ms) ;
 - **iPhone iOS 18+** : « tic » système (interrupteur `switch` caché) à l'appui et aux réponses ;
 - **ordinateur** : rien ; les effets visuels restent.
-Motifs ajustables après essai au doigt sur de vrais téléphones (essai : `ecrans/haptique.html`).
+Motifs réglés **après la 2A**, au doigt, sur countrizz.fr déployé (§13) ; d'ici là, ceux-ci (essai : `ecrans/haptique.html`).
 
 ## 8. PWA
 
@@ -178,7 +178,7 @@ GitHub : `check` seul. **Le Mac fait foi** (`check && test:data && e2e && budget
   visuelles `-darwin` des nouveaux écrans, WebGPU et `forceWebGL`.
 - **Chart** : `helm template` + refus des nœuds inexistants.
 - **Budget** : premier chargement ≤ 8 Mo (comme en 1B) ; écran de chargement ≈ 60 Ko ; précache borné.
-- **À la main, sur vrais téléphones** : ressenti haptique (Android, iPhone), installation PWA.
+- **À la main, sur vrais téléphones** : installation PWA ; ressenti haptique **après la 2A**, sur countrizz.fr.
 
 ## 12. Amendements au spec de refonte
 
@@ -192,10 +192,18 @@ GitHub : `check` seul. **Le Mac fait foi** (`check && test:data && e2e && budget
 | 7 | build par GitHub Actions | **build sur le Mac**, image publique, Helm depuis rpi1 (§9) |
 | 9 | page « Crédits » | « **À propos** » + lien « Mentions et licences » (liste brute des attributions exigées) |
 
-## 13. Points ouverts (à trancher pendant le plan, sans rouvrir la conception)
+## 13. Points ouverts : résolus le 06/10
 
-1. Motifs haptiques : réglage fin après essai au doigt.
-2. Coordonnées de Ciudad de la Paz : confirmer sur Wikidata (P625) depuis le Mac.
-3. Docker Hub, tirages anonymes : limites à vérifier dans leur documentation avant d'en dépendre au démarrage des pods.
-4. Namespace `countrizz` : Pod Security Admission `restricted` (une première sur le parc) et étiquette Goldilocks ?
-5. Proxy .60 : `proxy_max_temp_file_size 0` sur les gros KTX2 (écriture sur .60, donc sur GO).
+| # | Point | Résolution |
+|---|---|---|
+| 1 | Réglage fin de l'haptique | **Après la 2A**, par l'utilisateur, au doigt, **sur countrizz.fr déployé** depuis son téléphone. La 2A livre les motifs du §7 tels quels ; le plan prévoit un réglage facile (motifs dans un seul fichier). |
+| 2 | Coordonnées de Ciudad de la Paz | **1,5925° N, 10,8236° E** (geodatos.net, cohérent avec l'article Wikipedia « Djibloho ») en point imposé ; le contrôle « capitale dans le pays » le vérifie contre le contour de la Guinée équatoriale. Recoupement Wikidata (P625) facultatif depuis le Mac. |
+| 3 | Docker Hub, tirages anonymes | La documentation Docker indique, selon les pages, 100 tirages / 6 h ou **10 tirages / heure par adresse IP** pour un anonyme (on retient le plus strict). Avec une image publique, `pullPolicy: IfNotPresent`, 2 réplicas et des tags immuables, un déploiement coûte au plus 2 tirages : on reste **anonyme**, comme le reste du parc. Repli documenté si une erreur 429 apparaît (rafale après la purge du dimanche ou un drain) : un `imagePullSecret` vers le compte `pablohassan`. |
+| 4 | Namespace `countrizz` | **Pod Security Admission `restricted`** (le pod nginx non root s'y conforme : `runAsNonRoot`, `seccompProfile: RuntimeDefault`, `capabilities.drop: [ALL]`, `allowPrivilegeEscalation: false`) — une première sur le parc, à noter dans `~/docs/cluster/countrizz.md` ; étiquette **`goldilocks.fairwinds.com/enabled=true`** comme les autres namespaces applicatifs. Les deux sont posés par le chart. |
+| 5 | Proxy .60 et gros KTX2 | **`proxy_max_temp_file_size 0;`** dans le **seul** vhost `countrizz.fr` (pas de fichiers temporaires sur la carte SD du proxy) ; écriture sur .60, donc appliquée **sur GO** au moment du premier déploiement, avec synchronisation vers le backup .3. |
+
+Sources du point 3 : [Docker Hub pull usage and limits](https://docs.docker.com/docker-hub/usage/pulls/),
+[Docker Hub usage and limits](https://docs.docker.com/docker-hub/usage/),
+[Revisiting Docker Hub Policies](https://www.docker.com/blog/revisiting-docker-hub-policies-prioritizing-developer-experience/).
+Point 2 : [geodatos.net — Ciudad de la Paz](https://www.geodatos.net/en/coordinates/equatorial-guinea/djibloho),
+[Wikipedia — Djibloho](https://en.wikipedia.org/wiki/Djibloho).

@@ -1,0 +1,20 @@
+# Convention du parc « namespace-isolation » : entrées depuis le namespace, le monitoring, le LAN et le CIDR des pods
+# (SNAT de kube-proxy). Une règle par port exposé (8080).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: namespace-isolation
+  namespace: {{ .Values.namespace }}
+  labels: {{- include "countrizz.labels" . | nindent 4 }}
+spec:
+  podSelector: {}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector: {}
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: {{ .Values.networkPolicy.monitoringNamespace }} }
+        - ipBlock: { cidr: {{ .Values.networkPolicy.lan }} }
+        - ipBlock: { cidr: {{ .Values.networkPolicy.podCidr }} }
+      ports:
+        - { port: 8080, protocol: TCP }

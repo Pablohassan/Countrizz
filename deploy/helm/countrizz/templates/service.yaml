@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: countrizz-web
+  namespace: {{ .Values.namespace }}
+  labels: {{- include "countrizz.labels" . | nindent 4 }}
+spec:
+  type: LoadBalancer
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}   # spec.loadBalancerIP seul, sans annotation MetalLB
+  selector: {{- include "countrizz.selector" . | nindent 4 }}
+  ports:
+    - { name: http, port: {{ .Values.service.port }}, targetPort: http, protocol: TCP }

@@ -12,3 +12,4 @@ web/public/basis/
 *.env
 web/test-results/
 web/playwright-report/
+.image-staging/

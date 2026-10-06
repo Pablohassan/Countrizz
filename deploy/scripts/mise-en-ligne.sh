@@ -91,7 +91,7 @@ PAGE
 fi
 
 # ── 2. Image ────────────────────────────────────────────────────────────────────────────────────────────────────
-if faire 2; then
+if faire 2 && [ -z "${TAG}" ]; then          # --tag fourni : image déjà poussée, pas de reconstruction
   etape 2 "Suite complète du Mac, build et image arm64 (long : e2e compris)"
   SORTIE="$(mktemp)"
   "${BUILD}" | tee "${SORTIE}"

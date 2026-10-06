@@ -4,6 +4,27 @@ Préparé le 06/10/2026 dans la session cloud. Les fichiers de déploiement sont
 `claude/compassionate-planck-14do24` (commits `ebd24d7` … `989c9ce`). **Chaque étape marquée GO écrit hors du dépôt :
 elle attend l'accord explicite de l'utilisateur.** Recopier les sorties réelles dans `docs/HANDOFF.md` à la fin.
 
+## En une commande (recommandé)
+
+```bash
+cd ~/projetsperso/countriz/countrizz
+git fetch countriz claude/compassionate-planck-14do24
+git switch -c deploiement-2a1 countriz/claude/compassionate-planck-14do24   # ou fusionner dans newcountri
+deploy/scripts/mise-en-ligne.sh
+```
+
+Le script enchaîne les étapes 0 à 7 ci-dessous **en attendant la fin de chacune**, s'arrête à la première erreur, et
+demande **« GO ? [o/N] »** avant chaque écriture hors du dépôt (page de doc sur rpi1, registre MetalLB, vhost du proxy
+.60 — `sudo` peut demander le mot de passe de .60). Tout est journalisé dans `~/countrizz-mise-en-ligne-*.log`.
+Reprise après une interruption : `deploy/scripts/mise-en-ligne.sh --depuis <étape> [--tag <étiquette déjà poussée>]`.
+L'étape 7 (supervision) reste guidée : le script affiche les cibles actuelles et la procédure à suivre.
+
+Essai à blanc fait dans la session cloud (ssh, scp, docker, curl, sudo et nginx remplacés par des doublures) :
+parcours complet, relance (page existante comparée, proxy déjà en place, GO refusés sautés), `nginx -t` en échec
+(vhost restauré, arrêt), suite de tests en échec (arrêt avant le déploiement).
+
+Le détail de chaque étape, pour comprendre ce que fait le script ou pour le faire à la main :
+
 ## 0. Préparer le Mac
 
 ```bash

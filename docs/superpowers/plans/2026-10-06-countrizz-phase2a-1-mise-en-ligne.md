@@ -634,6 +634,8 @@ curl -fsSI https://countrizz.fr/ | head -1
 
 ### Task 5 : première mise en ligne (Mac, avec l'utilisateur ; chaque écriture hors dépôt sur GO)
 
+**Ajout du 06/10 (demande de l'utilisateur) : tout s'enchaîne par `deploy/scripts/mise-en-ligne.sh`** (une étape après l'autre, arrêt à la première erreur, « GO ? [o/N] » avant chaque écriture hors dépôt, journal `~/countrizz-mise-en-ligne-*.log`, reprise `--depuis N [--tag T]`). Mode d'emploi : `docs/infra/2026-10-06-countrizz-premiere-mise-en-ligne.md`. Les étapes ci-dessous sont celles du script.
+
 - [ ] **Step 1 (GO)** : page `~/docs/cluster/countrizz.md` sur rpi1 — rôle, namespace `countrizz` en Pod Security **`restricted`** (première du parc : un pod root y est refusé, voulu), release dans `default`, IP `.101`, image publique, commandes `build-image.sh` / `deploy.sh`, retour arrière (`helm rollback countrizz <révision> -n default`).
 - [ ] **Step 2** : `deploy/scripts/build-image.sh` → recopier l'étiquette imprimée et la durée de la suite complète.
 - [ ] **Step 3** : `deploy/scripts/deploy.sh <étiquette>` → recopier la sortie (rendu, gardes, dry-run, statut, `ok` de `/healthz` sur `.101`, `HTTP/2 200` de countrizz.fr).

@@ -1,0 +1,14 @@
+# Namespace géré par ce chart (la release vit dans « default ») : Pod Security Admission « restricted » —
+# Kubernetes refuse tout pod root, avec élévation de privilèges, capacités ou sans seccomp (une première sur le parc,
+# décision du 06/10) — et étiquette Goldilocks comme les autres namespaces applicatifs.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace }}
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    goldilocks.fairwinds.com/enabled: "true"
+    {{- include "countrizz.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep   # un « helm uninstall » ne supprime pas le namespace

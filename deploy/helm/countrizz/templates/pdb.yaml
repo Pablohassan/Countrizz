@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: countrizz-web
+  namespace: {{ .Values.namespace }}
+  labels: {{- include "countrizz.labels" . | nindent 4 }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {{- include "countrizz.selector" . | nindent 6 }}

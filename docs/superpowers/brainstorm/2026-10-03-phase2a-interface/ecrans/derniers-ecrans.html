@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Derniers écrans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+<style>
+  :root { --page: #f5f5f7; --ink: #1d1d1f; --muted: #6e6e73; --card: #fff; --line: #d1d1d6; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6; --card: #2d2d2f; --line: #424245; } }
+  :root[data-theme="dark"] { --page: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6; --card: #2d2d2f; --line: #424245; }
+  html, body { margin: 0; background: var(--page); color: var(--ink); font-family: system-ui, -apple-system, sans-serif; }
+  main { padding: 28px 16px 60px; max-width: 1240px; margin: 0 auto; }
+  h2 { font-size: 1.5rem; margin: 0 0 .4rem; }
+  .sub { color: var(--muted); margin: 0 0 1.4rem; max-width: 1000px; line-height: 1.5; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.4rem; align-items: start; }
+  .card { border: 2px solid var(--line); border-radius: 18px; padding: 14px; background: var(--card); }
+  .card.large { grid-column: 1 / -1; }
+  .card h3 { margin: 12px 0 4px; font-size: 1rem; }
+  .card p { margin: 0; font-size: .84rem; color: var(--muted); line-height: 1.45; }
+  .pw { width: 252px; height: 545px; margin: 0 auto; border-radius: 30px; overflow: hidden; box-shadow: 0 0 0 7px #0b0b10, 0 10px 30px rgba(0,0,0,.4); }
+  .scaler { width: 390px; height: 844px; transform: scale(.646); transform-origin: 0 0; }
+  .pwl { width: min(100%, 548px); aspect-ratio: 844 / 390; margin: 0 auto; border-radius: 30px; overflow: hidden; box-shadow: 0 0 0 7px #0b0b10, 0 10px 30px rgba(0,0,0,.4); container-type: inline-size; }
+  .scalerl { width: 844px; height: 390px; transform: scale(calc(100cqw / 844px)); transform-origin: 0 0; }
+
+  .ph { position: relative; overflow: hidden; font-family: 'Chango', system-ui; background: #000; color: #fff8e7; }
+  .por { width: 390px; height: 844px; }
+  .pay { width: 844px; height: 390px; }
+  .stars { position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 30px 60px,#fff,transparent), radial-gradient(1px 1px at 120px 140px,#ddd,transparent), radial-gradient(1.5px 1.5px at 300px 90px,#fff,transparent), radial-gradient(1px 1px at 250px 220px,#ccc,transparent), radial-gradient(1px 1px at 60px 300px,#fff,transparent), radial-gradient(1px 1px at 350px 330px,#bbb,transparent), radial-gradient(1px 1px at 600px 80px,#fff,transparent), radial-gradient(1px 1px at 760px 250px,#ddd,transparent); }
+  .globe { position: absolute; inset: 0; background: url('/files/acc-16.jpg') center 400px / 390px 844px no-repeat; }
+  .notch { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; border-radius: 18px; background: #000; z-index: 9; }
+  .credit { position: absolute; left: 12px; right: 10px; bottom: 38px; z-index: 6; font: 10px/1.3 system-ui, sans-serif; color: rgba(255,255,255,.7); text-shadow: 0 0 2px #000; text-align: right; }
+  .credit u { text-decoration: underline; }
+  .back { position: absolute; top: 58px; left: 18px; z-index: 6; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 3px 3px 0 #000; transform: skewX(-15deg); padding: 6px 12px; font-size: 14px; }
+  .back > span, .cta > span, .sec > span { display: inline-block; transform: skewX(15deg); }
+  .titre { color: #f7dc6f; text-align: center; text-shadow: -4px 3px 2px rgb(11,13,15); }
+  .cta { display: inline-block; background: #6225e6; color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; transform: skewX(-15deg); padding: 9px 26px; font-size: 20px; }
+  .sec { display: inline-block; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 4px 4px 0 #000; transform: skewX(-15deg); padding: 7px 14px; font-size: 13px; }
+  .bulle { background: #fff8e7; color: #16173a; border: 3px solid #000; border-radius: 16px; box-shadow: 6px 6px 0 #000; padding: 18px 18px 16px; text-align: center; font: 15px/1.45 system-ui, sans-serif; }
+  .bulle b { font: 22px/1.15 'Chango', system-ui; display: block; margin-bottom: 8px; color: #6225e6; }
+  .avion { display: block; margin: 0 auto 14px; }
+
+  /* Crédits */
+  .credits .titre { position: absolute; top: 100px; left: 0; right: 0; font-size: 30px; z-index: 5; }
+  .credits .panneau { position: absolute; top: 150px; left: 18px; right: 18px; bottom: 96px; z-index: 5; background: rgba(22,23,58,.95); border: 3px solid #f7dc6f; border-radius: 12px; box-shadow: 5px 5px 0 #000; padding: 14px 16px; overflow: hidden; font: 12.5px/1.45 system-ui, sans-serif; color: #fff8e7; }
+  .credits h4 { font: 13px/1.2 'Chango', system-ui; color: #f7dc6f; margin: 0 0 4px; }
+  .credits section { margin-bottom: 11px; }
+  .credits .lic { display: inline-block; font: 700 10px/1 system-ui; padding: 2px 5px; border-radius: 4px; background: #f7dc6f; color: #16173a; margin-left: 4px; vertical-align: 1px; }
+  .credits .pli { color: #f7dc6f; text-decoration: underline; }
+  .credits .defile { position: absolute; left: 0; right: 0; bottom: 0; height: 48px; background: linear-gradient(rgba(22,23,58,0), #16173a); }
+
+  /* Chargement */
+  .charge .titre { position: absolute; top: 150px; left: 0; right: 0; font-size: 50px; z-index: 5; }
+  .charge .bloc { position: absolute; top: 300px; left: 40px; right: 40px; text-align: center; z-index: 5; }
+  .charge .barre { height: 14px; background: #16173a; border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; overflow: hidden; margin-top: 18px; }
+  .charge .barre i { display: block; height: 100%; width: 64%; background: #f7dc6f; border-right: 2px solid #000; }
+  .charge .msg { font: 14px/1.4 system-ui, sans-serif; color: rgba(247,220,111,.85); margin-top: 12px; }
+  .charge .avion { animation: plane 2.2s ease-in-out infinite; }
+  @keyframes plane { 50% { transform: translate(12px, -6px) rotate(-6deg); } }
+
+  /* Erreurs */
+  .err .titre { position: absolute; top: 110px; left: 0; right: 0; font-size: 34px; z-index: 5; }
+  .err .bloc { position: absolute; top: 200px; left: 30px; right: 30px; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 26px; }
+  .err .petit { font: 12px/1.4 system-ui, sans-serif; color: rgba(247,220,111,.7); text-align: center; }
+
+  /* Tourne ton téléphone */
+  .tourne { background: #16173a; }
+  .tourne .fond { position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, #262864, #16173a 70%); }
+  .tourne .bloc { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 44px; z-index: 5; }
+  .tourne .tel { width: 70px; height: 120px; border: 5px solid #f7dc6f; border-radius: 14px; box-shadow: 4px 4px 0 #000; position: relative; animation: pivote 2.4s ease-in-out infinite; }
+  .tourne .tel::after { content: ''; position: absolute; left: 50%; bottom: 6px; width: 16px; height: 4px; margin-left: -8px; border-radius: 2px; background: #f7dc6f; }
+  @keyframes pivote { 0%, 20% { transform: rotate(-90deg); } 55%, 100% { transform: rotate(0deg); } }
+  .tourne .txt .titre { font-size: 34px; text-align: left; }
+  .tourne .txt p { font: 15px/1.4 system-ui, sans-serif; color: rgba(255,248,231,.85); margin: 10px 0 0; }
+  .tourne .pause { display: inline-flex; gap: 6px; align-items: center; margin-top: 16px; background: #f7dc6f; color: #16173a; border: 2px solid #000; box-shadow: 3px 3px 0 #000; padding: 4px 10px; font-size: 13px; }
+
+  @media (prefers-reduced-motion: reduce) { .charge .avion, .tourne .tel { animation: none; } .tourne .tel { transform: rotate(0); } }
+</style></head><body><main>
+<h2>Derniers écrans : crédits, chargement, erreurs, « Tourne ton téléphone »</h2>
+<p class="sub">Une seule proposition par écran, dans le style déjà validé (titres jaunes, bulles crème, boutons violets inclinés). Les textes des crédits viennent des vrais fichiers <code>data/credits.json</code> et <code>textures/credits.json</code>. Les erreurs passent dans l'interface (traduisibles) au lieu du texte français codé en dur dans <code>GlobeView</code>.</p>
+<div class="cards">
+
+<!-- Crédits -->
+<div class="card"><div class="pw"><div class="scaler"><div class="ph por credits">
+ <div class="stars"></div><div class="globe" style="background-position: center 640px"></div><div class="notch"></div>
+ <div class="back"><span>‹ Retour</span></div><div class="titre">Crédits</div>
+ <div class="panneau">
+  <section><h4>Imagerie du globe</h4>EOxCloudless <span class="pli">https://cloudless.eox.at</span> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)<span class="lic">CC BY-NC-SA 4.0</span></section>
+  <section><h4>Textures</h4>Glaces polaires et nuages : Blue Marble, NASA Earth Observatory (Reto Stöckli). Nuit : Black Marble 2016, NASA (Joshua Stevens, Miguel Román). Relief : NASA Earth Observatory (Jesse Allen), GEBCO.</section>
+  <section><h4>Frontières et pays</h4>Natural Earth<span class="lic">domaine public</span><br>mledoze/countries<span class="lic">ODbL 1.0</span><br>Capitales : Wikidata<br>geoBoundaries : 66 pays, 9 licences <span class="pli">voir le détail ›</span></section>
+  <section><h4>Jeu</h4>Countrizz, jeu non commercial. Police Chango (SIL OFL).</section>
+  <div class="defile"></div>
+ </div>
+ <div style="position:absolute;left:0;right:0;bottom:56px;text-align:center;z-index:6"><span class="sec"><span>Haut de page</span></span></div>
+</div></div></div>
+<h3>Crédits</h3><p>Le décor de l'accueil, un panneau bleu nuit à bordure jaune qui défile (la famille du tableau des scores). Les licences en pastilles jaunes ; les 66 sources geoBoundaries sont repliées derrière « voir le détail ». Le crédit EOX est en tête : pas besoin du bandeau du bas sur cet écran.</p></div>
+
+<!-- Chargement -->
+<div class="card"><div class="pw"><div class="scaler"><div class="ph por charge">
+ <div class="stars"></div><div class="notch"></div>
+ <div class="titre">Countrizz</div>
+ <div class="bloc">
+  <svg class="avion" width="96" height="62" viewBox="0 0 40 26" aria-hidden="true"><path d="M38 10L8 0 15 9Z" fill="#cfc3a6" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/><path d="M38 10L15 13 20 23Z" fill="#6225e6" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/><path d="M38 10L1 5 15 13Z" fill="#fff8e7" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/></svg>
+  <div class="barre"><i></i></div>
+  <div class="msg">Préparation du globe…</div>
+ </div>
+</div></div></div>
+<h3>Chargement (avant que le globe soit prêt)</h3><p>Fond étoilé, titre, l'avion en papier qui flotte et une jauge jaune (la même que le chrono). Affiché seulement si le globe n'est pas prêt au bout de ≈ 300 ms, pour ne pas clignoter sur une connexion rapide. En 2B, l'intro 3D prendra ce rôle.</p></div>
+
+<!-- Erreur de chargement -->
+<div class="card"><div class="pw"><div class="scaler"><div class="ph por err">
+ <div class="stars"></div><div class="globe" style="filter: grayscale(.85) brightness(.55)"></div><div class="notch"></div>
+ <div class="titre">Oups&nbsp;!</div>
+ <div class="bloc">
+  <div class="bulle"><b>Le globe n'a pas pu se charger</b>Vérifie ta connexion, puis réessaie.</div>
+  <span class="cta"><span>Réessayer</span></span>
+  <div class="petit">Si le problème continue, recharge la page.</div>
+ </div>
+</div></div></div>
+<h3>Erreur de chargement (et perte du GPU)</h3><p>Textures ou frontières introuvables après les nouvelles tentatives : le globe grisé derrière, une bulle crème et « Réessayer ». La même carte sert si le GPU est perdu en cours de partie (« Le globe s'est arrêté », la partie en cours est perdue).</p></div>
+
+<!-- Navigateur incompatible -->
+<div class="card"><div class="pw"><div class="scaler"><div class="ph por err">
+ <div class="stars"></div><div class="notch"></div>
+ <div class="titre">Oh non&nbsp;!</div>
+ <div class="bloc">
+  <div class="bulle"><b>Ton navigateur ne peut pas afficher le globe</b>Countrizz a besoin de WebGPU ou de WebGL 2. Essaie avec un navigateur récent : Chrome, Edge, Firefox ou Safari à jour.</div>
+  <div class="petit">Le globe 3D est le cœur du jeu : il n'y a pas de version sans lui.</div>
+ </div>
+</div></div></div>
+<h3>Navigateur incompatible</h3><p>Pas de globe du tout : fond étoilé, même bulle, pas de bouton (réessayer ne changerait rien). Texte traduit en anglais comme le reste.</p></div>
+
+<!-- Tourne ton téléphone -->
+<div class="card large"><div class="pwl"><div class="scalerl"><div class="ph pay tourne">
+ <div class="fond"></div><div class="stars"></div>
+ <div class="bloc">
+  <div class="tel" aria-hidden="true"></div>
+  <div class="txt"><div class="titre">Tourne ton téléphone</div><p>Countrizz se joue en portrait.</p><span class="pause">❚❚ Partie en pause</span></div>
+ </div>
+</div></div></div>
+<h3>« Tourne ton téléphone » (téléphone en paysage)</h3><p>Écran bleu nuit plein, un téléphone jaune qui pivote vers le portrait, le titre et, pendant une partie, la pastille « ❚❚ Partie en pause » (le chrono s'arrête, comme pour l'onglet caché). Seulement sur téléphone (pointeur grossier et petit écran) ; une tablette ou un ordinateur en paysage jouent normalement (décision 5).</p></div>
+
+</div></main></body></html>

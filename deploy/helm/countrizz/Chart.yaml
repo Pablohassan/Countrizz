@@ -1,0 +1,6 @@
+apiVersion: v2
+name: countrizz
+description: Countrizz — site statique du jeu (web seul en 2A), servi sur countrizz.fr via le proxy .60.
+type: application
+version: 0.1.0
+appVersion: "2A"

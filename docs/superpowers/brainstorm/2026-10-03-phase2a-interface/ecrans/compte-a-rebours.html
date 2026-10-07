@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Compte à rebours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+<style>
+  :root { --page: #f5f5f7; --ink: #1d1d1f; --muted: #6e6e73; --card: #fff; --line: #d1d1d6; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6; --card: #2d2d2f; --line: #424245; } }
+  :root[data-theme="dark"] { --page: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6; --card: #2d2d2f; --line: #424245; }
+  html, body { margin: 0; background: var(--page); color: var(--ink); font-family: system-ui, -apple-system, sans-serif; }
+  main { padding: 28px 16px 60px; max-width: 1200px; margin: 0 auto; }
+  h2 { font-size: 1.5rem; margin: 0 0 .4rem; }
+  .sub { color: var(--muted); margin: 0 0 1.4rem; max-width: 1000px; line-height: 1.5; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 1.4rem; align-items: start; }
+  .card { border: 2px solid var(--line); border-radius: 18px; padding: 14px; background: var(--card); }
+  .card h3 { margin: 12px 0 4px; font-size: 1rem; }
+  .card p { margin: 0; font-size: .84rem; color: var(--muted); line-height: 1.45; }
+
+  /* ===== téléphone : le premier vol part pendant le compte à rebours ===== */
+  .phone { position: relative; width: 300px; height: 649px; margin: 0 auto; border-radius: 34px; overflow: hidden; box-shadow: 0 0 0 8px #0b0b10, 0 10px 30px rgba(0,0,0,.45); background: #000; font-family: 'Chango', system-ui; }
+  .globe { position: absolute; inset: 0; background: url('/files/acc-16.jpg') center 310px / 300px 649px no-repeat; animation: vol 4.4s ease-in-out infinite; transform-origin: 38% 82%; }
+  @keyframes vol { 0% { transform: scale(1); } 75% { transform: scale(1.9) translateY(-40px); } 100% { transform: scale(1.9) translateY(-40px); } }
+  .notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 92px; height: 24px; border-radius: 14px; background: #000; z-index: 9; }
+  .credit { position: absolute; left: 14px; right: 14px; bottom: 8px; z-index: 6; font: 7.5px/1.25 system-ui, sans-serif; color: rgba(255,255,255,.75); text-shadow: 0 0 2px #000; text-align: right; }
+  .credit u { text-decoration: underline; }
+
+  /* HUD H2 (décision 10) : plein, en pause pendant le compte à rebours */
+  .hud { position: absolute; top: 38px; left: 12px; right: 12px; z-index: 6; }
+  .hud .l1 { display: flex; align-items: center; gap: 10px; }
+  .quit { width: 32px; height: 32px; border-radius: 50%; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 2px 2px 0 #000; display: grid; place-items: center; font-size: 12px; }
+  .sec { color: rgba(247,220,111,.75); font-size: 14px; text-shadow: 3px 2px 1px #000; }
+  .pill { margin-left: auto; background: #16173a; color: #f7dc6f; border: 2px solid #000; box-shadow: 3px 3px 0 #000; padding: 3px 10px; font-size: 14px; transform: skewX(-15deg); }
+  .pill > span { display: inline-block; transform: skewX(15deg); }
+  .jauge { position: relative; margin-top: 10px; height: 12px; background: rgba(22,23,58,.85); border: 2px solid #000; border-radius: 8px; box-shadow: 2px 2px 0 #000; overflow: hidden; }
+  .jauge i { position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, rgba(247,220,111,.55) 0 6px, rgba(247,220,111,.3) 6px 12px); }
+
+  /* chiffres : une seconde chacun, puis « GO ! » ; boucle de 4,4 s */
+  .cd { position: absolute; inset: 0; z-index: 7; display: grid; place-items: center; pointer-events: none; }
+  .cd > * { grid-area: 1 / 1; opacity: 0; animation: pop 4.4s linear infinite; }
+  .cd > :nth-child(2) { animation-delay: 1.1s; }
+  .cd > :nth-child(3) { animation-delay: 2.2s; }
+  .cd > :nth-child(4) { animation-delay: 3.3s; }
+  @keyframes pop {
+    0% { opacity: 0; transform: scale(.3); }
+    4% { opacity: 1; transform: scale(1.18); }
+    8% { transform: scale(1); }
+    19% { opacity: 1; transform: scale(1); }
+    24% { opacity: 0; transform: scale(1.7); }
+    100% { opacity: 0; transform: scale(1.7); }
+  }
+  .cd .go { animation-name: popgo; }
+  @keyframes popgo {
+    0% { opacity: 0; transform: scale(.3) rotate(-8deg); }
+    4% { opacity: 1; transform: scale(1.15) rotate(-4deg); }
+    8% { transform: scale(1) rotate(-4deg); }
+    20% { opacity: 1; transform: scale(1) rotate(-4deg); }
+    25% { opacity: 0; transform: scale(1.4) rotate(-4deg); }
+    100% { opacity: 0; }
+  }
+
+  /* C1 · chiffres géants jaunes */
+  .c1 .n { font-size: 150px; line-height: 1; color: #f7dc6f; text-shadow: -9px 6px 2px rgb(11,13,15); -webkit-text-stroke: 3px #000; }
+  .c1 .go { font-size: 64px; color: #fff; background: #6225e6; border: 3px solid #000; box-shadow: 8px 8px 0 #000; padding: 6px 26px 10px; }
+
+  /* C2 · couleurs du Lottie de l'ancien jeu */
+  .c2 .n { font-size: 150px; line-height: 1; color: #bf76ff; background: linear-gradient(#d6a4f8 0 38%, #bf76ff 38%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(-8px 6px 0 #f7dc6f) drop-shadow(0 0 1px #000); -webkit-text-stroke: 3px #16173a; }
+  .c2 .go { font-size: 76px; line-height: 1; background: linear-gradient(#d6a4f8 0 38%, #bf76ff 38%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(-6px 5px 0 #f7dc6f); -webkit-text-stroke: 2.5px #16173a; }
+
+  /* C3 · pastille violette (style .BtnCountdown) */
+  .c3 .n, .c3 .go { width: 150px; height: 150px; border-radius: 50%; background: #6225e6; border: 4px solid #000; box-shadow: 8px 8px 0 #000; display: grid; place-items: center; color: #fff; font-size: 80px; line-height: 1; }
+  .c3 .go { background: #f7dc6f; color: #16173a; font-size: 44px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .globe { animation: none; }
+    .cd > * { animation: none; }
+    .cd > :first-child { opacity: 1; }
+  }
+</style></head><body><main>
+<h2>Compte à rebours 3-2-1 : trois pistes</h2>
+<p class="sub">Une seconde par chiffre, puis « GO ! » (environ 4 s en tout ; ici en boucle). Le HUD H2 est déjà en place, jauge pleine et hachurée : le chrono ne démarre qu'à la première question. Proposition pour la sous-question du brief : <strong>le premier vol part pendant le compte à rebours</strong> (le globe zoome derrière les chiffres). Un vol dure 1,5 à 3,5 s : la première question arrive donc juste après « GO ! », sans temps mort.</p>
+<div class="cards">
+
+<div class="card">
+ <div class="phone c1"><div class="globe"></div><div class="notch"></div>
+  <div class="hud"><div class="l1"><div class="quit">✕</div><span class="sec">❚❚ 60</span><div class="pill"><span>★ 0</span></div></div><div class="jauge"><i></i></div></div>
+  <div class="cd"><span class="n">3</span><span class="n">2</span><span class="n">1</span><span class="go">GO&nbsp;!</span></div>
+  <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+ </div>
+ <h3>C1 · Chiffres géants jaunes</h3><p>Chango #f7dc6f cerné de noir, ombre portée comme le titre de l'accueil ; chaque chiffre surgit, puis s'envole en grossissant. « GO ! » dans un pavé violet incliné, comme le bouton « Jouer ». La plus proche du reste de l'interface.</p>
+</div>
+
+<div class="card">
+ <div class="phone c2"><div class="globe"></div><div class="notch"></div>
+  <div class="hud"><div class="l1"><div class="quit">✕</div><span class="sec">❚❚ 60</span><div class="pill"><span>★ 0</span></div></div><div class="jauge"><i></i></div></div>
+  <div class="cd"><span class="n">3</span><span class="n">2</span><span class="n">1</span><span class="go">GO&nbsp;!</span></div>
+  <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+ </div>
+ <h3>C2 · Les couleurs de l'ancien Lottie</h3><p>Lilas #bf76ff avec reflet #d6a4f8 et ombre jaune #f7dc6f : le clin d'œil à l'ancien compte à rebours. Joli, mais c'est le seul endroit où ce lilas apparaîtrait.</p>
+</div>
+
+<div class="card">
+ <div class="phone c3"><div class="globe"></div><div class="notch"></div>
+  <div class="hud"><div class="l1"><div class="quit">✕</div><span class="sec">❚❚ 60</span><div class="pill"><span>★ 0</span></div></div><div class="jauge"><i></i></div></div>
+  <div class="cd"><span class="n">3</span><span class="n">2</span><span class="n">1</span><span class="go">GO&nbsp;!</span></div>
+  <div class="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+ </div>
+ <h3>C3 · Pastille violette</h3><p>Un rond violet #6225e6 cerné de noir, chiffre blanc ; « GO ! » passe en jaune. Le style .BtnCountdown de l'ancien code (jamais branché). Plus sage, il masque moins le globe… mais il ressemble à un bouton.</p>
+</div>
+
+</div></main></body></html>

@@ -1,4 +1,6 @@
 # Valeurs de production (aucun secret). L'étiquette d'image est imposée au déploiement (--set image.tag=…).
+# Namespace de la release (helm -n countrizz), comme toutes les releases du parc. Il n est PAS créé par le chart :
+# deploy.sh le crée avant Helm, sur GO, avec ses étiquettes (Pod Security « restricted », Goldilocks).
 namespace: countrizz
 
 image:

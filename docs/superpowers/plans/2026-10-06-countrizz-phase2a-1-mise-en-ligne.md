@@ -1,5 +1,14 @@
 # Countrizz — Phase 2A, plan 1 : mise en ligne de countrizz.fr · plan d'implémentation
 
+> **Révisé le 08/10/2026 sur le Mac — prime sur le texte ci-dessous là où il diverge.** Après confrontation de `deploy/` aux
+> règles écrites du cluster et à l'état réel (K3s v1.33.5, non v1.31.6), décisions de l'utilisateur : release Helm dans
+> le namespace **`countrizz`** (et non `default` ; le chart ne crée plus de Namespace, `deploy.sh` le crée sur GO avec
+> les étiquettes `restricted` et Goldilocks) ; **pas** de racine en lecture seule ; vhost .60 sans les locations de cache
+> du gabarit + `proxy_max_temp_file_size 0` (`vhost.mjs`) ; GO sur **chaque** écriture (envoi Docker Hub et Helm compris),
+> un refus arrête tout ; image essayée avant l'envoi puis contrôlée en arm64 et en lecture anonyme ; test du chart contre
+> les nœuds fantômes. Branche : `newcountri`. Le pas-à-pas à jour est
+> `docs/infra/2026-10-06-countrizz-premiere-mise-en-ligne.md`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** `https://countrizz.fr` sert le globe actuel (démo de la 1B) depuis le cluster K3s : image arm64 construite et poussée depuis le Mac après la suite complète, chart Helm durci sur `.101`, déploiement atomique lancé depuis rpi1. La chaîne image → Helm → proxy est validée **avant** le jeu ; chaque plan suivant de la 2A se déploie par les mêmes deux commandes.

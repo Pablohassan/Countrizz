@@ -13,3 +13,4 @@ web/public/basis/
 web/test-results/
 web/playwright-report/
 .image-staging/
+.playwright-mcp/

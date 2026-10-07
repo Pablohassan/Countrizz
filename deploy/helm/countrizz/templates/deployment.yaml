@@ -47,7 +47,6 @@ spec:
             - { name: http, containerPort: 8080, protocol: TCP }
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
             capabilities: { drop: [ALL] }
           readinessProbe:
             httpGet: { path: /healthz, port: http }
@@ -58,8 +57,3 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 15
           resources: {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-            - { name: tmp, mountPath: /tmp }     # pid et caches de nginx (racine en lecture seule)
-      volumes:
-        - name: tmp
-          emptyDir: { sizeLimit: 32Mi }

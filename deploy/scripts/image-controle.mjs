@@ -3,7 +3,8 @@
 //   node deploy/scripts/image-controle.mjs <étiquette>
 // 1. linux/arm64 présent (docker buildx imagetools inspect, avec les identifiants du Mac) ;
 // 2. manifeste lisible SANS identifiants (HEAD anonyme, comme un nœud : 200 si publique, 401 si privée ou absente).
-//    Un HEAD ne compte pas comme un tirage dans les limites de Docker Hub.
+//    Un HEAD ne compte pas comme un tirage dans les limites de Docker Hub, un GET si (docs.docker.com/docker-hub/usage/pulls,
+//    lue le 08/10/2026 : « GET requests … count towards the limit », les HEAD non ; anonyme : 100 par IPv4 et par 6 h).
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -20,7 +21,11 @@ export function plateformes(image) {
 async function lisibleSansIdentifiants(etiquette) {
   const jeton = await fetch(`https://auth.docker.io/token?service=registry.docker.io&scope=repository:${DEPOT}:pull`);
   if (!jeton.ok) throw new Error(`jeton anonyme Docker Hub : HTTP ${jeton.status}`);
-  const { token } = await jeton.json();
+  // Spécification du jeton (distribution.github.io/distribution/spec/auth/token, lue le 08/10/2026) : la réponse porte
+  // `token`, ou `access_token` (nom OAuth 2.0), ou les deux.
+  const corps = await jeton.json();
+  const token = corps.token ?? corps.access_token;
+  if (!token) throw new Error('jeton anonyme Docker Hub : réponse sans token ni access_token');
   const r = await fetch(`https://registry-1.docker.io/v2/${DEPOT}/manifests/${etiquette}`, {
     method: 'HEAD',
     headers: { Authorization: `Bearer ${token}`, Accept: [

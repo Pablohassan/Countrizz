@@ -3,8 +3,8 @@
 > **Révisé le 08/10/2026 sur le Mac — prime sur le texte ci-dessous là où il diverge.** Après confrontation de `deploy/` aux
 > règles écrites du cluster et à l'état réel (K3s v1.33.5, non v1.31.6), décisions de l'utilisateur : release Helm dans
 > le namespace **`countrizz`** (et non `default` ; le chart ne crée plus de Namespace, `deploy.sh` le crée sur GO avec
-> les étiquettes `restricted` et Goldilocks) ; **pas** de racine en lecture seule ; vhost .60 sans les locations de cache
-> du gabarit + `proxy_max_temp_file_size 0` (`vhost.mjs`) ; GO sur **chaque** écriture (envoi Docker Hub et Helm compris),
+> les étiquettes `restricted` et Goldilocks) ; **pas** de racine en lecture seule ; **rien ne se déploie sur le proxy
+> .60** (plateforme : TLS + routage ; le vhost n'est pas touché, tout le site vit dans le pod) ; GO sur **chaque** écriture (envoi Docker Hub et Helm compris),
 > un refus arrête tout ; image essayée avant l'envoi puis contrôlée en arm64 et en lecture anonyme ; test du chart contre
 > les nœuds fantômes. Branche : `newcountri`. Le pas-à-pas à jour est
 > `docs/infra/2026-10-06-countrizz-premiere-mise-en-ligne.md`.
@@ -40,7 +40,7 @@ Ce plan est le **premier** d'une série ; chacun se termine par un déploiement 
 - Patchs image (183 Mo, hors dépôt) pris sur le disque du Mac, **contrôlés un par un** contre `web/public/data/imagery.json` (taille + sha256), **un calque par résolution** (2048 : 140 335 406 octets ; 1024 : 43 005 008 ; les calques de plus de 150 Mo échouent à l'envoi).
 - Helm part de **rpi1** (`pablo1@192.168.1.171`) : kubeconfig du Mac cassé (dette 20). Staging propre `/tmp/countrizz-deploy-staging`, `--history-max 5`, **`--dry-run` puis `--atomic`**, jamais `--reuse-values`, preuve qu'aucune ressource ne disparaît.
 - IP **`.101` par `spec.loadBalancerIP` seul** (sans annotation MetalLB) ; jamais patchée à la main.
-- **Écritures hors dépôt, chacune sur GO explicite de l'utilisateur** (Task 5) : page `~/docs/cluster/countrizz.md`, `gen-metallb-allocations.sh`, `proxy_max_temp_file_size 0` dans le vhost .60, cible `blackbox-websites`.
+- **Écritures hors dépôt, chacune sur GO explicite de l'utilisateur** (Task 5) : page `~/docs/cluster/countrizz.md`, envoi Docker Hub, namespace, release Helm, `gen-metallb-allocations.sh`, cible `blackbox-websites` (révisé le 08/10 : rien sur le proxy .60).
 - Rappel : la purge du dimanche 03:00 (`crictl rmi --prune`) retire **toute** image inutilisée d'un nœud ; un rollback re-tire alors depuis Docker Hub (tirages anonymes : on retient la limite la plus stricte publiée, 10 / heure / IP — spec §13.3).
 
 ## Prototype du 06/10/2026 : ce qui est déjà prouvé (session cloud)
@@ -649,7 +649,7 @@ curl -fsSI https://countrizz.fr/ | head -1
 - [ ] **Step 2** : `deploy/scripts/build-image.sh` → recopier l'étiquette imprimée et la durée de la suite complète.
 - [ ] **Step 3** : `deploy/scripts/deploy.sh <étiquette>` → recopier la sortie (rendu, gardes, dry-run, statut, `ok` de `/healthz` sur `.101`, `HTTP/2 200` de countrizz.fr).
 - [ ] **Step 4 (GO)** : `gen-metallb-allocations.sh` sur rpi1 (`.101` désormais attribuée), résultat dans la doc du cluster.
-- [ ] **Step 5 (GO)** : sur .60, `proxy_max_temp_file_size 0;` dans le **seul** vhost `countrizz.fr`, `nginx -t`, rechargement, synchronisation vers le backup .3 ; mesure : `curl -sI https://countrizz.fr/textures/day-8k.ktx2` (`Content-Type: image/ktx2`, cache transmis).
+- [ ] **Step 5** (révisé le 08/10 : rien ne se déploie sur le proxy .60) : contrôle en lecture seule, `curl -sI https://countrizz.fr/textures/day-8k.ktx2` (`Content-Type: image/ktx2`).
 - [ ] **Step 6** : sur le téléphone de l'utilisateur : `https://countrizz.fr` affiche le globe, les trois boutons de la démo marchent.
 - [ ] **Step 7 (GO, seulement une fois le site en 200)** : cible `countrizz.fr` dans `blackbox-websites` (alertes déjà routées vers Discord), par la procédure d'upgrade de la release `prometheus`.
 - [ ] **Step 8** : mettre à jour `docs/HANDOFF.md` (site en ligne, étiquette déployée, prochain plan 2A-2) ; commit.

@@ -3,7 +3,8 @@
 Préparé le 06/10/2026 dans la session cloud (qui n'a jamais vu l'infra), **révisé le 08/10/2026 sur le Mac** après
 confrontation de `deploy/` aux règles écrites du cluster et à l'état réel (lecture seule : `~/docs/cluster/*` dont
 `DETTE.md`, `kubectl`, `helm list -A`, vhost de .60, Docker Hub). **Chaque écriture hors du dépôt (Docker Hub, rpi1,
-cluster, proxy .60) affiche la commande exacte et attend un GO ; un refus arrête tout** (`deploy/scripts/go.sh`).
+cluster) affiche la commande exacte et attend un GO ; un refus arrête tout** (`deploy/scripts/go.sh`). **Rien ne se
+déploie sur le proxy .60** : c'est de la plateforme (TLS + routage), tout le site vit dans le cluster.
 Recopier les sorties réelles dans `docs/HANDOFF.md` à la fin.
 
 ## État réel relevé le 07-08/10 (avant la mise en ligne)
@@ -31,7 +32,7 @@ Recopier les sorties réelles dans `docs/HANDOFF.md` à la fin.
 | Release Helm | dans le namespace `countrizz` (règle du parc), le chart ne crée plus son namespace | `deploy.sh`, chart |
 | Namespace | créé par `deploy.sh` avant Helm, sur GO, avec `pod-security…/enforce=restricted`, `enforce-version=latest`, `goldilocks…/enabled=true` | `deploy.sh` |
 | Racine en lecture seule | **retirée** (aucun front du parc ne la pose) | chart |
-| Vhost .60 | **option (c)** : plus de locations de cache dans le bloc HTTPS, le Cache-Control du pod passe tel quel et les en-têtes de sécurité restent (dette 40) ; **`proxy_max_temp_file_size 0`** dans `location /` (dette 13) | `vhost.mjs` (+ test sur la copie exacte du vhost) |
+| Proxy .60 | **rien ne s'y déploie** : le proxy est de la plateforme (TLS + routage vers `.101`) ; tout le comportement du site (cache, types, service worker) vit dans le pod (`deploy/web/nginx.conf`). Le vhost existant n'est pas modifié | — |
 | GO | sur chaque écriture, commande exacte affichée, refus = arrêt | `go.sh` |
 | Image | essayée en local avant l'envoi (uid 101, `/healthz`, types `ktx2`), puis linux/arm64 et lecture **anonyme** contrôlés | `build-image.sh`, `image-controle.mjs` |
 | Nœuds fantômes | test du chart sur le modèle `politika/tests/helmAffinity.test.ts` (dette 5), en plus du contrôle live | `chart.test.mjs` |
@@ -49,12 +50,12 @@ refusé. Journal : `~/countrizz-mise-en-ligne-*.log`. Reprise : `deploy/scripts/
 
 | Étape | Ce qui se passe | GO |
 |---|---|---|
-| 0 | Prérequis, lecture seule : arbre propre, 394 patchs (`npm run imagery:fetch` sinon), `fresh-builder`, ssh rpi1 (Helm, nœuds), ssh .60 (vhost lisible, `sites-archive/`, sudo), `check-chart.sh`, tests `node --test` | — |
+| 0 | Prérequis, lecture seule : arbre propre, 394 patchs (`npm run imagery:fetch` sinon), `fresh-builder`, ssh rpi1 (Helm, nœuds), `check-chart.sh`, tests `node --test` | — |
 | 1 | Page `~/docs/cluster/countrizz.md` sur rpi1, écrite **avant** d'agir (affichée, ou diff si elle existe) | **oui** |
 | 2 | `build-image.sh` : suite complète du Mac, build, contrôle des patchs, image arm64 chargée et essayée en local, puis **envoi sur Docker Hub**, puis contrôles arm64 + anonyme | **oui** (envoi) |
 | 3 | `deploy.sh <étiquette>` : contrôles de l'image ; staging par scp dans `/tmp/countrizz-deploy-staging` (patron Politika) ; sur rpi1, sans écrire sur le cluster : lint, rendu, nœuds fantômes, ressources perdues, essai `--dry-run` ; **création du namespace** s'il est absent (ou contrôle de ses étiquettes) ; **`helm upgrade --install … -n countrizz --atomic`** ; rollout, sonde `.101/healthz`, `https://countrizz.fr/` | **oui** (namespace, Helm) |
 | 4 | `bash ~/docs/cluster/gen-metallb-allocations.sh` sur rpi1 | **oui** |
-| 5 | Vhost .60 : copie lue, transformée par `vhost.mjs`, diff affiché ; sauvegarde dans `sites-archive/countrizz.fr.conf.bak.<date>`, remplacement, `nginx -t`, rechargement ou restauration ; contrôle d'un drapeau (un seul Cache-Control, HSTS présent) et de `day-8k.ktx2` | **oui** |
+| 5 | Contrôle du site public, lecture seule : page et `day-8k.ktx2` | — |
 | 6 | Vérification sur ton téléphone (globe, boutons de la démo, crédit EOX) | validation |
 | 7 | Supervision : cibles `blackbox-websites` affichées ; ajout de `https://countrizz.fr` par la procédure de `monitoring-prometheus.md` (valeurs **live**, `~/helm-values/prometheus.yaml` est périmé), une fois le site en 200 | à part, **sur GO** |
 

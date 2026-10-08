@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Première mise en ligne de countrizz.fr (Task 5 du plan 2A-1), d'un seul trait, DEPUIS LE MAC.
 # Chaque étape attend la fin de la précédente ; la première erreur arrête tout. Chaque écriture hors du dépôt
-# (Docker Hub, rpi1, cluster, proxy .60) affiche la commande exacte et attend un GO ; un refus ARRÊTE tout (go.sh).
+# (Docker Hub, rpi1, cluster) affiche la commande exacte et attend un GO ; un refus ARRÊTE tout (go.sh).
+# Rien ne s'écrit sur le proxy .60 : c'est de la plateforme (TLS + routage), pas un lieu de déploiement.
 # Tout est journalisé dans ~/countrizz-mise-en-ligne-*.log.
 #
 #   deploy/scripts/mise-en-ligne.sh                     tout, depuis le début
@@ -11,9 +12,6 @@
 set -euo pipefail
 
 CLUSTER_HOST="${CLUSTER_HOST:-pablo1@192.168.1.171}"
-PROXY_HOST="${PROXY_HOST:-pablito@192.168.1.60}"
-VHOST="/etc/nginx/sites-available/countrizz.fr.conf"
-ARCHIVE="/etc/nginx/sites-archive"            # sauvegardes des vhosts : convention du proxy (dette 43)
 BUILD="${COUNTRIZZ_BUILD:-deploy/scripts/build-image.sh}"     # remplaçables pour les essais à blanc
 DEPLOY="${COUNTRIZZ_DEPLOY:-deploy/scripts/deploy.sh}"
 SITE="${COUNTRIZZ_SITE:-https://countrizz.fr}"
@@ -50,9 +48,6 @@ if faire 0; then
   echo "Builder arm64 : fresh-builder"
   ssh -o BatchMode=yes "${CLUSTER_HOST}" 'helm version --short && kubectl get nodes --no-headers | wc -l' \
     || echec "rpi1 injoignable sans mot de passe (${CLUSTER_HOST})"
-  ssh -o BatchMode=yes "${PROXY_HOST}" "test -r ${VHOST} && test -d ${ARCHIVE} && sudo -n true" \
-    || echec "proxy .60 : ssh, vhost, ${ARCHIVE} ou sudo sans mot de passe indisponible (${PROXY_HOST})"
-  echo "Proxy .60 : ssh, vhost et sudo disponibles"
   deploy/scripts/check-chart.sh
   node --test 'deploy/scripts/*.test.mjs' 2>&1 | grep -E '^# (pass|fail)'
 fi
@@ -75,10 +70,8 @@ if faire 1; then
   nœuds `node.agiso.fr/class=worker` sauf raspberrypi0 et rpi6-4b (test du chart contre les nœuds fantômes).
 - Service LoadBalancer `countrizz-web` sur **192.168.1.101:80** (`spec.loadBalancerIP`, réservée au registre MetalLB) ;
   NetworkPolicy `namespace-isolation` (gabarit mecapilot, port 8080).
-- Proxy .60 : vhost `countrizz.fr.conf` (gabarit mecapilote.fr) → `http://192.168.1.101`, **sans** les locations de
-  cache du gabarit (le Cache-Control vient du pod ; pas d'`add_header`, donc les en-têtes de sécurité restent : dette 40)
-  et avec `proxy_max_temp_file_size 0` dans `location /` (gros KTX2 sans fichier temporaire sur la carte SD : dette 13).
-  Décisions de l'utilisateur du 08/10/2026. Sauvegarde de l'ancien vhost dans `/etc/nginx/sites-archive/`.
+- Proxy .60 : vhost `countrizz.fr.conf` (TLS, `/` → `http://192.168.1.101`, `/api/` → `.102`). Le proxy est de la
+  plateforme : tout le comportement du site (cache, types, service worker) est dans le pod (`deploy/web/nginx.conf`).
 - Image publique `pablohassan/countrizz-web:<branche>-<sha8>-<AAAAMMJJHHMMSS>` (immuable), `IfNotPresent`, tirée sans
   authentification. Construite et essayée sur le Mac après la suite complète ; arm64 et lecture anonyme contrôlés.
 - Déployer : sur le Mac, `deploy/scripts/build-image.sh` puis `deploy/scripts/deploy.sh <étiquette>` (GO à chaque
@@ -128,44 +121,12 @@ if faire 4; then
   ssh "${CLUSTER_HOST}" 'bash ~/docs/cluster/gen-metallb-allocations.sh'
 fi
 
-# ── 5. Proxy .60 (GO) : vhost adapté par deploy/scripts/vhost.mjs (testé sur la copie du vhost en place) ──────────
+# ── 5. Contrôle du site public (lecture seule) ──────────────────────────────────────────────────────────────────
+# Le proxy .60 est de la plateforme (TLS + routage vers .101) : rien de propre à countrizz ne s'y déploie.
 if faire 5; then
-  etape 5 "Proxy .60 : vhost countrizz.fr (cache du pod relayé, proxy_max_temp_file_size 0)"
-  ACTUEL="$(mktemp)"; NOUVEAU="$(mktemp)"
-  ssh "${PROXY_HOST}" "cat ${VHOST}" > "${ACTUEL}"
-  node deploy/scripts/vhost.mjs < "${ACTUEL}" > "${NOUVEAU}" || echec "vhost en place inattendu : rien n'est modifié"
-  if diff -q "${ACTUEL}" "${NOUVEAU}" >/dev/null; then
-    echo "Vhost déjà à jour."
-  else
-    echo "Différences proposées (en place → nouveau) :"
-    diff "${ACTUEL}" "${NOUVEAU}" || true
-    go "remplacement du vhost ${VHOST} sur .60 (sauvegarde dans ${ARCHIVE}, nginx -t, rechargement ou restauration)" \
-"scp <nouveau vhost> ${PROXY_HOST}:/tmp/countrizz.fr.conf.nouveau
-ssh ${PROXY_HOST}: sudo cp ${VHOST} ${ARCHIVE}/countrizz.fr.conf.bak.<AAAAMMJJ-HHMMSS>
-                   sudo install -m 644 -o root -g root /tmp/countrizz.fr.conf.nouveau ${VHOST}
-                   sudo /usr/sbin/nginx -t && sudo systemctl reload nginx   (sinon : restauration de la sauvegarde)"
-    scp -q "${NOUVEAU}" "${PROXY_HOST}:/tmp/countrizz.fr.conf.nouveau"
-    ssh "${PROXY_HOST}" bash -s -- "${VHOST}" "${ARCHIVE}" <<'DISTANT'
-set -euo pipefail
-VHOST="$1"; ARCHIVE="$2"
-SAUVE="${ARCHIVE}/countrizz.fr.conf.bak.$(date +%Y%m%d-%H%M%S)"
-sudo cp "${VHOST}" "${SAUVE}"
-sudo install -m 644 -o root -g root /tmp/countrizz.fr.conf.nouveau "${VHOST}"
-rm -f /tmp/countrizz.fr.conf.nouveau
-if sudo /usr/sbin/nginx -t; then
-  sudo systemctl reload nginx; echo "nginx rechargé (sauvegarde : ${SAUVE})."
-else
-  sudo cp "${SAUVE}" "${VHOST}"; echo "nginx -t en échec : vhost restauré depuis ${SAUVE}." >&2; exit 1
-fi
-DISTANT
-    echo "Le backup .3 reçoit la nouvelle configuration par la poussée automatique de .60 (toutes les 5 min)."
-  fi
-  rm -f "${ACTUEL}" "${NOUVEAU}"
-  echo "Contrôle (drapeau : cache du pod et en-têtes de sécurité ; texture : type ktx2) :"
-  curl -fsSI "${SITE}/data/flags/fra.svg" | grep -iE '^(HTTP|cache-control|strict-transport-security|x-content-type-options)' || echec "drapeau inaccessible"
-  [ "$(curl -fsSI "${SITE}/data/flags/fra.svg" | grep -ic '^cache-control:')" = 1 ] || echec "drapeau : Cache-Control absent ou en double"
-  curl -fsSI "${SITE}/data/flags/fra.svg" | grep -iq '^strict-transport-security:' || echec "drapeau : en-têtes de sécurité perdus"
-  curl -fsSI "${SITE}/textures/day-8k.ktx2" | grep -iE '^(HTTP|content-type|cache-control)' || echec "texture inaccessible"
+  etape 5 "Contrôle du site public (page, texture)"
+  curl -fsSI "${SITE}/" | grep -iE '^(HTTP|content-type)' || echec "page inaccessible"
+  curl -fsSI "${SITE}/textures/day-8k.ktx2" | grep -iE '^(HTTP|content-type)' || echec "texture inaccessible"
 fi
 
 # ── 6. Téléphone ────────────────────────────────────────────────────────────────────────────────────────────────

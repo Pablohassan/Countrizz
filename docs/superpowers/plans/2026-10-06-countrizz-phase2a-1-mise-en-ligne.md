@@ -1,12 +1,12 @@
 # Countrizz — Phase 2A, plan 1 : mise en ligne de countrizz.fr · plan d'implémentation
 
-> **Révisé le 08/10/2026 sur le Mac — prime sur le texte ci-dessous là où il diverge.** Après confrontation de `deploy/` aux
-> règles écrites du cluster et à l'état réel (K3s v1.33.5, non v1.31.6), décisions de l'utilisateur : release Helm dans
-> le namespace **`countrizz`** (et non `default` ; le chart ne crée plus de Namespace, `deploy.sh` le crée sur GO avec
-> les étiquettes `restricted` et Goldilocks) ; **pas** de racine en lecture seule ; **rien ne se déploie sur le proxy
-> .60** (plateforme : TLS + routage ; le vhost n'est pas touché, tout le site vit dans le pod) ; GO sur **chaque** écriture (envoi Docker Hub et Helm compris),
-> un refus arrête tout ; image essayée avant l'envoi puis contrôlée en arm64 et en lecture anonyme ; test du chart contre
-> les nœuds fantômes. Branche : `newcountri`. Le pas-à-pas à jour est
+> **Révisé le 08/10/2026 sur le Mac — prime sur tout le texte ci-dessous (Helm, `restricted`, PDB, scripts).** Décision
+> de l'utilisateur : countrizz se déploie **exactement comme agi-so et mecapilot** — un manifeste `deploy/k8s/countrizz.yaml`
+> (Namespace + étiquette Goldilocks, Deployment, Service LoadBalancer `.101`, NetworkPolicy `namespace-isolation`) appliqué
+> par `kubectl apply` depuis rpi1. **Pas de Helm** (aucun site statique du parc n'en a), **pas de Pod Security
+> `restricted`**, ni PDB, ni étalement, ni nœuds exclus ; les scripts `go.sh`, `deploy.sh`, `mise-en-ligne.sh`,
+> `image-controle.mjs`, `check-chart.sh` et le chart sont **retirés**. Le proxy .60 est de la plateforme : vhost réduit le
+> 08/10 à TLS + `location /` → `.101`, tout le comportement du site vit dans le pod. Branche : `newcountri`. Pas-à-pas :
 > `docs/infra/2026-10-06-countrizz-premiere-mise-en-ligne.md`.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

@@ -1,73 +1,48 @@
-# countrizz.fr — première mise en ligne (Task 5 du plan 2A-1), pas à pas depuis le Mac
+# countrizz.fr — première mise en ligne (Task 5 du plan 2A-1)
 
-Préparé le 06/10/2026 dans la session cloud (qui n'a jamais vu l'infra), **révisé le 08/10/2026 sur le Mac** après
-confrontation de `deploy/` aux règles écrites du cluster et à l'état réel (lecture seule : `~/docs/cluster/*` dont
-`DETTE.md`, `kubectl`, `helm list -A`, vhost de .60, Docker Hub). **Chaque écriture hors du dépôt (Docker Hub, rpi1,
-cluster) affiche la commande exacte et attend un GO ; un refus arrête tout** (`deploy/scripts/go.sh`). **Rien ne se
-déploie sur le proxy .60** : c'est de la plateforme (TLS + routage), tout le site vit dans le cluster.
-Recopier les sorties réelles dans `docs/HANDOFF.md` à la fin.
+Préparé le 06/10/2026 dans la session cloud, **réécrit le 08/10/2026 sur le Mac** : countrizz se déploie **exactement
+comme agi-so et mecapilot** (décision de l'utilisateur). Chaque écriture hors du dépôt (Docker Hub, cluster) se fait
+sur GO, commande exacte montrée. Recopier les sorties réelles dans `docs/HANDOFF.md` à la fin.
 
-## État réel relevé le 07-08/10 (avant la mise en ligne)
+## La règle du parc, relevée le 08/10
 
-- K3s **v1.33.5+k3s1** (et non v1.31.6, version du prototype cloud), 9 nœuds Ready ; Helm **v3.14.4** sur rpi1 ;
-  `kubectl` de rpi1 vise `127.0.0.1:6443` (apiserver de rpi1 seul).
-- `node.agiso.fr/class=worker` sur raspberrypi0, 4, 5, 7, 8 et rpi6-4b ; rpi6-4b porte en plus le taint
-  `role=reverse-proxy-backup:NoSchedule` → nœuds éligibles : rpi4, rpi5, rpi7, rpi8.
-- MetalLB **v0.14.8**, pool `.70–.169` ; `.101`/`.102` réservées au registre, portées par aucun Service ;
-  `spec.loadBalancerIP` honoré (mecapilot sur `.98`).
-- Les **23 releases Helm** vivent chacune dans **leur** namespace ; aucune dans `default`, aucun chart ne crée le sien.
-- Aucun namespace applicatif n'a d'étiquette Pod Security (3 namespaces système en `privileged`) : `countrizz` en
-  `restricted` est une **première**, décidée par l'utilisateur le 08/10 (dette 16 « à trancher »).
-- Proxy .60 : porte les VIP `.200` et `.208`, sudo sans mot de passe, `nginx` dans `/usr/sbin` ; vhost
-  `countrizz.fr.conf` (md5 `70433c3d…`) lié dans `sites-enabled`, deux `location /` (redirection HTTP et relais HTTPS),
-  locations de cache du gabarit (dette 40) ; poussée vers .3 toutes les 5 min (`/etc/cron.d/nginx-sync`) ;
-  certificat valide jusqu'au 31/12/2026, renouvellement webroot ; sauvegardes des vhosts dans `sites-archive/`.
-- Docker : builder `fresh-builder` (arm64) en marche ; Mac identifié sur Docker Hub en `pablohassan` ;
-  `pablohassan/countrizz-web` n'existe pas encore (créé au premier envoi).
+- **Sites applicatifs simples** (agi-so, mecapilot, signature-privee, therapie…) : un namespace à eux, un `Deployment`,
+  un `Service` LoadBalancer sur une IP MetalLB (`spec.loadBalancerIP`), la NetworkPolicy `namespace-isolation`, posés
+  par `kubectl apply` (annotation `last-applied-configuration`). **Aucun n'est une release Helm** ; Helm sert aux
+  grosses applis et à l'infra (politika, crm-datagouv, mautic, espocrm, vault, monitoring…). Aucun namespace applicatif
+  n'a de Pod Security.
+- **Proxy .60 = plateforme** : TLS, redirection HTTP, routage vers l'IP MetalLB. Rien de propre à une appli (cache,
+  types, service worker) ne s'y écrit : c'est dans le pod (`deploy/web/nginx.conf`).
 
-## Décisions de l'utilisateur du 08/10 appliquées au code
+## Ce que contient `deploy/`
 
-| Point | Décision | Où |
-|---|---|---|
-| Release Helm | dans le namespace `countrizz` (règle du parc), le chart ne crée plus son namespace | `deploy.sh`, chart |
-| Namespace | créé par `deploy.sh` avant Helm, sur GO, avec `pod-security…/enforce=restricted`, `enforce-version=latest`, `goldilocks…/enabled=true` | `deploy.sh` |
-| Racine en lecture seule | **retirée** (aucun front du parc ne la pose) | chart |
-| Proxy .60 | **rien ne s'y déploie** : le proxy est de la plateforme (TLS + routage vers `.101`) ; tout le comportement du site (cache, types, service worker) vit dans le pod (`deploy/web/nginx.conf`). Le vhost existant n'est pas modifié | — |
-| GO | sur chaque écriture, commande exacte affichée, refus = arrêt | `go.sh` |
-| Image | essayée en local avant l'envoi (uid 101, `/healthz`, types `ktx2`), puis linux/arm64 et lecture **anonyme** contrôlés | `build-image.sh`, `image-controle.mjs` |
-| Nœuds fantômes | test du chart sur le modèle `politika/tests/helmAffinity.test.ts` (dette 5), en plus du contrôle live | `chart.test.mjs` |
+| Fichier | Rôle |
+|---|---|
+| `deploy/k8s/countrizz.yaml` | Namespace `countrizz` (étiquette Goldilocks), Deployment `countrizz-web` (2 réplicas, port 8080, sondes `/healthz`, `allowPrivilegeEscalation: false`), Service LoadBalancer `192.168.1.101:80`, NetworkPolicy `namespace-isolation` (copie de celle d'agi-so) |
+| `deploy/web/Dockerfile`, `deploy/web/nginx.conf` | Image `nginxinc/nginx-unprivileged` (uid 101) ; types `ktx2`, cache, `/healthz` |
+| `deploy/scripts/build-image.sh` | Build du site, préparation de l'image (contrôle des 394 patchs), `buildx --push` arm64 de l'étiquette lue dans le manifeste ; refuse une étiquette déjà publiée |
 
-## En une commande (recommandé)
+## État relevé le 08/10 (avant la mise en ligne)
+
+- Vhost `countrizz.fr.conf` sur .60 **réduit le 08/10** (sauvegarde `sites-archive/countrizz.fr.conf.bak.20261008`) :
+  TLS + `location /` → `http://192.168.1.101` ; synchronisé sur .3. Le site répond 502 tant que le pod n'existe pas.
+- `.101` réservée au registre MetalLB, portée par aucun Service.
+- Essai à blanc côté serveur le 08/10 : Deployment, Service et NetworkPolicy acceptés par l'API et l'admission
+  (validés dans `default`, le namespace n'existant pas encore).
+
+## Pas à pas (chaque écriture sur GO)
 
 ```bash
-cd ~/projetsperso/countriz/countrizz          # branche newcountri (la branche cloud y est fusionnée depuis le 07/10)
-deploy/scripts/mise-en-ligne.sh
+cd ~/projetsperso/countriz/countrizz            # branche newcountri, arbre propre, patchs présents (cd web && npm run imagery:fetch)
+deploy/scripts/build-image.sh                     # GO : envoi Docker Hub de pablohassan/countrizz-web:<étiquette du manifeste>
+ssh pablo1@192.168.1.171 'kubectl apply -f -' < deploy/k8s/countrizz.yaml          # GO : écriture cluster
+ssh pablo1@192.168.1.171 'kubectl -n countrizz rollout status deploy/countrizz-web && curl -fsS http://192.168.1.101/healthz'
+ssh pablo1@192.168.1.171 'bash ~/docs/cluster/gen-metallb-allocations.sh'         # GO : registre MetalLB
+curl -sSI https://countrizz.fr/ ; curl -sSI https://countrizz.fr/textures/day-8k.ktx2
 ```
 
-Le script enchaîne les étapes 0 à 7 en attendant la fin de chacune et s'arrête à la première erreur ou au premier GO
-refusé. Journal : `~/countrizz-mise-en-ligne-*.log`. Reprise : `deploy/scripts/mise-en-ligne.sh --depuis <étape>
-[--tag <étiquette déjà poussée>]`.
+Puis vérification sur le téléphone (globe, boutons de la démo, crédit EOX), et ajout de `https://countrizz.fr` aux
+cibles `blackbox-websites` par la procédure de `monitoring-prometheus.md` (valeurs **live**), sur GO.
 
-| Étape | Ce qui se passe | GO |
-|---|---|---|
-| 0 | Prérequis, lecture seule : arbre propre, 394 patchs (`npm run imagery:fetch` sinon), `fresh-builder`, ssh rpi1 (Helm, nœuds), `check-chart.sh`, tests `node --test` | — |
-| 1 | Page `~/docs/cluster/countrizz.md` sur rpi1, écrite **avant** d'agir (affichée, ou diff si elle existe) | **oui** |
-| 2 | `build-image.sh` : suite complète du Mac, build, contrôle des patchs, image arm64 chargée et essayée en local, puis **envoi sur Docker Hub**, puis contrôles arm64 + anonyme | **oui** (envoi) |
-| 3 | `deploy.sh <étiquette>` : contrôles de l'image ; staging par scp dans `/tmp/countrizz-deploy-staging` (patron Politika) ; sur rpi1, sans écrire sur le cluster : lint, rendu, nœuds fantômes, ressources perdues, essai `--dry-run` ; **création du namespace** s'il est absent (ou contrôle de ses étiquettes) ; **`helm upgrade --install … -n countrizz --atomic`** ; rollout, sonde `.101/healthz`, `https://countrizz.fr/` | **oui** (namespace, Helm) |
-| 4 | `bash ~/docs/cluster/gen-metallb-allocations.sh` sur rpi1 | **oui** |
-| 5 | Contrôle du site public, lecture seule : page et `day-8k.ktx2` | — |
-| 6 | Vérification sur ton téléphone (globe, boutons de la démo, crédit EOX) | validation |
-| 7 | Supervision : cibles `blackbox-websites` affichées ; ajout de `https://countrizz.fr` par la procédure de `monitoring-prometheus.md` (valeurs **live**, `~/helm-values/prometheus.yaml` est périmé), une fois le site en 200 | à part, **sur GO** |
-
-Si `--atomic` échoue : la release est annulée, le namespace reste (il n'appartient pas à la release). Lire
-`kubectl -n countrizz get events --sort-by=.lastTimestamp` sur rpi1 (refus Pod Security, image introuvable, sonde…).
-
-## Points non vérifiables avant la mise en ligne
-
-- Démarrage réel des pods sous `restricted`, chaîne `.60 → .101`, en-têtes servis : contrôlés par les étapes 3 et 5.
-- Le fichier de renouvellement du certificat ne liste que `www` dans `[[webroot_map]]` (avec `webroot_path`) : probablement
-  normal ; seul un `certbot renew --dry-run --cert-name countrizz.fr` sur .60 le confirmerait (sur GO).
-
-## Fin
-
-Mettre à jour `docs/HANDOFF.md` : étiquette déployée, date, sorties, et prochain plan (2A-2, données bilingues).
+**Nouvelle version** : monter l'étiquette dans `deploy/k8s/countrizz.yaml` (`1.0` → `1.1`…), committer,
+`build-image.sh`, ré-appliquer. **Retour arrière** : remettre l'étiquette précédente et ré-appliquer.

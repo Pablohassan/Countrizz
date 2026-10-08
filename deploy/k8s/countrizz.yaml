@@ -1,0 +1,87 @@
+# countrizz.fr — posé par `kubectl apply -f deploy/k8s/countrizz.yaml` depuis rpi1, comme agi-so et mecapilot.
+# Nouvelle version : construire l'image (deploy/scripts/build-image.sh), monter l'étiquette ci-dessous, ré-appliquer.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: countrizz
+  labels:
+    goldilocks.fairwinds.com/enabled: "true"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: countrizz-web
+  namespace: countrizz
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: countrizz-web
+  template:
+    metadata:
+      labels:
+        app: countrizz-web
+    spec:
+      containers:
+        - name: countrizz-web
+          image: pablohassan/countrizz-web:1.0
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 150m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: countrizz-web
+  namespace: countrizz
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.1.101
+  selector:
+    app: countrizz-web
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: namespace-isolation
+  namespace: countrizz
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+    - from:
+        - ipBlock:
+            cidr: 192.168.1.0/24
+    - from:
+        - ipBlock:
+            cidr: 10.42.0.0/16

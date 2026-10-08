@@ -138,13 +138,12 @@ Motifs réglés **après la 2A**, au doigt, sur countrizz.fr déployé (§13) ; 
 - **nginx non privilégié** dans le pod (port 8080 ; Service 80 sur **`.101`** par `loadBalancerIP`), `mime.types`
   complété de `ktx2` et `wasm` ; cache : `immutable` pour `assets/*` hachés, `max-age` court + revalidation pour
   patchs, textures et drapeaux (noms fixes), aucun cache pour `sw.js` / manifeste.
-- **Chart Helm** `deploy/helm/countrizz` (`web` seul) : 2 réplicas étalés par nœud (`topologySpreadConstraints`),
-  PodDisruptionBudget, `nodeSelector node.agiso.fr/class=worker` **et** `NotIn [raspberrypi0, rpi6-4b]`,
-  NetworkPolicy `namespace-isolation`, `securityContext` non root, sondes, ressources ; **test du chart** qui refuse
-  tout nœud inexistant ; `pullPolicy: IfNotPresent` (tags immuables).
-- **Script de déploiement** à la `deploy-helm.sh` : staging par `scp` dans `/tmp/countrizz-deploy-staging` sur rpi1,
-  `helm upgrade --install --history-max 5`, **`--dry-run` puis `--atomic`** (Helm part de rpi1 : kubeconfig du Mac
-  cassé, dette 20).
+- **Révisé le 08/10 (décision de l'utilisateur) : comme agi-so et mecapilot.** Manifeste `deploy/k8s/countrizz.yaml`
+  (Namespace + Goldilocks, Deployment 2 réplicas avec sondes `/healthz`, Service LoadBalancer `.101`, NetworkPolicy
+  `namespace-isolation`) appliqué par `kubectl apply` depuis rpi1. Pas de Helm, pas de Pod Security `restricted`, ni
+  PDB, ni étalement, ni nœuds exclus. Texte d'origine, abandonné : ~~chart Helm `deploy/helm/countrizz`, PDB,
+  `topologySpreadConstraints`, `NotIn [raspberrypi0, rpi6-4b]`, test du chart, script à la `deploy-helm.sh`
+  (`--dry-run` puis `--atomic`)~~.
 - **Écritures annexes, chacune sur GO de l'utilisateur** : page `~/docs/cluster/countrizz.md` avant le premier
   déploiement ; `gen-metallb-allocations.sh` après le Service ; cible `blackbox-websites` **une fois le site en 200**
   (alertes déjà routées vers Discord).
@@ -199,7 +198,7 @@ GitHub : `check` seul. **Le Mac fait foi** (`check && test:data && e2e && budget
 | 1 | Réglage fin de l'haptique | **Après la 2A**, par l'utilisateur, au doigt, **sur countrizz.fr déployé** depuis son téléphone. La 2A livre les motifs du §7 tels quels ; le plan prévoit un réglage facile (motifs dans un seul fichier). |
 | 2 | Coordonnées de Ciudad de la Paz | **1,5925° N, 10,8236° E** (geodatos.net, cohérent avec l'article Wikipedia « Djibloho ») en point imposé ; le contrôle « capitale dans le pays » le vérifie contre le contour de la Guinée équatoriale. Recoupement Wikidata (P625) facultatif depuis le Mac. |
 | 3 | Docker Hub, tirages anonymes | La documentation Docker indique, selon les pages, 100 tirages / 6 h ou **10 tirages / heure par adresse IP** pour un anonyme (on retient le plus strict). Avec une image publique, `pullPolicy: IfNotPresent`, 2 réplicas et des tags immuables, un déploiement coûte au plus 2 tirages : on reste **anonyme**, comme le reste du parc. Repli documenté si une erreur 429 apparaît (rafale après la purge du dimanche ou un drain) : un `imagePullSecret` vers le compte `pablohassan`. |
-| 4 | Namespace `countrizz` | **Pod Security Admission `restricted`** (le pod nginx non root s'y conforme : `runAsNonRoot`, `seccompProfile: RuntimeDefault`, `capabilities.drop: [ALL]`, `allowPrivilegeEscalation: false`) — une première sur le parc, à noter dans `~/docs/cluster/countrizz.md` ; étiquette **`goldilocks.fairwinds.com/enabled=true`** comme les autres namespaces applicatifs. ~~Les deux sont posés par le chart.~~ **Révisé le 08/10** (règle du parc : les releases vivent dans leur namespace, aucun chart ne crée le sien) : release dans `countrizz`, namespace créé par `deploy.sh` avant Helm, sur GO, avec ces deux étiquettes ; `restricted` reconfirmé par l'utilisateur le 08/10. |
+| 4 | Namespace `countrizz` | **Abandonné en fin de journée le 08/10 par l'utilisateur : comme agi-so, namespace avec la seule étiquette Goldilocks, déclaré dans `deploy/k8s/countrizz.yaml` ; pas de Pod Security.** Texte d'origine : **Pod Security Admission `restricted`** (le pod nginx non root s'y conforme : `runAsNonRoot`, `seccompProfile: RuntimeDefault`, `capabilities.drop: [ALL]`, `allowPrivilegeEscalation: false`) — une première sur le parc, à noter dans `~/docs/cluster/countrizz.md` ; étiquette **`goldilocks.fairwinds.com/enabled=true`** comme les autres namespaces applicatifs. ~~Les deux sont posés par le chart.~~ **Révisé le 08/10** (règle du parc : les releases vivent dans leur namespace, aucun chart ne crée le sien) : release dans `countrizz`, namespace créé par `deploy.sh` avant Helm, sur GO, avec ces deux étiquettes ; `restricted` reconfirmé par l'utilisateur le 08/10. |
 | 5 | Proxy .60 et gros KTX2 | **Abandonné le 08/10 par l'utilisateur : rien de propre à un site ne se déploie sur le proxy .60 (plateforme : TLS + routage) ; le comportement du site vit dans le pod.** Texte d'origine : ~~**`proxy_max_temp_file_size 0;`** dans le **seul** vhost `countrizz.fr` (pas de fichiers temporaires sur la carte SD du proxy) ; écriture sur .60, donc appliquée **sur GO** au moment du premier déploiement, avec synchronisation vers le backup .3.~~ |
 
 Sources du point 3 : [Docker Hub pull usage and limits](https://docs.docker.com/docker-hub/usage/pulls/),

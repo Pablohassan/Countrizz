@@ -1,6 +1,6 @@
 name: deploy
-# Contrôles statiques du déploiement (sans cluster ni image) : vérification des patchs image et chart Helm.
-# L'image se construit et se déploie depuis le Mac (deploy/scripts/build-image.sh, deploy.sh).
+# Contrôle statique du déploiement (sans cluster ni image) : vérification des patchs image.
+# L'image se construit sur le Mac (deploy/scripts/build-image.sh) ; le manifeste s'applique depuis rpi1.
 on:
   push:
     paths: ['deploy/**', '.github/workflows/deploy-ci.yml']
@@ -14,5 +14,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: node --test 'deploy/scripts/*.test.mjs'
-      - run: deploy/scripts/check-chart.sh
+      - run: node --test 'deploy/scripts/patchs.test.mjs'

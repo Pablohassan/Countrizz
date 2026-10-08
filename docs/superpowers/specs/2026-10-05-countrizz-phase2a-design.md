@@ -125,7 +125,8 @@ Motifs réglés **après la 2A**, au doigt, sur countrizz.fr déployé (§13) ; 
   d'accueil » sur iPhone/iPad ; bouton masqué si l'appli est déjà installée (`display-mode: standalone`).
 - « Partager le jeu » : `navigator.share` (titre, texte, `https://countrizz.fr`) ; sinon copie du lien + « Lien
   copié ! » ; sinon lien affiché.
-- nginx du pod : `sw.js`, `registerSW.js`, `manifest.webmanifest` sans cache (le proxy .60 le fait déjà).
+- nginx du pod : `sw.js`, `registerSW.js`, `manifest.webmanifest` sans cache (c'est le pod qui le fait ; depuis le
+  08/10 le proxy .60 ne fait que TLS et routage).
 
 ## 9. Déploiement sur countrizz.fr (validé le 03/10 ; sources dans `docs/infra/2026-10-03-conventions-deploiement-countrizz.md`, partie 2 prime)
 
@@ -175,7 +176,8 @@ GitHub : `check` seul. **Le Mac fait foi** (`check && test:data && e2e && budget
   (`elementFromPoint`, chaque écran avec globe) ; « Tourne ton téléphone » ; mouvement réduit ; erreurs simulées ;
   PWA hors ligne ; avion de l'accueil et Terre de chargement dessinés ; haptique par espion injecté ; références
   visuelles `-darwin` des nouveaux écrans, WebGPU et `forceWebGL`.
-- **Chart** : `helm template` + refus des nœuds inexistants.
+- **Déploiement** (révisé le 08/10) : essai à blanc `kubectl apply --dry-run=server` du manifeste
+  `deploy/k8s/countrizz.yaml` avant toute application ; ~~chart : `helm template` + refus des nœuds inexistants~~.
 - **Budget** : premier chargement ≤ 8 Mo (comme en 1B) ; écran de chargement ≈ 60 Ko ; précache borné.
 - **À la main, sur vrais téléphones** : installation PWA ; ressenti haptique **après la 2A**, sur countrizz.fr.
 

@@ -3,7 +3,8 @@ import { expect, test } from '@playwright/test';
 // Petit viewport, densité 1 : en headless, SwiftShader rend le jeu post-traité à ≈ 1 image/s en densité 2 (03/10) ;
 // la descente pas à pas est couverte par dynamicResolution.test.ts, ici on vérifie le branchement.
 test.use({ viewport: { width: 480, height: 300 }, deviceScaleFactor: 1 });
-test.slow(() => !!process.env.CI, 'SwiftShader : ≈ 1 image/s, il faut plusieurs fenêtres de 30 frames');
+// Partout, pas seulement en CI : sur le site déployé, descente puis remontée prennent ≈ 58 s pour 60 (mesuré le 09/10).
+test.slow(true, 'SwiftShader : ≈ 1 image/s, il faut plusieurs fenêtres de 30 frames');
 
 const ready = async (page: import('@playwright/test').Page, query: string) => {
   await page.goto(`/${query}`);

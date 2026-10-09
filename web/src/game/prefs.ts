@@ -9,10 +9,13 @@ export const NAME_MAX = 12;
 /** Graphèmes (un émoji avec modificateur compte pour un) : on ne coupe jamais au milieu. */
 const graphemes = (s: string): string[] => Array.from(new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(s), (g) => g.segment);
 
+/** Les `n` premiers caractères visibles de `s` (un émoji composé n'est jamais coupé). */
+export const truncateGraphemes = (s: string, n: number): string => graphemes(s).slice(0, n).join('');
+
 export function normalizeName(input: string, fallback: string): string {
   const clean = input.replace(/\s+/g, ' ').trim();
   if (!clean) return fallback;
-  return graphemes(clean).slice(0, NAME_MAX).join('').trim();
+  return truncateGraphemes(clean, NAME_MAX).trim();
 }
 
 export function readPref(storage: KeyValueStorage | null, key: string): string | null {

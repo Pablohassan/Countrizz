@@ -53,6 +53,22 @@ describe('carnet de scores sur l\'appareil', () => {
     expect(cap[0]).toEqual(e('Ok', 50, 1));
     expect(cap[1]!.name).toBe('Nom bien tro');
   });
+  it('écriture refusée après une sonde réussie (quota plein) : score gardé en mémoire, carnet signalé non persistant', () => {
+    const s = memory();
+    let full = false;
+    const quota: KeyValueStorage = { getItem: s.getItem, setItem: (k, v) => { if (full) throw new Error('QuotaExceededError'); s.setItem(k, v); }, removeItem: s.removeItem };
+    const book = openScoreBook(quota);
+    full = true;
+    expect(book.write('flag', [e('A', 10, 1)])).toBe(false);
+    expect(book.read('flag')).toEqual([e('A', 10, 1)]);
+    expect(book.persistent).toBe(false);
+  });
+  it('aller-retour : des noms de 12 graphèmes avec émojis sont relus intacts', () => {
+    const s = memory();
+    const names = ['Zoé👍🏽abcdefgh', '👍🏽'.repeat(7), '👨‍👩‍👧‍👦'.repeat(2)];
+    openScoreBook(s).write('flag', names.map((n, i) => e(n, 10 * (i + 1), i)));
+    expect(openScoreBook(s).read('flag').map((x) => x.name).sort()).toEqual([...names].sort());
+  });
   it('stockage indisponible (navigation privée, écriture refusée) : en mémoire le temps de la visite', () => {
     const refusing: KeyValueStorage = { getItem: () => null, setItem: () => { throw new Error('QuotaExceededError'); }, removeItem: () => {} };
     const book = openScoreBook(refusing);

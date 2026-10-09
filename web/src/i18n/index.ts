@@ -1,9 +1,9 @@
 import type { Lang } from '../game/types';
 import { en } from './en';
 import { fr } from './fr';
-import type { Messages } from './types';
+import type { Messages, Plural } from './types';
 
-export type { Messages } from './types';
+export type { Messages, Plural } from './types';
 export const messages: Record<Lang, Messages> = { fr, en };
 
 /** Langue du jeu : le choix mémorisé s'il est valide, puis la première langue du navigateur en fr ou en ; sinon l'anglais. */
@@ -22,4 +22,9 @@ export function fill(template: string, vars: Record<string, string | number>): s
     if (!(k in vars)) throw new Error(`fill : valeur manquante pour {${k}} dans « ${template} »`);
     return String(vars[k]);
   });
+}
+
+/** Forme du pluriel pour `n` dans la langue (français : 0 et 1 au singulier ; anglais : 1 seul). */
+export function plural(lang: Lang, n: number, forms: Plural): string {
+  return new Intl.PluralRules(lang).select(n) === 'one' ? forms.one : forms.other;
 }

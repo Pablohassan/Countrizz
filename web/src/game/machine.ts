@@ -32,6 +32,8 @@ export interface GameState {
   picked: number | null;
   /** Écran d'où l'on est venu aux scores (accueil ou fin). */
   scoresFrom: 'home' | 'end' | null;
+  /** Numéro du vol en cours, croissant d'une partie à l'autre (Quitter compris) : ARRIVED doit le rappeler. */
+  flight: number;
 }
 
 export type GameEvent =
@@ -41,19 +43,19 @@ export type GameEvent =
   | { type: 'SHOW_SCORES' }
   | { type: 'CHOOSE_MODE'; mode: Mode; seed: number }
   | { type: 'COUNTDOWN_TICK'; now: number }
-  | { type: 'ARRIVED'; now: number }
+  | { type: 'ARRIVED'; flight: number; now: number }
   | { type: 'ANSWER'; index: number; now: number }
   | { type: 'REVEAL_DONE'; now: number }
   | { type: 'TICK'; now: number }
   | { type: 'PAUSE'; reason: 'hidden' | 'rotate'; now: number }
   | { type: 'RESUME'; reason: 'hidden' | 'rotate'; now: number }
   | { type: 'QUIT' }
-  | { type: 'REPLAY'; seed: number }
+  | { type: 'REPLAY'; seed: number; mode?: Mode }
   | { type: 'CHANGE_MODE' };
 
 export const initialState = (lang: Lang): GameState => ({
   screen: 'home', lang, mode: null, seed: 0, rngState: 0, asked: [], question: null, streak: 0,
-  tally: emptyTally(), clock: createClock(GAME_MS), countdown: COUNTDOWN_FROM, arrived: false, picked: null, scoresFrom: null,
+  tally: emptyTally(), clock: createClock(GAME_MS), countdown: COUNTDOWN_FROM, arrived: false, picked: null, scoresFrom: null, flight: 0,
 });
 
 const IN_GAME: readonly Screen[] = ['countdown', 'flight', 'question', 'reveal'];
@@ -67,6 +69,7 @@ export function createGame(countries: DrawCountry[]): (s: GameState, e: GameEven
     return {
       ...s, screen: 'countdown', mode, seed, rngState: rng.state, asked: [question.cca3], question, streak: 0,
       tally: emptyTally(), clock: createClock(GAME_MS, ['flight']), countdown: COUNTDOWN_FROM, arrived: false, picked: null,
+      flight: s.flight + 1,
     };
   }
 
@@ -90,11 +93,14 @@ export function createGame(countries: DrawCountry[]): (s: GameState, e: GameEven
         return { ...s, clock: startClock(s.clock, e.now), screen: s.arrived ? 'question' : 'flight' };
       }
       case 'ARRIVED':
+        if (e.flight !== s.flight) return s; // un vol remplacé (partie quittée, manche suivante) n'arrive plus
         if (s.screen === 'countdown' && !s.arrived) return { ...s, arrived: true, clock: resumeClock(s.clock, 'flight', e.now) };
         if (s.screen !== 'flight') return s;
         return { ...s, screen: 'question', arrived: true, clock: resumeClock(s.clock, 'flight', e.now) };
       case 'ANSWER': {
         if (s.screen !== 'question' || !s.question || !Number.isInteger(e.index) || e.index < 0 || e.index > 3) return s;
+        // Réponse arrivée après zéro (TICK pas encore reçu) : la question en cours n'est pas comptée.
+        if (remainingMs(s.clock, e.now) <= 0) return { ...s, screen: 'end', question: null, picked: null };
         const ok = e.index === s.question.answer;
         return {
           ...s, screen: 'reveal', picked: e.index, streak: ok ? s.streak + 1 : 0,
@@ -109,7 +115,7 @@ export function createGame(countries: DrawCountry[]): (s: GameState, e: GameEven
         if (!question) return { ...s, screen: 'end', clock: resumed, picked: null, question: null };
         return {
           ...s, screen: 'flight', rngState: rng.state, asked: [...s.asked, question.cca3], question, arrived: false,
-          picked: null, clock: pauseClock(resumed, 'flight', e.now),
+          picked: null, clock: pauseClock(resumed, 'flight', e.now), flight: s.flight + 1,
         };
       }
       case 'TICK':
@@ -121,9 +127,12 @@ export function createGame(countries: DrawCountry[]): (s: GameState, e: GameEven
       case 'RESUME':
         return IN_GAME.includes(s.screen) ? { ...s, clock: resumeClock(s.clock, e.reason, e.now) } : s;
       case 'QUIT':
-        return IN_GAME.includes(s.screen) ? initialState(s.lang) : s;
-      case 'REPLAY':
-        return s.screen === 'end' && s.mode ? newGame(s, s.mode, e.seed) : s;
+        return IN_GAME.includes(s.screen) ? { ...initialState(s.lang), flight: s.flight } : s;
+      case 'REPLAY': {
+        // Depuis la fin (même mode) ou l'écran des scores (mode de l'onglet ouvert).
+        const mode = e.mode ?? s.mode;
+        return (s.screen === 'end' || s.screen === 'scores') && mode ? newGame({ ...s, scoresFrom: null }, mode, e.seed) : s;
+      }
       case 'CHANGE_MODE':
         return s.screen === 'end' ? { ...s, screen: 'mode' } : s;
     }

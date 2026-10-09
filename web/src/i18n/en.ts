@@ -6,11 +6,11 @@ export const en: Messages = {
   home: { yourName: 'Your name:', defaultName: 'Globetrotter', play: 'Play', scores: 'Scores', about: 'About', language: 'Language' },
   mode: { back: '‹ Back', player: 'Player:', choose: 'Pick your mode', record: 'Best', new: 'New' },
   countdown: { go: 'GO!' },
-  hud: { quit: 'Quit', score: 'Score', secondsLeft: '{seconds} seconds left', paused: 'Game paused' },
+  hud: { quit: 'Quit', score: 'Score', secondsLeft: { one: '{seconds} second left', other: '{seconds} seconds left' }, paused: 'Game paused' },
   reveal: { label: '{country} · {capital}', correct: 'Right: {answer}', wrong: 'Missed: it was {answer}' },
   end: {
-    timeUp: 'Time’s up!', modeLine: '{mode} mode · {name}', newRecord: 'New record!', points: 'points',
-    correctOf: '{correct} right answers out of {total}', previousRecord: 'Previous best: {score}', replay: 'Play again',
+    timeUp: 'Time’s up!', modeLine: '{mode} mode · {name}', newRecord: 'New record!', points: { one: 'point', other: 'points' },
+    correctOf: { one: '{correct} right answer out of {total}', other: '{correct} right answers out of {total}' }, previousRecord: 'Previous best: {score}', replay: 'Play again',
     changeMode: 'Change mode', scores: 'Scores', notSaved: 'Your score can’t be saved on this device',
   },
   scores: { title: 'Top scores', you: '· you', replay: 'Play again', back: '‹ Back', empty: 'No score yet in this mode' },
@@ -27,6 +27,7 @@ export const en: Messages = {
     loadHint: 'If it keeps happening, reload the page.',
     ohNo: 'Oh no!', unsupportedTitle: 'Your browser can’t show the globe',
     unsupportedText: 'The 3D globe is the heart of the game: there’s no version without it.',
+    unsupportedHint: 'Countrizz needs WebGPU or WebGL 2. Try an up-to-date browser: Chrome, Edge, Firefox or Safari.',
   },
   rotate: { title: 'Turn your phone', text: 'Countrizz is played in portrait.', paused: 'Game paused' },
 };

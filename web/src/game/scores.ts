@@ -1,4 +1,4 @@
-import { NAME_MAX, type KeyValueStorage } from './prefs';
+import { NAME_MAX, truncateGraphemes, type KeyValueStorage } from './prefs';
 import type { Mode } from './types';
 
 export type { KeyValueStorage } from './prefs';
@@ -22,7 +22,8 @@ export function insertScore(list: readonly ScoreEntry[], entry: ScoreEntry) {
 
 export interface ScoreBook {
   read(mode: Mode): ScoreEntry[];
-  write(mode: Mode, list: ScoreEntry[]): void;
+  /** false : écrit en mémoire seulement (stockage absent, refusé ou plein). */
+  write(mode: Mode, list: ScoreEntry[]): boolean;
   /** false : les scores ne survivront pas à la visite (« Ton score ne peut pas être gardé sur cet appareil »). */
   readonly persistent: boolean;
 }
@@ -35,7 +36,7 @@ function sanitize(raw: unknown): ScoreEntry[] {
   return raw
     .filter((x): x is ScoreEntry => !!x && typeof x === 'object' && typeof x.name === 'string'
       && Number.isFinite(x.score) && Number.isFinite(x.at))
-    .map((x) => ({ name: Array.from(x.name).slice(0, NAME_MAX).join(''), score: x.score, at: x.at }))
+    .map((x) => ({ name: truncateGraphemes(x.name, NAME_MAX), score: x.score, at: x.at }))
     .sort(order)
     .slice(0, TOP);
 }
@@ -46,17 +47,23 @@ function probe(storage: KeyValueStorage | null): boolean {
 }
 
 export function openScoreBook(storage: KeyValueStorage | null): ScoreBook {
-  const persistent = probe(storage);
+  let persistent = probe(storage);
+  /** Ce qui n'a pas pu être écrit : prime sur le stockage pour la suite de la visite. */
   const memory = new Map<Mode, ScoreEntry[]>();
   return {
-    persistent,
+    get persistent() { return persistent; },
     read(mode) {
-      if (!persistent) return memory.get(mode) ?? [];
+      const kept = memory.get(mode);
+      if (kept) return kept;
+      if (!persistent) return [];
       try { return sanitize(JSON.parse(storage!.getItem(key(mode)) ?? '[]')); } catch { return []; }
     },
     write(mode, list) {
-      if (!persistent) { memory.set(mode, list); return; }
-      try { storage!.setItem(key(mode), JSON.stringify(list)); } catch { memory.set(mode, list); }
+      if (persistent) {
+        try { storage!.setItem(key(mode), JSON.stringify(list)); memory.delete(mode); return true; } catch { persistent = false; }
+      }
+      memory.set(mode, list);
+      return false;
     },
   };
 }

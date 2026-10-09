@@ -11,7 +11,7 @@ const run = (events: GameEvent[], from: GameState = initialState('fr')) => event
 /** Jusqu'à la première question : premier vol arrivé pendant le décompte. */
 const toQuestion: GameEvent[] = [
   { type: 'PLAY' }, { type: 'CHOOSE_MODE', mode: 'country', seed: 42 },
-  { type: 'COUNTDOWN_TICK', now: 1_000 }, { type: 'ARRIVED', now: 1_500 },
+  { type: 'COUNTDOWN_TICK', now: 1_000 }, { type: 'ARRIVED', flight: 1, now: 1_500 },
   { type: 'COUNTDOWN_TICK', now: 2_000 }, { type: 'COUNTDOWN_TICK', now: 3_000 }, { type: 'COUNTDOWN_TICK', now: 4_000 },
 ];
 
@@ -38,7 +38,7 @@ describe('machine d\'états du jeu', () => {
     ]);
     expect(s.screen).toBe('flight');
     expect(remainingMs(s.clock, 9_000)).toBe(60_000);
-    const q = reduce(s, { type: 'ARRIVED', now: 9_000 });
+    const q = reduce(s, { type: 'ARRIVED', flight: 1, now: 9_000 });
     expect(q.screen).toBe('question');
     expect(remainingMs(q.clock, 19_000)).toBe(50_000);
   });
@@ -88,9 +88,34 @@ describe('machine d\'états du jeu', () => {
     const f = reduce(r, { type: 'REVEAL_DONE', now: 11_500 });
     expect(reduce(f, { type: 'REVEAL_DONE', now: 11_600 })).toBe(f);                         // fin de révélation en double
     expect(reduce(f, { type: 'ANSWER', index: 0, now: 11_700 })).toBe(f);                     // réponse pendant un vol
-    const a = reduce(f, { type: 'ARRIVED', now: 13_000 });
-    expect(reduce(a, { type: 'ARRIVED', now: 13_100 })).toBe(a);                              // arrivée en double
+    const a = reduce(f, { type: 'ARRIVED', flight: 2, now: 13_000 });
+    expect(reduce(a, { type: 'ARRIVED', flight: 2, now: 13_100 })).toBe(a);                              // arrivée en double
     expect(reduce(q, { type: 'ANSWER', index: 7, now: 10_000 })).toBe(q);                     // index hors grille
+  });
+
+  it('réponse reçue après zéro, sans TICK entre-temps : fin, la question n\'est pas comptée', () => {
+    const q = run(toQuestion);
+    const s = reduce(q, { type: 'ANSWER', index: q.question!.answer, now: 70_000 });
+    expect(s.screen).toBe('end');
+    expect(s.tally.rounds).toHaveLength(0);
+  });
+
+  it('arrivée d\'un ancien vol (partie quittée puis relancée pendant le vol) : ignorée', () => {
+    const ticks: GameEvent[] = [1_000, 2_000, 3_000, 4_000].map((now) => ({ type: 'COUNTDOWN_TICK', now }));
+    let s = run([{ type: 'PLAY' }, { type: 'CHOOSE_MODE', mode: 'country', seed: 1 }, ...ticks]);
+    expect([s.screen, s.flight]).toEqual(['flight', 1]);
+    s = run([{ type: 'QUIT' }, { type: 'PLAY' }, { type: 'CHOOSE_MODE', mode: 'country', seed: 2 }], s);
+    expect(s.flight).toBe(2);
+    const stale = reduce(s, { type: 'ARRIVED', flight: 1, now: 5_000 });
+    expect(stale).toBe(s);
+    expect(reduce(s, { type: 'ARRIVED', flight: 2, now: 5_000 }).arrived).toBe(true);
+  });
+
+  it('Rejouer depuis l\'écran des scores, dans le mode de l\'onglet ; sans mode connu : rien', () => {
+    const sc = run([{ type: 'SHOW_SCORES' }]);
+    const g = reduce(sc, { type: 'REPLAY', seed: 5, mode: 'capital' });
+    expect([g.screen, g.mode, g.seed]).toEqual(['countdown', 'capital', 5]);
+    expect(reduce(sc, { type: 'REPLAY', seed: 5 })).toBe(sc);
   });
 
   it('Quitter sans confirmation : retour à l\'accueil, langue gardée', () => {

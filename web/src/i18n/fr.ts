@@ -6,11 +6,11 @@ export const fr: Messages = {
   home: { yourName: 'Ton nom :', defaultName: 'Globetrotteur', play: 'Jouer', scores: 'Scores', about: 'À propos', language: 'Langue' },
   mode: { back: '‹ Retour', player: 'Joueur :', choose: 'Choisis ton mode', record: 'Record', new: 'Nouveau' },
   countdown: { go: 'GO !' },
-  hud: { quit: 'Quitter', score: 'Score', secondsLeft: '{seconds} secondes restantes', paused: 'Partie en pause' },
+  hud: { quit: 'Quitter', score: 'Score', secondsLeft: { one: '{seconds} seconde restante', other: '{seconds} secondes restantes' }, paused: 'Partie en pause' },
   reveal: { label: '{country} · {capital}', correct: 'Bonne réponse : {answer}', wrong: 'Raté : c’était {answer}' },
   end: {
-    timeUp: 'Temps écoulé !', modeLine: 'Mode {mode} · {name}', newRecord: 'Nouveau record !', points: 'points',
-    correctOf: '{correct} bonnes réponses sur {total}', previousRecord: 'Ancien record : {score}', replay: 'Rejouer',
+    timeUp: 'Temps écoulé !', modeLine: 'Mode {mode} · {name}', newRecord: 'Nouveau record !', points: { one: 'point', other: 'points' },
+    correctOf: { one: '{correct} bonne réponse sur {total}', other: '{correct} bonnes réponses sur {total}' }, previousRecord: 'Ancien record : {score}', replay: 'Rejouer',
     changeMode: 'Changer de mode', scores: 'Scores', notSaved: 'Ton score ne peut pas être gardé sur cet appareil',
   },
   scores: { title: 'Top scores', you: '· toi', replay: 'Rejouer', back: '‹ Retour', empty: 'Pas encore de score dans ce mode' },
@@ -27,6 +27,7 @@ export const fr: Messages = {
     loadHint: 'Si le problème continue, recharge la page.',
     ohNo: 'Oh non !', unsupportedTitle: 'Ton navigateur ne peut pas afficher le globe',
     unsupportedText: 'Le globe 3D est le cœur du jeu : il n’y a pas de version sans lui.',
+    unsupportedHint: 'Countrizz a besoin de WebGPU ou de WebGL 2. Essaie avec un navigateur récent : Chrome, Edge, Firefox ou Safari à jour.',
   },
   rotate: { title: 'Tourne ton téléphone', text: 'Countrizz se joue en portrait.', paused: 'Partie en pause' },
 };

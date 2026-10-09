@@ -20,10 +20,12 @@
     "textures:fetch": "tsx scripts/textures/fetch-textures.ts",
     "textures": "tsx scripts/textures/build-textures.ts",
     "e2e": "playwright test",
+    "e2e:local": "E2E_BASE_URL=http://localhost:5174 playwright test",
     "e2e:countries": "playwright test e2e/countries.spec.ts",
     "imagery": "tsx scripts/imagery/build-patches.ts",
     "imagery:fetch": "tsx scripts/imagery/fetch-patches.ts",
-    "budget": "playwright test -c playwright.budget.config.ts"
+    "budget": "playwright test -c playwright.budget.config.ts",
+    "budget:local": "BUDGET_BASE_URL=http://localhost:5175 playwright test -c playwright.budget.config.ts"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.1",

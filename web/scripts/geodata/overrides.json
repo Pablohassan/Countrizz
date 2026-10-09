@@ -10,15 +10,19 @@
     "UNK": "XKX"
   },
   "capitals": {
-    "BEN": "Porto-Novo",
-    "BOL": "Sucre",
-    "LKA": "Sri Jayawardenapura",
-    "MYS": "Kuala Lumpur",
-    "PAK": "Islamabad",
-    "PSE": "Jérusalem-Est",
-    "SWZ": "Mbabane",
-    "YEM": "Sanaa",
-    "ZAF": "Pretoria"
+    "BEN": { "fr": "Porto-Novo", "en": "Porto-Novo" },
+    "BOL": { "fr": "Sucre", "en": "Sucre" },
+    "GNQ": { "fr": "Ciudad de la Paz", "en": "Ciudad de la Paz" },
+    "LKA": { "fr": "Sri Jayawardenapura", "en": "Sri Jayawardenepura Kotte" },
+    "MYS": { "fr": "Kuala Lumpur", "en": "Kuala Lumpur" },
+    "PAK": { "fr": "Islamabad", "en": "Islamabad" },
+    "PSE": { "fr": "Jérusalem-Est", "en": "East Jerusalem" },
+    "SWZ": { "fr": "Mbabane", "en": "Mbabane" },
+    "YEM": { "fr": "Sanaa", "en": "Sana'a" },
+    "ZAF": { "fr": "Pretoria", "en": "Pretoria" }
+  },
+  "names": {
+    "fr": { "COD": "RD Congo", "CPV": "Cap-Vert", "VAT": "Vatican" }
   },
   "areaWhitelist": {},
   "disputed": {

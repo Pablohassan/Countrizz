@@ -1,6 +1,9 @@
 /** Coordonnées géographiques en degrés : [longitude, latitude]. */
 export type LngLat = [lng: number, lat: number];
 
+/** Libellé dans les deux langues du jeu. */
+export interface Libelle { fr: string; en: string }
+
 /** Plus petite calotte sphérique englobant le corps principal d'un pays. */
 export interface Cap {
   center: LngLat;

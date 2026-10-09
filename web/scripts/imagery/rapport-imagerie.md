@@ -2,7 +2,7 @@
 
 EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025) — CC BY-NC-SA 4.0
 
-- 197 pays ; 2048 px : 140335406 octets ; 1024 px : 43005008 octets
+- 197 pays ; 2048 px : 140436773 octets ; 1024 px : 43034204 octets
 
 | Pays | Demi-emprise (°) | Octets 2048 | Octets 1024 |
 |---|---:|---:|---:|
@@ -97,7 +97,7 @@ EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified
 | KEN | 30.00 | 775715 | 232386 |
 | KGZ | 28.64 | 881917 | 251046 |
 | KHM | 19.80 | 664116 | 210267 |
-| KIR | 19.80 | 333579 | 119987 |
+| KIR | 26.24 | 434946 | 149183 |
 | KNA | 19.80 | 544162 | 179065 |
 | KOR | 19.80 | 684010 | 211271 |
 | KWT | 19.80 | 886367 | 262049 |

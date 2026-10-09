@@ -29,7 +29,7 @@ export interface GlobeHandle {
   setIdleSpin(degPerSec: number): void;
 }
 
-/** Crochets de test (dev seulement) : backend, recréations du renderer, projection écran, perte simulée du GPU. */
+/** Crochets de test (dev, ou drapeau des e2e) : backend, recréations du renderer, projection écran, perte simulée du GPU. */
 export interface GlobeDebug {
   backend: Backend;
   generation: number;
@@ -44,6 +44,13 @@ export interface GlobeDebug {
   simulateDeviceLost(): void;
 }
 declare global { interface Window { __globe?: GlobeDebug } }
+
+/**
+ * Hors dev, les crochets ne s'installent que si le navigateur porte le drapeau des e2e (posé par Playwright via
+ * `storageState`, e2e sur la version déployée, 09/10/2026) : un visiteur ne les a jamais.
+ */
+export const E2E_FLAG = 'countrizz:e2e';
+const e2eHooks = (): boolean => { try { return localStorage.getItem(E2E_FLAG) === '1'; } catch { return false; } };
 
 interface Props {
   ref?: Ref<GlobeHandle>;
@@ -191,7 +198,7 @@ function GlobeScene({ controller, generation, onReady, onError, onCut, onDpr }: 
   useEffect(() => { controller.setViewport({ width: size.width, height: size.height, fovYDeg: FOV_Y_DEG }); }, [controller, size.width, size.height]);
 
   useEffect(() => {
-    if (!import.meta.env.DEV) return;
+    if (!import.meta.env.DEV && !e2eHooks()) return;
     const debug: GlobeDebug = {
       backend: renderer.userData.backend,
       generation,

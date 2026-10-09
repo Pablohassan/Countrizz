@@ -22,7 +22,12 @@ export default defineConfig({
   timeout: process.env.CI ? 180_000 : 60_000,
   workers: process.env.CI ? 2 : 1,
   reporter: [['list']],
-  use: { baseURL: E2E_TARGET, launchOptions: { args: CHROME_ARGS } },
+  use: {
+    baseURL: E2E_TARGET,
+    launchOptions: { args: CHROME_ARGS },
+    // Sur le site déployé, le drapeau qui installe les crochets de test (window.__globe) ; voir GlobeView.tsx.
+    ...(LOCAL ? {} : { storageState: { cookies: [], origins: [{ origin: new URL(E2E_TARGET).origin, localStorage: [{ name: 'countrizz:e2e', value: '1' }] }] } }),
+  },
   ...(LOCAL ? {
     webServer: {
       command: 'npm run dev -- --port 5174 --strictPort',

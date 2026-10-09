@@ -1370,5 +1370,9 @@
  "naturalEarthDisputed": {
   "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/9380cca83db5f9aef52d5e762765100745f84b27/geojson/ne_10m_admin_0_disputed_areas.geojson",
   "sha256": "9cafef8b7dfb6b164dc58f218f981f4ace9f716f6c03795d4c62d1ac9f3d50f5"
+ },
+ "naturalEarthPlaces": {
+  "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/9380cca83db5f9aef52d5e762765100745f84b27/geojson/ne_10m_populated_places_simple.geojson",
+  "sha256": "c7b8dbe8918f9b8bc2173bb343078d63d757a7f3d3663e7707e5e9ec4741f94f"
  }
 }

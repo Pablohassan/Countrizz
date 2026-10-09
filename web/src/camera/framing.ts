@@ -33,3 +33,16 @@ export function frameAltitude(capRadiusDeg: number, v: Viewport, p: FramingParam
   const altitude = p.k * (Math.cos(theta) + Math.sin(theta) / Math.tan(alpha / p.margin)) - 1;
   return Math.min(overviewAltitude(v, p), Math.max(p.floor, altitude));
 }
+
+/**
+ * Un point à `offsetDeg` du centre visé (distance angulaire au centre de la Terre) est-il dans le cadre quand la caméra
+ * arrive au-dessus de ce centre, à l'altitude de `frameAltitude` ? Caméra à d = 1 + altitude rayons du centre, regard
+ * vers le centre : le point est vu sous l'angle β = atan2(sin t, d − cos t) ; il faut β ≤ α (demi-champ limitant) et le
+ * point en deçà de l'horizon (cos t > 1 / d).
+ */
+export function inArrivalView(offsetDeg: number, capRadiusDeg: number, v: Viewport, p: FramingParams): boolean {
+  const d = 1 + frameAltitude(capRadiusDeg, v, p);
+  const t = offsetDeg * RAD;
+  if (Math.cos(t) <= 1 / d) return false;
+  return Math.atan2(Math.sin(t), d - Math.cos(t)) <= limitingHalfAngle(v);
+}

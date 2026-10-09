@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { frameAltitude, limitingHalfAngle, overviewAltitude } from './framing';
+import { frameAltitude, inArrivalView, limitingHalfAngle, overviewAltitude } from './framing';
 
 const deg = Math.PI / 180;
 const desktop = { width: 1300, height: 750, fovYDeg: 50 };
@@ -39,5 +39,24 @@ describe('altitude de cadrage : k·(cos θ + sin θ / tan(α/m)) − 1, bornée'
   it('vue d’ensemble : 1,4 en paysage, 2,2 en portrait (valeurs de l’ancien jeu)', () => {
     expect(overviewAltitude(desktop, params)).toBe(1.4);
     expect(overviewAltitude(phone, params)).toBe(2.2);
+  });
+});
+
+describe('inArrivalView', () => {
+  const P = { k: 1, margin: 3, floor: 0.0003, overview: { landscape: 1.4, portrait: 2.2 }, minContextDeg: 3 };
+  const desk = { width: 960, height: 600, fovYDeg: 50 };
+  it('le centre visé est toujours dans le cadre', () => {
+    expect(inArrivalView(0, 5, phone, P)).toBe(true);
+  });
+  it('le bord de la calotte occupe 1/m du demi-champ : dans le cadre', () => {
+    expect(inArrivalView(5, 5, phone, P)).toBe(true);
+    expect(inArrivalView(5, 5, desk, P)).toBe(true);
+  });
+  it('Kiribati avant ancrage : Tarawa à 28,74° d\'une calotte de 1,54° est hors cadre', () => {
+    expect(inArrivalView(28.74, 1.54, phone, P)).toBe(false);
+    expect(inArrivalView(28.74, 1.54, desk, P)).toBe(false);
+  });
+  it('un point derrière l\'horizon n\'est jamais dans le cadre', () => {
+    expect(inArrivalView(95, 20, desk, P)).toBe(false);
   });
 });

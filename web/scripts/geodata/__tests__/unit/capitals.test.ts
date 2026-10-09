@@ -28,6 +28,10 @@ describe('capitalOfGame', () => {
   it('arbitrage incomplet (en vide) : erreur', () => {
     expect(() => capitalOfGame('ZAF', wd, ['Pretoria'], { ZAF: { fr: 'Pretoria', en: ' ' } })).toThrow(/incomplet/);
   });
+  it('arbitrage avec espaces en tête ou en fin, en EN comme en FR : erreur', () => {
+    expect(() => capitalOfGame('ZAF', wd, ['Pretoria'], { ZAF: { fr: 'Pretoria', en: 'Pretoria ' } })).toThrow(/overrides\.capitals\.ZAF/);
+    expect(() => capitalOfGame('LKA', wd, ['Colombo'], { LKA: { fr: ' Sri Jayawardenapura', en: 'Kotte' } })).toThrow(/overrides\.capitals\.LKA/);
+  });
   it('aucune capitale : erreur explicite', () => {
     expect(() => capitalOfGame('XXX', wd, [], {})).toThrow(/Aucune capitale/);
   });

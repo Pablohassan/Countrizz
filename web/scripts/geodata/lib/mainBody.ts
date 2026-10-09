@@ -10,6 +10,9 @@ export interface MainBody { kept: PolygonCoords[]; excluded: PolygonCoords[] }
  */
 export function mainBody(polys: PolygonCoords[], opts: { maxDistanceDeg: number; areaShare: number }, anchor?: [number, number]): MainBody {
   if (polys.length === 0) throw new Error('mainBody : aucun polygone');
+  if (!Number.isFinite(opts.maxDistanceDeg) || opts.maxDistanceDeg <= 0) {
+    throw new Error(`mainBody : maxDistanceDeg invalide (${opts.maxDistanceDeg}) — vérifier overrides.mainBodyAnchor`);
+  }
   const items = polys
     .map((p) => ({ p, area: polygonAreaKm2(p), c: geoCentroid({ type: 'Polygon', coordinates: p }) }))
     .sort((a, b) => b.area - a.area);

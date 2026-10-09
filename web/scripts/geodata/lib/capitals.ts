@@ -19,7 +19,10 @@ export function capitalOfGame(
   if (forced !== undefined) {
     if (!forced.fr?.trim() || !forced.en?.trim()) throw new Error(`${cca3} : arbitrage overrides.capitals.${cca3} incomplet (fr et en requis)`);
     if (fr.length > 0 && !fr.includes(forced.fr)) {
-      throw new Error(`${cca3} : capitale imposée « ${forced.fr} » absente de la liste Wikidata (${fr.join(', ')})`);
+      throw new Error(`${cca3} : capitale imposée « ${forced.fr} » absente de la liste Wikidata (${fr.join(', ')}) — corriger overrides.capitals.${cca3}.fr`);
+    }
+    if (forced.fr !== forced.fr.trim() || forced.en !== forced.en.trim()) {
+      throw new Error(`${cca3} : arbitrage overrides.capitals.${cca3} avec des espaces en tête ou en fin`);
     }
     return { capital: { fr: forced.fr, en: forced.en }, capitals: { fr: fr.length > 0 ? fr : [forced.fr], en: sorted([...mledozeEn, forced.en], 'en') } };
   }

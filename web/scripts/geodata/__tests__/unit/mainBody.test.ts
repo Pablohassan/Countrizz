@@ -28,6 +28,10 @@ describe('mainBody', () => {
     expect(r.excluded).toEqual([islet]);
   });
 
+  it('refuse une portée absente ou invalide (arbitrage mainBodyAnchor mal saisi)', () => {
+    expect(() => mainBody([box(0, 0, 1, 1)], { areaShare: 0.9, maxDistanceDeg: undefined as never }, [0.5, 0.5])).toThrow(/maxDistanceDeg/);
+    expect(() => mainBody([box(0, 0, 1, 1)], { areaShare: 0.9, maxDistanceDeg: -1 }, [0.5, 0.5])).toThrow(/maxDistanceDeg/);
+  });
   it('refuse une liste vide', () => {
     expect(() => mainBody([], opts)).toThrow();
   });

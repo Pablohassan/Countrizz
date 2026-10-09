@@ -44,6 +44,13 @@ describe('capitalPoint', () => {
   it('introuvable : erreur qui nomme la clé à remplir', () => {
     expect(() => capitalPoint('AND', 'AND', 'Andorra la Vella', places)).toThrow(/overrides\.capitalPoints\.AND/);
   });
+  it('alias vide ou fait d\'espaces : erreur (sinon il correspondrait à tous les lieux sans nom alternatif)', () => {
+    expect(() => capitalPoint('MNG', 'MNG', 'Ulan Bator', places, { alias: ' ', why: 'faute' })).toThrow(/overrides\.capitalPoints\.MNG/);
+  });
+  it('règle mal formée (ni alias ni lngLat) : erreur au lieu d\'être ignorée', () => {
+    expect(() => capitalPoint('FRA', 'FRA', 'Paris', places, { lnglat: [0, 0] } as never)).toThrow(/overrides\.capitalPoints\.FRA/);
+    expect(() => capitalPoint('FRA', 'FRA', 'Paris', places, { lngLat: [Number.NaN, 0], source: 'x' })).toThrow(/overrides\.capitalPoints\.FRA/);
+  });
   it('deux candidats de même rang : erreur au lieu d\'un choix arbitraire', () => {
     expect(() => capitalPoint('XXX', 'XXX', 'Twin', places)).toThrow(/2 lieux/);
   });

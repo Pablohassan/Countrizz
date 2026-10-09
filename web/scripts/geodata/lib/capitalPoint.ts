@@ -21,9 +21,18 @@ export const foldName = (s: string | null | undefined): string =>
  * anglaise (ou l'alias) ; à homonymie, la capitale nationale (« Admin-0 capital… ») ; un point imposé passe tel quel.
  */
 export function capitalPoint(cca3: string, neCode: string, capitalEn: string, places: Place[], rule?: CapitalPointRule): LngLat {
-  if (rule && 'lngLat' in rule) return rule.lngLat;
-  const wanted = rule?.alias ?? capitalEn;
+  if (rule !== undefined) {
+    const p = (rule as { lngLat?: unknown }).lngLat;
+    const isPoint = Array.isArray(p) && p.length === 2 && p.every(Number.isFinite) && Math.abs(p[0]) <= 180 && Math.abs(p[1]) <= 90;
+    const isAlias = typeof (rule as { alias?: unknown }).alias === 'string' && foldName((rule as { alias: string }).alias) !== '';
+    if (!isPoint && !isAlias) {
+      throw new Error(`${cca3} : règle overrides.capitalPoints.${cca3} mal formée (alias non vide, ou lngLat [lng, lat] fini)`);
+    }
+    if (isPoint) return p as LngLat;
+  }
+  const wanted = rule ? (rule as { alias: string }).alias : capitalEn;
   const key = foldName(wanted);
+  if (!key) throw new Error(`${cca3} : capitale anglaise vide — compléter overrides.capitals.${cca3} ou overrides.capitalPoints.${cca3}`);
   const found = places.filter((f) => f.properties.adm0_a3 === neCode
     && [f.properties.name, f.properties.nameascii, f.properties.namealt, f.properties.ls_name].some((n) => foldName(n) === key));
   const national = found.filter((f) => f.properties.featurecla.startsWith('Admin-0 capital'));

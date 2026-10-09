@@ -50,9 +50,11 @@ export interface CountryRecord {
   id: number;
   cca3: string;
   cca2: string;
-  name: string;
-  capital: string;
-  capitals: string[];
+  name: Libelle;
+  capital: Libelle;
+  capitals: { fr: string[]; en: string[] };
+  /** Position de la capitale de jeu : Natural Earth populated places, ou point imposé sourcé (overrides.capitalPoints). */
+  capitalLngLat: LngLat;
   region: string;
   subregion: string;
   neighbors: string[];

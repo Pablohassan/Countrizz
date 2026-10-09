@@ -109,7 +109,10 @@
     }
   },
   "mainBodyAnchor": {
-    "KIR": "Tarawa (capitale) est dans les îles Gilbert ; sans ancrage, le corps principal est Kiritimati (îles de la Ligne), à 28,7° de la capitale, hors du cadre à l'arrivée (mineur n° 2 de la phase 0)"
+    "KIR": {
+      "maxDistanceDeg": 12,
+      "why": "Tarawa (capitale) est dans les îles Gilbert ; sans ancrage, le corps principal est Kiritimati (îles de la Ligne), à 28,7° de la capitale, hors du cadre à l'arrivée (mineur n° 2 de la phase 0). Portée 12° : Gilbert seules (calotte 3,98°, texel 1,3 km) ; à 25° les Phoenix entrent, calotte 9,48°, texel 3,1 km et les atolls ne sont plus tracés (mesuré le 09/10)."
+    }
   },
   "areaWhitelist": {},
   "disputed": {

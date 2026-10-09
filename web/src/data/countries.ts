@@ -1,4 +1,4 @@
-import type { CountryRecord } from './types';
+import type { CountryRecord, Libelle } from './types';
 
 export const PLAYABLE_COUNT = 197;
 
@@ -12,6 +12,9 @@ export function parseCountries(json: unknown): CountryRecord[] {
     if (seen.has(c.cca3)) throw new Error(`countries.json : ${c.cca3} en double`);
     seen.add(c.cca3);
     if (!c.patch?.sdf || !c.cap || !c.beacon) throw new Error(`countries.json : ${c.cca3} sans patch, calotte ou balise`);
+    const bilingual = (l: unknown) => typeof (l as Libelle | undefined)?.fr === 'string' && typeof (l as Libelle).en === 'string';
+    if (!bilingual(c.name) || !bilingual(c.capital)) throw new Error(`countries.json : ${c.cca3} sans libellés bilingues (ancien format ?)`);
+    if (!Array.isArray(c.capitalLngLat) || c.capitalLngLat.length !== 2) throw new Error(`countries.json : ${c.cca3} sans position de capitale`);
   }
   return json as CountryRecord[];
 }

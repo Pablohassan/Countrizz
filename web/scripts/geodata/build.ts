@@ -3,15 +3,17 @@ import path from 'node:path';
 import { geoContains } from 'd3-geo';
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import type { CountryRecord, LngLat } from '../../src/data/types';
-import { AREA_RATIO, BORDERS_KEEP, EARTH_RADIUS_KM, MAIN_BODY, PATCH, PLAYABLE_COUNT, PLAYABLE_EXTRA } from './config';
+import { AREA_RATIO, BORDERS_KEEP, CAPITAL_MAX_OFFSHORE_KM, EARTH_RADIUS_KM, MAIN_BODY, PATCH, PLAYABLE_COUNT, PLAYABLE_EXTRA } from './config';
 import { beaconPoint } from './lib/beacon';
 import { buildTopology, neighborLines, overviewBorders } from './lib/borders';
 import { boundingCap, capContains } from './lib/cap';
+import { capitalPoint, offshoreKm, type Place } from './lib/capitalPoint';
 import { capitalOfGame } from './lib/capitals';
 import { areaKm2, forD3, polygonsOf } from './lib/geometry';
 import { readJson, writeBytes, writeJson } from './lib/io';
 import { joinNaturalEarth, neCode, type NeProps, type Overrides } from './lib/join';
 import { mainBody } from './lib/mainBody';
+import { nameOf } from './lib/names';
 import { applyDisputed, type DisputedProps } from './lib/disputed';
 import { chooseOutline } from './lib/outline';
 import { buildPatch, patchExtentRad } from './lib/patch';
@@ -37,6 +39,7 @@ function main(): void {
   const overrides = readJson<Overrides>(OVERRIDES_PATH);
   const wikidata = readJson<Record<string, string[]>>(path.join(DATA_SRC_DIR, 'capitals.fr.json'));
   const ne = readJson<FeatureCollection<Polygon | MultiPolygon, NeProps>>(path.join(CACHE_DIR, 'ne_10m_admin_0_countries.geojson'));
+  const places = readJson<{ features: Place[] }>(path.join(CACHE_DIR, 'ne_10m_populated_places_simple.geojson')).features;
 
   const join = joinNaturalEarth(ne, [...playableSet], overrides);
   if (join.unmatched.length) throw new Error(`Sans géométrie Natural Earth : ${join.unmatched.join(', ')}`);
@@ -75,12 +78,18 @@ function main(): void {
     }
 
     const polys = polygonsOf(outline.geometry);
-    const body = mainBody(polys, MAIN_BODY);
+    const { capital, capitals } = capitalOfGame(c.cca3, wikidata, c.capital, overrides.capitals);
+    const capitalLngLat = capitalPoint(c.cca3, overrides.neCode[c.cca3] ?? c.cca3, capital.en, places, overrides.capitalPoints[c.cca3]);
+    const offKm = offshoreKm(outline.geometry, capitalLngLat);
+    if (offKm > CAPITAL_MAX_OFFSHORE_KM) {
+      throw new Error(`${c.cca3} : capitale ${capital.en} à ${offKm.toFixed(1)} km hors du pays — corriger overrides.capitalPoints.${c.cca3}`);
+    }
+    const anchor = overrides.mainBodyAnchor[c.cca3];
+    const body = anchor ? mainBody(polys, { ...MAIN_BODY, maxDistanceDeg: anchor.maxDistanceDeg }, capitalLngLat) : mainBody(polys, MAIN_BODY);
     const bodyPoints = body.kept.flatMap((p) => p[0]!.map((q) => [q[0]!, q[1]!] as LngLat));
     const cap = boundingCap(bodyPoints);
     for (const q of bodyPoints) if (!capContains(cap, q, 1e-6)) throw new Error(`${c.cca3} : la calotte ne contient pas ${q}`);
     const { point: beacon, clearanceKm } = beaconPoint(body.kept);
-    const { capital, capitals } = capitalOfGame(c.cca3, wikidata, overrides.capitals);
 
     const frame = { center: cap.center, extentRad: patchExtentRad(cap.radiusDeg, PATCH), size: PATCH.size };
     const texelKm = (2 * frame.extentRad * EARTH_RADIUS_KM) / frame.size;
@@ -97,9 +106,10 @@ function main(): void {
       id: index + 1,
       cca3: c.cca3,
       cca2: c.cca2,
-      name: c.translations.fra?.common ?? c.name.common,
+      name: nameOf(c, overrides.names.fr),
       capital,
       capitals,
+      capitalLngLat,
       region: c.region,
       subregion: c.subregion,
       neighbors: c.borders.filter((b) => playableSet.has(b)).sort(),
@@ -113,10 +123,10 @@ function main(): void {
       patch: { sdf: `patches/sdf/${lower}.png`, size: PATCH.size, center: cap.center, extentRad: frame.extentRad, rangeTexels: PATCH.rangeTexels },
     });
     rows.push({
-      cca3: c.cca3, name: records.at(-1)!.name, source: outline.source, license: outline.license,
+      cca3: c.cca3, name: records.at(-1)!.name.fr, source: outline.source, license: outline.license,
       areaKm2: area, refAreaKm2: c.area, capRadiusDeg: cap.radiusDeg, excluded: body.excluded.length,
       centerInside: geoContains(outline.geometry, cap.center), insidePixels, beaconClearanceKm: clearanceKm, texelKm,
-      ...(outline.note ? { note: outline.note } : {}),
+      ...(outline.note || offKm > 0 ? { note: [outline.note, offKm > 0 ? `capitale à ${offKm.toFixed(1)} km du contour` : ''].filter(Boolean).join(' ; ') } : {}),
     });
     process.stdout.write(`\r${index + 1}/${playable.length} ${c.cca3}   `);
   }

@@ -3,10 +3,25 @@
   "id": 1,
   "cca3": "AFG",
   "cca2": "AF",
-  "name": "Afghanistan",
-  "capital": "Kaboul",
-  "capitals": [
-   "Kaboul"
+  "name": {
+   "fr": "Afghanistan",
+   "en": "Afghanistan"
+  },
+  "capital": {
+   "fr": "Kaboul",
+   "en": "Kabul"
+  },
+  "capitals": {
+   "fr": [
+    "Kaboul"
+   ],
+   "en": [
+    "Kabul"
+   ]
+  },
+  "capitalLngLat": [
+   69.181314,
+   34.518636
   ],
   "region": "Asia",
   "subregion": "Southern Asia",
@@ -48,10 +63,25 @@
   "id": 2,
   "cca3": "AGO",
   "cca2": "AO",
-  "name": "Angola",
-  "capital": "Luanda",
-  "capitals": [
-   "Luanda"
+  "name": {
+   "fr": "Angola",
+   "en": "Angola"
+  },
+  "capital": {
+   "fr": "Luanda",
+   "en": "Luanda"
+  },
+  "capitals": {
+   "fr": [
+    "Luanda"
+   ],
+   "en": [
+    "Luanda"
+   ]
+  },
+  "capitalLngLat": [
+   13.232481,
+   -8.83634
   ],
   "region": "Africa",
   "subregion": "Middle Africa",
@@ -91,10 +121,25 @@
   "id": 3,
   "cca3": "ALB",
   "cca2": "AL",
-  "name": "Albanie",
-  "capital": "Tirana",
-  "capitals": [
-   "Tirana"
+  "name": {
+   "fr": "Albanie",
+   "en": "Albania"
+  },
+  "capital": {
+   "fr": "Tirana",
+   "en": "Tirana"
+  },
+  "capitals": {
+   "fr": [
+    "Tirana"
+   ],
+   "en": [
+    "Tirana"
+   ]
+  },
+  "capitalLngLat": [
+   19.818883,
+   41.327541
   ],
   "region": "Europe",
   "subregion": "Southeast Europe",
@@ -134,10 +179,25 @@
   "id": 4,
   "cca3": "AND",
   "cca2": "AD",
-  "name": "Andorre",
-  "capital": "Andorre-la-Vieille",
-  "capitals": [
-   "Andorre-la-Vieille"
+  "name": {
+   "fr": "Andorre",
+   "en": "Andorra"
+  },
+  "capital": {
+   "fr": "Andorre-la-Vieille",
+   "en": "Andorra la Vella"
+  },
+  "capitals": {
+   "fr": [
+    "Andorre-la-Vieille"
+   ],
+   "en": [
+    "Andorra la Vella"
+   ]
+  },
+  "capitalLngLat": [
+   1.526594,
+   42.510753
   ],
   "region": "Europe",
   "subregion": "Southern Europe",
@@ -175,10 +235,25 @@
   "id": 5,
   "cca3": "ARE",
   "cca2": "AE",
-  "name": "Émirats arabes unis",
-  "capital": "Abou Dabi",
-  "capitals": [
-   "Abou Dabi"
+  "name": {
+   "fr": "Émirats arabes unis",
+   "en": "United Arab Emirates"
+  },
+  "capital": {
+   "fr": "Abou Dabi",
+   "en": "Abu Dhabi"
+  },
+  "capitals": {
+   "fr": [
+    "Abou Dabi"
+   ],
+   "en": [
+    "Abu Dhabi"
+   ]
+  },
+  "capitalLngLat": [
+   54.366593,
+   24.466684
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -216,10 +291,25 @@
   "id": 6,
   "cca3": "ARG",
   "cca2": "AR",
-  "name": "Argentine",
-  "capital": "Buenos Aires",
-  "capitals": [
-   "Buenos Aires"
+  "name": {
+   "fr": "Argentine",
+   "en": "Argentina"
+  },
+  "capital": {
+   "fr": "Buenos Aires",
+   "en": "Buenos Aires"
+  },
+  "capitals": {
+   "fr": [
+    "Buenos Aires"
+   ],
+   "en": [
+    "Buenos Aires"
+   ]
+  },
+  "capitalLngLat": [
+   -58.432513,
+   -34.610715
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -260,10 +350,25 @@
   "id": 7,
   "cca3": "ARM",
   "cca2": "AM",
-  "name": "Arménie",
-  "capital": "Erevan",
-  "capitals": [
-   "Erevan"
+  "name": {
+   "fr": "Arménie",
+   "en": "Armenia"
+  },
+  "capital": {
+   "fr": "Erevan",
+   "en": "Yerevan"
+  },
+  "capitals": {
+   "fr": [
+    "Erevan"
+   ],
+   "en": [
+    "Yerevan"
+   ]
+  },
+  "capitalLngLat": [
+   44.511606,
+   40.183097
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -303,10 +408,25 @@
   "id": 8,
   "cca3": "ATG",
   "cca2": "AG",
-  "name": "Antigua-et-Barbuda",
-  "capital": "Saint John's",
-  "capitals": [
-   "Saint John's"
+  "name": {
+   "fr": "Antigua-et-Barbuda",
+   "en": "Antigua and Barbuda"
+  },
+  "capital": {
+   "fr": "Saint John's",
+   "en": "Saint John's"
+  },
+  "capitals": {
+   "fr": [
+    "Saint John's"
+   ],
+   "en": [
+    "Saint John's"
+   ]
+  },
+  "capitalLngLat": [
+   -61.850034,
+   17.118036
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -341,10 +461,25 @@
   "id": 9,
   "cca3": "AUS",
   "cca2": "AU",
-  "name": "Australie",
-  "capital": "Canberra",
-  "capitals": [
-   "Canberra"
+  "name": {
+   "fr": "Australie",
+   "en": "Australia"
+  },
+  "capital": {
+   "fr": "Canberra",
+   "en": "Canberra"
+  },
+  "capitals": {
+   "fr": [
+    "Canberra"
+   ],
+   "en": [
+    "Canberra"
+   ]
+  },
+  "capitalLngLat": [
+   149.129026,
+   -35.283029
   ],
   "region": "Oceania",
   "subregion": "Australia and New Zealand",
@@ -379,10 +514,25 @@
   "id": 10,
   "cca3": "AUT",
   "cca2": "AT",
-  "name": "Autriche",
-  "capital": "Vienne",
-  "capitals": [
-   "Vienne"
+  "name": {
+   "fr": "Autriche",
+   "en": "Austria"
+  },
+  "capital": {
+   "fr": "Vienne",
+   "en": "Vienna"
+  },
+  "capitals": {
+   "fr": [
+    "Vienne"
+   ],
+   "en": [
+    "Vienna"
+   ]
+  },
+  "capitalLngLat": [
+   16.364693,
+   48.201961
   ],
   "region": "Europe",
   "subregion": "Central Europe",
@@ -426,10 +576,25 @@
   "id": 11,
   "cca3": "AZE",
   "cca2": "AZ",
-  "name": "Azerbaïdjan",
-  "capital": "Bakou",
-  "capitals": [
-   "Bakou"
+  "name": {
+   "fr": "Azerbaïdjan",
+   "en": "Azerbaijan"
+  },
+  "capital": {
+   "fr": "Bakou",
+   "en": "Baku"
+  },
+  "capitals": {
+   "fr": [
+    "Bakou"
+   ],
+   "en": [
+    "Baku"
+   ]
+  },
+  "capitalLngLat": [
+   49.860271,
+   40.397218
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -470,10 +635,25 @@
   "id": 12,
   "cca3": "BDI",
   "cca2": "BI",
-  "name": "Burundi",
-  "capital": "Gitega",
-  "capitals": [
-   "Gitega"
+  "name": {
+   "fr": "Burundi",
+   "en": "Burundi"
+  },
+  "capital": {
+   "fr": "Gitega",
+   "en": "Gitega"
+  },
+  "capitals": {
+   "fr": [
+    "Gitega"
+   ],
+   "en": [
+    "Gitega"
+   ]
+  },
+  "capitalLngLat": [
+   29.843594,
+   -3.426007
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -512,10 +692,25 @@
   "id": 13,
   "cca3": "BEL",
   "cca2": "BE",
-  "name": "Belgique",
-  "capital": "Bruxelles",
-  "capitals": [
-   "Bruxelles"
+  "name": {
+   "fr": "Belgique",
+   "en": "Belgium"
+  },
+  "capital": {
+   "fr": "Bruxelles",
+   "en": "Brussels"
+  },
+  "capitals": {
+   "fr": [
+    "Bruxelles"
+   ],
+   "en": [
+    "Brussels"
+   ]
+  },
+  "capitalLngLat": [
+   4.331371,
+   50.835263
   ],
   "region": "Europe",
   "subregion": "Western Europe",
@@ -555,11 +750,26 @@
   "id": 14,
   "cca3": "BEN",
   "cca2": "BJ",
-  "name": "Bénin",
-  "capital": "Porto-Novo",
-  "capitals": [
-   "Cotonou",
-   "Porto-Novo"
+  "name": {
+   "fr": "Bénin",
+   "en": "Benin"
+  },
+  "capital": {
+   "fr": "Porto-Novo",
+   "en": "Porto-Novo"
+  },
+  "capitals": {
+   "fr": [
+    "Cotonou",
+    "Porto-Novo"
+   ],
+   "en": [
+    "Porto-Novo"
+   ]
+  },
+  "capitalLngLat": [
+   2.616626,
+   6.483311
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -599,10 +809,25 @@
   "id": 15,
   "cca3": "BFA",
   "cca2": "BF",
-  "name": "Burkina Faso",
-  "capital": "Ouagadougou",
-  "capitals": [
-   "Ouagadougou"
+  "name": {
+   "fr": "Burkina Faso",
+   "en": "Burkina Faso"
+  },
+  "capital": {
+   "fr": "Ouagadougou",
+   "en": "Ouagadougou"
+  },
+  "capitals": {
+   "fr": [
+    "Ouagadougou"
+   ],
+   "en": [
+    "Ouagadougou"
+   ]
+  },
+  "capitalLngLat": [
+   -1.52667,
+   12.372262
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -644,10 +869,25 @@
   "id": 16,
   "cca3": "BGD",
   "cca2": "BD",
-  "name": "Bangladesh",
-  "capital": "Dacca",
-  "capitals": [
-   "Dacca"
+  "name": {
+   "fr": "Bangladesh",
+   "en": "Bangladesh"
+  },
+  "capital": {
+   "fr": "Dacca",
+   "en": "Dhaka"
+  },
+  "capitals": {
+   "fr": [
+    "Dacca"
+   ],
+   "en": [
+    "Dhaka"
+   ]
+  },
+  "capitalLngLat": [
+   90.406634,
+   23.725006
   ],
   "region": "Asia",
   "subregion": "Southern Asia",
@@ -685,10 +925,25 @@
   "id": 17,
   "cca3": "BGR",
   "cca2": "BG",
-  "name": "Bulgarie",
-  "capital": "Sofia",
-  "capitals": [
-   "Sofia"
+  "name": {
+   "fr": "Bulgarie",
+   "en": "Bulgaria"
+  },
+  "capital": {
+   "fr": "Sofia",
+   "en": "Sofia"
+  },
+  "capitals": {
+   "fr": [
+    "Sofia"
+   ],
+   "en": [
+    "Sofia"
+   ]
+  },
+  "capitalLngLat": [
+   23.314708,
+   42.685295
   ],
   "region": "Europe",
   "subregion": "Southeast Europe",
@@ -729,10 +984,25 @@
   "id": 18,
   "cca3": "BHR",
   "cca2": "BH",
-  "name": "Bahreïn",
-  "capital": "Manama",
-  "capitals": [
-   "Manama"
+  "name": {
+   "fr": "Bahreïn",
+   "en": "Bahrain"
+  },
+  "capital": {
+   "fr": "Manama",
+   "en": "Manama"
+  },
+  "capitals": {
+   "fr": [
+    "Manama"
+   ],
+   "en": [
+    "Manama"
+   ]
+  },
+  "capitalLngLat": [
+   50.583052,
+   26.236136
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -767,10 +1037,25 @@
   "id": 19,
   "cca3": "BHS",
   "cca2": "BS",
-  "name": "Bahamas",
-  "capital": "Nassau",
-  "capitals": [
-   "Nassau"
+  "name": {
+   "fr": "Bahamas",
+   "en": "Bahamas"
+  },
+  "capital": {
+   "fr": "Nassau",
+   "en": "Nassau"
+  },
+  "capitals": {
+   "fr": [
+    "Nassau"
+   ],
+   "en": [
+    "Nassau"
+   ]
+  },
+  "capitalLngLat": [
+   -77.350044,
+   25.08339
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -805,10 +1090,25 @@
   "id": 20,
   "cca3": "BIH",
   "cca2": "BA",
-  "name": "Bosnie-Herzégovine",
-  "capital": "Sarajevo",
-  "capitals": [
-   "Sarajevo"
+  "name": {
+   "fr": "Bosnie-Herzégovine",
+   "en": "Bosnia and Herzegovina"
+  },
+  "capital": {
+   "fr": "Sarajevo",
+   "en": "Sarajevo"
+  },
+  "capitals": {
+   "fr": [
+    "Sarajevo"
+   ],
+   "en": [
+    "Sarajevo"
+   ]
+  },
+  "capitalLngLat": [
+   18.383002,
+   43.850022
   ],
   "region": "Europe",
   "subregion": "Southeast Europe",
@@ -847,10 +1147,25 @@
   "id": 21,
   "cca3": "BLR",
   "cca2": "BY",
-  "name": "Biélorussie",
-  "capital": "Minsk",
-  "capitals": [
-   "Minsk"
+  "name": {
+   "fr": "Biélorussie",
+   "en": "Belarus"
+  },
+  "capital": {
+   "fr": "Minsk",
+   "en": "Minsk"
+  },
+  "capitals": {
+   "fr": [
+    "Minsk"
+   ],
+   "en": [
+    "Minsk"
+   ]
+  },
+  "capitalLngLat": [
+   27.564681,
+   53.901923
   ],
   "region": "Europe",
   "subregion": "Eastern Europe",
@@ -891,10 +1206,25 @@
   "id": 22,
   "cca3": "BLZ",
   "cca2": "BZ",
-  "name": "Belize",
-  "capital": "Belmopan",
-  "capitals": [
-   "Belmopan"
+  "name": {
+   "fr": "Belize",
+   "en": "Belize"
+  },
+  "capital": {
+   "fr": "Belmopan",
+   "en": "Belmopan"
+  },
+  "capitals": {
+   "fr": [
+    "Belmopan"
+   ],
+   "en": [
+    "Belmopan"
+   ]
+  },
+  "capitalLngLat": [
+   -88.767073,
+   17.252033
   ],
   "region": "Americas",
   "subregion": "Central America",
@@ -932,11 +1262,26 @@
   "id": 23,
   "cca3": "BOL",
   "cca2": "BO",
-  "name": "Bolivie",
-  "capital": "Sucre",
-  "capitals": [
-   "La Paz",
-   "Sucre"
+  "name": {
+   "fr": "Bolivie",
+   "en": "Bolivia"
+  },
+  "capital": {
+   "fr": "Sucre",
+   "en": "Sucre"
+  },
+  "capitals": {
+   "fr": [
+    "La Paz",
+    "Sucre"
+   ],
+   "en": [
+    "Sucre"
+   ]
+  },
+  "capitalLngLat": [
+   -65.259516,
+   -19.040971
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -977,10 +1322,25 @@
   "id": 24,
   "cca3": "BRA",
   "cca2": "BR",
-  "name": "Brésil",
-  "capital": "Brasilia",
-  "capitals": [
-   "Brasilia"
+  "name": {
+   "fr": "Brésil",
+   "en": "Brazil"
+  },
+  "capital": {
+   "fr": "Brasilia",
+   "en": "Brasília"
+  },
+  "capitals": {
+   "fr": [
+    "Brasilia"
+   ],
+   "en": [
+    "Brasília"
+   ]
+  },
+  "capitalLngLat": [
+   -47.917998,
+   -15.781394
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -1025,10 +1385,25 @@
   "id": 25,
   "cca3": "BRB",
   "cca2": "BB",
-  "name": "Barbade",
-  "capital": "Bridgetown",
-  "capitals": [
-   "Bridgetown"
+  "name": {
+   "fr": "Barbade",
+   "en": "Barbados"
+  },
+  "capital": {
+   "fr": "Bridgetown",
+   "en": "Bridgetown"
+  },
+  "capitals": {
+   "fr": [
+    "Bridgetown"
+   ],
+   "en": [
+    "Bridgetown"
+   ]
+  },
+  "capitalLngLat": [
+   -59.616527,
+   13.102003
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -1063,10 +1438,25 @@
   "id": 26,
   "cca3": "BRN",
   "cca2": "BN",
-  "name": "Brunei",
-  "capital": "Bandar Seri Begawan",
-  "capitals": [
-   "Bandar Seri Begawan"
+  "name": {
+   "fr": "Brunei",
+   "en": "Brunei"
+  },
+  "capital": {
+   "fr": "Bandar Seri Begawan",
+   "en": "Bandar Seri Begawan"
+  },
+  "capitals": {
+   "fr": [
+    "Bandar Seri Begawan"
+   ],
+   "en": [
+    "Bandar Seri Begawan"
+   ]
+  },
+  "capitalLngLat": [
+   114.933284,
+   4.883331
   ],
   "region": "Asia",
   "subregion": "South-Eastern Asia",
@@ -1103,10 +1493,25 @@
   "id": 27,
   "cca3": "BTN",
   "cca2": "BT",
-  "name": "Bhoutan",
-  "capital": "Thimphou",
-  "capitals": [
-   "Thimphou"
+  "name": {
+   "fr": "Bhoutan",
+   "en": "Bhutan"
+  },
+  "capital": {
+   "fr": "Thimphou",
+   "en": "Thimphu"
+  },
+  "capitals": {
+   "fr": [
+    "Thimphou"
+   ],
+   "en": [
+    "Thimphu"
+   ]
+  },
+  "capitalLngLat": [
+   89.639014,
+   27.472986
   ],
   "region": "Asia",
   "subregion": "Southern Asia",
@@ -1144,10 +1549,25 @@
   "id": 28,
   "cca3": "BWA",
   "cca2": "BW",
-  "name": "Botswana",
-  "capital": "Gaborone",
-  "capitals": [
-   "Gaborone"
+  "name": {
+   "fr": "Botswana",
+   "en": "Botswana"
+  },
+  "capital": {
+   "fr": "Gaborone",
+   "en": "Gaborone"
+  },
+  "capitals": {
+   "fr": [
+    "Gaborone"
+   ],
+   "en": [
+    "Gaborone"
+   ]
+  },
+  "capitalLngLat": [
+   25.911948,
+   -24.646314
   ],
   "region": "Africa",
   "subregion": "Southern Africa",
@@ -1187,10 +1607,25 @@
   "id": 29,
   "cca3": "CAF",
   "cca2": "CF",
-  "name": "République centrafricaine",
-  "capital": "Bangui",
-  "capitals": [
-   "Bangui"
+  "name": {
+   "fr": "République centrafricaine",
+   "en": "Central African Republic"
+  },
+  "capital": {
+   "fr": "Bangui",
+   "en": "Bangui"
+  },
+  "capitals": {
+   "fr": [
+    "Bangui"
+   ],
+   "en": [
+    "Bangui"
+   ]
+  },
+  "capitalLngLat": [
+   18.558288,
+   4.366644
   ],
   "region": "Africa",
   "subregion": "Middle Africa",
@@ -1232,10 +1667,25 @@
   "id": 30,
   "cca3": "CAN",
   "cca2": "CA",
-  "name": "Canada",
-  "capital": "Ottawa",
-  "capitals": [
-   "Ottawa"
+  "name": {
+   "fr": "Canada",
+   "en": "Canada"
+  },
+  "capital": {
+   "fr": "Ottawa",
+   "en": "Ottawa"
+  },
+  "capitals": {
+   "fr": [
+    "Ottawa"
+   ],
+   "en": [
+    "Ottawa"
+   ]
+  },
+  "capitalLngLat": [
+   -75.701961,
+   45.418643
   ],
   "region": "Americas",
   "subregion": "North America",
@@ -1272,10 +1722,25 @@
   "id": 31,
   "cca3": "CHE",
   "cca2": "CH",
-  "name": "Suisse",
-  "capital": "Berne",
-  "capitals": [
-   "Berne"
+  "name": {
+   "fr": "Suisse",
+   "en": "Switzerland"
+  },
+  "capital": {
+   "fr": "Berne",
+   "en": "Bern"
+  },
+  "capitals": {
+   "fr": [
+    "Berne"
+   ],
+   "en": [
+    "Bern"
+   ]
+  },
+  "capitalLngLat": [
+   7.466976,
+   46.916683
   ],
   "region": "Europe",
   "subregion": "Western Europe",
@@ -1316,10 +1781,25 @@
   "id": 32,
   "cca3": "CHL",
   "cca2": "CL",
-  "name": "Chili",
-  "capital": "Santiago",
-  "capitals": [
-   "Santiago"
+  "name": {
+   "fr": "Chili",
+   "en": "Chile"
+  },
+  "capital": {
+   "fr": "Santiago",
+   "en": "Santiago"
+  },
+  "capitals": {
+   "fr": [
+    "Santiago"
+   ],
+   "en": [
+    "Santiago"
+   ]
+  },
+  "capitalLngLat": [
+   -70.650504,
+   -33.440205
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -1358,10 +1838,25 @@
   "id": 33,
   "cca3": "CHN",
   "cca2": "CN",
-  "name": "Chine",
-  "capital": "Pékin",
-  "capitals": [
-   "Pékin"
+  "name": {
+   "fr": "Chine",
+   "en": "China"
+  },
+  "capital": {
+   "fr": "Pékin",
+   "en": "Beijing"
+  },
+  "capitals": {
+   "fr": [
+    "Pékin"
+   ],
+   "en": [
+    "Beijing"
+   ]
+  },
+  "capitalLngLat": [
+   116.394201,
+   39.90172
   ],
   "region": "Asia",
   "subregion": "Eastern Asia",
@@ -1411,10 +1906,25 @@
   "id": 34,
   "cca3": "CIV",
   "cca2": "CI",
-  "name": "Côte d'Ivoire",
-  "capital": "Yamoussoukro",
-  "capitals": [
-   "Yamoussoukro"
+  "name": {
+   "fr": "Côte d'Ivoire",
+   "en": "Ivory Coast"
+  },
+  "capital": {
+   "fr": "Yamoussoukro",
+   "en": "Yamoussoukro"
+  },
+  "capitals": {
+   "fr": [
+    "Yamoussoukro"
+   ],
+   "en": [
+    "Yamoussoukro"
+   ]
+  },
+  "capitalLngLat": [
+   -5.275503,
+   6.818381
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -1455,10 +1965,25 @@
   "id": 35,
   "cca3": "CMR",
   "cca2": "CM",
-  "name": "Cameroun",
-  "capital": "Yaoundé",
-  "capitals": [
-   "Yaoundé"
+  "name": {
+   "fr": "Cameroun",
+   "en": "Cameroon"
+  },
+  "capital": {
+   "fr": "Yaoundé",
+   "en": "Yaoundé"
+  },
+  "capitals": {
+   "fr": [
+    "Yaoundé"
+   ],
+   "en": [
+    "Yaoundé"
+   ]
+  },
+  "capitalLngLat": [
+   11.514705,
+   3.868647
   ],
   "region": "Africa",
   "subregion": "Middle Africa",
@@ -1500,10 +2025,25 @@
   "id": 36,
   "cca3": "COD",
   "cca2": "CD",
-  "name": "Congo (Rép. dém.)",
-  "capital": "Kinshasa",
-  "capitals": [
-   "Kinshasa"
+  "name": {
+   "fr": "RD Congo",
+   "en": "DR Congo"
+  },
+  "capital": {
+   "fr": "Kinshasa",
+   "en": "Kinshasa"
+  },
+  "capitals": {
+   "fr": [
+    "Kinshasa"
+   ],
+   "en": [
+    "Kinshasa"
+   ]
+  },
+  "capitalLngLat": [
+   15.313026,
+   -4.327778
   ],
   "region": "Africa",
   "subregion": "Middle Africa",
@@ -1548,10 +2088,25 @@
   "id": 37,
   "cca3": "COG",
   "cca2": "CG",
-  "name": "Congo",
-  "capital": "Brazzaville",
-  "capitals": [
-   "Brazzaville"
+  "name": {
+   "fr": "Congo",
+   "en": "Congo"
+  },
+  "capital": {
+   "fr": "Brazzaville",
+   "en": "Brazzaville"
+  },
+  "capitals": {
+   "fr": [
+    "Brazzaville"
+   ],
+   "en": [
+    "Brazzaville"
+   ]
+  },
+  "capitalLngLat": [
+   15.282744,
+   -4.25724
   ],
   "region": "Africa",
   "subregion": "Middle Africa",
@@ -1592,10 +2147,25 @@
   "id": 38,
   "cca3": "COL",
   "cca2": "CO",
-  "name": "Colombie",
-  "capital": "Bogota",
-  "capitals": [
-   "Bogota"
+  "name": {
+   "fr": "Colombie",
+   "en": "Colombia"
+  },
+  "capital": {
+   "fr": "Bogota",
+   "en": "Bogotá"
+  },
+  "capitals": {
+   "fr": [
+    "Bogota"
+   ],
+   "en": [
+    "Bogotá"
+   ]
+  },
+  "capitalLngLat": [
+   -74.08529,
+   4.598369
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -1636,10 +2206,25 @@
   "id": 39,
   "cca3": "COM",
   "cca2": "KM",
-  "name": "Comores",
-  "capital": "Moroni",
-  "capitals": [
-   "Moroni"
+  "name": {
+   "fr": "Comores",
+   "en": "Comoros"
+  },
+  "capital": {
+   "fr": "Moroni",
+   "en": "Moroni"
+  },
+  "capitals": {
+   "fr": [
+    "Moroni"
+   ],
+   "en": [
+    "Moroni"
+   ]
+  },
+  "capitalLngLat": [
+   43.240244,
+   -11.704158
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -1674,10 +2259,25 @@
   "id": 40,
   "cca3": "CPV",
   "cca2": "CV",
-  "name": "Îles du Cap-Vert",
-  "capital": "Praia",
-  "capitals": [
-   "Praia"
+  "name": {
+   "fr": "Cap-Vert",
+   "en": "Cape Verde"
+  },
+  "capital": {
+   "fr": "Praia",
+   "en": "Praia"
+  },
+  "capitals": {
+   "fr": [
+    "Praia"
+   ],
+   "en": [
+    "Praia"
+   ]
+  },
+  "capitalLngLat": [
+   -23.516689,
+   14.916698
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -1712,10 +2312,25 @@
   "id": 41,
   "cca3": "CRI",
   "cca2": "CR",
-  "name": "Costa Rica",
-  "capital": "San José",
-  "capitals": [
-   "San José"
+  "name": {
+   "fr": "Costa Rica",
+   "en": "Costa Rica"
+  },
+  "capital": {
+   "fr": "San José",
+   "en": "San José"
+  },
+  "capitals": {
+   "fr": [
+    "San José"
+   ],
+   "en": [
+    "San José"
+   ]
+  },
+  "capitalLngLat": [
+   -84.078814,
+   9.930371
   ],
   "region": "Americas",
   "subregion": "Central America",
@@ -1753,10 +2368,25 @@
   "id": 42,
   "cca3": "CUB",
   "cca2": "CU",
-  "name": "Cuba",
-  "capital": "La Havane",
-  "capitals": [
-   "La Havane"
+  "name": {
+   "fr": "Cuba",
+   "en": "Cuba"
+  },
+  "capital": {
+   "fr": "La Havane",
+   "en": "Havana"
+  },
+  "capitals": {
+   "fr": [
+    "La Havane"
+   ],
+   "en": [
+    "Havana"
+   ]
+  },
+  "capitalLngLat": [
+   -82.366128,
+   23.133905
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -1791,10 +2421,25 @@
   "id": 43,
   "cca3": "CYP",
   "cca2": "CY",
-  "name": "Chypre",
-  "capital": "Nicosie",
-  "capitals": [
-   "Nicosie"
+  "name": {
+   "fr": "Chypre",
+   "en": "Cyprus"
+  },
+  "capital": {
+   "fr": "Nicosie",
+   "en": "Nicosia"
+  },
+  "capitals": {
+   "fr": [
+    "Nicosie"
+   ],
+   "en": [
+    "Nicosia"
+   ]
+  },
+  "capitalLngLat": [
+   33.366635,
+   35.166677
   ],
   "region": "Europe",
   "subregion": "Southern Europe",
@@ -1829,10 +2474,25 @@
   "id": 44,
   "cca3": "CZE",
   "cca2": "CZ",
-  "name": "Tchéquie",
-  "capital": "Prague",
-  "capitals": [
-   "Prague"
+  "name": {
+   "fr": "Tchéquie",
+   "en": "Czechia"
+  },
+  "capital": {
+   "fr": "Prague",
+   "en": "Prague"
+  },
+  "capitals": {
+   "fr": [
+    "Prague"
+   ],
+   "en": [
+    "Prague"
+   ]
+  },
+  "capitalLngLat": [
+   14.422939,
+   50.086967
   ],
   "region": "Europe",
   "subregion": "Central Europe",
@@ -1872,10 +2532,25 @@
   "id": 45,
   "cca3": "DEU",
   "cca2": "DE",
-  "name": "Allemagne",
-  "capital": "Berlin",
-  "capitals": [
-   "Berlin"
+  "name": {
+   "fr": "Allemagne",
+   "en": "Germany"
+  },
+  "capital": {
+   "fr": "Berlin",
+   "en": "Berlin"
+  },
+  "capitals": {
+   "fr": [
+    "Berlin"
+   ],
+   "en": [
+    "Berlin"
+   ]
+  },
+  "capitalLngLat": [
+   13.399603,
+   52.523764
   ],
   "region": "Europe",
   "subregion": "Western Europe",
@@ -1920,10 +2595,25 @@
   "id": 46,
   "cca3": "DJI",
   "cca2": "DJ",
-  "name": "Djibouti",
-  "capital": "Djibouti",
-  "capitals": [
-   "Djibouti"
+  "name": {
+   "fr": "Djibouti",
+   "en": "Djibouti"
+  },
+  "capital": {
+   "fr": "Djibouti",
+   "en": "Djibouti"
+  },
+  "capitals": {
+   "fr": [
+    "Djibouti"
+   ],
+   "en": [
+    "Djibouti"
+   ]
+  },
+  "capitalLngLat": [
+   43.148002,
+   11.595014
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -1962,10 +2652,25 @@
   "id": 47,
   "cca3": "DMA",
   "cca2": "DM",
-  "name": "Dominique",
-  "capital": "Roseau",
-  "capitals": [
-   "Roseau"
+  "name": {
+   "fr": "Dominique",
+   "en": "Dominica"
+  },
+  "capital": {
+   "fr": "Roseau",
+   "en": "Roseau"
+  },
+  "capitals": {
+   "fr": [
+    "Roseau"
+   ],
+   "en": [
+    "Roseau"
+   ]
+  },
+  "capitalLngLat": [
+   -61.387013,
+   15.301016
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -2000,10 +2705,25 @@
   "id": 48,
   "cca3": "DNK",
   "cca2": "DK",
-  "name": "Danemark",
-  "capital": "Copenhague",
-  "capitals": [
-   "Copenhague"
+  "name": {
+   "fr": "Danemark",
+   "en": "Denmark"
+  },
+  "capital": {
+   "fr": "Copenhague",
+   "en": "Copenhagen"
+  },
+  "capitals": {
+   "fr": [
+    "Copenhague"
+   ],
+   "en": [
+    "Copenhagen"
+   ]
+  },
+  "capitalLngLat": [
+   12.56154,
+   55.68051
   ],
   "region": "Europe",
   "subregion": "Northern Europe",
@@ -2040,10 +2760,25 @@
   "id": 49,
   "cca3": "DOM",
   "cca2": "DO",
-  "name": "République dominicaine",
-  "capital": "Saint-Domingue",
-  "capitals": [
-   "Saint-Domingue"
+  "name": {
+   "fr": "République dominicaine",
+   "en": "Dominican Republic"
+  },
+  "capital": {
+   "fr": "Saint-Domingue",
+   "en": "Santo Domingo"
+  },
+  "capitals": {
+   "fr": [
+    "Saint-Domingue"
+   ],
+   "en": [
+    "Santo Domingo"
+   ]
+  },
+  "capitalLngLat": [
+   -69.929742,
+   18.470745
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -2080,10 +2815,25 @@
   "id": 50,
   "cca3": "DZA",
   "cca2": "DZ",
-  "name": "Algérie",
-  "capital": "Alger",
-  "capitals": [
-   "Alger"
+  "name": {
+   "fr": "Algérie",
+   "en": "Algeria"
+  },
+  "capital": {
+   "fr": "Alger",
+   "en": "Algiers"
+  },
+  "capitals": {
+   "fr": [
+    "Alger"
+   ],
+   "en": [
+    "Algiers"
+   ]
+  },
+  "capitalLngLat": [
+   3.048607,
+   36.765011
   ],
   "region": "Africa",
   "subregion": "Northern Africa",
@@ -2125,10 +2875,25 @@
   "id": 51,
   "cca3": "ECU",
   "cca2": "EC",
-  "name": "Équateur",
-  "capital": "Quito",
-  "capitals": [
-   "Quito"
+  "name": {
+   "fr": "Équateur",
+   "en": "Ecuador"
+  },
+  "capital": {
+   "fr": "Quito",
+   "en": "Quito"
+  },
+  "capitals": {
+   "fr": [
+    "Quito"
+   ],
+   "en": [
+    "Quito"
+   ]
+  },
+  "capitalLngLat": [
+   -78.501997,
+   -0.213042
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -2166,10 +2931,25 @@
   "id": 52,
   "cca3": "EGY",
   "cca2": "EG",
-  "name": "Égypte",
-  "capital": "Le Caire",
-  "capitals": [
-   "Le Caire"
+  "name": {
+   "fr": "Égypte",
+   "en": "Egypt"
+  },
+  "capital": {
+   "fr": "Le Caire",
+   "en": "Cairo"
+  },
+  "capitals": {
+   "fr": [
+    "Le Caire"
+   ],
+   "en": [
+    "Cairo"
+   ]
+  },
+  "capitalLngLat": [
+   31.248022,
+   30.051906
   ],
   "region": "Africa",
   "subregion": "Northern Africa",
@@ -2209,10 +2989,25 @@
   "id": 53,
   "cca3": "ERI",
   "cca2": "ER",
-  "name": "Érythrée",
-  "capital": "Asmara",
-  "capitals": [
-   "Asmara"
+  "name": {
+   "fr": "Érythrée",
+   "en": "Eritrea"
+  },
+  "capital": {
+   "fr": "Asmara",
+   "en": "Asmara"
+  },
+  "capitals": {
+   "fr": [
+    "Asmara"
+   ],
+   "en": [
+    "Asmara"
+   ]
+  },
+  "capitalLngLat": [
+   38.933324,
+   15.333339
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -2251,10 +3046,25 @@
   "id": 54,
   "cca3": "ESP",
   "cca2": "ES",
-  "name": "Espagne",
-  "capital": "Madrid",
-  "capitals": [
-   "Madrid"
+  "name": {
+   "fr": "Espagne",
+   "en": "Spain"
+  },
+  "capital": {
+   "fr": "Madrid",
+   "en": "Madrid"
+  },
+  "capitals": {
+   "fr": [
+    "Madrid"
+   ],
+   "en": [
+    "Madrid"
+   ]
+  },
+  "capitalLngLat": [
+   -3.685297,
+   40.401972
   ],
   "region": "Europe",
   "subregion": "Southern Europe",
@@ -2294,10 +3104,25 @@
   "id": 55,
   "cca3": "EST",
   "cca2": "EE",
-  "name": "Estonie",
-  "capital": "Tallinn",
-  "capitals": [
-   "Tallinn"
+  "name": {
+   "fr": "Estonie",
+   "en": "Estonia"
+  },
+  "capital": {
+   "fr": "Tallinn",
+   "en": "Tallinn"
+  },
+  "capitals": {
+   "fr": [
+    "Tallinn"
+   ],
+   "en": [
+    "Tallinn"
+   ]
+  },
+  "capitalLngLat": [
+   24.728041,
+   59.433877
   ],
   "region": "Europe",
   "subregion": "Northern Europe",
@@ -2335,10 +3160,25 @@
   "id": 56,
   "cca3": "ETH",
   "cca2": "ET",
-  "name": "Éthiopie",
-  "capital": "Addis-Abeba",
-  "capitals": [
-   "Addis-Abeba"
+  "name": {
+   "fr": "Éthiopie",
+   "en": "Ethiopia"
+  },
+  "capital": {
+   "fr": "Addis-Abeba",
+   "en": "Addis Ababa"
+  },
+  "capitals": {
+   "fr": [
+    "Addis-Abeba"
+   ],
+   "en": [
+    "Addis Ababa"
+   ]
+  },
+  "capitalLngLat": [
+   38.698059,
+   9.035256
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -2380,10 +3220,25 @@
   "id": 57,
   "cca3": "FIN",
   "cca2": "FI",
-  "name": "Finlande",
-  "capital": "Helsinki",
-  "capitals": [
-   "Helsinki"
+  "name": {
+   "fr": "Finlande",
+   "en": "Finland"
+  },
+  "capital": {
+   "fr": "Helsinki",
+   "en": "Helsinki"
+  },
+  "capitals": {
+   "fr": [
+    "Helsinki"
+   ],
+   "en": [
+    "Helsinki"
+   ]
+  },
+  "capitalLngLat": [
+   24.932457,
+   60.163804
   ],
   "region": "Europe",
   "subregion": "Northern Europe",
@@ -2422,10 +3277,25 @@
   "id": 58,
   "cca3": "FJI",
   "cca2": "FJ",
-  "name": "Fidji",
-  "capital": "Suva",
-  "capitals": [
-   "Suva"
+  "name": {
+   "fr": "Fidji",
+   "en": "Fiji"
+  },
+  "capital": {
+   "fr": "Suva",
+   "en": "Suva"
+  },
+  "capitals": {
+   "fr": [
+    "Suva"
+   ],
+   "en": [
+    "Suva"
+   ]
+  },
+  "capitalLngLat": [
+   178.441707,
+   -18.133016
   ],
   "region": "Oceania",
   "subregion": "Melanesia",
@@ -2460,10 +3330,25 @@
   "id": 59,
   "cca3": "FRA",
   "cca2": "FR",
-  "name": "France",
-  "capital": "Paris",
-  "capitals": [
-   "Paris"
+  "name": {
+   "fr": "France",
+   "en": "France"
+  },
+  "capital": {
+   "fr": "Paris",
+   "en": "Paris"
+  },
+  "capitals": {
+   "fr": [
+    "Paris"
+   ],
+   "en": [
+    "Paris"
+   ]
+  },
+  "capitalLngLat": [
+   2.352992,
+   48.858092
   ],
   "region": "Europe",
   "subregion": "Western Europe",
@@ -2507,10 +3392,25 @@
   "id": 60,
   "cca3": "FSM",
   "cca2": "FM",
-  "name": "Micronésie",
-  "capital": "Palikir",
-  "capitals": [
-   "Palikir"
+  "name": {
+   "fr": "Micronésie",
+   "en": "Micronesia"
+  },
+  "capital": {
+   "fr": "Palikir",
+   "en": "Palikir"
+  },
+  "capitals": {
+   "fr": [
+    "Palikir"
+   ],
+   "en": [
+    "Palikir"
+   ]
+  },
+  "capitalLngLat": [
+   158.149974,
+   6.916644
   ],
   "region": "Oceania",
   "subregion": "Micronesia",
@@ -2545,10 +3445,25 @@
   "id": 61,
   "cca3": "GAB",
   "cca2": "GA",
-  "name": "Gabon",
-  "capital": "Libreville",
-  "capitals": [
-   "Libreville"
+  "name": {
+   "fr": "Gabon",
+   "en": "Gabon"
+  },
+  "capital": {
+   "fr": "Libreville",
+   "en": "Libreville"
+  },
+  "capitals": {
+   "fr": [
+    "Libreville"
+   ],
+   "en": [
+    "Libreville"
+   ]
+  },
+  "capitalLngLat": [
+   9.457965,
+   0.385389
   ],
   "region": "Africa",
   "subregion": "Middle Africa",
@@ -2587,10 +3502,25 @@
   "id": 62,
   "cca3": "GBR",
   "cca2": "GB",
-  "name": "Royaume-Uni",
-  "capital": "Londres",
-  "capitals": [
-   "Londres"
+  "name": {
+   "fr": "Royaume-Uni",
+   "en": "United Kingdom"
+  },
+  "capital": {
+   "fr": "Londres",
+   "en": "London"
+  },
+  "capitals": {
+   "fr": [
+    "Londres"
+   ],
+   "en": [
+    "London"
+   ]
+  },
+  "capitalLngLat": [
+   -0.118668,
+   51.501941
   ],
   "region": "Europe",
   "subregion": "Northern Europe",
@@ -2627,10 +3557,25 @@
   "id": 63,
   "cca3": "GEO",
   "cca2": "GE",
-  "name": "Géorgie",
-  "capital": "Tbilissi",
-  "capitals": [
-   "Tbilissi"
+  "name": {
+   "fr": "Géorgie",
+   "en": "Georgia"
+  },
+  "capital": {
+   "fr": "Tbilissi",
+   "en": "Tbilisi"
+  },
+  "capitals": {
+   "fr": [
+    "Tbilissi"
+   ],
+   "en": [
+    "Tbilisi"
+   ]
+  },
+  "capitalLngLat": [
+   44.78885,
+   41.726956
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -2670,10 +3615,25 @@
   "id": 64,
   "cca3": "GHA",
   "cca2": "GH",
-  "name": "Ghana",
-  "capital": "Accra",
-  "capitals": [
-   "Accra"
+  "name": {
+   "fr": "Ghana",
+   "en": "Ghana"
+  },
+  "capital": {
+   "fr": "Accra",
+   "en": "Accra"
+  },
+  "capitals": {
+   "fr": [
+    "Accra"
+   ],
+   "en": [
+    "Accra"
+   ]
+  },
+  "capitalLngLat": [
+   -0.218662,
+   5.55198
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -2712,10 +3672,25 @@
   "id": 65,
   "cca3": "GIN",
   "cca2": "GN",
-  "name": "Guinée",
-  "capital": "Conakry",
-  "capitals": [
-   "Conakry"
+  "name": {
+   "fr": "Guinée",
+   "en": "Guinea"
+  },
+  "capital": {
+   "fr": "Conakry",
+   "en": "Conakry"
+  },
+  "capitals": {
+   "fr": [
+    "Conakry"
+   ],
+   "en": [
+    "Conakry"
+   ]
+  },
+  "capitalLngLat": [
+   -13.682181,
+   9.533469
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -2757,10 +3732,25 @@
   "id": 66,
   "cca3": "GMB",
   "cca2": "GM",
-  "name": "Gambie",
-  "capital": "Banjul",
-  "capitals": [
-   "Banjul"
+  "name": {
+   "fr": "Gambie",
+   "en": "Gambia"
+  },
+  "capital": {
+   "fr": "Banjul",
+   "en": "Banjul"
+  },
+  "capitals": {
+   "fr": [
+    "Banjul"
+   ],
+   "en": [
+    "Banjul"
+   ]
+  },
+  "capitalLngLat": [
+   -16.591701,
+   13.453876
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -2797,10 +3787,25 @@
   "id": 67,
   "cca3": "GNB",
   "cca2": "GW",
-  "name": "Guinée-Bissau",
-  "capital": "Bissau",
-  "capitals": [
-   "Bissau"
+  "name": {
+   "fr": "Guinée-Bissau",
+   "en": "Guinea-Bissau"
+  },
+  "capital": {
+   "fr": "Bissau",
+   "en": "Bissau"
+  },
+  "capitals": {
+   "fr": [
+    "Bissau"
+   ],
+   "en": [
+    "Bissau"
+   ]
+  },
+  "capitalLngLat": [
+   -15.598361,
+   11.865024
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -2838,10 +3843,26 @@
   "id": 68,
   "cca3": "GNQ",
   "cca2": "GQ",
-  "name": "Guinée équatoriale",
-  "capital": "Ciudad de la Paz",
-  "capitals": [
-   "Ciudad de la Paz"
+  "name": {
+   "fr": "Guinée équatoriale",
+   "en": "Equatorial Guinea"
+  },
+  "capital": {
+   "fr": "Ciudad de la Paz",
+   "en": "Ciudad de la Paz"
+  },
+  "capitals": {
+   "fr": [
+    "Ciudad de la Paz"
+   ],
+   "en": [
+    "Ciudad de la Paz",
+    "Malabo"
+   ]
+  },
+  "capitalLngLat": [
+   10.8236,
+   1.5925
   ],
   "region": "Africa",
   "subregion": "Middle Africa",
@@ -2879,10 +3900,25 @@
   "id": 69,
   "cca3": "GRC",
   "cca2": "GR",
-  "name": "Grèce",
-  "capital": "Athènes",
-  "capitals": [
-   "Athènes"
+  "name": {
+   "fr": "Grèce",
+   "en": "Greece"
+  },
+  "capital": {
+   "fr": "Athènes",
+   "en": "Athens"
+  },
+  "capitals": {
+   "fr": [
+    "Athènes"
+   ],
+   "en": [
+    "Athens"
+   ]
+  },
+  "capitalLngLat": [
+   23.731375,
+   37.985272
   ],
   "region": "Europe",
   "subregion": "Southern Europe",
@@ -2922,10 +3958,25 @@
   "id": 70,
   "cca3": "GRD",
   "cca2": "GD",
-  "name": "Grenade",
-  "capital": "Saint-Georges",
-  "capitals": [
-   "Saint-Georges"
+  "name": {
+   "fr": "Grenade",
+   "en": "Grenada"
+  },
+  "capital": {
+   "fr": "Saint-Georges",
+   "en": "St. George's"
+  },
+  "capitals": {
+   "fr": [
+    "Saint-Georges"
+   ],
+   "en": [
+    "St. George's"
+   ]
+  },
+  "capitalLngLat": [
+   -61.741643,
+   12.052633
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -2960,10 +4011,25 @@
   "id": 71,
   "cca3": "GTM",
   "cca2": "GT",
-  "name": "Guatemala",
-  "capital": "Guatemala",
-  "capitals": [
-   "Guatemala"
+  "name": {
+   "fr": "Guatemala",
+   "en": "Guatemala"
+  },
+  "capital": {
+   "fr": "Guatemala",
+   "en": "Guatemala City"
+  },
+  "capitals": {
+   "fr": [
+    "Guatemala"
+   ],
+   "en": [
+    "Guatemala City"
+   ]
+  },
+  "capitalLngLat": [
+   -90.528911,
+   14.623081
   ],
   "region": "Americas",
   "subregion": "Central America",
@@ -3003,10 +4069,25 @@
   "id": 72,
   "cca3": "GUY",
   "cca2": "GY",
-  "name": "Guyana",
-  "capital": "Georgetown",
-  "capitals": [
-   "Georgetown"
+  "name": {
+   "fr": "Guyana",
+   "en": "Guyana"
+  },
+  "capital": {
+   "fr": "Georgetown",
+   "en": "Georgetown"
+  },
+  "capitals": {
+   "fr": [
+    "Georgetown"
+   ],
+   "en": [
+    "Georgetown"
+   ]
+  },
+  "capitalLngLat": [
+   -58.167029,
+   6.801974
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -3045,10 +4126,25 @@
   "id": 73,
   "cca3": "HND",
   "cca2": "HN",
-  "name": "Honduras",
-  "capital": "Tegucigalpa",
-  "capitals": [
-   "Tegucigalpa"
+  "name": {
+   "fr": "Honduras",
+   "en": "Honduras"
+  },
+  "capital": {
+   "fr": "Tegucigalpa",
+   "en": "Tegucigalpa"
+  },
+  "capitals": {
+   "fr": [
+    "Tegucigalpa"
+   ],
+   "en": [
+    "Tegucigalpa"
+   ]
+  },
+  "capitalLngLat": [
+   -87.219475,
+   14.103991
   ],
   "region": "Americas",
   "subregion": "Central America",
@@ -3087,10 +4183,25 @@
   "id": 74,
   "cca3": "HRV",
   "cca2": "HR",
-  "name": "Croatie",
-  "capital": "Zagreb",
-  "capitals": [
-   "Zagreb"
+  "name": {
+   "fr": "Croatie",
+   "en": "Croatia"
+  },
+  "capital": {
+   "fr": "Zagreb",
+   "en": "Zagreb"
+  },
+  "capitals": {
+   "fr": [
+    "Zagreb"
+   ],
+   "en": [
+    "Zagreb"
+   ]
+  },
+  "capitalLngLat": [
+   15.999995,
+   45.800007
   ],
   "region": "Europe",
   "subregion": "Southeast Europe",
@@ -3131,10 +4242,25 @@
   "id": 75,
   "cca3": "HTI",
   "cca2": "HT",
-  "name": "Haïti",
-  "capital": "Port-au-Prince",
-  "capitals": [
-   "Port-au-Prince"
+  "name": {
+   "fr": "Haïti",
+   "en": "Haiti"
+  },
+  "capital": {
+   "fr": "Port-au-Prince",
+   "en": "Port-au-Prince"
+  },
+  "capitals": {
+   "fr": [
+    "Port-au-Prince"
+   ],
+   "en": [
+    "Port-au-Prince"
+   ]
+  },
+  "capitalLngLat": [
+   -72.33798,
+   18.54297
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -3171,10 +4297,25 @@
   "id": 76,
   "cca3": "HUN",
   "cca2": "HU",
-  "name": "Hongrie",
-  "capital": "Budapest",
-  "capitals": [
-   "Budapest"
+  "name": {
+   "fr": "Hongrie",
+   "en": "Hungary"
+  },
+  "capital": {
+   "fr": "Budapest",
+   "en": "Budapest"
+  },
+  "capitals": {
+   "fr": [
+    "Budapest"
+   ],
+   "en": [
+    "Budapest"
+   ]
+  },
+  "capitalLngLat": [
+   19.081375,
+   47.501952
   ],
   "region": "Europe",
   "subregion": "Central Europe",
@@ -3217,10 +4358,25 @@
   "id": 77,
   "cca3": "IDN",
   "cca2": "ID",
-  "name": "Indonésie",
-  "capital": "Jakarta",
-  "capitals": [
-   "Jakarta"
+  "name": {
+   "fr": "Indonésie",
+   "en": "Indonesia"
+  },
+  "capital": {
+   "fr": "Jakarta",
+   "en": "Jakarta"
+  },
+  "capitals": {
+   "fr": [
+    "Jakarta"
+   ],
+   "en": [
+    "Jakarta"
+   ]
+  },
+  "capitalLngLat": [
+   106.827492,
+   -6.172472
   ],
   "region": "Asia",
   "subregion": "South-Eastern Asia",
@@ -3259,10 +4415,25 @@
   "id": 78,
   "cca3": "IND",
   "cca2": "IN",
-  "name": "Inde",
-  "capital": "New Delhi",
-  "capitals": [
-   "New Delhi"
+  "name": {
+   "fr": "Inde",
+   "en": "India"
+  },
+  "capital": {
+   "fr": "New Delhi",
+   "en": "New Delhi"
+  },
+  "capitals": {
+   "fr": [
+    "New Delhi"
+   ],
+   "en": [
+    "New Delhi"
+   ]
+  },
+  "capitalLngLat": [
+   77.19998,
+   28.600023
   ],
   "region": "Asia",
   "subregion": "Southern Asia",
@@ -3304,10 +4475,25 @@
   "id": 79,
   "cca3": "IRL",
   "cca2": "IE",
-  "name": "Irlande",
-  "capital": "Dublin",
-  "capitals": [
-   "Dublin"
+  "name": {
+   "fr": "Irlande",
+   "en": "Ireland"
+  },
+  "capital": {
+   "fr": "Dublin",
+   "en": "Dublin"
+  },
+  "capitals": {
+   "fr": [
+    "Dublin"
+   ],
+   "en": [
+    "Dublin"
+   ]
+  },
+  "capitalLngLat": [
+   -6.25698,
+   53.346731
   ],
   "region": "Europe",
   "subregion": "Northern Europe",
@@ -3344,10 +4530,25 @@
   "id": 80,
   "cca3": "IRN",
   "cca2": "IR",
-  "name": "Iran",
-  "capital": "Téhéran",
-  "capitals": [
-   "Téhéran"
+  "name": {
+   "fr": "Iran",
+   "en": "Iran"
+  },
+  "capital": {
+   "fr": "Téhéran",
+   "en": "Tehran"
+  },
+  "capitals": {
+   "fr": [
+    "Téhéran"
+   ],
+   "en": [
+    "Tehran"
+   ]
+  },
+  "capitalLngLat": [
+   51.422398,
+   35.673889
   ],
   "region": "Asia",
   "subregion": "Southern Asia",
@@ -3390,10 +4591,25 @@
   "id": 81,
   "cca3": "IRQ",
   "cca2": "IQ",
-  "name": "Irak",
-  "capital": "Bagdad",
-  "capitals": [
-   "Bagdad"
+  "name": {
+   "fr": "Irak",
+   "en": "Iraq"
+  },
+  "capital": {
+   "fr": "Bagdad",
+   "en": "Baghdad"
+  },
+  "capitals": {
+   "fr": [
+    "Bagdad"
+   ],
+   "en": [
+    "Baghdad"
+   ]
+  },
+  "capitalLngLat": [
+   44.391923,
+   33.340594
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -3435,10 +4651,25 @@
   "id": 82,
   "cca3": "ISL",
   "cca2": "IS",
-  "name": "Islande",
-  "capital": "Reykjavik",
-  "capitals": [
-   "Reykjavik"
+  "name": {
+   "fr": "Islande",
+   "en": "Iceland"
+  },
+  "capital": {
+   "fr": "Reykjavik",
+   "en": "Reykjavik"
+  },
+  "capitals": {
+   "fr": [
+    "Reykjavik"
+   ],
+   "en": [
+    "Reykjavik"
+   ]
+  },
+  "capitalLngLat": [
+   -21.936546,
+   64.143459
   ],
   "region": "Europe",
   "subregion": "Northern Europe",
@@ -3473,10 +4704,25 @@
   "id": 83,
   "cca3": "ISR",
   "cca2": "IL",
-  "name": "Israël",
-  "capital": "Jérusalem",
-  "capitals": [
-   "Jérusalem"
+  "name": {
+   "fr": "Israël",
+   "en": "Israel"
+  },
+  "capital": {
+   "fr": "Jérusalem",
+   "en": "Jerusalem"
+  },
+  "capitals": {
+   "fr": [
+    "Jérusalem"
+   ],
+   "en": [
+    "Jerusalem"
+   ]
+  },
+  "capitalLngLat": [
+   35.206626,
+   31.778408
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -3517,10 +4763,25 @@
   "id": 84,
   "cca3": "ITA",
   "cca2": "IT",
-  "name": "Italie",
-  "capital": "Rome",
-  "capitals": [
-   "Rome"
+  "name": {
+   "fr": "Italie",
+   "en": "Italy"
+  },
+  "capital": {
+   "fr": "Rome",
+   "en": "Rome"
+  },
+  "capitals": {
+   "fr": [
+    "Rome"
+   ],
+   "en": [
+    "Rome"
+   ]
+  },
+  "capitalLngLat": [
+   12.481313,
+   41.897902
   ],
   "region": "Europe",
   "subregion": "Southern Europe",
@@ -3562,10 +4823,25 @@
   "id": 85,
   "cca3": "JAM",
   "cca2": "JM",
-  "name": "Jamaïque",
-  "capital": "Kingston",
-  "capitals": [
-   "Kingston"
+  "name": {
+   "fr": "Jamaïque",
+   "en": "Jamaica"
+  },
+  "capital": {
+   "fr": "Kingston",
+   "en": "Kingston"
+  },
+  "capitals": {
+   "fr": [
+    "Kingston"
+   ],
+   "en": [
+    "Kingston"
+   ]
+  },
+  "capitalLngLat": [
+   -76.767434,
+   17.977077
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -3600,10 +4876,25 @@
   "id": 86,
   "cca3": "JOR",
   "cca2": "JO",
-  "name": "Jordanie",
-  "capital": "Amman",
-  "capitals": [
-   "Amman"
+  "name": {
+   "fr": "Jordanie",
+   "en": "Jordan"
+  },
+  "capital": {
+   "fr": "Amman",
+   "en": "Amman"
+  },
+  "capitals": {
+   "fr": [
+    "Amman"
+   ],
+   "en": [
+    "Amman"
+   ]
+  },
+  "capitalLngLat": [
+   35.931354,
+   31.951971
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -3644,10 +4935,25 @@
   "id": 87,
   "cca3": "JPN",
   "cca2": "JP",
-  "name": "Japon",
-  "capital": "Tokyo",
-  "capitals": [
-   "Tokyo"
+  "name": {
+   "fr": "Japon",
+   "en": "Japan"
+  },
+  "capital": {
+   "fr": "Tokyo",
+   "en": "Tokyo"
+  },
+  "capitals": {
+   "fr": [
+    "Tokyo"
+   ],
+   "en": [
+    "Tokyo"
+   ]
+  },
+  "capitalLngLat": [
+   139.749462,
+   35.686963
   ],
   "region": "Asia",
   "subregion": "Eastern Asia",
@@ -3682,10 +4988,25 @@
   "id": 88,
   "cca3": "KAZ",
   "cca2": "KZ",
-  "name": "Kazakhstan",
-  "capital": "Astana",
-  "capitals": [
-   "Astana"
+  "name": {
+   "fr": "Kazakhstan",
+   "en": "Kazakhstan"
+  },
+  "capital": {
+   "fr": "Astana",
+   "en": "Astana"
+  },
+  "capitals": {
+   "fr": [
+    "Astana"
+   ],
+   "en": [
+    "Astana"
+   ]
+  },
+  "capitalLngLat": [
+   71.427774,
+   51.181125
   ],
   "region": "Asia",
   "subregion": "Central Asia",
@@ -3726,10 +5047,25 @@
   "id": 89,
   "cca3": "KEN",
   "cca2": "KE",
-  "name": "Kenya",
-  "capital": "Nairobi",
-  "capitals": [
-   "Nairobi"
+  "name": {
+   "fr": "Kenya",
+   "en": "Kenya"
+  },
+  "capital": {
+   "fr": "Nairobi",
+   "en": "Nairobi"
+  },
+  "capitals": {
+   "fr": [
+    "Nairobi"
+   ],
+   "en": [
+    "Nairobi"
+   ]
+  },
+  "capitalLngLat": [
+   36.814711,
+   -1.281401
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -3770,10 +5106,25 @@
   "id": 90,
   "cca3": "KGZ",
   "cca2": "KG",
-  "name": "Kirghizistan",
-  "capital": "Bichkek",
-  "capitals": [
-   "Bichkek"
+  "name": {
+   "fr": "Kirghizistan",
+   "en": "Kyrgyzstan"
+  },
+  "capital": {
+   "fr": "Bichkek",
+   "en": "Bishkek"
+  },
+  "capitals": {
+   "fr": [
+    "Bichkek"
+   ],
+   "en": [
+    "Bishkek"
+   ]
+  },
+  "capitalLngLat": [
+   74.583258,
+   42.875025
   ],
   "region": "Asia",
   "subregion": "Central Asia",
@@ -3813,10 +5164,25 @@
   "id": 91,
   "cca3": "KHM",
   "cca2": "KH",
-  "name": "Cambodge",
-  "capital": "Phnom Penh",
-  "capitals": [
-   "Phnom Penh"
+  "name": {
+   "fr": "Cambodge",
+   "en": "Cambodia"
+  },
+  "capital": {
+   "fr": "Phnom Penh",
+   "en": "Phnom Penh"
+  },
+  "capitals": {
+   "fr": [
+    "Phnom Penh"
+   ],
+   "en": [
+    "Phnom Penh"
+   ]
+  },
+  "capitalLngLat": [
+   104.914689,
+   11.551976
   ],
   "region": "Asia",
   "subregion": "South-Eastern Asia",
@@ -3855,10 +5221,25 @@
   "id": 92,
   "cca3": "KIR",
   "cca2": "KI",
-  "name": "Kiribati",
-  "capital": "Tarawa-Sud",
-  "capitals": [
-   "Tarawa-Sud"
+  "name": {
+   "fr": "Kiribati",
+   "en": "Kiribati"
+  },
+  "capital": {
+   "fr": "Tarawa-Sud",
+   "en": "South Tarawa"
+  },
+  "capitals": {
+   "fr": [
+    "Tarawa-Sud"
+   ],
+   "en": [
+    "South Tarawa"
+   ]
+  },
+  "capitalLngLat": [
+   173.017571,
+   1.338188
   ],
   "region": "Oceania",
   "subregion": "Micronesia",
@@ -3866,26 +5247,26 @@
   "areaKm2": 891.79,
   "cap": {
    "center": [
-    -158.26369306342127,
-    2.780434893581515
+    173.48468796301165,
+    -0.5516058326710108
    ],
-   "radiusDeg": 1.5380312862860328
+   "radiusDeg": 3.9757665842569243
   },
   "beacon": [
-   -157.40865106920418,
-   1.8505734907243752
+   174.67047354999093,
+   -1.1251681660791006
   ],
-  "beaconClearanceKm": 7.375,
+  "beaconClearanceKm": 1.094,
   "flag": "flags/kir.svg",
   "outlineSource": "geoboundaries",
   "patch": {
    "sdf": "patches/sdf/kir.png",
    "size": 1024,
    "center": [
-    -158.26369306342127,
-    2.780434893581515
+    173.48468796301165,
+    -0.5516058326710108
    ],
-   "extentRad": 0.04026556491656216,
+   "extentRad": 0.10408532577907782,
    "rangeTexels": 32
   }
  },
@@ -3893,10 +5274,25 @@
   "id": 93,
   "cca3": "KNA",
   "cca2": "KN",
-  "name": "Saint-Christophe-et-Niévès",
-  "capital": "Basseterre",
-  "capitals": [
-   "Basseterre"
+  "name": {
+   "fr": "Saint-Christophe-et-Niévès",
+   "en": "Saint Kitts and Nevis"
+  },
+  "capital": {
+   "fr": "Basseterre",
+   "en": "Basseterre"
+  },
+  "capitals": {
+   "fr": [
+    "Basseterre"
+   ],
+   "en": [
+    "Basseterre"
+   ]
+  },
+  "capitalLngLat": [
+   -62.717009,
+   17.302031
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -3931,10 +5327,25 @@
   "id": 94,
   "cca3": "KOR",
   "cca2": "KR",
-  "name": "Corée du Sud",
-  "capital": "Séoul",
-  "capitals": [
-   "Séoul"
+  "name": {
+   "fr": "Corée du Sud",
+   "en": "South Korea"
+  },
+  "capital": {
+   "fr": "Séoul",
+   "en": "Seoul"
+  },
+  "capitals": {
+   "fr": [
+    "Séoul"
+   ],
+   "en": [
+    "Seoul"
+   ]
+  },
+  "capitalLngLat": [
+   126.997785,
+   37.568295
   ],
   "region": "Asia",
   "subregion": "Eastern Asia",
@@ -3971,10 +5382,25 @@
   "id": 95,
   "cca3": "KWT",
   "cca2": "KW",
-  "name": "Koweït",
-  "capital": "Koweït",
-  "capitals": [
-   "Koweït"
+  "name": {
+   "fr": "Koweït",
+   "en": "Kuwait"
+  },
+  "capital": {
+   "fr": "Koweït",
+   "en": "Kuwait City"
+  },
+  "capitals": {
+   "fr": [
+    "Koweït"
+   ],
+   "en": [
+    "Kuwait City"
+   ]
+  },
+  "capitalLngLat": [
+   47.976355,
+   29.371664
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -4012,10 +5438,25 @@
   "id": 96,
   "cca3": "LAO",
   "cca2": "LA",
-  "name": "Laos",
-  "capital": "Vientiane",
-  "capitals": [
-   "Vientiane"
+  "name": {
+   "fr": "Laos",
+   "en": "Laos"
+  },
+  "capital": {
+   "fr": "Vientiane",
+   "en": "Vientiane"
+  },
+  "capitals": {
+   "fr": [
+    "Vientiane"
+   ],
+   "en": [
+    "Vientiane"
+   ]
+  },
+  "capitalLngLat": [
+   102.59998,
+   17.966693
   ],
   "region": "Asia",
   "subregion": "South-Eastern Asia",
@@ -4056,10 +5497,25 @@
   "id": 97,
   "cca3": "LBN",
   "cca2": "LB",
-  "name": "Liban",
-  "capital": "Beyrouth",
-  "capitals": [
-   "Beyrouth"
+  "name": {
+   "fr": "Liban",
+   "en": "Lebanon"
+  },
+  "capital": {
+   "fr": "Beyrouth",
+   "en": "Beirut"
+  },
+  "capitals": {
+   "fr": [
+    "Beyrouth"
+   ],
+   "en": [
+    "Beirut"
+   ]
+  },
+  "capitalLngLat": [
+   35.507762,
+   33.873921
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -4097,10 +5553,25 @@
   "id": 98,
   "cca3": "LBR",
   "cca2": "LR",
-  "name": "Liberia",
-  "capital": "Monrovia",
-  "capitals": [
-   "Monrovia"
+  "name": {
+   "fr": "Liberia",
+   "en": "Liberia"
+  },
+  "capital": {
+   "fr": "Monrovia",
+   "en": "Monrovia"
+  },
+  "capitals": {
+   "fr": [
+    "Monrovia"
+   ],
+   "en": [
+    "Monrovia"
+   ]
+  },
+  "capitalLngLat": [
+   -10.79966,
+   6.314582
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -4139,10 +5610,25 @@
   "id": 99,
   "cca3": "LBY",
   "cca2": "LY",
-  "name": "Libye",
-  "capital": "Tripoli",
-  "capitals": [
-   "Tripoli"
+  "name": {
+   "fr": "Libye",
+   "en": "Libya"
+  },
+  "capital": {
+   "fr": "Tripoli",
+   "en": "Tripoli"
+  },
+  "capitals": {
+   "fr": [
+    "Tripoli"
+   ],
+   "en": [
+    "Tripoli"
+   ]
+  },
+  "capitalLngLat": [
+   13.180012,
+   32.8925
   ],
   "region": "Africa",
   "subregion": "Northern Africa",
@@ -4184,10 +5670,25 @@
   "id": 100,
   "cca3": "LCA",
   "cca2": "LC",
-  "name": "Sainte-Lucie",
-  "capital": "Castries",
-  "capitals": [
-   "Castries"
+  "name": {
+   "fr": "Sainte-Lucie",
+   "en": "Saint Lucia"
+  },
+  "capital": {
+   "fr": "Castries",
+   "en": "Castries"
+  },
+  "capitals": {
+   "fr": [
+    "Castries"
+   ],
+   "en": [
+    "Castries"
+   ]
+  },
+  "capitalLngLat": [
+   -60.992875,
+   14.007875
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -4222,10 +5723,25 @@
   "id": 101,
   "cca3": "LIE",
   "cca2": "LI",
-  "name": "Liechtenstein",
-  "capital": "Vaduz",
-  "capitals": [
-   "Vaduz"
+  "name": {
+   "fr": "Liechtenstein",
+   "en": "Liechtenstein"
+  },
+  "capital": {
+   "fr": "Vaduz",
+   "en": "Vaduz"
+  },
+  "capitals": {
+   "fr": [
+    "Vaduz"
+   ],
+   "en": [
+    "Vaduz"
+   ]
+  },
+  "capitalLngLat": [
+   9.51667,
+   47.133724
   ],
   "region": "Europe",
   "subregion": "Western Europe",
@@ -4263,11 +5779,27 @@
   "id": 102,
   "cca3": "LKA",
   "cca2": "LK",
-  "name": "Sri Lanka",
-  "capital": "Sri Jayawardenapura",
-  "capitals": [
-   "Colombo",
-   "Sri Jayawardenapura"
+  "name": {
+   "fr": "Sri Lanka",
+   "en": "Sri Lanka"
+  },
+  "capital": {
+   "fr": "Sri Jayawardenapura",
+   "en": "Sri Jayawardenepura Kotte"
+  },
+  "capitals": {
+   "fr": [
+    "Colombo",
+    "Sri Jayawardenapura"
+   ],
+   "en": [
+    "Colombo",
+    "Sri Jayawardenepura Kotte"
+   ]
+  },
+  "capitalLngLat": [
+   79.949993,
+   6.900004
   ],
   "region": "Asia",
   "subregion": "Southern Asia",
@@ -4304,10 +5836,25 @@
   "id": 103,
   "cca3": "LSO",
   "cca2": "LS",
-  "name": "Lesotho",
-  "capital": "Maseru",
-  "capitals": [
-   "Maseru"
+  "name": {
+   "fr": "Lesotho",
+   "en": "Lesotho"
+  },
+  "capital": {
+   "fr": "Maseru",
+   "en": "Maseru"
+  },
+  "capitals": {
+   "fr": [
+    "Maseru"
+   ],
+   "en": [
+    "Maseru"
+   ]
+  },
+  "capitalLngLat": [
+   27.483273,
+   -29.316674
   ],
   "region": "Africa",
   "subregion": "Southern Africa",
@@ -4344,10 +5891,25 @@
   "id": 104,
   "cca3": "LTU",
   "cca2": "LT",
-  "name": "Lituanie",
-  "capital": "Vilnius",
-  "capitals": [
-   "Vilnius"
+  "name": {
+   "fr": "Lituanie",
+   "en": "Lithuania"
+  },
+  "capital": {
+   "fr": "Vilnius",
+   "en": "Vilnius"
+  },
+  "capitals": {
+   "fr": [
+    "Vilnius"
+   ],
+   "en": [
+    "Vilnius"
+   ]
+  },
+  "capitalLngLat": [
+   25.316635,
+   54.683366
   ],
   "region": "Europe",
   "subregion": "Northern Europe",
@@ -4387,10 +5949,25 @@
   "id": 105,
   "cca3": "LUX",
   "cca2": "LU",
-  "name": "Luxembourg",
-  "capital": "Luxembourg",
-  "capitals": [
-   "Luxembourg"
+  "name": {
+   "fr": "Luxembourg",
+   "en": "Luxembourg"
+  },
+  "capital": {
+   "fr": "Luxembourg",
+   "en": "Luxembourg"
+  },
+  "capitals": {
+   "fr": [
+    "Luxembourg"
+   ],
+   "en": [
+    "Luxembourg"
+   ]
+  },
+  "capitalLngLat": [
+   6.130003,
+   49.61166
   ],
   "region": "Europe",
   "subregion": "Western Europe",
@@ -4429,10 +6006,25 @@
   "id": 106,
   "cca3": "LVA",
   "cca2": "LV",
-  "name": "Lettonie",
-  "capital": "Riga",
-  "capitals": [
-   "Riga"
+  "name": {
+   "fr": "Lettonie",
+   "en": "Latvia"
+  },
+  "capital": {
+   "fr": "Riga",
+   "en": "Riga"
+  },
+  "capitals": {
+   "fr": [
+    "Riga"
+   ],
+   "en": [
+    "Riga"
+   ]
+  },
+  "capitalLngLat": [
+   24.099965,
+   56.950024
   ],
   "region": "Europe",
   "subregion": "Northern Europe",
@@ -4472,10 +6064,25 @@
   "id": 107,
   "cca3": "MAR",
   "cca2": "MA",
-  "name": "Maroc",
-  "capital": "Rabat",
-  "capitals": [
-   "Rabat"
+  "name": {
+   "fr": "Maroc",
+   "en": "Morocco"
+  },
+  "capital": {
+   "fr": "Rabat",
+   "en": "Rabat"
+  },
+  "capitals": {
+   "fr": [
+    "Rabat"
+   ],
+   "en": [
+    "Rabat"
+   ]
+  },
+  "capitalLngLat": [
+   -6.836408,
+   34.025307
   ],
   "region": "Africa",
   "subregion": "Northern Africa",
@@ -4513,10 +6120,25 @@
   "id": 108,
   "cca3": "MCO",
   "cca2": "MC",
-  "name": "Monaco",
-  "capital": "Monaco",
-  "capitals": [
-   "Monaco"
+  "name": {
+   "fr": "Monaco",
+   "en": "Monaco"
+  },
+  "capital": {
+   "fr": "Monaco",
+   "en": "Monaco"
+  },
+  "capitals": {
+   "fr": [
+    "Monaco"
+   ],
+   "en": [
+    "Monaco"
+   ]
+  },
+  "capitalLngLat": [
+   7.406913,
+   43.739646
   ],
   "region": "Europe",
   "subregion": "Western Europe",
@@ -4553,10 +6175,25 @@
   "id": 109,
   "cca3": "MDA",
   "cca2": "MD",
-  "name": "Moldavie",
-  "capital": "Chișinău",
-  "capitals": [
-   "Chișinău"
+  "name": {
+   "fr": "Moldavie",
+   "en": "Moldova"
+  },
+  "capital": {
+   "fr": "Chișinău",
+   "en": "Chișinău"
+  },
+  "capitals": {
+   "fr": [
+    "Chișinău"
+   ],
+   "en": [
+    "Chișinău"
+   ]
+  },
+  "capitalLngLat": [
+   28.857711,
+   47.005024
   ],
   "region": "Europe",
   "subregion": "Eastern Europe",
@@ -4594,10 +6231,25 @@
   "id": 110,
   "cca3": "MDG",
   "cca2": "MG",
-  "name": "Madagascar",
-  "capital": "Antananarivo",
-  "capitals": [
-   "Antananarivo"
+  "name": {
+   "fr": "Madagascar",
+   "en": "Madagascar"
+  },
+  "capital": {
+   "fr": "Antananarivo",
+   "en": "Antananarivo"
+  },
+  "capitals": {
+   "fr": [
+    "Antananarivo"
+   ],
+   "en": [
+    "Antananarivo"
+   ]
+  },
+  "capitalLngLat": [
+   47.514678,
+   -18.914691
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -4632,10 +6284,25 @@
   "id": 111,
   "cca3": "MDV",
   "cca2": "MV",
-  "name": "Maldives",
-  "capital": "Malé",
-  "capitals": [
-   "Malé"
+  "name": {
+   "fr": "Maldives",
+   "en": "Maldives"
+  },
+  "capital": {
+   "fr": "Malé",
+   "en": "Malé"
+  },
+  "capitals": {
+   "fr": [
+    "Malé"
+   ],
+   "en": [
+    "Malé"
+   ]
+  },
+  "capitalLngLat": [
+   73.508901,
+   4.172037
   ],
   "region": "Asia",
   "subregion": "Southern Asia",
@@ -4670,10 +6337,25 @@
   "id": 112,
   "cca3": "MEX",
   "cca2": "MX",
-  "name": "Mexique",
-  "capital": "Mexico",
-  "capitals": [
-   "Mexico"
+  "name": {
+   "fr": "Mexique",
+   "en": "Mexico"
+  },
+  "capital": {
+   "fr": "Mexico",
+   "en": "Mexico City"
+  },
+  "capitals": {
+   "fr": [
+    "Mexico"
+   ],
+   "en": [
+    "Mexico City"
+   ]
+  },
+  "capitalLngLat": [
+   -99.132934,
+   19.444388
   ],
   "region": "Americas",
   "subregion": "North America",
@@ -4712,10 +6394,25 @@
   "id": 113,
   "cca3": "MHL",
   "cca2": "MH",
-  "name": "Îles Marshall",
-  "capital": "Majuro",
-  "capitals": [
-   "Majuro"
+  "name": {
+   "fr": "Îles Marshall",
+   "en": "Marshall Islands"
+  },
+  "capital": {
+   "fr": "Majuro",
+   "en": "Majuro"
+  },
+  "capitals": {
+   "fr": [
+    "Majuro"
+   ],
+   "en": [
+    "Majuro"
+   ]
+  },
+  "capitalLngLat": [
+   171.38,
+   7.103004
   ],
   "region": "Oceania",
   "subregion": "Micronesia",
@@ -4750,10 +6447,25 @@
   "id": 114,
   "cca3": "MKD",
   "cca2": "MK",
-  "name": "Macédoine du Nord",
-  "capital": "Skopje",
-  "capitals": [
-   "Skopje"
+  "name": {
+   "fr": "Macédoine du Nord",
+   "en": "North Macedonia"
+  },
+  "capital": {
+   "fr": "Skopje",
+   "en": "Skopje"
+  },
+  "capitals": {
+   "fr": [
+    "Skopje"
+   ],
+   "en": [
+    "Skopje"
+   ]
+  },
+  "capitalLngLat": [
+   21.433461,
+   42.000006
   ],
   "region": "Europe",
   "subregion": "Southeast Europe",
@@ -4794,10 +6506,25 @@
   "id": 115,
   "cca3": "MLI",
   "cca2": "ML",
-  "name": "Mali",
-  "capital": "Bamako",
-  "capitals": [
-   "Bamako"
+  "name": {
+   "fr": "Mali",
+   "en": "Mali"
+  },
+  "capital": {
+   "fr": "Bamako",
+   "en": "Bamako"
+  },
+  "capitals": {
+   "fr": [
+    "Bamako"
+   ],
+   "en": [
+    "Bamako"
+   ]
+  },
+  "capitalLngLat": [
+   -8.001985,
+   12.65196
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -4840,10 +6567,25 @@
   "id": 116,
   "cca3": "MLT",
   "cca2": "MT",
-  "name": "Malte",
-  "capital": "La Valette",
-  "capitals": [
-   "La Valette"
+  "name": {
+   "fr": "Malte",
+   "en": "Malta"
+  },
+  "capital": {
+   "fr": "La Valette",
+   "en": "Valletta"
+  },
+  "capitals": {
+   "fr": [
+    "La Valette"
+   ],
+   "en": [
+    "Valletta"
+   ]
+  },
+  "capitalLngLat": [
+   14.514711,
+   35.899732
   ],
   "region": "Europe",
   "subregion": "Southern Europe",
@@ -4878,10 +6620,25 @@
   "id": 117,
   "cca3": "MMR",
   "cca2": "MM",
-  "name": "Birmanie",
-  "capital": "Naypyidaw",
-  "capitals": [
-   "Naypyidaw"
+  "name": {
+   "fr": "Birmanie",
+   "en": "Myanmar"
+  },
+  "capital": {
+   "fr": "Naypyidaw",
+   "en": "Naypyidaw"
+  },
+  "capitals": {
+   "fr": [
+    "Naypyidaw"
+   ],
+   "en": [
+    "Naypyidaw"
+   ]
+  },
+  "capitalLngLat": [
+   96.116673,
+   19.768503
   ],
   "region": "Asia",
   "subregion": "South-Eastern Asia",
@@ -4922,10 +6679,25 @@
   "id": 118,
   "cca3": "MNE",
   "cca2": "ME",
-  "name": "Monténégro",
-  "capital": "Podgorica",
-  "capitals": [
-   "Podgorica"
+  "name": {
+   "fr": "Monténégro",
+   "en": "Montenegro"
+  },
+  "capital": {
+   "fr": "Podgorica",
+   "en": "Podgorica"
+  },
+  "capitals": {
+   "fr": [
+    "Podgorica"
+   ],
+   "en": [
+    "Podgorica"
+   ]
+  },
+  "capitalLngLat": [
+   19.266307,
+   42.465972
   ],
   "region": "Europe",
   "subregion": "Southeast Europe",
@@ -4966,10 +6738,25 @@
   "id": 119,
   "cca3": "MNG",
   "cca2": "MN",
-  "name": "Mongolie",
-  "capital": "Oulan-Bator",
-  "capitals": [
-   "Oulan-Bator"
+  "name": {
+   "fr": "Mongolie",
+   "en": "Mongolia"
+  },
+  "capital": {
+   "fr": "Oulan-Bator",
+   "en": "Ulan Bator"
+  },
+  "capitals": {
+   "fr": [
+    "Oulan-Bator"
+   ],
+   "en": [
+    "Ulan Bator"
+   ]
+  },
+  "capitalLngLat": [
+   106.91467,
+   47.918619
   ],
   "region": "Asia",
   "subregion": "Eastern Asia",
@@ -5007,10 +6794,25 @@
   "id": 120,
   "cca3": "MOZ",
   "cca2": "MZ",
-  "name": "Mozambique",
-  "capital": "Maputo",
-  "capitals": [
-   "Maputo"
+  "name": {
+   "fr": "Mozambique",
+   "en": "Mozambique"
+  },
+  "capital": {
+   "fr": "Maputo",
+   "en": "Maputo"
+  },
+  "capitals": {
+   "fr": [
+    "Maputo"
+   ],
+   "en": [
+    "Maputo"
+   ]
+  },
+  "capitalLngLat": [
+   32.587217,
+   -25.953332
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -5052,10 +6854,25 @@
   "id": 121,
   "cca3": "MRT",
   "cca2": "MR",
-  "name": "Mauritanie",
-  "capital": "Nouakchott",
-  "capitals": [
-   "Nouakchott"
+  "name": {
+   "fr": "Mauritanie",
+   "en": "Mauritania"
+  },
+  "capital": {
+   "fr": "Nouakchott",
+   "en": "Nouakchott"
+  },
+  "capitals": {
+   "fr": [
+    "Nouakchott"
+   ],
+   "en": [
+    "Nouakchott"
+   ]
+  },
+  "capitalLngLat": [
+   -15.97534,
+   18.086427
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -5094,10 +6911,25 @@
   "id": 122,
   "cca3": "MUS",
   "cca2": "MU",
-  "name": "Île Maurice",
-  "capital": "Port-Louis",
-  "capitals": [
-   "Port-Louis"
+  "name": {
+   "fr": "Île Maurice",
+   "en": "Mauritius"
+  },
+  "capital": {
+   "fr": "Port-Louis",
+   "en": "Port Louis"
+  },
+  "capitals": {
+   "fr": [
+    "Port-Louis"
+   ],
+   "en": [
+    "Port Louis"
+   ]
+  },
+  "capitalLngLat": [
+   57.499994,
+   -20.166639
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -5132,10 +6964,25 @@
   "id": 123,
   "cca3": "MWI",
   "cca2": "MW",
-  "name": "Malawi",
-  "capital": "Lilongwe",
-  "capitals": [
-   "Lilongwe"
+  "name": {
+   "fr": "Malawi",
+   "en": "Malawi"
+  },
+  "capital": {
+   "fr": "Lilongwe",
+   "en": "Lilongwe"
+  },
+  "capitals": {
+   "fr": [
+    "Lilongwe"
+   ],
+   "en": [
+    "Lilongwe"
+   ]
+  },
+  "capitalLngLat": [
+   33.783302,
+   -13.983295
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -5174,11 +7021,26 @@
   "id": 124,
   "cca3": "MYS",
   "cca2": "MY",
-  "name": "Malaisie",
-  "capital": "Kuala Lumpur",
-  "capitals": [
-   "Kuala Lumpur",
-   "Putrajaya"
+  "name": {
+   "fr": "Malaisie",
+   "en": "Malaysia"
+  },
+  "capital": {
+   "fr": "Kuala Lumpur",
+   "en": "Kuala Lumpur"
+  },
+  "capitals": {
+   "fr": [
+    "Kuala Lumpur",
+    "Putrajaya"
+   ],
+   "en": [
+    "Kuala Lumpur"
+   ]
+  },
+  "capitalLngLat": [
+   101.688699,
+   3.139797
   ],
   "region": "Asia",
   "subregion": "South-Eastern Asia",
@@ -5217,10 +7079,25 @@
   "id": 125,
   "cca3": "NAM",
   "cca2": "NA",
-  "name": "Namibie",
-  "capital": "Windhoek",
-  "capitals": [
-   "Windhoek"
+  "name": {
+   "fr": "Namibie",
+   "en": "Namibia"
+  },
+  "capital": {
+   "fr": "Windhoek",
+   "en": "Windhoek"
+  },
+  "capitals": {
+   "fr": [
+    "Windhoek"
+   ],
+   "en": [
+    "Windhoek"
+   ]
+  },
+  "capitalLngLat": [
+   17.083546,
+   -22.570006
   ],
   "region": "Africa",
   "subregion": "Southern Africa",
@@ -5260,10 +7137,25 @@
   "id": 126,
   "cca3": "NER",
   "cca2": "NE",
-  "name": "Niger",
-  "capital": "Niamey",
-  "capitals": [
-   "Niamey"
+  "name": {
+   "fr": "Niger",
+   "en": "Niger"
+  },
+  "capital": {
+   "fr": "Niamey",
+   "en": "Niamey"
+  },
+  "capitals": {
+   "fr": [
+    "Niamey"
+   ],
+   "en": [
+    "Niamey"
+   ]
+  },
+  "capitalLngLat": [
+   2.11471,
+   13.518652
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -5306,10 +7198,25 @@
   "id": 127,
   "cca3": "NGA",
   "cca2": "NG",
-  "name": "Nigéria",
-  "capital": "Abuja",
-  "capitals": [
-   "Abuja"
+  "name": {
+   "fr": "Nigéria",
+   "en": "Nigeria"
+  },
+  "capital": {
+   "fr": "Abuja",
+   "en": "Abuja"
+  },
+  "capitals": {
+   "fr": [
+    "Abuja"
+   ],
+   "en": [
+    "Abuja"
+   ]
+  },
+  "capitalLngLat": [
+   7.489505,
+   9.05462
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -5349,10 +7256,25 @@
   "id": 128,
   "cca3": "NIC",
   "cca2": "NI",
-  "name": "Nicaragua",
-  "capital": "Managua",
-  "capitals": [
-   "Managua"
+  "name": {
+   "fr": "Nicaragua",
+   "en": "Nicaragua"
+  },
+  "capital": {
+   "fr": "Managua",
+   "en": "Managua"
+  },
+  "capitals": {
+   "fr": [
+    "Managua"
+   ],
+   "en": [
+    "Managua"
+   ]
+  },
+  "capitalLngLat": [
+   -86.270437,
+   12.154962
   ],
   "region": "Americas",
   "subregion": "Central America",
@@ -5390,10 +7312,25 @@
   "id": 129,
   "cca3": "NLD",
   "cca2": "NL",
-  "name": "Pays-Bas",
-  "capital": "Amsterdam",
-  "capitals": [
-   "Amsterdam"
+  "name": {
+   "fr": "Pays-Bas",
+   "en": "Netherlands"
+  },
+  "capital": {
+   "fr": "Amsterdam",
+   "en": "Amsterdam"
+  },
+  "capitals": {
+   "fr": [
+    "Amsterdam"
+   ],
+   "en": [
+    "Amsterdam"
+   ]
+  },
+  "capitalLngLat": [
+   4.914694,
+   52.351914
   ],
   "region": "Europe",
   "subregion": "Western Europe",
@@ -5431,10 +7368,25 @@
   "id": 130,
   "cca3": "NOR",
   "cca2": "NO",
-  "name": "Norvège",
-  "capital": "Oslo",
-  "capitals": [
-   "Oslo"
+  "name": {
+   "fr": "Norvège",
+   "en": "Norway"
+  },
+  "capital": {
+   "fr": "Oslo",
+   "en": "Oslo"
+  },
+  "capitals": {
+   "fr": [
+    "Oslo"
+   ],
+   "en": [
+    "Oslo"
+   ]
+  },
+  "capitalLngLat": [
+   10.748033,
+   59.918636
   ],
   "region": "Europe",
   "subregion": "Northern Europe",
@@ -5473,10 +7425,25 @@
   "id": 131,
   "cca3": "NPL",
   "cca2": "NP",
-  "name": "Népal",
-  "capital": "Katmandou",
-  "capitals": [
-   "Katmandou"
+  "name": {
+   "fr": "Népal",
+   "en": "Nepal"
+  },
+  "capital": {
+   "fr": "Katmandou",
+   "en": "Kathmandu"
+  },
+  "capitals": {
+   "fr": [
+    "Katmandou"
+   ],
+   "en": [
+    "Kathmandu"
+   ]
+  },
+  "capitalLngLat": [
+   85.314696,
+   27.718638
   ],
   "region": "Asia",
   "subregion": "Southern Asia",
@@ -5514,10 +7481,25 @@
   "id": 132,
   "cca3": "NRU",
   "cca2": "NR",
-  "name": "Nauru",
-  "capital": "Yaren",
-  "capitals": [
-   "Yaren"
+  "name": {
+   "fr": "Nauru",
+   "en": "Nauru"
+  },
+  "capital": {
+   "fr": "Yaren",
+   "en": "Yaren"
+  },
+  "capitals": {
+   "fr": [
+    "Yaren"
+   ],
+   "en": [
+    "Yaren"
+   ]
+  },
+  "capitalLngLat": [
+   166.925,
+   -0.54556
   ],
   "region": "Oceania",
   "subregion": "Micronesia",
@@ -5552,10 +7534,25 @@
   "id": 133,
   "cca3": "NZL",
   "cca2": "NZ",
-  "name": "Nouvelle-Zélande",
-  "capital": "Wellington",
-  "capitals": [
-   "Wellington"
+  "name": {
+   "fr": "Nouvelle-Zélande",
+   "en": "New Zealand"
+  },
+  "capital": {
+   "fr": "Wellington",
+   "en": "Wellington"
+  },
+  "capitals": {
+   "fr": [
+    "Wellington"
+   ],
+   "en": [
+    "Wellington"
+   ]
+  },
+  "capitalLngLat": [
+   174.777201,
+   -41.292068
   ],
   "region": "Oceania",
   "subregion": "Australia and New Zealand",
@@ -5590,10 +7587,25 @@
   "id": 134,
   "cca3": "OMN",
   "cca2": "OM",
-  "name": "Oman",
-  "capital": "Mascate",
-  "capitals": [
-   "Mascate"
+  "name": {
+   "fr": "Oman",
+   "en": "Oman"
+  },
+  "capital": {
+   "fr": "Mascate",
+   "en": "Muscat"
+  },
+  "capitals": {
+   "fr": [
+    "Mascate"
+   ],
+   "en": [
+    "Muscat"
+   ]
+  },
+  "capitalLngLat": [
+   58.378311,
+   23.585179
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -5632,11 +7644,26 @@
   "id": 135,
   "cca3": "PAK",
   "cca2": "PK",
-  "name": "Pakistan",
-  "capital": "Islamabad",
-  "capitals": [
-   "Islamabad",
-   "Rawalpindi"
+  "name": {
+   "fr": "Pakistan",
+   "en": "Pakistan"
+  },
+  "capital": {
+   "fr": "Islamabad",
+   "en": "Islamabad"
+  },
+  "capitals": {
+   "fr": [
+    "Islamabad",
+    "Rawalpindi"
+   ],
+   "en": [
+    "Islamabad"
+   ]
+  },
+  "capitalLngLat": [
+   73.08063,
+   33.689368
   ],
   "region": "Asia",
   "subregion": "Southern Asia",
@@ -5676,10 +7703,25 @@
   "id": 136,
   "cca3": "PAN",
   "cca2": "PA",
-  "name": "Panama",
-  "capital": "Panama",
-  "capitals": [
-   "Panama"
+  "name": {
+   "fr": "Panama",
+   "en": "Panama"
+  },
+  "capital": {
+   "fr": "Panama",
+   "en": "Panama City"
+  },
+  "capitals": {
+   "fr": [
+    "Panama"
+   ],
+   "en": [
+    "Panama City"
+   ]
+  },
+  "capitalLngLat": [
+   -79.534983,
+   8.969963
   ],
   "region": "Americas",
   "subregion": "Central America",
@@ -5717,10 +7759,25 @@
   "id": 137,
   "cca3": "PER",
   "cca2": "PE",
-  "name": "Pérou",
-  "capital": "Lima",
-  "capitals": [
-   "Lima"
+  "name": {
+   "fr": "Pérou",
+   "en": "Peru"
+  },
+  "capital": {
+   "fr": "Lima",
+   "en": "Lima"
+  },
+  "capitals": {
+   "fr": [
+    "Lima"
+   ],
+   "en": [
+    "Lima"
+   ]
+  },
+  "capitalLngLat": [
+   -77.052008,
+   -12.046067
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -5761,10 +7818,25 @@
   "id": 138,
   "cca3": "PHL",
   "cca2": "PH",
-  "name": "Philippines",
-  "capital": "Manille",
-  "capitals": [
-   "Manille"
+  "name": {
+   "fr": "Philippines",
+   "en": "Philippines"
+  },
+  "capital": {
+   "fr": "Manille",
+   "en": "Manila"
+  },
+  "capitals": {
+   "fr": [
+    "Manille"
+   ],
+   "en": [
+    "Manila"
+   ]
+  },
+  "capitalLngLat": [
+   120.980271,
+   14.606105
   ],
   "region": "Asia",
   "subregion": "South-Eastern Asia",
@@ -5799,10 +7871,25 @@
   "id": 139,
   "cca3": "PLW",
   "cca2": "PW",
-  "name": "Palaos (Palau)",
-  "capital": "Ngerulmud",
-  "capitals": [
-   "Ngerulmud"
+  "name": {
+   "fr": "Palaos (Palau)",
+   "en": "Palau"
+  },
+  "capital": {
+   "fr": "Ngerulmud",
+   "en": "Ngerulmud"
+  },
+  "capitals": {
+   "fr": [
+    "Ngerulmud"
+   ],
+   "en": [
+    "Ngerulmud"
+   ]
+  },
+  "capitalLngLat": [
+   134.62417,
+   7.50056
   ],
   "region": "Oceania",
   "subregion": "Micronesia",
@@ -5837,10 +7924,25 @@
   "id": 140,
   "cca3": "PNG",
   "cca2": "PG",
-  "name": "Papouasie-Nouvelle-Guinée",
-  "capital": "Port Moresby",
-  "capitals": [
-   "Port Moresby"
+  "name": {
+   "fr": "Papouasie-Nouvelle-Guinée",
+   "en": "Papua New Guinea"
+  },
+  "capital": {
+   "fr": "Port Moresby",
+   "en": "Port Moresby"
+  },
+  "capitals": {
+   "fr": [
+    "Port Moresby"
+   ],
+   "en": [
+    "Port Moresby"
+   ]
+  },
+  "capitalLngLat": [
+   147.192504,
+   -9.464708
   ],
   "region": "Oceania",
   "subregion": "Melanesia",
@@ -5877,10 +7979,25 @@
   "id": 141,
   "cca3": "POL",
   "cca2": "PL",
-  "name": "Pologne",
-  "capital": "Varsovie",
-  "capitals": [
-   "Varsovie"
+  "name": {
+   "fr": "Pologne",
+   "en": "Poland"
+  },
+  "capital": {
+   "fr": "Varsovie",
+   "en": "Warsaw"
+  },
+  "capitals": {
+   "fr": [
+    "Varsovie"
+   ],
+   "en": [
+    "Warsaw"
+   ]
+  },
+  "capitalLngLat": [
+   21.005347,
+   52.230872
   ],
   "region": "Europe",
   "subregion": "Central Europe",
@@ -5923,10 +8040,25 @@
   "id": 142,
   "cca3": "PRK",
   "cca2": "KP",
-  "name": "Corée du Nord",
-  "capital": "Pyongyang",
-  "capitals": [
-   "Pyongyang"
+  "name": {
+   "fr": "Corée du Nord",
+   "en": "North Korea"
+  },
+  "capital": {
+   "fr": "Pyongyang",
+   "en": "Pyongyang"
+  },
+  "capitals": {
+   "fr": [
+    "Pyongyang"
+   ],
+   "en": [
+    "Pyongyang"
+   ]
+  },
+  "capitalLngLat": [
+   125.752745,
+   39.021385
   ],
   "region": "Asia",
   "subregion": "Eastern Asia",
@@ -5965,10 +8097,25 @@
   "id": 143,
   "cca3": "PRT",
   "cca2": "PT",
-  "name": "Portugal",
-  "capital": "Lisbonne",
-  "capitals": [
-   "Lisbonne"
+  "name": {
+   "fr": "Portugal",
+   "en": "Portugal"
+  },
+  "capital": {
+   "fr": "Lisbonne",
+   "en": "Lisbon"
+  },
+  "capitals": {
+   "fr": [
+    "Lisbonne"
+   ],
+   "en": [
+    "Lisbon"
+   ]
+  },
+  "capitalLngLat": [
+   -9.146812,
+   38.724669
   ],
   "region": "Europe",
   "subregion": "Southern Europe",
@@ -6005,10 +8152,25 @@
   "id": 144,
   "cca3": "PRY",
   "cca2": "PY",
-  "name": "Paraguay",
-  "capital": "Asuncion",
-  "capitals": [
-   "Asuncion"
+  "name": {
+   "fr": "Paraguay",
+   "en": "Paraguay"
+  },
+  "capital": {
+   "fr": "Asuncion",
+   "en": "Asunción"
+  },
+  "capitals": {
+   "fr": [
+    "Asuncion"
+   ],
+   "en": [
+    "Asunción"
+   ]
+  },
+  "capitalLngLat": [
+   -57.625834,
+   -25.290671
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -6047,11 +8209,27 @@
   "id": 145,
   "cca3": "PSE",
   "cca2": "PS",
-  "name": "Palestine",
-  "capital": "Jérusalem-Est",
-  "capitals": [
-   "Jérusalem-Est",
-   "Ramallah"
+  "name": {
+   "fr": "Palestine",
+   "en": "Palestine"
+  },
+  "capital": {
+   "fr": "Jérusalem-Est",
+   "en": "East Jerusalem"
+  },
+  "capitals": {
+   "fr": [
+    "Jérusalem-Est",
+    "Ramallah"
+   ],
+   "en": [
+    "East Jerusalem",
+    "Ramallah"
+   ]
+  },
+  "capitalLngLat": [
+   35.23417,
+   31.77667
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -6090,10 +8268,25 @@
   "id": 146,
   "cca3": "QAT",
   "cca2": "QA",
-  "name": "Qatar",
-  "capital": "Doha",
-  "capitals": [
-   "Doha"
+  "name": {
+   "fr": "Qatar",
+   "en": "Qatar"
+  },
+  "capital": {
+   "fr": "Doha",
+   "en": "Doha"
+  },
+  "capitals": {
+   "fr": [
+    "Doha"
+   ],
+   "en": [
+    "Doha"
+   ]
+  },
+  "capitalLngLat": [
+   51.532968,
+   25.286556
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -6130,10 +8323,25 @@
   "id": 147,
   "cca3": "ROU",
   "cca2": "RO",
-  "name": "Roumanie",
-  "capital": "Bucarest",
-  "capitals": [
-   "Bucarest"
+  "name": {
+   "fr": "Roumanie",
+   "en": "Romania"
+  },
+  "capital": {
+   "fr": "Bucarest",
+   "en": "Bucharest"
+  },
+  "capitals": {
+   "fr": [
+    "Bucarest"
+   ],
+   "en": [
+    "Bucharest"
+   ]
+  },
+  "capitalLngLat": [
+   26.098001,
+   44.435318
   ],
   "region": "Europe",
   "subregion": "Southeast Europe",
@@ -6174,10 +8382,25 @@
   "id": 148,
   "cca3": "RUS",
   "cca2": "RU",
-  "name": "Russie",
-  "capital": "Moscou",
-  "capitals": [
-   "Moscou"
+  "name": {
+   "fr": "Russie",
+   "en": "Russia"
+  },
+  "capital": {
+   "fr": "Moscou",
+   "en": "Moscow"
+  },
+  "capitals": {
+   "fr": [
+    "Moscou"
+   ],
+   "en": [
+    "Moscow"
+   ]
+  },
+  "capitalLngLat": [
+   37.613577,
+   55.75411
   ],
   "region": "Europe",
   "subregion": "Eastern Europe",
@@ -6227,10 +8450,25 @@
   "id": 149,
   "cca3": "RWA",
   "cca2": "RW",
-  "name": "Rwanda",
-  "capital": "Kigali",
-  "capitals": [
-   "Kigali"
+  "name": {
+   "fr": "Rwanda",
+   "en": "Rwanda"
+  },
+  "capital": {
+   "fr": "Kigali",
+   "en": "Kigali"
+  },
+  "capitals": {
+   "fr": [
+    "Kigali"
+   ],
+   "en": [
+    "Kigali"
+   ]
+  },
+  "capitalLngLat": [
+   30.058586,
+   -1.951644
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -6270,10 +8508,25 @@
   "id": 150,
   "cca3": "SAU",
   "cca2": "SA",
-  "name": "Arabie Saoudite",
-  "capital": "Riyad",
-  "capitals": [
-   "Riyad"
+  "name": {
+   "fr": "Arabie Saoudite",
+   "en": "Saudi Arabia"
+  },
+  "capital": {
+   "fr": "Riyad",
+   "en": "Riyadh"
+  },
+  "capitals": {
+   "fr": [
+    "Riyad"
+   ],
+   "en": [
+    "Riyadh"
+   ]
+  },
+  "capitalLngLat": [
+   46.720487,
+   24.634497
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -6316,10 +8569,25 @@
   "id": 151,
   "cca3": "SDN",
   "cca2": "SD",
-  "name": "Soudan",
-  "capital": "Khartoum",
-  "capitals": [
-   "Khartoum"
+  "name": {
+   "fr": "Soudan",
+   "en": "Sudan"
+  },
+  "capital": {
+   "fr": "Khartoum",
+   "en": "Khartoum"
+  },
+  "capitals": {
+   "fr": [
+    "Khartoum"
+   ],
+   "en": [
+    "Khartoum"
+   ]
+  },
+  "capitalLngLat": [
+   32.532233,
+   15.590024
   ],
   "region": "Africa",
   "subregion": "Northern Africa",
@@ -6362,10 +8630,25 @@
   "id": 152,
   "cca3": "SEN",
   "cca2": "SN",
-  "name": "Sénégal",
-  "capital": "Dakar",
-  "capitals": [
-   "Dakar"
+  "name": {
+   "fr": "Sénégal",
+   "en": "Senegal"
+  },
+  "capital": {
+   "fr": "Dakar",
+   "en": "Dakar"
+  },
+  "capitals": {
+   "fr": [
+    "Dakar"
+   ],
+   "en": [
+    "Dakar"
+   ]
+  },
+  "capitalLngLat": [
+   -17.475076,
+   14.717778
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -6406,10 +8689,25 @@
   "id": 153,
   "cca3": "SGP",
   "cca2": "SG",
-  "name": "Singapour",
-  "capital": "Singapour",
-  "capitals": [
-   "Singapour"
+  "name": {
+   "fr": "Singapour",
+   "en": "Singapore"
+  },
+  "capital": {
+   "fr": "Singapour",
+   "en": "Singapore"
+  },
+  "capitals": {
+   "fr": [
+    "Singapour"
+   ],
+   "en": [
+    "Singapore"
+   ]
+  },
+  "capitalLngLat": [
+   103.853875,
+   1.294979
   ],
   "region": "Asia",
   "subregion": "South-Eastern Asia",
@@ -6444,10 +8742,25 @@
   "id": 154,
   "cca3": "SLB",
   "cca2": "SB",
-  "name": "Îles Salomon",
-  "capital": "Honiara",
-  "capitals": [
-   "Honiara"
+  "name": {
+   "fr": "Îles Salomon",
+   "en": "Solomon Islands"
+  },
+  "capital": {
+   "fr": "Honiara",
+   "en": "Honiara"
+  },
+  "capitals": {
+   "fr": [
+    "Honiara"
+   ],
+   "en": [
+    "Honiara"
+   ]
+  },
+  "capitalLngLat": [
+   159.949766,
+   -9.437994
   ],
   "region": "Oceania",
   "subregion": "Melanesia",
@@ -6482,10 +8795,25 @@
   "id": 155,
   "cca3": "SLE",
   "cca2": "SL",
-  "name": "Sierra Leone",
-  "capital": "Freetown",
-  "capitals": [
-   "Freetown"
+  "name": {
+   "fr": "Sierra Leone",
+   "en": "Sierra Leone"
+  },
+  "capital": {
+   "fr": "Freetown",
+   "en": "Freetown"
+  },
+  "capitals": {
+   "fr": [
+    "Freetown"
+   ],
+   "en": [
+    "Freetown"
+   ]
+  },
+  "capitalLngLat": [
+   -13.236162,
+   8.471957
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -6523,10 +8851,25 @@
   "id": 156,
   "cca3": "SLV",
   "cca2": "SV",
-  "name": "Salvador",
-  "capital": "San Salvador",
-  "capitals": [
-   "San Salvador"
+  "name": {
+   "fr": "Salvador",
+   "en": "El Salvador"
+  },
+  "capital": {
+   "fr": "San Salvador",
+   "en": "San Salvador"
+  },
+  "capitals": {
+   "fr": [
+    "San Salvador"
+   ],
+   "en": [
+    "San Salvador"
+   ]
+  },
+  "capitalLngLat": [
+   -89.215576,
+   13.70328
   ],
   "region": "Americas",
   "subregion": "Central America",
@@ -6564,10 +8907,25 @@
   "id": 157,
   "cca3": "SMR",
   "cca2": "SM",
-  "name": "Saint-Marin",
-  "capital": "Saint-Marin",
-  "capitals": [
-   "Saint-Marin"
+  "name": {
+   "fr": "Saint-Marin",
+   "en": "San Marino"
+  },
+  "capital": {
+   "fr": "Saint-Marin",
+   "en": "City of San Marino"
+  },
+  "capitals": {
+   "fr": [
+    "Saint-Marin"
+   ],
+   "en": [
+    "City of San Marino"
+   ]
+  },
+  "capitalLngLat": [
+   12.44177,
+   43.936096
   ],
   "region": "Europe",
   "subregion": "Southern Europe",
@@ -6604,10 +8962,25 @@
   "id": 158,
   "cca3": "SOM",
   "cca2": "SO",
-  "name": "Somalie",
-  "capital": "Mogadiscio",
-  "capitals": [
-   "Mogadiscio"
+  "name": {
+   "fr": "Somalie",
+   "en": "Somalia"
+  },
+  "capital": {
+   "fr": "Mogadiscio",
+   "en": "Mogadishu"
+  },
+  "capitals": {
+   "fr": [
+    "Mogadiscio"
+   ],
+   "en": [
+    "Mogadishu"
+   ]
+  },
+  "capitalLngLat": [
+   45.364732,
+   2.068627
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -6646,10 +9019,25 @@
   "id": 159,
   "cca3": "SRB",
   "cca2": "RS",
-  "name": "Serbie",
-  "capital": "Belgrade",
-  "capitals": [
-   "Belgrade"
+  "name": {
+   "fr": "Serbie",
+   "en": "Serbia"
+  },
+  "capital": {
+   "fr": "Belgrade",
+   "en": "Belgrade"
+  },
+  "capitals": {
+   "fr": [
+    "Belgrade"
+   ],
+   "en": [
+    "Belgrade"
+   ]
+  },
+  "capitalLngLat": [
+   20.466045,
+   44.820591
   ],
   "region": "Europe",
   "subregion": "Southeast Europe",
@@ -6693,10 +9081,25 @@
   "id": 160,
   "cca3": "SSD",
   "cca2": "SS",
-  "name": "Soudan du Sud",
-  "capital": "Djouba",
-  "capitals": [
-   "Djouba"
+  "name": {
+   "fr": "Soudan du Sud",
+   "en": "South Sudan"
+  },
+  "capital": {
+   "fr": "Djouba",
+   "en": "Juba"
+  },
+  "capitals": {
+   "fr": [
+    "Djouba"
+   ],
+   "en": [
+    "Juba"
+   ]
+  },
+  "capitalLngLat": [
+   31.580026,
+   4.829975
   ],
   "region": "Africa",
   "subregion": "Middle Africa",
@@ -6738,10 +9141,25 @@
   "id": 161,
   "cca3": "STP",
   "cca2": "ST",
-  "name": "São Tomé et Príncipe",
-  "capital": "São Tomé",
-  "capitals": [
-   "São Tomé"
+  "name": {
+   "fr": "São Tomé et Príncipe",
+   "en": "São Tomé and Príncipe"
+  },
+  "capital": {
+   "fr": "São Tomé",
+   "en": "São Tomé"
+  },
+  "capitals": {
+   "fr": [
+    "São Tomé"
+   ],
+   "en": [
+    "São Tomé"
+   ]
+  },
+  "capitalLngLat": [
+   6.72965,
+   0.337466
   ],
   "region": "Africa",
   "subregion": "Middle Africa",
@@ -6776,10 +9194,25 @@
   "id": 162,
   "cca3": "SUR",
   "cca2": "SR",
-  "name": "Surinam",
-  "capital": "Paramaribo",
-  "capitals": [
-   "Paramaribo"
+  "name": {
+   "fr": "Surinam",
+   "en": "Suriname"
+  },
+  "capital": {
+   "fr": "Paramaribo",
+   "en": "Paramaribo"
+  },
+  "capitals": {
+   "fr": [
+    "Paramaribo"
+   ],
+   "en": [
+    "Paramaribo"
+   ]
+  },
+  "capitalLngLat": [
+   -55.167031,
+   5.83503
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -6817,10 +9250,25 @@
   "id": 163,
   "cca3": "SVK",
   "cca2": "SK",
-  "name": "Slovaquie",
-  "capital": "Bratislava",
-  "capitals": [
-   "Bratislava"
+  "name": {
+   "fr": "Slovaquie",
+   "en": "Slovakia"
+  },
+  "capital": {
+   "fr": "Bratislava",
+   "en": "Bratislava"
+  },
+  "capitals": {
+   "fr": [
+    "Bratislava"
+   ],
+   "en": [
+    "Bratislava"
+   ]
+  },
+  "capitalLngLat": [
+   17.116981,
+   48.150018
   ],
   "region": "Europe",
   "subregion": "Central Europe",
@@ -6861,10 +9309,25 @@
   "id": 164,
   "cca3": "SVN",
   "cca2": "SI",
-  "name": "Slovénie",
-  "capital": "Ljubljana",
-  "capitals": [
-   "Ljubljana"
+  "name": {
+   "fr": "Slovénie",
+   "en": "Slovenia"
+  },
+  "capital": {
+   "fr": "Ljubljana",
+   "en": "Ljubljana"
+  },
+  "capitals": {
+   "fr": [
+    "Ljubljana"
+   ],
+   "en": [
+    "Ljubljana"
+   ]
+  },
+  "capitalLngLat": [
+   14.514969,
+   46.055288
   ],
   "region": "Europe",
   "subregion": "Central Europe",
@@ -6904,10 +9367,25 @@
   "id": 165,
   "cca3": "SWE",
   "cca2": "SE",
-  "name": "Suède",
-  "capital": "Stockholm",
-  "capitals": [
-   "Stockholm"
+  "name": {
+   "fr": "Suède",
+   "en": "Sweden"
+  },
+  "capital": {
+   "fr": "Stockholm",
+   "en": "Stockholm"
+  },
+  "capitals": {
+   "fr": [
+    "Stockholm"
+   ],
+   "en": [
+    "Stockholm"
+   ]
+  },
+  "capitalLngLat": [
+   18.0663,
+   59.324127
   ],
   "region": "Europe",
   "subregion": "Northern Europe",
@@ -6945,11 +9423,27 @@
   "id": 166,
   "cca3": "SWZ",
   "cca2": "SZ",
-  "name": "Eswatini",
-  "capital": "Mbabane",
-  "capitals": [
-   "Lobamba",
-   "Mbabane"
+  "name": {
+   "fr": "Eswatini",
+   "en": "Eswatini"
+  },
+  "capital": {
+   "fr": "Mbabane",
+   "en": "Mbabane"
+  },
+  "capitals": {
+   "fr": [
+    "Lobamba",
+    "Mbabane"
+   ],
+   "en": [
+    "Lobamba",
+    "Mbabane"
+   ]
+  },
+  "capitalLngLat": [
+   31.133335,
+   -26.316651
   ],
   "region": "Africa",
   "subregion": "Southern Africa",
@@ -6987,10 +9481,25 @@
   "id": 167,
   "cca3": "SYC",
   "cca2": "SC",
-  "name": "Seychelles",
-  "capital": "Victoria",
-  "capitals": [
-   "Victoria"
+  "name": {
+   "fr": "Seychelles",
+   "en": "Seychelles"
+  },
+  "capital": {
+   "fr": "Victoria",
+   "en": "Victoria"
+  },
+  "capitals": {
+   "fr": [
+    "Victoria"
+   ],
+   "en": [
+    "Victoria"
+   ]
+  },
+  "capitalLngLat": [
+   55.44999,
+   -4.616632
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -7025,10 +9534,25 @@
   "id": 168,
   "cca3": "SYR",
   "cca2": "SY",
-  "name": "Syrie",
-  "capital": "Damas",
-  "capitals": [
-   "Damas"
+  "name": {
+   "fr": "Syrie",
+   "en": "Syria"
+  },
+  "capital": {
+   "fr": "Damas",
+   "en": "Damascus"
+  },
+  "capitals": {
+   "fr": [
+    "Damas"
+   ],
+   "en": [
+    "Damascus"
+   ]
+  },
+  "capitalLngLat": [
+   36.29805,
+   33.50198
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -7069,10 +9593,25 @@
   "id": 169,
   "cca3": "TCD",
   "cca2": "TD",
-  "name": "Tchad",
-  "capital": "N'Djaména",
-  "capitals": [
-   "N'Djaména"
+  "name": {
+   "fr": "Tchad",
+   "en": "Chad"
+  },
+  "capital": {
+   "fr": "N'Djaména",
+   "en": "N'Djamena"
+  },
+  "capitals": {
+   "fr": [
+    "N'Djaména"
+   ],
+   "en": [
+    "N'Djamena"
+   ]
+  },
+  "capitalLngLat": [
+   15.047202,
+   12.115042
   ],
   "region": "Africa",
   "subregion": "Middle Africa",
@@ -7114,10 +9653,25 @@
   "id": 170,
   "cca3": "TGO",
   "cca2": "TG",
-  "name": "Togo",
-  "capital": "Lomé",
-  "capitals": [
-   "Lomé"
+  "name": {
+   "fr": "Togo",
+   "en": "Togo"
+  },
+  "capital": {
+   "fr": "Lomé",
+   "en": "Lomé"
+  },
+  "capitals": {
+   "fr": [
+    "Lomé"
+   ],
+   "en": [
+    "Lomé"
+   ]
+  },
+  "capitalLngLat": [
+   1.220811,
+   6.133883
   ],
   "region": "Africa",
   "subregion": "Western Africa",
@@ -7156,10 +9710,25 @@
   "id": 171,
   "cca3": "THA",
   "cca2": "TH",
-  "name": "Thaïlande",
-  "capital": "Bangkok",
-  "capitals": [
-   "Bangkok"
+  "name": {
+   "fr": "Thaïlande",
+   "en": "Thailand"
+  },
+  "capital": {
+   "fr": "Bangkok",
+   "en": "Bangkok"
+  },
+  "capitals": {
+   "fr": [
+    "Bangkok"
+   ],
+   "en": [
+    "Bangkok"
+   ]
+  },
+  "capitalLngLat": [
+   100.514699,
+   13.751945
   ],
   "region": "Asia",
   "subregion": "South-Eastern Asia",
@@ -7199,10 +9768,25 @@
   "id": 172,
   "cca3": "TJK",
   "cca2": "TJ",
-  "name": "Tadjikistan",
-  "capital": "Douchanbé",
-  "capitals": [
-   "Douchanbé"
+  "name": {
+   "fr": "Tadjikistan",
+   "en": "Tajikistan"
+  },
+  "capital": {
+   "fr": "Douchanbé",
+   "en": "Dushanbe"
+  },
+  "capitals": {
+   "fr": [
+    "Douchanbé"
+   ],
+   "en": [
+    "Dushanbe"
+   ]
+  },
+  "capitalLngLat": [
+   68.773879,
+   38.560035
   ],
   "region": "Asia",
   "subregion": "Central Asia",
@@ -7242,10 +9826,25 @@
   "id": 173,
   "cca3": "TKM",
   "cca2": "TM",
-  "name": "Turkménistan",
-  "capital": "Achgabat",
-  "capitals": [
-   "Achgabat"
+  "name": {
+   "fr": "Turkménistan",
+   "en": "Turkmenistan"
+  },
+  "capital": {
+   "fr": "Achgabat",
+   "en": "Ashgabat"
+  },
+  "capitals": {
+   "fr": [
+    "Achgabat"
+   ],
+   "en": [
+    "Ashgabat"
+   ]
+  },
+  "capitalLngLat": [
+   58.383299,
+   37.949995
   ],
   "region": "Asia",
   "subregion": "Central Asia",
@@ -7285,10 +9884,25 @@
   "id": 174,
   "cca3": "TLS",
   "cca2": "TL",
-  "name": "Timor oriental",
-  "capital": "Dili",
-  "capitals": [
-   "Dili"
+  "name": {
+   "fr": "Timor oriental",
+   "en": "Timor-Leste"
+  },
+  "capital": {
+   "fr": "Dili",
+   "en": "Dili"
+  },
+  "capitals": {
+   "fr": [
+    "Dili"
+   ],
+   "en": [
+    "Dili"
+   ]
+  },
+  "capitalLngLat": [
+   125.579456,
+   -8.559388
   ],
   "region": "Asia",
   "subregion": "South-Eastern Asia",
@@ -7325,10 +9939,25 @@
   "id": 175,
   "cca3": "TON",
   "cca2": "TO",
-  "name": "Tonga",
-  "capital": "Nukuʻalofa",
-  "capitals": [
-   "Nukuʻalofa"
+  "name": {
+   "fr": "Tonga",
+   "en": "Tonga"
+  },
+  "capital": {
+   "fr": "Nukuʻalofa",
+   "en": "Nuku'alofa"
+  },
+  "capitals": {
+   "fr": [
+    "Nukuʻalofa"
+   ],
+   "en": [
+    "Nuku'alofa"
+   ]
+  },
+  "capitalLngLat": [
+   -175.220564,
+   -21.138512
   ],
   "region": "Oceania",
   "subregion": "Polynesia",
@@ -7363,10 +9992,25 @@
   "id": 176,
   "cca3": "TTO",
   "cca2": "TT",
-  "name": "Trinité-et-Tobago",
-  "capital": "Port-d'Espagne",
-  "capitals": [
-   "Port-d'Espagne"
+  "name": {
+   "fr": "Trinité-et-Tobago",
+   "en": "Trinidad and Tobago"
+  },
+  "capital": {
+   "fr": "Port-d'Espagne",
+   "en": "Port of Spain"
+  },
+  "capitals": {
+   "fr": [
+    "Port-d'Espagne"
+   ],
+   "en": [
+    "Port of Spain"
+   ]
+  },
+  "capitalLngLat": [
+   -61.517031,
+   10.651997
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -7401,10 +10045,25 @@
   "id": 177,
   "cca3": "TUN",
   "cca2": "TN",
-  "name": "Tunisie",
-  "capital": "Tunis",
-  "capitals": [
-   "Tunis"
+  "name": {
+   "fr": "Tunisie",
+   "en": "Tunisia"
+  },
+  "capital": {
+   "fr": "Tunis",
+   "en": "Tunis"
+  },
+  "capitals": {
+   "fr": [
+    "Tunis"
+   ],
+   "en": [
+    "Tunis"
+   ]
+  },
+  "capitalLngLat": [
+   10.179678,
+   36.802778
   ],
   "region": "Africa",
   "subregion": "Northern Africa",
@@ -7442,10 +10101,25 @@
   "id": 178,
   "cca3": "TUR",
   "cca2": "TR",
-  "name": "Turquie",
-  "capital": "Ankara",
-  "capitals": [
-   "Ankara"
+  "name": {
+   "fr": "Turquie",
+   "en": "Türkiye"
+  },
+  "capital": {
+   "fr": "Ankara",
+   "en": "Ankara"
+  },
+  "capitals": {
+   "fr": [
+    "Ankara"
+   ],
+   "en": [
+    "Ankara"
+   ]
+  },
+  "capitalLngLat": [
+   32.862446,
+   39.929184
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -7489,10 +10163,25 @@
   "id": 179,
   "cca3": "TUV",
   "cca2": "TV",
-  "name": "Tuvalu",
-  "capital": "Funafuti",
-  "capitals": [
-   "Funafuti"
+  "name": {
+   "fr": "Tuvalu",
+   "en": "Tuvalu"
+  },
+  "capital": {
+   "fr": "Funafuti",
+   "en": "Funafuti"
+  },
+  "capitals": {
+   "fr": [
+    "Funafuti"
+   ],
+   "en": [
+    "Funafuti"
+   ]
+  },
+  "capitalLngLat": [
+   179.216647,
+   -8.516652
   ],
   "region": "Oceania",
   "subregion": "Polynesia",
@@ -7527,10 +10216,25 @@
   "id": 180,
   "cca3": "TWN",
   "cca2": "TW",
-  "name": "Taïwan",
-  "capital": "Taipei",
-  "capitals": [
-   "Taipei"
+  "name": {
+   "fr": "Taïwan",
+   "en": "Taiwan"
+  },
+  "capital": {
+   "fr": "Taipei",
+   "en": "Taipei"
+  },
+  "capitals": {
+   "fr": [
+    "Taipei"
+   ],
+   "en": [
+    "Taipei"
+   ]
+  },
+  "capitalLngLat": [
+   121.568333,
+   25.035833
   ],
   "region": "Asia",
   "subregion": "Eastern Asia",
@@ -7565,10 +10269,25 @@
   "id": 181,
   "cca3": "TZA",
   "cca2": "TZ",
-  "name": "Tanzanie",
-  "capital": "Dodoma",
-  "capitals": [
-   "Dodoma"
+  "name": {
+   "fr": "Tanzanie",
+   "en": "Tanzania"
+  },
+  "capital": {
+   "fr": "Dodoma",
+   "en": "Dodoma"
+  },
+  "capitals": {
+   "fr": [
+    "Dodoma"
+   ],
+   "en": [
+    "Dodoma"
+   ]
+  },
+  "capitalLngLat": [
+   35.750004,
+   -6.183306
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -7612,10 +10331,25 @@
   "id": 182,
   "cca3": "UGA",
   "cca2": "UG",
-  "name": "Ouganda",
-  "capital": "Kampala",
-  "capitals": [
-   "Kampala"
+  "name": {
+   "fr": "Ouganda",
+   "en": "Uganda"
+  },
+  "capital": {
+   "fr": "Kampala",
+   "en": "Kampala"
+  },
+  "capitals": {
+   "fr": [
+    "Kampala"
+   ],
+   "en": [
+    "Kampala"
+   ]
+  },
+  "capitalLngLat": [
+   32.581378,
+   0.318605
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -7656,10 +10390,25 @@
   "id": 183,
   "cca3": "UKR",
   "cca2": "UA",
-  "name": "Ukraine",
-  "capital": "Kiev",
-  "capitals": [
-   "Kiev"
+  "name": {
+   "fr": "Ukraine",
+   "en": "Ukraine"
+  },
+  "capital": {
+   "fr": "Kiev",
+   "en": "Kyiv"
+  },
+  "capitals": {
+   "fr": [
+    "Kiev"
+   ],
+   "en": [
+    "Kyiv"
+   ]
+  },
+  "capitalLngLat": [
+   30.514682,
+   50.435313
   ],
   "region": "Europe",
   "subregion": "Eastern Europe",
@@ -7702,10 +10451,25 @@
   "id": 184,
   "cca3": "UNK",
   "cca2": "XK",
-  "name": "Kosovo",
-  "capital": "Pristina",
-  "capitals": [
-   "Pristina"
+  "name": {
+   "fr": "Kosovo",
+   "en": "Kosovo"
+  },
+  "capital": {
+   "fr": "Pristina",
+   "en": "Pristina"
+  },
+  "capitals": {
+   "fr": [
+    "Pristina"
+   ],
+   "en": [
+    "Pristina"
+   ]
+  },
+  "capitalLngLat": [
+   21.165984,
+   42.66671
   ],
   "region": "Europe",
   "subregion": "Southeast Europe",
@@ -7745,10 +10509,25 @@
   "id": 185,
   "cca3": "URY",
   "cca2": "UY",
-  "name": "Uruguay",
-  "capital": "Montevideo",
-  "capitals": [
-   "Montevideo"
+  "name": {
+   "fr": "Uruguay",
+   "en": "Uruguay"
+  },
+  "capital": {
+   "fr": "Montevideo",
+   "en": "Montevideo"
+  },
+  "capitals": {
+   "fr": [
+    "Montevideo"
+   ],
+   "en": [
+    "Montevideo"
+   ]
+  },
+  "capitalLngLat": [
+   -56.186823,
+   -34.905376
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -7786,10 +10565,25 @@
   "id": 186,
   "cca3": "USA",
   "cca2": "US",
-  "name": "États-Unis",
-  "capital": "Washington",
-  "capitals": [
-   "Washington"
+  "name": {
+   "fr": "États-Unis",
+   "en": "United States"
+  },
+  "capital": {
+   "fr": "Washington",
+   "en": "Washington D.C."
+  },
+  "capitals": {
+   "fr": [
+    "Washington"
+   ],
+   "en": [
+    "Washington D.C."
+   ]
+  },
+  "capitalLngLat": [
+   -77.011364,
+   38.901495
   ],
   "region": "Americas",
   "subregion": "North America",
@@ -7827,10 +10621,25 @@
   "id": 187,
   "cca3": "UZB",
   "cca2": "UZ",
-  "name": "Ouzbékistan",
-  "capital": "Tachkent",
-  "capitals": [
-   "Tachkent"
+  "name": {
+   "fr": "Ouzbékistan",
+   "en": "Uzbekistan"
+  },
+  "capital": {
+   "fr": "Tachkent",
+   "en": "Tashkent"
+  },
+  "capitals": {
+   "fr": [
+    "Tachkent"
+   ],
+   "en": [
+    "Tashkent"
+   ]
+  },
+  "capitalLngLat": [
+   69.268823,
+   41.303828
   ],
   "region": "Asia",
   "subregion": "Central Asia",
@@ -7871,10 +10680,25 @@
   "id": 188,
   "cca3": "VAT",
   "cca2": "VA",
-  "name": "Cité du Vatican",
-  "capital": "Vatican",
-  "capitals": [
-   "Vatican"
+  "name": {
+   "fr": "Vatican",
+   "en": "Vatican City"
+  },
+  "capital": {
+   "fr": "Vatican",
+   "en": "Vatican City"
+  },
+  "capitals": {
+   "fr": [
+    "Vatican"
+   ],
+   "en": [
+    "Vatican City"
+   ]
+  },
+  "capitalLngLat": [
+   12.453387,
+   41.903282
   ],
   "region": "Europe",
   "subregion": "Southern Europe",
@@ -7911,10 +10735,25 @@
   "id": 189,
   "cca3": "VCT",
   "cca2": "VC",
-  "name": "Saint-Vincent-et-les-Grenadines",
-  "capital": "Kingstown",
-  "capitals": [
-   "Kingstown"
+  "name": {
+   "fr": "Saint-Vincent-et-les-Grenadines",
+   "en": "Saint Vincent and the Grenadines"
+  },
+  "capital": {
+   "fr": "Kingstown",
+   "en": "Kingstown"
+  },
+  "capitals": {
+   "fr": [
+    "Kingstown"
+   ],
+   "en": [
+    "Kingstown"
+   ]
+  },
+  "capitalLngLat": [
+   -61.220236,
+   13.155756
   ],
   "region": "Americas",
   "subregion": "Caribbean",
@@ -7949,10 +10788,25 @@
   "id": 190,
   "cca3": "VEN",
   "cca2": "VE",
-  "name": "Venezuela",
-  "capital": "Caracas",
-  "capitals": [
-   "Caracas"
+  "name": {
+   "fr": "Venezuela",
+   "en": "Venezuela"
+  },
+  "capital": {
+   "fr": "Caracas",
+   "en": "Caracas"
+  },
+  "capitals": {
+   "fr": [
+    "Caracas"
+   ],
+   "en": [
+    "Caracas"
+   ]
+  },
+  "capitalLngLat": [
+   -66.918983,
+   10.502944
   ],
   "region": "Americas",
   "subregion": "South America",
@@ -7991,10 +10845,25 @@
   "id": 191,
   "cca3": "VNM",
   "cca2": "VN",
-  "name": "Viêt Nam",
-  "capital": "Hanoï",
-  "capitals": [
-   "Hanoï"
+  "name": {
+   "fr": "Viêt Nam",
+   "en": "Vietnam"
+  },
+  "capital": {
+   "fr": "Hanoï",
+   "en": "Hanoi"
+  },
+  "capitals": {
+   "fr": [
+    "Hanoï"
+   ],
+   "en": [
+    "Hanoi"
+   ]
+  },
+  "capitalLngLat": [
+   105.848068,
+   21.035273
   ],
   "region": "Asia",
   "subregion": "South-Eastern Asia",
@@ -8033,10 +10902,25 @@
   "id": 192,
   "cca3": "VUT",
   "cca2": "VU",
-  "name": "Vanuatu",
-  "capital": "Port-Vila",
-  "capitals": [
-   "Port-Vila"
+  "name": {
+   "fr": "Vanuatu",
+   "en": "Vanuatu"
+  },
+  "capital": {
+   "fr": "Port-Vila",
+   "en": "Port Vila"
+  },
+  "capitals": {
+   "fr": [
+    "Port-Vila"
+   ],
+   "en": [
+    "Port Vila"
+   ]
+  },
+  "capitalLngLat": [
+   168.316641,
+   -17.73335
   ],
   "region": "Oceania",
   "subregion": "Melanesia",
@@ -8071,10 +10955,25 @@
   "id": 193,
   "cca3": "WSM",
   "cca2": "WS",
-  "name": "Samoa",
-  "capital": "Apia",
-  "capitals": [
-   "Apia"
+  "name": {
+   "fr": "Samoa",
+   "en": "Samoa"
+  },
+  "capital": {
+   "fr": "Apia",
+   "en": "Apia"
+  },
+  "capitals": {
+   "fr": [
+    "Apia"
+   ],
+   "en": [
+    "Apia"
+   ]
+  },
+  "capitalLngLat": [
+   -171.768599,
+   -13.835715
   ],
   "region": "Oceania",
   "subregion": "Polynesia",
@@ -8109,11 +11008,26 @@
   "id": 194,
   "cca3": "YEM",
   "cca2": "YE",
-  "name": "Yémen",
-  "capital": "Sanaa",
-  "capitals": [
-   "Aden",
-   "Sanaa"
+  "name": {
+   "fr": "Yémen",
+   "en": "Yemen"
+  },
+  "capital": {
+   "fr": "Sanaa",
+   "en": "Sana'a"
+  },
+  "capitals": {
+   "fr": [
+    "Aden",
+    "Sanaa"
+   ],
+   "en": [
+    "Sana'a"
+   ]
+  },
+  "capitalLngLat": [
+   44.204648,
+   15.356679
   ],
   "region": "Asia",
   "subregion": "Western Asia",
@@ -8151,12 +11065,29 @@
   "id": 195,
   "cca3": "ZAF",
   "cca2": "ZA",
-  "name": "Afrique du Sud",
-  "capital": "Pretoria",
-  "capitals": [
-   "Bloemfontein",
-   "Le Cap",
-   "Pretoria"
+  "name": {
+   "fr": "Afrique du Sud",
+   "en": "South Africa"
+  },
+  "capital": {
+   "fr": "Pretoria",
+   "en": "Pretoria"
+  },
+  "capitals": {
+   "fr": [
+    "Bloemfontein",
+    "Le Cap",
+    "Pretoria"
+   ],
+   "en": [
+    "Bloemfontein",
+    "Cape Town",
+    "Pretoria"
+   ]
+  },
+  "capitalLngLat": [
+   28.227483,
+   -25.704975
   ],
   "region": "Africa",
   "subregion": "Southern Africa",
@@ -8198,10 +11129,25 @@
   "id": 196,
   "cca3": "ZMB",
   "cca2": "ZM",
-  "name": "Zambie",
-  "capital": "Lusaka",
-  "capitals": [
-   "Lusaka"
+  "name": {
+   "fr": "Zambie",
+   "en": "Zambia"
+  },
+  "capital": {
+   "fr": "Lusaka",
+   "en": "Lusaka"
+  },
+  "capitals": {
+   "fr": [
+    "Lusaka"
+   ],
+   "en": [
+    "Lusaka"
+   ]
+  },
+  "capitalLngLat": [
+   28.281382,
+   -15.414698
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",
@@ -8245,10 +11191,25 @@
   "id": 197,
   "cca3": "ZWE",
   "cca2": "ZW",
-  "name": "Zimbabwe",
-  "capital": "Harare",
-  "capitals": [
-   "Harare"
+  "name": {
+   "fr": "Zimbabwe",
+   "en": "Zimbabwe"
+  },
+  "capital": {
+   "fr": "Harare",
+   "en": "Harare"
+  },
+  "capitals": {
+   "fr": [
+    "Harare"
+   ],
+   "en": [
+    "Harare"
+   ]
+  },
+  "capitalLngLat": [
+   31.042764,
+   -17.815844
   ],
   "region": "Africa",
   "subregion": "Eastern Africa",

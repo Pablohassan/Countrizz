@@ -57,7 +57,7 @@ function Calibrate() {
         {slider('margin', 1, 3, 0.05)}
         {slider('floor', 0.0001, 0.002, 0.0001)}
         {slider('minContextDeg', 0, 10, 0.25)}
-        {current && <p>{current.name} : θ = {current.cap.radiusDeg.toFixed(3)}°, altitude = {frameAltitude(current.cap.radiusDeg, { ...size, fovYDeg: FOV_Y_DEG }, framing).toFixed(4)} rayon</p>}
+        {current && <p>{current.name.fr} : θ = {current.cap.radiusDeg.toFixed(3)}°, altitude = {frameAltitude(current.cap.radiusDeg, { ...size, fovYDeg: FOV_Y_DEG }, framing).toFixed(4)} rayon</p>}
         <button onClick={() => void navigator.clipboard.writeText(line)}>Copier la ligne de config.ts</button>
         <code style={{ display: 'block', marginTop: 4, wordBreak: 'break-all' }}>{line}</code>
       </div>

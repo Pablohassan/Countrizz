@@ -3,7 +3,7 @@ import type { CountryRecord } from '../../../../src/data/types';
 import { renderReport, type ReportRow } from '../../lib/report';
 
 const rec = (cca3: string, lng: number, areaKm2: number): CountryRecord => ({
-  id: 1, cca3, cca2: 'XX', name: cca3, capital: 'X', capitals: ['X'], region: 'R', subregion: 'S', neighbors: [],
+  id: 1, cca3, cca2: 'XX', name: { fr: cca3, en: cca3 }, capital: { fr: 'X', en: 'X' }, capitals: { fr: ['X'], en: ['X'] }, capitalLngLat: [lng, 0], region: 'R', subregion: 'S', neighbors: [],
   areaKm2, cap: { center: [lng, 0], radiusDeg: 1 }, beacon: [lng, 0], beaconClearanceKm: 10, flag: '',
   outlineSource: 'naturalearth', patch: { sdf: '', size: 1024, center: [lng, 0], extentRad: 0.03, rangeTexels: 32 },
 });

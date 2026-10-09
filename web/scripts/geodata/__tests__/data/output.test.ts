@@ -22,10 +22,10 @@ describe('countries.json', () => {
     for (const k of ['GRL', 'PRI']) expect(codes).not.toContain(k);
   });
 
-  it('nom et capitale non vides, capitale de jeu dans la liste', () => {
+  it('nom et capitale non vides (FR), capitale de jeu dans la liste', () => {
     for (const c of all) {
-      expect(c.name.trim(), c.cca3).not.toBe('');
-      expect(c.capitals, c.cca3).toContain(c.capital);
+      expect(c.name.fr.trim(), c.cca3).not.toBe('');
+      expect(c.capitals.fr, c.cca3).toContain(c.capital.fr);
     }
   });
 

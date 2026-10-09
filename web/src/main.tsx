@@ -53,7 +53,7 @@ function Demo() {
         <button disabled={!ready} onClick={() => void visit(random())}>Pays suivant</button>
         <button disabled={!current} onClick={() => globe.current!.answer('correct')}>Bonne réponse</button>
         <button disabled={!current} onClick={() => globe.current!.answer('wrong')}>Mauvaise réponse</button>
-        <span style={{ color: '#f7dc6f' }}>{current?.name}</span>
+        <span style={{ color: '#f7dc6f' }}>{current?.name.fr}</span>
       </div>
     </>
   );

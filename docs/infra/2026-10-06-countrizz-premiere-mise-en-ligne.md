@@ -46,3 +46,15 @@ cibles `blackbox-websites` par la procédure de `monitoring-prometheus.md` (vale
 
 **Nouvelle version** : monter l'étiquette dans `deploy/k8s/countrizz.yaml` (`1.0` → `1.1`…), committer,
 `build-image.sh`, ré-appliquer. **Retour arrière** : remettre l'étiquette précédente et ré-appliquer.
+
+## Tests e2e : sur la version déployée (décision du 09/10/2026)
+
+- Avant l'image : `cd web && npm run check && npm run test:data`.
+- Après `kubectl apply` : `npm run e2e` puis `npm run budget` visent **https://countrizz.fr** (défaut des configs
+  Playwright). Une préparation (`web/e2e/deployed.ts`) refuse de lancer les tests si le site n'a pas `probe.html` et
+  `calibrate.html` ou s'il ne sert pas les `countries.json`, `imagery.json`, `borders.json` du dépôt.
+- Le site publie donc `probe.html` et `calibrate.html` (build multi-pages, liées depuis aucune page du jeu). Les crochets
+  de test (`window.__globe`) ne s'installent hors dev que si le navigateur porte `localStorage['countrizz:e2e'] = '1'`,
+  posé par Playwright (`storageState`).
+- Un e2e rouge sur le site : remettre l'étiquette précédente, ré-appliquer, corriger.
+- Serveur local : `npm run e2e:local`, `npm run budget:local`.

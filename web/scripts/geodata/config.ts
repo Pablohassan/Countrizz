@@ -22,3 +22,5 @@ export const PATCH = { size: 1024, rangeTexels: 32, extentFactor: 1.5, minExtent
 /** Fraction des points gardés pour les frontières de vue d'ensemble. */
 export const BORDERS_KEEP = 0.12;
 export const EARTH_RADIUS_KM = 6371.0088;
+/** Une capitale littorale peut tomber hors d'un contour simplifié ; au-delà de cette distance, c'est une erreur de point. */
+export const CAPITAL_MAX_OFFSHORE_KM = 25;

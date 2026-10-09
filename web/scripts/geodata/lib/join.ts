@@ -1,5 +1,6 @@
 import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import type { CapitalOverride } from './capitals';
+import type { CapitalPointRule } from './capitalPoint';
 import { forD3, polygonsOf, toMultiPolygon, type PolygonCoords } from './geometry';
 
 export interface NeProps { ISO_A3: string; ISO_A3_EH: string; ADM0_A3: string; NAME: string }
@@ -15,6 +16,8 @@ export interface Overrides {
   capitals: Record<string, CapitalOverride>;
   /** noms de jeu imposés par langue (FR raccourcis, décision du 05/10) */
   names: { fr: Record<string, string> };
+  /** cca3 → nom Natural Earth de la capitale (alias) ou point imposé sourcé */
+  capitalPoints: Record<string, CapitalPointRule>;
   /** cca3 → raison d'accepter une surface hors de ×0,5–×2 */
   areaWhitelist: Record<string, string>;
   /** zone disputée Natural Earth (« BRK_NAME|ADM0_A3 ») → cca3 auquel la rattacher, ou 'neutral' (frontières reconnues) */

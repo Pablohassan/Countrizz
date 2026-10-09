@@ -10,19 +10,103 @@
     "UNK": "XKX"
   },
   "capitals": {
-    "BEN": { "fr": "Porto-Novo", "en": "Porto-Novo" },
-    "BOL": { "fr": "Sucre", "en": "Sucre" },
-    "GNQ": { "fr": "Ciudad de la Paz", "en": "Ciudad de la Paz" },
-    "LKA": { "fr": "Sri Jayawardenapura", "en": "Sri Jayawardenepura Kotte" },
-    "MYS": { "fr": "Kuala Lumpur", "en": "Kuala Lumpur" },
-    "PAK": { "fr": "Islamabad", "en": "Islamabad" },
-    "PSE": { "fr": "Jérusalem-Est", "en": "East Jerusalem" },
-    "SWZ": { "fr": "Mbabane", "en": "Mbabane" },
-    "YEM": { "fr": "Sanaa", "en": "Sana'a" },
-    "ZAF": { "fr": "Pretoria", "en": "Pretoria" }
+    "BEN": {
+      "fr": "Porto-Novo",
+      "en": "Porto-Novo"
+    },
+    "BOL": {
+      "fr": "Sucre",
+      "en": "Sucre"
+    },
+    "GNQ": {
+      "fr": "Ciudad de la Paz",
+      "en": "Ciudad de la Paz"
+    },
+    "LKA": {
+      "fr": "Sri Jayawardenapura",
+      "en": "Sri Jayawardenepura Kotte"
+    },
+    "MYS": {
+      "fr": "Kuala Lumpur",
+      "en": "Kuala Lumpur"
+    },
+    "PAK": {
+      "fr": "Islamabad",
+      "en": "Islamabad"
+    },
+    "PSE": {
+      "fr": "Jérusalem-Est",
+      "en": "East Jerusalem"
+    },
+    "SWZ": {
+      "fr": "Mbabane",
+      "en": "Mbabane"
+    },
+    "YEM": {
+      "fr": "Sanaa",
+      "en": "Sana'a"
+    },
+    "ZAF": {
+      "fr": "Pretoria",
+      "en": "Pretoria"
+    }
   },
   "names": {
-    "fr": { "COD": "RD Congo", "CPV": "Cap-Vert", "VAT": "Vatican" }
+    "fr": {
+      "COD": "RD Congo",
+      "CPV": "Cap-Vert",
+      "VAT": "Vatican"
+    }
+  },
+  "capitalPoints": {
+    "AND": {
+      "alias": "Andorra",
+      "why": "Natural Earth nomme Andorre-la-Vieille « Andorra »"
+    },
+    "GRD": {
+      "alias": "Saint George's",
+      "why": "mledoze écrit « St. George's »"
+    },
+    "KIR": {
+      "alias": "Tarawa",
+      "why": "Natural Earth nomme Tarawa-Sud « Tarawa »"
+    },
+    "MNG": {
+      "alias": "Ulaanbaatar",
+      "why": "mledoze écrit « Ulan Bator »"
+    },
+    "SMR": {
+      "alias": "San Marino",
+      "why": "mledoze écrit « City of San Marino »"
+    },
+    "GNQ": {
+      "lngLat": [
+        10.8236,
+        1.5925
+      ],
+      "source": "geodatos.net (Djibloho), spec 2A §13.2 ; absente de Natural Earth"
+    },
+    "NRU": {
+      "lngLat": [
+        166.925,
+        -0.54556
+      ],
+      "source": "Wikipedia « Yaren District » 0°32′44″S 166°55′30″E, lu le 08/10/2026 ; absente de Natural Earth"
+    },
+    "PLW": {
+      "lngLat": [
+        134.62417,
+        7.50056
+      ],
+      "source": "Wikipedia « Ngerulmud » 7°30′2″N 134°37′27″E, lu le 08/10/2026 ; Natural Earth n'a que Melekeok"
+    },
+    "PSE": {
+      "lngLat": [
+        35.23417,
+        31.77667
+      ],
+      "source": "Wikipedia « Old City (Jerusalem) » 31°46′36″N 35°14′03″E, lu le 08/10/2026 ; Natural Earth n'a que « Jerusalem » (ISR)"
+    }
   },
   "areaWhitelist": {},
   "disputed": {

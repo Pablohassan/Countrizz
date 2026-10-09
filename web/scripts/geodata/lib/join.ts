@@ -18,6 +18,8 @@ export interface Overrides {
   names: { fr: Record<string, string> };
   /** cca3 → nom Natural Earth de la capitale (alias) ou point imposé sourcé */
   capitalPoints: Record<string, CapitalPointRule>;
+  /** cca3 → motif : le corps principal (calotte, patch, cadrage) est ancré sur la capitale de jeu */
+  mainBodyAnchor: Record<string, string>;
   /** cca3 → raison d'accepter une surface hors de ×0,5–×2 */
   areaWhitelist: Record<string, string>;
   /** zone disputée Natural Earth (« BRK_NAME|ADM0_A3 ») → cca3 auquel la rattacher, ou 'neutral' (frontières reconnues) */

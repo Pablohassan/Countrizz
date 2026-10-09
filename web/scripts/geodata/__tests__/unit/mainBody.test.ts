@@ -31,4 +31,19 @@ describe('mainBody', () => {
   it('refuse une liste vide', () => {
     expect(() => mainBody([], opts)).toThrow();
   });
+
+  it('ancre : le corps principal suit la capitale, même loin du plus grand polygone (Kiribati)', () => {
+    const line = box(-158, 1.5, 0.6, 0.4);    // Kiritimati, la plus grande terre, îles de la Ligne
+    const gilbert = box(172.9, 1.3, 0.2, 0.2); // Tarawa, de l'autre côté de l'antiméridien
+    expect(mainBody([line, gilbert], opts).kept).toEqual([line]);
+    const r = mainBody([line, gilbert], opts, [173.0176, 1.3382]);
+    expect(r.kept).toEqual([gilbert]);
+    expect(r.excluded).toEqual([line]);
+  });
+
+  it('ancre : le polygone de l\'ancre est gardé même s\'il est petit', () => {
+    const big = box(0, 0, 2, 2);
+    const small = box(3, 0, 0.1, 0.1);
+    expect(mainBody([big, small], opts, [3.05, 0.05]).kept).toContain(small);
+  });
 });

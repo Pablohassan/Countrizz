@@ -41,10 +41,10 @@ export class GlobeController {
 
   private cloudFade: CloudFade = { from: 1, to: 1, atMs: 0 };
 
-  constructor(private readonly baseUrl = '/', readonly reducedMotion = false, private readonly clock: () => number = () => performance.now()) {
+  constructor(private readonly baseUrl = '/', readonly reducedMotion = false, private readonly clock: () => number = () => performance.now(), startAtHome = false) {
     this.viewport = { width: 960, height: 600, fovYDeg: FOV_Y_DEG };
     this.framing = FRAMING;
-    this.director = new CameraDirector({ viewport: this.viewport, framing: FRAMING, flight: FLIGHT, reducedMotion, start: [2.35, 30] });
+    this.director = new CameraDirector({ viewport: this.viewport, framing: FRAMING, flight: FLIGHT, reducedMotion, start: [2.35, 30], startAtHome });
   }
 
   attach(globe: Globe | null): void {

@@ -26,6 +26,8 @@ export interface GlobeHandle {
   answer(kind: 'correct' | 'wrong'): void;
   clear(): void;
   overview(): Promise<void>;
+  /** Vue d'accueil « lever de Terre » (camera/home.ts). */
+  home(): Promise<void>;
   setIdleSpin(degPerSec: number): void;
 }
 
@@ -56,6 +58,13 @@ interface Props {
   ref?: Ref<GlobeHandle>;
   framing?: FramingParams;
   onReady?(info: { backend: Backend; tier: QualityTier }): void;
+  /** Démarrer sur la vue d'accueil (pose immédiate, sans vol). */
+  startAtHome?: boolean;
+  /**
+   * `false` : aucune image (l'intro joue par-dessus et garde le GPU) ; le globe se charge quand même et une seule image
+   * est rendue une fois prêt, pour compiler ses shaders avant le fondu. Par défaut `true`.
+   */
+  active?: boolean;
 }
 
 class Unsupported extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -69,8 +78,8 @@ class Unsupported extends Component<{ children: ReactNode }, { failed: boolean }
 }
 
 /** Globe plein cadre : R3F habille `Globe` ; l'état (caméra, pays, patchs) vit dans `GlobeController`. */
-export function GlobeView({ ref, framing, onReady }: Props) {
-  const [controller] = useState(() => new GlobeController('/', matchMedia('(prefers-reduced-motion: reduce)').matches));
+export function GlobeView({ ref, framing, onReady, startAtHome = false, active = true }: Props) {
+  const [controller] = useState(() => new GlobeController('/', matchMedia('(prefers-reduced-motion: reduce)').matches, undefined, startAtHome));
   const [generation, setGeneration] = useState(0);
   // Mouvement réduit (spec §5 : fondu + coupe) : chaque coupe relance un voile noir qui s'efface en 250 ms.
   const [cuts, setCuts] = useState(0);
@@ -90,6 +99,7 @@ export function GlobeView({ ref, framing, onReady }: Props) {
     answer: (kind) => controller.answer(kind, performance.now()),
     clear: () => controller.clear(),
     overview: () => controller.director.flyToOverview(),
+    home: () => controller.director.flyToHome(),
     setIdleSpin: (d) => controller.director.setIdleSpin(d),
   }), [controller]);
 
@@ -110,7 +120,7 @@ export function GlobeView({ ref, framing, onReady }: Props) {
             return info.renderer;
           }}
         >
-          <GlobeScene controller={controller} generation={generation} onReady={onReady} onError={(e) => setLoadError(String(e))} onCut={() => setCuts((c) => c + 1)} onDpr={setDprProp} />
+          <GlobeScene controller={controller} generation={generation} active={active} onReady={onReady} onError={(e) => setLoadError(String(e))} onCut={() => setCuts((c) => c + 1)} onDpr={setDprProp} />
         </Canvas>
         {loadError && (
           <div role="alert" title={loadError} style={{ position: 'absolute', inset: 0, display: 'grid', placeContent: 'center', gap: 12, color: '#f7dc6f', background: '#16173a', textAlign: 'center', fontFamily: 'sans-serif' }}>
@@ -129,7 +139,7 @@ export function GlobeView({ ref, framing, onReady }: Props) {
   );
 }
 
-function GlobeScene({ controller, generation, onReady, onError, onCut, onDpr }: { controller: GlobeController; generation: number; onReady?: Props['onReady']; onError(e: unknown): void; onCut(): void; onDpr(dpr: number): void }) {
+function GlobeScene({ controller, generation, active, onReady, onError, onCut, onDpr }: { controller: GlobeController; generation: number; active: boolean; onReady?: Props['onReady']; onError(e: unknown): void; onCut(): void; onDpr(dpr: number): void }) {
   const renderer = useThree((s) => s.gl) as unknown as THREE.WebGPURenderer & { userData: { backend: Backend; tier: QualityTier } };
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const scene = useThree((s) => s.scene) as unknown as THREE.Scene;
@@ -137,15 +147,21 @@ function GlobeScene({ controller, generation, onReady, onError, onCut, onDpr }: 
   const [globe, setGlobe] = useState<Globe | null>(null);
   const [post, setPost] = useState<ReturnType<typeof createPostProcessing> | null>(null);
   const setFrameloop = useThree((s) => s.setFrameloop);
+  const advance = useThree((s) => s.advance);
   // Résolution dynamique : niveau « standard » seulement (spec §4.1).
   const governor = useMemo(() => (renderer.userData.tier === 'standard' ? createDprGovernor(dprOptions(window.devicePixelRatio)) : null), [renderer]);
 
-  // Onglet caché : plus aucune frame (spec §6.6) ; la boucle reprend au retour.
+  // Onglet caché ou globe inactif (l'intro joue par-dessus) : plus aucune frame (spec §6.6) ; la boucle reprend ensuite.
   useEffect(() => {
-    const onVisibility = () => setFrameloop(document.visibilityState === 'hidden' ? 'never' : 'always');
+    const onVisibility = () => setFrameloop(document.visibilityState === 'hidden' || !active ? 'never' : 'always');
+    onVisibility();
     document.addEventListener('visibilitychange', onVisibility);
     return () => document.removeEventListener('visibilitychange', onVisibility);
-  }, [setFrameloop]);
+  }, [setFrameloop, active]);
+  // Inactif mais prêt : une image, pour que shaders et textures soient sur le GPU avant le fondu (pas d'à-coup à l'entrée).
+  useEffect(() => {
+    if (!active && globe && post) advance(performance.now());
+  }, [active, globe, post, advance]);
   // onReady passe par une ref : un parent qui le donne en flèche inline ne doit pas reconstruire le globe à chaque rendu.
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;

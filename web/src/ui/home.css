@@ -1,0 +1,31 @@
+/* Accueil H3 (valeurs de la maquette validée, téléphone 390 × 844) ; colonne centrée de 440 px au plus sur bureau. */
+.accueil { position: absolute; inset: 0; pointer-events: none; font-family: var(--cartoon); color: #fff; }
+.accueil > * { pointer-events: auto; }
+.accueil-lang { position: absolute; top: calc(56px + env(safe-area-inset-top, 0px)); right: max(18px, calc(50% - 202px)); display: flex; border: 2px solid #000; box-shadow: 3px 3px 0 #000; border-radius: 10px; overflow: hidden;
+  animation: accueil-haut .55s cubic-bezier(.25, .46, .45, 1.54) .8s both; }
+.accueil-lang button { font: 14px var(--cartoon); padding: 5px 10px; border: 0; background: var(--nuit); color: var(--jaune); cursor: pointer; }
+.accueil-lang button[aria-pressed="true"] { background: var(--jaune); color: var(--nuit); }
+.accueil-titre { position: absolute; top: calc(110px + env(safe-area-inset-top, 0px)); left: 0; right: 0; margin: 0; text-align: center; font: 54px/1.1 var(--cartoon); font-weight: normal; letter-spacing: 1px;
+  color: var(--jaune); text-shadow: var(--ombre-titre); animation: accueil-gauche .9s cubic-bezier(.25, .46, .45, 1.54) both; }
+.accueil-commandes { position: absolute; top: calc(215px + env(safe-area-inset-top, 0px)); left: 50%; width: min(calc(100% - 56px), 384px); transform: translateX(-50%); display: flex; flex-direction: column; gap: 18px; pointer-events: none; }
+.accueil-commandes > * { pointer-events: auto; }
+.accueil-nom { display: flex; align-items: center; gap: 8px; background: var(--nuit); border: 3px solid var(--jaune); box-shadow: 4px 4px 0 #000; color: rgba(247, 220, 111, .55); padding: 10px 14px; font-size: 16px; border-radius: 4px;
+  animation: accueil-gauche .6s cubic-bezier(.25, .46, .45, 1.54) 1.1s both; }
+.accueil-nom input { flex: 1; min-width: 0; font: 16px var(--cartoon); color: var(--jaune); background: transparent; border: 0; outline: none; padding: 2px 0; }
+.accueil-nom input::placeholder { color: var(--jaune); opacity: 1; }
+.accueil-nom:focus-within { outline: 3px solid #fff; outline-offset: 3px; }
+.accueil-jouer { align-self: center; display: flex; align-items: center; gap: 18px; background: var(--violet); color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; padding: 12px 30px; font-size: 30px; text-decoration: none;
+  transform: skewX(-15deg); animation: accueil-droite .6s cubic-bezier(.25, .46, .45, 1.54) 1.4s both; }
+.accueil-jouer > * { display: inline-block; transform: skewX(15deg); }
+.accueil-jouer svg { width: 40px; height: 26px; }
+.accueil-jouer:focus-visible, .accueil-lang button:focus-visible, .accueil-sec:focus-visible { outline: 3px solid var(--jaune); outline-offset: 3px; }
+.accueil-rang2 { display: flex; justify-content: center; gap: 18px; animation: accueil-bas .6s cubic-bezier(.25, .46, .45, 1.54) 1.7s both; }
+.accueil-sec { position: relative; background: var(--nuit); color: var(--jaune); border: 2px solid #000; box-shadow: 4px 4px 0 #000; transform: skewX(-15deg); padding: 9px 18px; font: 15px var(--cartoon); white-space: nowrap; cursor: default; opacity: .8; }
+.accueil-sec > span { display: inline-block; transform: skewX(15deg); }
+.accueil-sec small { position: absolute; right: -8px; top: -11px; transform: skewX(15deg) rotate(6deg); background: var(--jaune); color: var(--nuit); border: 2px solid #000; border-radius: 999px; padding: 0 7px 1px; font: 600 10px/1.4 system-ui, sans-serif; text-transform: uppercase; letter-spacing: .04em; }
+/* Le crédit EOX du globe reste au-dessus de tout (jamais recouvert). */
+@keyframes accueil-gauche { from { transform: translateX(-420px); opacity: 0; } 30% { opacity: 1; } }
+@keyframes accueil-haut { from { transform: translateY(-90px); opacity: 0; } 30% { opacity: 1; } }
+@keyframes accueil-bas { from { transform: translateY(160px); opacity: 0; } 30% { opacity: 1; } }
+@keyframes accueil-droite { from { transform: translateX(420px) skewX(-15deg); opacity: 0; } 30% { opacity: 1; } to { transform: skewX(-15deg); } }
+.accueil-commandes .accueil-nom { animation-name: accueil-gauche; }

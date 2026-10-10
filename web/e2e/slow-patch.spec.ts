@@ -13,7 +13,7 @@ test('patch lent : à l’arrivée, la balise montre le pays en attendant le rem
   let release!: () => void;
   const held = new Promise<void>((ok) => { release = ok; });
   await page.route('**/data/patches/sdf/fra.png', async (r) => { await held; await r.continue(); });
-  await page.goto('/?demo=FRA&webgl');
+  await page.goto('/demo.html?demo=FRA&webgl');
   await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 120_000 });
   await page.waitForTimeout(300);
   const p = await page.evaluate((b) => window.__globe!.project(b), fra.beacon);

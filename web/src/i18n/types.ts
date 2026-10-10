@@ -7,7 +7,8 @@ export interface Plural { one: string; other: string }
 export interface Messages {
   modes: Record<Mode, string>;
   prompts: Record<Mode, string>;
-  home: { yourName: string; defaultName: string; play: string; scores: string; about: string; language: string };
+  home: { yourName: string; defaultName: string; play: string; scores: string; about: string; language: string; soon: string };
+  intro: { skip: string };
   mode: { back: string; player: string; choose: string; record: string; new: string };
   countdown: { go: string };
   hud: { quit: string; score: string; secondsLeft: Plural; paused: string };

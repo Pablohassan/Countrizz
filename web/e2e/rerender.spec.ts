@@ -6,7 +6,7 @@ test.use({ viewport: { width: 960, height: 600 } });
 test('changer de pays ne recharge pas les textures globales', async ({ page }) => {
   let globalTextures = 0;
   page.on('request', (r) => { if (/\/textures\/(day|night|surface)-/.test(r.url())) globalTextures++; });
-  await page.goto('/?webgl');
+  await page.goto('/demo.html?webgl');
   const next = page.getByRole('button', { name: 'Pays suivant' });
   await expect(next).toBeEnabled({ timeout: 120_000 });
   await page.waitForTimeout(500);
@@ -24,7 +24,7 @@ test('changer de pays ne recharge pas les textures globales', async ({ page }) =
 test('aucune erreur React au chargement du globe', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
-  await page.goto('/?webgl');
+  await page.goto('/demo.html?webgl');
   await expect(page.getByRole('button', { name: 'Pays suivant' })).toBeEnabled({ timeout: 120_000 });
   console.log('erreurs console', JSON.stringify(errors));
   expect(errors.filter((e) => e.includes('same key'))).toEqual([]);

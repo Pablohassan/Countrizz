@@ -21,7 +21,7 @@ for (const [backend, size] of [['webgpu', 2048], ['webgl2', 1024]] as [BackendNa
         requested.push(r.request().url().split('/').pop()!);
         return r.fulfill({ body: quadrants, contentType: 'image/ktx2' });
       });
-      await page.goto(`/?demo=FRA${backend === 'webgl2' ? '&webgl' : ''}`);
+      await page.goto(`/demo.html?demo=FRA${backend === 'webgl2' ? '&webgl' : ''}`);
       await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true);
       await page.waitForTimeout(800); // fondu de 0,4 s
       expect(requested).toEqual([`fra-${size}.ktx2`]);

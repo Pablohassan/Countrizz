@@ -25,7 +25,7 @@ for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
     test.slow(() => backend === 'webgl2' && !!process.env.CI, 'SwiftShader WebGL 2 lent en CI');
 
     test('vole de pays en pays et allume chacun à l’arrivée', async ({ page }) => {
-      await page.goto(`/?demo=FRA,JPN,FJI${q}`);
+      await page.goto(`/demo.html?demo=FRA,JPN,FJI${q}`);
       await page.waitForFunction(() => window.__demo?.done === true);
       expect(await page.evaluate(() => window.__demo!.arrived)).toEqual(['FRA', 'JPN', 'FJI']);
       expect(await page.evaluate(() => window.__globe!.backend)).toBe(backend);
@@ -36,7 +36,7 @@ for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
 
     test('patch absent (404) : la manche continue et la balise prend le relais', async ({ page }) => {
       await page.route('**/data/patches/sdf/fra.png', (r) => r.fulfill({ status: 404 }));
-      await page.goto(`/?demo=FRA${q}`);
+      await page.goto(`/demo.html?demo=FRA${q}`);
       await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true);
       await page.waitForTimeout(300);
       const c = await pixelAt(page, by('FRA'));
@@ -45,7 +45,7 @@ for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
     });
 
     test('perte du GPU : le renderer est recréé et la partie continue (même cadrage, même état)', async ({ page }) => {
-      await page.goto(`/?demo=FRA${q}`);
+      await page.goto(`/demo.html?demo=FRA${q}`);
       await page.waitForFunction(() => window.__demo?.done === true); // bonne réponse donnée
       const before = await page.evaluate((b) => window.__globe!.project(b), by('FRA').beacon);
       await page.evaluate(() => window.__globe!.simulateDeviceLost());

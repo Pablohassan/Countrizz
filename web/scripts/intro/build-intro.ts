@@ -3,7 +3,7 @@
  * sources déjà en cache (`npm run geodata:fetch`, `npm run textures:fetch`) :
  *  - `monde.jpg` : la peinture « pâte » du monde, 4096 × 2048 (22,8 px/° divisé par 2) ;
  *  - `europe.jpg` : l'Europe et le Maghreb à 48 px/° (là où la caméra s'approche) ;
- *  - `pentes.jpg` : les pentes fines de ce relief (R = est, G = nord, compressées en tanh), 24 px/° ;
+ *  - `relief-fin.jpg` : la hauteur fine de ce relief (ce que le maillage ne porte pas, compressée en tanh), 24 px/° ;
  *  - `relief.jpg` : le déplacement du maillage (R = altitude, G = terre adoucie), 1024 × 512 ;
  *  - `france.json` : la frontière de la France métropolitaine (Douglas-Peucker 0,008°).
  * Les flous et liserés sont donnés en DEGRÉS : les deux peintures se raccordent sans couture.
@@ -13,7 +13,7 @@ import { mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
-import sharp from 'sharp';
+import sharp, { type Sharp } from 'sharp';
 import { TEXTURE_SOURCES } from '../textures/config';
 import { NE_COUNTRIES, TEX_CACHE_DIR } from '../textures/paths';
 import { INTRO_EUROPE } from '../../src/intro/boxes';
@@ -38,9 +38,9 @@ function svgTerre(b: Box, w: number, h: number): Buffer {
   const d = polys.map((p) => '<path d="' + p.map((r) => 'M' + r.map(([a, c]) => X(a!) + ',' + Y(c!)).join('L') + 'Z').join('') + '" fill-rule="evenodd"/>').join('');
   return Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="${w}" height="${h}" fill="black"/><g fill="white" stroke="white" stroke-width="${(pxDeg * 0.0045).toFixed(3)}" stroke-linejoin="round">${d}</g></svg>`);
 }
-const gris = (img: sharp.Sharp) => img.greyscale().raw().toBuffer();
+const gris = (img: Sharp) => img.greyscale().raw().toBuffer();
 /** Une source 21600 × 10800 découpée sur la boîte et mise à la taille voulue. */
-function source(fichier: string, b: Box, w: number, h: number): sharp.Sharp {
+function source(fichier: string, b: Box, w: number, h: number): Sharp {
   const img = sharp(fichier, { limitInputPixels: false });
   if (b === MONDE) return img.resize(w, h, { kernel: 'lanczos3' });
   return img.extract({ left: Math.round((b.lng0 + 180) * SRC), top: Math.round((90 - b.lat1) * SRC), width: Math.round((b.lng1 - b.lng0) * SRC), height: Math.round((b.lat1 - b.lat0) * SRC) })
@@ -69,7 +69,7 @@ const MONT = hex('#a8764c'), NEIGE = hex('#fff8ec'), PLAGE = hex('#f6e0a0');
 const PROFOND = hex('#2b6fd9'), LAGON = hex('#5cc3f3');
 const n1 = bruit(3), n2 = bruit(11);
 
-async function peindre(b: Box, W: number, H: number): Promise<sharp.Sharp> {
+async function peindre(b: Box, W: number, H: number): Promise<Sharp> {
   const pxDeg = W / (b.lng1 - b.lng0), f = (deg: number) => Math.max(0.3, deg * pxDeg);
   const [masque, masqueFlou, eauProche, elev, bm] = await Promise.all([
     gris(sharp(svgTerre(b, W, H), { limitInputPixels: false }).blur(0.6)),
@@ -126,30 +126,20 @@ function flouF(src: Float32Array, W: number, H: number, rayon: number): Float32A
   return a;
 }
 
-/** Pentes fines : h = 0,09 · √e^2,4 (comme le maillage) moins ce que le maillage porte déjà (flou de 0,35°). */
-async function pentes(b: Box, W: number, H: number): Promise<sharp.Sharp> {
-  const pxDeg = W / (b.lng1 - b.lng0), RAD = Math.PI / 180;
+/** Relief fin : h = 0,09 · √e^2,4 (comme le maillage) moins ce que le maillage porte déjà (flou de 0,35°). */
+async function reliefFin(b: Box, W: number, H: number): Promise<Sharp> {
+  const pxDeg = W / (b.lng1 - b.lng0);
   const brutH = await gris(source(GEBCO, b, W, H));
   const h = new Float32Array(W * H); for (let i = 0; i < W * H; i++) h[i] = 0.09 * Math.pow(Math.sqrt(brutH[i]! / 255), 2.4);
   const hl = flouF(h, W, H, 1.2), floue = flouF(h, W, H, (0.35 * pxDeg) / 1.7);
   const det = new Float32Array(W * H); for (let i = 0; i < W * H; i++) det[i] = hl[i]! - floue[i]!;
-  const gE = new Float32Array(W * H), gN = new Float32Array(W * H);
-  for (let y = 1; y < H - 1; y++) {
-    const lat = b.lat1 - (y + 0.5) / H * (b.lat1 - b.lat0), cl = Math.max(0.2, Math.cos(lat * RAD));
-    for (let x = 1; x < W - 1; x++) {
-      const i = y * W + x;
-      gE[i] = (det[i + 1]! - det[i - 1]!) / ((2 / pxDeg) * RAD * cl);   // dh / distance vers l'est (rayon terrestre = 1)
-      gN[i] = (det[i - W]! - det[i + W]!) / ((2 / pxDeg) * RAD);         // dh / distance vers le nord
-    }
-  }
-  const tri = Float32Array.from(gE.filter((_, i) => i % 7 === 0).map(Math.abs)).sort();
-  const S = tri[Math.floor(tri.length * 0.95)] || 1;   // codage compressé (tanh) sur le 95ᵉ centile
-  const px = Buffer.alloc(W * H * 3);
-  for (let i = 0; i < W * H; i++) {
-    px[i * 3] = Math.round(127.5 + 127.5 * Math.tanh(gE[i]! / S)); px[i * 3 + 1] = Math.round(127.5 + 127.5 * Math.tanh(gN[i]! / S)); px[i * 3 + 2] = 128;
-  }
-  console.log(`pentes : échelle de codage ${S.toFixed(4)}`);
-  return sharp(px, { raw: { width: W, height: H, channels: 3 } });
+  // hauteur fine, compressée (tanh) sur le 99ᵉ centile ; 128 = rien à ajouter au maillage
+  const tri = Float32Array.from(det.filter((_, i) => i % 7 === 0).map(Math.abs)).sort();
+  const S = tri[Math.floor(tri.length * 0.99)] || 1;
+  const px = Buffer.alloc(W * H);
+  for (let i = 0; i < W * H; i++) px[i] = Math.round(127.5 + 127.5 * Math.tanh(det[i]! / S));
+  console.log(`relief fin : échelle de codage ${S.toFixed(5)} (rayons terrestres)`);
+  return sharp(px, { raw: { width: W, height: H, channels: 1 } });
 }
 
 /** Frontière de la France métropolitaine : le plus grand anneau dans sa boîte, simplifié (Douglas-Peucker 0,008°). */
@@ -181,7 +171,7 @@ const monde = await peindre(MONDE, 8192, 4096);
 await monde.resize(4096, 2048, { kernel: 'lanczos3' }).jpeg(jpeg).toFile(path.join(OUT, 'monde.jpg'));
 const EW = (EUROPE.lng1 - EUROPE.lng0) * 48, EH = (EUROPE.lat1 - EUROPE.lat0) * 48;
 await (await peindre(EUROPE, EW, EH)).jpeg(jpeg).toFile(path.join(OUT, 'europe.jpg'));
-await (await pentes(EUROPE, (EUROPE.lng1 - EUROPE.lng0) * 24, (EUROPE.lat1 - EUROPE.lat0) * 24)).jpeg(donnees).toFile(path.join(OUT, 'pentes.jpg'));
+await (await reliefFin(EUROPE, (EUROPE.lng1 - EUROPE.lng0) * 24, (EUROPE.lat1 - EUROPE.lat0) * 24)).jpeg(donnees).toFile(path.join(OUT, 'relief-fin.jpg'));
 const DW = 1024, DH = 512;
 const [dm, de] = await Promise.all([gris(sharp(svgTerre(MONDE, DW, DH)).blur(1.6)), gris(source(GEBCO, MONDE, DW, DH).blur(0.7))]);
 const d3 = Buffer.alloc(DW * DH * 3);
@@ -189,5 +179,5 @@ for (let i = 0; i < DW * DH; i++) { d3[i * 3] = de[i]!; d3[i * 3 + 1] = dm[i]!; 
 await sharp(d3, { raw: { width: DW, height: DH, channels: 3 } }).jpeg({ ...donnees, quality: 95 }).toFile(path.join(OUT, 'relief.jpg'));
 writeFileSync(path.join(OUT, 'france.json'), JSON.stringify(france()));
 let total = 0;
-for (const f of ['monde.jpg', 'europe.jpg', 'pentes.jpg', 'relief.jpg', 'france.json']) { const s = statSync(path.join(OUT, f)).size; total += s; console.log(`${f} ${s} octets`); }
+for (const f of ['monde.jpg', 'europe.jpg', 'relief-fin.jpg', 'relief.jpg', 'france.json']) { const s = statSync(path.join(OUT, f)).size; total += s; console.log(`${f} ${s} octets`); }
 console.log(`total ${total} octets`);

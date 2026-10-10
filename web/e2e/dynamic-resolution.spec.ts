@@ -7,7 +7,7 @@ test.use({ viewport: { width: 480, height: 300 }, deviceScaleFactor: 1 });
 test.slow(true, 'SwiftShader : ≈ 1 image/s, il faut plusieurs fenêtres de 30 frames');
 
 const ready = async (page: import('@playwright/test').Page, query: string) => {
-  await page.goto(`/${query}`);
+  await page.goto(`/demo.html${query}`);
   await expect(page.getByRole('button', { name: 'Pays suivant' })).toBeEnabled({ timeout: 120_000 });
 };
 

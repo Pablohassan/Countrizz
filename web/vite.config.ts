@@ -5,5 +5,5 @@ import react from '@vitejs/plugin-react';
 // (décision du 09/10/2026). Elles ne sont liées depuis aucune page du jeu.
 export default defineConfig({
   plugins: [react()],
-  build: { rolldownOptions: { input: { main: 'index.html', probe: 'probe.html', calibrate: 'calibrate.html' } } },
+  build: { rolldownOptions: { input: { main: 'index.html', demo: 'demo.html', probe: 'probe.html', calibrate: 'calibrate.html' } } },
 });

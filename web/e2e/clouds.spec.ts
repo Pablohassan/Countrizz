@@ -31,7 +31,7 @@ for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
 test.describe('en jeu', () => {
   test.use({ viewport: { width: 960, height: 600 } });
   test('les nuages s’effacent à l’arrivée sur le pays (spec §4.2)', async ({ page }) => {
-    await page.goto('/?demo=FRA&webgl');
+    await page.goto('/demo.html?demo=FRA&webgl');
     await page.waitForFunction(() => (window.__globe?.frames ?? 0) > 0);
     expect(await page.evaluate(() => window.__globe!.cloudOpacity)).toBeGreaterThan(0.99); // pendant le vol
     await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true);

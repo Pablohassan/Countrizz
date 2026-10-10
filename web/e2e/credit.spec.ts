@@ -5,7 +5,7 @@ const ATTRIBUTION = 'EOxCloudless https://cloudless.eox.at by EOX IT Services Gm
 
 test('le crédit de l’imagerie est visible dans la vue du globe, mot pour mot', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/?webgl');
+  await page.goto('/demo.html?webgl');
   const credit = page.getByRole('contentinfo', { name: 'Crédits de l’imagerie' });
   await expect(credit).toBeVisible({ timeout: 120_000 });
   await expect(credit).toContainText(ATTRIBUTION);

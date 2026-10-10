@@ -6,7 +6,7 @@ test.use({ viewport: { width: 960, height: 600 } });
 test('texture globale indisponible : message, puis « Réessayer » recharge le globe', async ({ page }) => {
   let failing = true;
   await page.route('**/textures/night-*.ktx2', (r) => (failing ? r.fulfill({ status: 503 }) : r.continue()));
-  await page.goto('/?webgl');
+  await page.goto('/demo.html?webgl');
   await expect(page.getByText('Le globe n’a pas pu se charger')).toBeVisible({ timeout: 120_000 });
   failing = false;
   await page.getByRole('button', { name: 'Réessayer' }).click();

@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Intro pâte à modeler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chango&display=swap" rel="stylesheet">
+<style>
+  /* Une scène au format téléphone (390 × 844) mise à l'échelle de la fenêtre, une barre de commandes dessous. */
+  :root { --nuit: #16173a; --jaune: #f7dc6f; --violet: #6225e6; --creme: #fff8e7; --noir: #0b0d0f; color-scheme: dark; }
+  html, body { height: 100%; }
+  body { margin: 0; background: #08081a; color: var(--creme); font-family: system-ui, sans-serif; overflow: hidden; }
+  #cadre { position: fixed; left: 0; right: 0; top: 0; bottom: 64px; display: grid; place-items: center; }
+  #scene { position: relative; width: 390px; height: 844px; overflow: hidden; background: var(--nuit); font-family: 'Chango', system-ui; transform-origin: 50% 50%; flex: none; }
+  #scene > * { position: absolute; }
+  #etoiles, #fondAccueil, #rendu { inset: 0; }
+  #etoiles i { position: absolute; border-radius: 50%; background: var(--jaune); box-shadow: 0 0 6px rgba(247,220,111,.5); }
+  #fondAccueil { opacity: 0; background: #000 url('acc-16.jpg') center 400px / 390px 844px no-repeat; }
+  #fondAccueil::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 30px 60px,#fff,transparent), radial-gradient(1px 1px at 120px 140px,#ddd,transparent), radial-gradient(1.5px 1.5px at 300px 90px,#fff,transparent), radial-gradient(1px 1px at 250px 220px,#ccc,transparent), radial-gradient(1px 1px at 60px 300px,#fff,transparent), radial-gradient(1px 1px at 350px 330px,#bbb,transparent), radial-gradient(1px 1px at 180px 40px,#fff,transparent), radial-gradient(1px 1px at 340px 180px,#eee,transparent); }
+  #rendu { width: 390px; height: 844px; display: block; }
+  .titre { top: 110px; left: 0; right: 0; text-align: center; color: var(--jaune); font-size: 54px; letter-spacing: 1px; text-shadow: -6px 4px 2px rgb(11,13,15); opacity: 0; }
+  .lang { top: 56px; right: 18px; display: flex; border: 2px solid #000; box-shadow: 3px 3px 0 #000; border-radius: 10px; overflow: hidden; font-size: 14px; opacity: 0; }
+  .lang span { padding: 5px 10px; background: var(--nuit); color: var(--jaune); }
+  .lang span.on { background: var(--jaune); color: var(--nuit); }
+  .nom { top: 215px; left: 28px; right: 28px; background: var(--nuit); border: 3px solid var(--jaune); box-shadow: 4px 4px 0 #000; color: rgba(247,220,111,.55); padding: 12px 14px; font-size: 16px; border-radius: 4px; opacity: 0; }
+  .nom b { color: var(--jaune); font-weight: normal; }
+  .jouer { top: 287px; left: 50%; display: flex; align-items: center; gap: 18px; background: var(--violet); color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; padding: 12px 30px; font-size: 30px; opacity: 0; white-space: nowrap; }
+  .jouer svg { width: 40px; height: 26px; }
+  .rang2 { top: 372px; left: 0; right: 0; display: flex; justify-content: center; gap: 18px; opacity: 0; }
+  .sec { background: var(--nuit); color: var(--jaune); border: 2px solid #000; box-shadow: 4px 4px 0 #000; transform: skewX(-15deg); padding: 9px 18px; font-size: 15px; white-space: nowrap; }
+  .sec > span, .jouer > * { display: inline-block; transform: skewX(15deg); }
+  .credit { left: 12px; right: 10px; bottom: 38px; font: 10px/1.3 system-ui, sans-serif; color: rgba(255,255,255,.72); text-shadow: 0 0 2px #000; text-align: right; opacity: 0; }
+  .vignette { left: 0; top: 0; opacity: 0; transform-origin: 0 100%; background: var(--creme); color: var(--nuit); border: 2px solid #000; border-radius: 10px; box-shadow: 4px 4px 0 #000; padding: 4px 10px 5px; white-space: nowrap; line-height: 1.05; }
+  .vignette b { display: block; font-weight: normal; font-size: 19px; }
+  .vignette span { display: block; font-size: 12px; color: var(--violet); }
+  .passer { right: 16px; bottom: 34px; background: rgba(22,23,58,.7); color: var(--jaune); border: 2px solid #000; box-shadow: 3px 3px 0 #000; padding: 6px 12px; font: 14px 'Chango', system-ui; cursor: pointer; transform: skewX(-15deg); }
+  .passer:focus-visible, .barre button:focus-visible { outline: 3px solid var(--jaune); outline-offset: 3px; }
+  .barre { position: fixed; left: 0; right: 0; bottom: 0; height: 64px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; padding: 8px 16px env(safe-area-inset-bottom, 0px); }
+  .barre button { font: 14px 'Chango', system-ui; color: #fff; background: var(--violet); border: 2px solid #000; box-shadow: 3px 3px 0 #000; padding: 7px 14px; cursor: pointer; transform: skewX(-12deg); }
+  .barre button[aria-pressed="false"] { background: var(--nuit); color: var(--jaune); }
+  .barre span { font-size: 12px; color: rgba(255,248,231,.7); }
+  #chargement { inset: 0; display: grid; place-items: center; color: rgba(247,220,111,.8); font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="cadre">
+  <div id="scene" aria-label="Intro de Countrizz : une Terre en pâte à modeler">
+    <div id="etoiles"></div>
+    <div id="fondAccueil"></div>
+    <canvas id="rendu"></canvas>
+    <div id="chargement">Chargement de la Terre…</div>
+    <div class="titre" id="titre">Countrizz</div>
+    <div class="lang" id="lang"><span class="on">FR</span><span>EN</span></div>
+    <div class="nom" id="nom">Ton nom : <b>Globetrotteur</b></div>
+    <div class="jouer" id="jouer"><span>Jouer</span><svg viewBox="0 0 66 43" aria-hidden="true"><path fill="#fff" d="M40 0l26 21.5L40 43H30l26-21.5L30 0z"/><path fill="#fff" opacity=".8" d="M20 0l26 21.5L20 43H10l26-21.5L10 0z"/><path fill="#f7dc6f" d="M0 0l26 21.5L0 43h0l16-21.5L0 0z"/></svg></div>
+    <div class="rang2" id="rang2"><div class="sec"><span>Scores</span></div><div class="sec"><span>À propos</span></div></div>
+    <div class="credit" id="credit">EOxCloudless <u>https://cloudless.eox.at</u> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2025)</div>
+    <div class="vignette" id="vignette"><b>France</b><span>Paris</span></div>
+    <button type="button" class="passer" id="passer">Passer ›</button>
+  </div>
+</div>
+<div class="barre">
+  <button type="button" id="rejouer">Rejouer</button>
+  <button type="button" id="stop" aria-pressed="true">Stop motion 12 i/s</button>
+  <span id="horloge">0,0 s</span>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const RAD = Math.PI / 180, SW = 390, SH = 844;
+const PARIS = [2.35, 48.86];
+const FIN = 21.2;              // fin de l'intro (l'accueil reste affiché)
+const IPS = 12;                // stop motion « en deux »
+const BETA = 40 * RAD;         // Paris s'arrête 40° au-dessus du centre du disque : on voit le drapeau de trois quarts
+const params = new URLSearchParams(location.search);
+const tFige = params.has('t') ? parseFloat(params.get('t')) : null;   // capture : temps figé
+
+// ---------- petits outils de temps ----------
+const clamp01 = (x) => Math.max(0, Math.min(1, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const s5 = (x) => { x = clamp01(x); return x * x * x * (x * (x * 6 - 15) + 10); };
+const sortie = (x) => 1 - Math.pow(1 - clamp01(x), 3);
+const rebond = (x, k = 1.9) => { x = clamp01(x) - 1; return 1 + (k + 1) * x * x * x + k * x * x; };   // dépassement puis retour
+const ressort = (u, f = 2.6, amort = 5) => u <= 0 ? 0 : Math.exp(-amort * u) * Math.sin(2 * Math.PI * f * u);
+const phase = (t, a, d) => (t - a) / d;
+
+function bruit3(seed) {
+  const h = (x, y, z) => { let n = (x * 374761393 + y * 668265263 + z * 2147483647 + seed * 1442695041) | 0; n = (n ^ (n >>> 13)) * 1274126177; return ((n ^ (n >>> 16)) >>> 0) / 4294967295; };
+  const s = (t) => t * t * (3 - 2 * t);
+  return (x, y, z) => { const xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z), xf = s(x - xi), yf = s(y - yi), zf = s(z - zi);
+    const l = (a, b, t) => a + (b - a) * t;
+    return l(l(l(h(xi, yi, zi), h(xi + 1, yi, zi), xf), l(h(xi, yi + 1, zi), h(xi + 1, yi + 1, zi), xf), yf),
+             l(l(h(xi, yi, zi + 1), h(xi + 1, yi, zi + 1), xf), l(h(xi, yi + 1, zi + 1), h(xi + 1, yi + 1, zi + 1), xf), yf), zf) * 2 - 1; };
+}
+function lireImage(url) {
+  return new Promise((ok, ko) => { const img = new Image(); img.onload = () => { const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+    const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(img, 0, 0); ok({ w: img.width, h: img.height, d: g.getImageData(0, 0, img.width, img.height).data }); };
+    img.onerror = ko; img.src = url; });
+}
+function echantillon(r, lng, lat, ch) {
+  const x = ((lng + 180) / 360) * r.w - 0.5, y = ((90 - lat) / 180) * r.h - 0.5;
+  const x0 = Math.floor(x), y0 = Math.max(0, Math.min(r.h - 1, Math.floor(y))), y1 = Math.min(r.h - 1, y0 + 1);
+  const fx = x - x0, fy = Math.max(0, Math.min(1, y - y0));
+  const p = (xx, yy) => r.d[(yy * r.w + (((xx % r.w) + r.w) % r.w)) * 4 + ch] / 255;
+  return (p(x0, y0) * (1 - fx) + p(x0 + 1, y0) * fx) * (1 - fy) + (p(x0, y1) * (1 - fx) + p(x0 + 1, y1) * fx) * fy;
+}
+const versVec = (lng, lat, r = 1) => new THREE.Vector3(r * Math.cos(lat * RAD) * Math.cos(lng * RAD), r * Math.sin(lat * RAD), -r * Math.cos(lat * RAD) * Math.sin(lng * RAD));
+
+// ---------- la scène au format téléphone ----------
+const scene = document.getElementById('scene');
+function ajuster() {
+  const s = Math.min(innerWidth / SW, (innerHeight - 64) / SH);
+  scene.style.transform = 'scale(' + s + ')';
+  return s;
+}
+let echelle = ajuster();
+addEventListener('resize', () => { echelle = ajuster(); });
+
+const etoiles = document.getElementById('etoiles');
+const listeEtoiles = [];
+{ let g = 12345; const a = () => (g = (g * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 46; i++) { const e = document.createElement('i'); const r = 1.5 + a() * 3.5; e.style.cssText = `left:${a() * SW}px;top:${a() * SH}px;width:${r}px;height:${r}px;opacity:0`;
+    etoiles.appendChild(e); listeEtoiles.push({ e, debut: 0.2 + a() * 1.4, phase: a() * 6 }); } }
+
+async function demarrer() {
+  const canvas = document.getElementById('rendu');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(Math.min(3, (devicePixelRatio || 1) * echelle));
+  renderer.setSize(SW, SH, false);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.08;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
+
+  const s3 = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  s3.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  s3.environmentIntensity = 0.32;
+  const camera = new THREE.PerspectiveCamera(20, SW / SH, 0.05, 60);
+  const TANH = Math.tan(camera.fov * RAD / 2), PROF = 12;
+
+  s3.add(new THREE.HemisphereLight(0xd6e4ff, 0x2a2350, 0.6));
+  const cle = new THREE.DirectionalLight(0xffe9cc, 2.7);
+  cle.castShadow = true; cle.shadow.mapSize.set(4096, 4096); cle.shadow.bias = -0.0004; cle.shadow.normalBias = 0.002;
+  s3.add(cle, cle.target);
+  const dirCle = new THREE.Vector3(-0.55, 0.62, 0.78).normalize();
+  const contre = new THREE.DirectionalLight(0x9cc8ff, 1.5); s3.add(contre, contre.target);
+
+  // ---------- chargement : texture pâte (8K si la carte graphique l'accepte), relief, France ----------
+  const grand = renderer.capabilities.maxTextureSize >= 8192;
+  const chargeur = new THREE.TextureLoader();
+  const [carte, detail, pente, rel, france] = await Promise.all([
+    chargeur.loadAsync(grand ? 'pate-8192.jpg' : 'pate-4096.jpg'), chargeur.loadAsync('detail-europe.jpg'), chargeur.loadAsync('pente-europe.png'),
+    lireImage('relief-2048.png'),
+    fetch('france.json').then((r) => r.json()),
+  ]);
+  carte.colorSpace = THREE.SRGBColorSpace; carte.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  carte.wrapS = THREE.RepeatWrapping; carte.generateMipmaps = true; carte.minFilter = THREE.LinearMipmapLinearFilter;
+  detail.colorSpace = THREE.SRGBColorSpace; detail.anisotropy = carte.anisotropy;
+  pente.colorSpace = THREE.NoColorSpace; pente.anisotropy = carte.anisotropy;
+  const BOITE = new THREE.Vector4(-25, 20, 45, 72);   // lng0, lat0, lng1, lat1 de la peinture de détail
+
+  // relief caricaturé : socle en biseau + racine de l'altitude (les reliefs moyens ressortent)
+  const hauteur = (lng, lat) => { const terre = THREE.MathUtils.smoothstep(echantillon(rel, lng, lat, 1), 0.3, 0.72);
+    const e = Math.sqrt(echantillon(rel, lng, lat, 0)); return terre * (0.0045 + 0.09 * Math.pow(e, 2.4)); };
+  let geo = new THREE.IcosahedronGeometry(1, 150);
+  geo.deleteAttribute('uv'); geo.deleteAttribute('normal');
+  geo = mergeVertices(geo, 1e-6);
+  const pos = geo.attributes.position, n = pos.count;
+  const base = new Float32Array(n * 3), v = new THREE.Vector3();
+  const bosse = bruit3(7);
+  for (let i = 0; i < n; i++) {
+    v.fromBufferAttribute(pos, i).normalize();
+    const lng = Math.atan2(-v.z, v.x) / RAD, lat = Math.asin(v.y) / RAD;
+    const m = 0.0022 * bosse(v.x * 7, v.y * 7, v.z * 7);   // la boule n'est pas parfaite : elle a été roulée à la main
+    v.multiplyScalar(1 + hauteur(lng, lat) + m); base.set([v.x, v.y, v.z], i * 3);
+  }
+  // trois « états » de la pâte : à chaque image on en prend un autre (le frémissement du stop motion)
+  const variantes = [0, 1, 2].map((k) => {
+    const b = bruit3(100 + k), q = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) { v.fromArray(base, i * 3); const d = 1 + 0.0016 * b(v.x * 11, v.y * 11, v.z * 11); q.set([v.x * d, v.y * d, v.z * d], i * 3); }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(q, 3)); g.setIndex(geo.index); g.computeVertexNormals();
+    return { q, nrm: g.attributes.normal.array };
+  });
+  pos.array.set(variantes[0].q); geo.computeVertexNormals();
+
+  const uEmpreinte = { value: new THREE.Matrix3() };
+  const pate = (o) => new THREE.MeshPhysicalMaterial({ roughness: 0.62, sheen: 0.45, sheenRoughness: 0.7, sheenColor: new THREE.Color(0xffffff), ...o });
+  const matTerre = pate({ map: carte });
+  matTerre.onBeforeCompile = (s) => {
+    s.uniforms.uNM = uEmpreinte; s.uniforms.uDetail = { value: detail }; s.uniforms.uPente = { value: pente }; s.uniforms.uBoite = { value: BOITE };
+    s.vertexShader = 'varying vec3 vObj;\n' + s.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n vObj = position;');
+    s.fragmentShader = 'varying vec3 vObj;\nuniform mat3 uNM;\nuniform sampler2D uDetail, uPente;\nuniform vec4 uBoite;\nfloat poidsDetail; vec2 uvD;\n' +
+      'float hsh(vec3 p){ p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }\n' +
+      'float vn(vec3 x){ vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);\n' +
+      '  return mix(mix(mix(hsh(i), hsh(i + vec3(1,0,0)), f.x), mix(hsh(i + vec3(0,1,0)), hsh(i + vec3(1,1,0)), f.x), f.y),\n' +
+      '             mix(mix(hsh(i + vec3(0,0,1)), hsh(i + vec3(1,0,1)), f.x), mix(hsh(i + vec3(0,1,1)), hsh(i + vec3(1,1,1)), f.x), f.y), f.z); }\n' +
+      s.fragmentShader
+        // texture équirectangulaire lue depuis la position : pas de couture grâce aux dérivées choisies
+        .replace('#include <map_fragment>',
+          'vec3 qq = normalize(vObj); vec2 uvE = vec2(atan(-qq.z, qq.x) / 6.2831853 + 0.5, asin(clamp(qq.y, -1.0, 1.0)) / 3.14159265 + 0.5);\n' +
+          'vec2 uvB = vec2(fract(uvE.x + 0.5), uvE.y); vec2 dx = dFdx(uvE), dy = dFdy(uvE), dxB = dFdx(uvB), dyB = dFdy(uvB);\n' +
+          'if (abs(dxB.x) + abs(dyB.x) < abs(dx.x) + abs(dy.x)) { dx = dxB; dy = dyB; }\n' +
+          'vec4 couleur = textureGrad(map, uvE, dx, dy);\n' +
+          // sur l'Europe, la peinture fine prend le relais, avec un fondu de 3° sur les bords
+          'float lngD = degrees(atan(-qq.z, qq.x)), latD = degrees(asin(clamp(qq.y, -1.0, 1.0)));\n' +
+          'uvD = vec2((lngD - uBoite.x) / (uBoite.z - uBoite.x), (latD - uBoite.y) / (uBoite.w - uBoite.y));\n' +
+          'vec2 bord = min(uvD, 1.0 - uvD) * vec2(uBoite.z - uBoite.x, uBoite.w - uBoite.y);\n' +
+          'poidsDetail = smoothstep(0.0, 3.0, min(bord.x, bord.y));\n' +
+          'if (poidsDetail > 0.0) couleur = mix(couleur, texture(uDetail, uvD), poidsDetail);\n' +
+          'diffuseColor *= couleur;')
+        // empreintes de doigts : de petites fossettes dans la normale
+        .replace('#include <normal_fragment_maps>',
+          '#include <normal_fragment_maps>\n' +
+          'vec3 pe = vObj * 140.0; float e0 = vn(pe); vec3 ge = vec3(vn(pe + vec3(0.35,0,0)) - e0, vn(pe + vec3(0,0.35,0)) - e0, vn(pe + vec3(0,0,0.35)) - e0);\n' +
+          'vec3 pf = vObj * 38.0; float f0 = vn(pf); ge += 0.6 * vec3(vn(pf + vec3(0.35,0,0)) - f0, vn(pf + vec3(0,0.35,0)) - f0, vn(pf + vec3(0,0,0.35)) - f0);\n' +
+          'normal = normalize(normal - 0.42 * (uNM * ge));\n' +
+          // pentes fines du relief européen : le gradient est/nord penche la normale
+          'if (poidsDetail > 0.0) { vec2 g = (texture(uPente, uvD).rg * 2.0 - 1.0) * poidsDetail;\n' +
+          '  float la = radians(latD), lo = radians(lngD); vec3 est = vec3(-sin(lo), 0.0, -cos(lo)); vec3 nord = vec3(-sin(la) * cos(lo), cos(la), sin(la) * sin(lo));\n' +
+          '  normal = normalize(normal - 0.55 * (uNM * (g.x * est + g.y * nord))); }');
+  };
+  const terre = new THREE.Mesh(geo, matTerre);
+  terre.castShadow = terre.receiveShadow = true;
+
+  // tenue (position, taille, écrasement à l'écran) → monde (orientation de la Terre et ce qui est posé dessus)
+  const tenue = new THREE.Group(), monde = new THREE.Group();
+  tenue.add(monde); monde.add(terre); s3.add(tenue);
+
+  // nuages en boudins de pâte
+  const boule = new THREE.SphereGeometry(1, 40, 28), matNuage = pate({ color: 0xffffff, roughness: 0.75 });
+  const nuages = new THREE.Group(); tenue.add(nuages);
+  for (const [lng, lat, s] of [[-35, 22, 1], [75, -12, 0.85], [160, 42, 0.9], [-120, -32, 0.8], [30, -45, 0.7], [-80, 52, 0.75], [110, 10, 0.8]]) {
+    const g = new THREE.Group();
+    for (const [x, y, z, r] of [[0, 0, 0, 0.07], [0.075, -0.01, 0.01, 0.052], [-0.075, -0.012, 0, 0.048], [0.025, 0.04, 0, 0.05]]) {
+      const b = new THREE.Mesh(boule, matNuage); b.position.set(x, y, z); b.scale.set(r * 1.15, r * 0.9, r); b.castShadow = true; g.add(b);
+    }
+    const dir = versVec(lng, lat).normalize();
+    g.position.copy(dir).multiplyScalar(1.24); g.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir); g.scale.setScalar(s);
+    nuages.add(g);
+  }
+
+  // ---------- Paris : l'épingle (comme ton map-pin), puis le drapeau ----------
+  const dirParis = versVec(...PARIS).normalize();
+  const solParis = 1 + hauteur(...PARIS);
+  const repere = new THREE.Group(); repere.position.copy(dirParis).multiplyScalar(solParis);
+  repere.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dirParis); repere.scale.setScalar(1.6); monde.add(repere);
+
+  const RP = 0.0062;   // rayon de la bille (unités du repère)
+  const point = new THREE.Mesh(boule, pate({ color: 0xe8413a, roughness: 0.5 })); point.castShadow = true; repere.add(point);
+
+  const drapeau = new THREE.Group(); repere.add(drapeau);
+  const HM = 0.135;
+  const mat = new THREE.Mesh(new THREE.CylinderGeometry(0.0026, 0.0034, HM, 16), pate({ color: 0xfff8ec })); mat.position.y = HM / 2; mat.castShadow = true; drapeau.add(mat);
+  const tete = new THREE.Mesh(boule, pate({ color: 0xf7dc6f })); tete.position.y = HM + 0.002; tete.scale.setScalar(0.0062); tete.castShadow = true; drapeau.add(tete);
+  const L = 0.088, HD = 0.058;
+  const toileGeo = new THREE.BoxGeometry(L, HD, 0.0042, 28, 4, 1); toileGeo.translate(L / 2 + 0.003, 0, 0);
+  const tp = toileGeo.attributes.position, tc = new Float32Array(tp.count * 3);
+  const tx = Float32Array.from({ length: tp.count }, (_, i) => tp.getX(i)), ty = Float32Array.from({ length: tp.count }, (_, i) => tp.getY(i)), tz = Float32Array.from({ length: tp.count }, (_, i) => tp.getZ(i));
+  const bleu = new THREE.Color(0x2b55c9), blanc = new THREE.Color(0xfff8ec), rouge = new THREE.Color(0xe8413a);
+  for (let i = 0; i < tp.count; i++) { const u = (tx[i] - 0.003) / L; const cc = u < 1 / 3 ? bleu : u < 2 / 3 ? blanc : rouge; tc.set([cc.r, cc.g, cc.b], i * 3); }
+  toileGeo.setAttribute('color', new THREE.BufferAttribute(tc, 3));
+  const toile = new THREE.Mesh(toileGeo, pate({ vertexColors: true, side: THREE.DoubleSide })); toile.position.y = HM - HD / 2 - 0.004; toile.castShadow = true; drapeau.add(toile);
+
+  // ---------- la frontière : un boudin de pâte jaune qui se déroule depuis le nord ----------
+  let depart = 0; france.forEach(([, la], i) => { if (la > france[depart][1]) depart = i; });
+  const anneau = [...france.slice(depart), ...france.slice(0, depart)];
+  const pts = anneau.map(([lng, lat]) => versVec(lng, lat, 1 + hauteur(lng, lat) + 0.0034));
+  const courbe = new THREE.CatmullRomCurve3(pts, true, 'centripetal');
+  const SEG = 2600, RS = 10;
+  const boudinGeo = new THREE.TubeGeometry(courbe, SEG, 0.0026, RS, true);
+  const boudin = new THREE.Mesh(boudinGeo, pate({ color: 0xf7dc6f, roughness: 0.5 })); boudin.castShadow = true; monde.add(boudin);
+  const perle = new THREE.Mesh(boule, pate({ color: 0xf7dc6f, roughness: 0.5 })); perle.scale.setScalar(0.0049); perle.castShadow = true; monde.add(perle);
+
+  // ---------- l'orientation de la Terre ----------
+  const Y = new THREE.Vector3(0, 1, 0), X = new THREE.Vector3(1, 0, 0), Z = new THREE.Vector3(0, 0, 1);
+  const cible = -Math.PI / 2 - PARIS[0] * RAD;                 // longitude de Paris face à nous
+  const W_MAX = 2 * Math.PI * 0.72;                            // 0,72 tour/s au plus : 21,6° par image à 12 i/s
+  const T_FREIN = 6.0, D_FREIN = 2.6;                          // freinage de 6,0 à 8,6 s
+  const RESTE_FREIN = W_MAX * D_FREIN / 3;                     // décélération cubique : la vitesse reste continue
+  function resteAngle(t) {
+    if (t < T_FREIN) return RESTE_FREIN + W_MAX * (T_FREIN - t);
+    if (t < T_FREIN + D_FREIN) return RESTE_FREIN * Math.pow(1 - (t - T_FREIN) / D_FREIN, 3);
+    const u = t - T_FREIN - D_FREIN;
+    if (t < 15.6) return -0.16 * ressort(u, 1.6, 4.5);         // la toupie s'arrête en se dandinant
+    return 11.7 * RAD * s5(phase(t, 15.6, 2.4));               // l'accueil : Paris glisse à gauche, comme sur l'image de l'accueil
+  }
+  const qA = new THREE.Quaternion(), qB = new THREE.Quaternion(), qC = new THREE.Quaternion();
+  function orienter(t) {
+    const k = s5(phase(t, 6.6, 2.6));                           // l'axe se redresse pendant qu'elle freine
+    qA.setFromAxisAngle(Z, -23.4 * RAD * (1 - k));
+    const beta = BETA + 9 * RAD * s5(phase(t, 15.6, 2.4));     // à l'accueil Paris remonte à 49°
+    qB.setFromAxisAngle(X, (PARIS[1] * RAD - beta) * k);
+    qC.setFromAxisAngle(Y, cible - resteAngle(t) - (1 - k) * 0.35);
+    monde.quaternion.copy(qA).multiply(qB).multiply(qC);
+  }
+
+  // ---------- où est la Terre à l'écran : centre, rayon (px de la scène), flou, écrasement ----------
+  const R_LOIN = 115, R_PRES = 507, R_ACC = 490;
+  const parisLoin = 470 - R_LOIN * Math.sin(BETA);
+  function placement(t) {
+    let cx = SW / 2, cy, R, flou = 0, opa = 1, sx = 1, sy = 1;
+    if (t < 3.6) {                                              // elle tombe du ciel, énorme, floue, puis nette
+      const u = clamp01(phase(t, 2.0, 1.6));
+      cy = lerp(-560, 470, u * u);
+      R = lerp(R_LOIN * 2.3, R_LOIN, sortie(u));
+      flou = 30 * Math.pow(1 - u, 1.6); opa = clamp01(phase(t, 2.0, 0.6));
+      sy = 1 + 0.12 * u; sx = 1 - 0.06 * u;                    // étirée par la vitesse
+    } else if (t < 8.4) {                                       // l'impact : elle s'écrase, rebondit, se calme
+      const u = t - 3.6, o = ressort(u, 2.2, 4.2);
+      sy = 1 - 0.2 * o; sx = 1 + 0.14 * o;
+      cy = 470 - 20 * Math.max(0, Math.sin(Math.PI * clamp01(u / 0.42))) * (1 - clamp01(u / 0.42) * 0.3) + R_LOIN * (1 - sy);
+      R = R_LOIN;
+    } else if (t < 15.6) {                                      // on s'approche de la France, l'horizon reste visible
+      const z = s5(phase(t, 8.4, 1.9)), lent = 1 + 0.035 * clamp01(phase(t, 10.3, 5.3));
+      R = R_LOIN * Math.pow((R_PRES / R_LOIN) * lent, z);
+      cy = lerp(parisLoin, 430, z) + R * Math.sin(BETA);      // Paris glisse droit vers sa place, le disque grandit autour
+    } else {                                                    // elle recule et se lève en bas de l'écran (l'accueil)
+      const z = s5(phase(t, 15.6, 2.4));
+      const R0 = R_PRES * 1.035;
+      R = R0 * Math.pow(R_ACC / R0, z);
+      const cy0 = 430 + R0 * Math.sin(BETA), cy1 = 445 + R_ACC;
+      cy = lerp(cy0, cy1, z);
+    }
+    return { cx, cy, R, flou, opa, sx, sy };
+  }
+
+  const dpx = (px) => px / (SH / 2) * PROF * TANH;              // px de la scène → unités du monde à la profondeur PROF
+  const cam = new THREE.Vector3(), loc = new THREE.Vector3(), ecran = new THREE.Vector3();
+  const versEcran = (obj, y) => { ecran.set(0, y, 0).applyMatrix4(obj.matrixWorld).project(camera); return [(ecran.x * 0.5 + 0.5) * SW, (-ecran.y * 0.5 + 0.5) * SH]; };
+  const el = (id) => document.getElementById(id);
+  const [titre, lang, nom, jouer, rang2, credit, vignette, fondAccueil, passer] = ['titre', 'lang', 'nom', 'jouer', 'rang2', 'credit', 'vignette', 'fondAccueil', 'passer'].map(el);
+
+  function entree(node, t, debut, dur, dx, dy, base = '') {     // une entrée depuis hors champ, avec élan
+    const u = phase(t, debut, dur), k = rebond(u);
+    node.style.opacity = String(clamp01(u * 3));
+    node.style.transform = base + ' translate(' + (dx * (1 - k)) + 'px,' + (dy * (1 - k)) + 'px)';
+  }
+
+  function poser(t, j) {
+    // étoiles en billes
+    for (const s of listeEtoiles) { const u = phase(t, s.debut, 0.35); s.e.style.opacity = String(clamp01(u) * (0.55 + 0.35 * Math.sin(s.phase + t * 2.1)) * (1 - clamp01(phase(t, 19.6, 1.2))));
+      s.e.style.transform = 'scale(' + (u <= 0 ? 0 : rebond(u, 3)) + ')'; }
+    // le titre glisse depuis la gauche avec un rebond (comme l'original)
+    // il s'envole quand on plonge vers la France, et revient le premier quand l'accueil se monte
+    if (t < 8.7) entree(titre, t, 1.0, 1.0, -420, 0);
+    else if (t < 16.8) { const u = clamp01(phase(t, 8.7, 0.45)); titre.style.opacity = String(1 - u); titre.style.transform = 'translateY(' + (-190 * u * u) + 'px)'; }
+    else entree(titre, t, 16.8, 0.9, -420, 0);
+
+    // la Terre
+    orienter(t);
+    const p = placement(t);
+    const R = dpx(p.R);
+    tenue.position.set(dpx(p.cx - SW / 2) + j.x * dpx(0.6), -dpx(p.cy - SH / 2) + j.y * dpx(0.6), -PROF);
+    tenue.scale.set(R * p.sx, R * p.sy, R * p.sx);
+    canvas.style.filter = p.flou > 0.3 ? 'blur(' + p.flou.toFixed(1) + 'px)' : 'none';
+    canvas.style.opacity = String(p.opa * (1 - s5(phase(t, 19.6, 1.4))));
+    // lumière et ombres suivent la Terre
+    const c = tenue.position;
+    cle.target.position.copy(c); cle.position.copy(c).addScaledVector(dirCle, R * 5);
+    Object.assign(cle.shadow.camera, { left: -R * 1.3, right: R * 1.3, top: R * 1.3, bottom: -R * 1.3, near: R * 2.6, far: R * 7.5 });
+    cle.shadow.camera.updateProjectionMatrix();
+    contre.target.position.copy(c); contre.position.copy(c).add(new THREE.Vector3(R * 3, R * 1.4, -R * 4));
+    // nuages : tournent, se retirent avant l'approche, reviennent pour l'accueil
+    nuages.quaternion.copy(monde.quaternion); nuages.rotateY(t * 0.16);
+    const nv = 1 - s5(phase(t, 8.2, 1.1));
+    nuages.scale.setScalar(Math.max(0.0001, nv));
+
+    tenue.updateMatrixWorld(true);
+    cam.copy(camera.position); repere.worldToLocal(loc.copy(cam));
+    const cap = Math.atan2(loc.x, loc.z);                       // l'épingle et le drapeau se tournent vers nous
+    const retrait = 1 - s5(phase(t, 15.4, 0.7));                // tout se range avant l'accueil
+
+    // le point tombe sur Paris (10,0 s), s'écrase en pastille et y reste : le drapeau en sortira
+    const ue = phase(t, 10.0, 0.42);
+    if (ue < 0 || retrait < 0.01) point.visible = false;
+    else {
+      point.visible = true;
+      const chute = clamp01(ue), o = ue > 1 ? ressort(t - 10.42, 2.6, 5.5) : 0;
+      const tasse = ue > 1 ? s5((t - 10.42) / 0.5) : 0;            // de la bille à la pastille
+      const sy = (chute < 1 ? 1.25 : 1) * (1 - 0.42 * tasse) * (1 - 0.3 * o), sxz = (chute < 1 ? 0.85 : 1) * (1 + 0.3 * tasse) * (1 + 0.22 * o);
+      point.scale.set(RP * sxz * retrait, RP * sy * retrait, RP * sxz * retrait);
+      point.position.y = RP * sy * 0.8 + 0.5 * (1 - chute * chute);
+    }
+    // la frontière se déroule (10,7 → 12,2 s), une perle de pâte au bout
+    const f = clamp01(phase(t, 10.7, 1.5));
+    boudin.visible = f > 0 && retrait > 0.01; perle.visible = f > 0 && f < 1;
+    const nf = Math.floor(sortie(f) * SEG);
+    boudinGeo.setDrawRange(0, nf * RS * 6);
+    if (perle.visible) perle.position.copy(courbe.getPointAt(Math.min(0.9999, nf / SEG)));
+    // le drapeau jaillit (12,2 s) : étiré, puis il se tasse en tremblant
+    const ud = phase(t, 12.2, 0.9);
+    if (ud < 0 || retrait < 0.01) drapeau.visible = false;
+    else {
+      drapeau.visible = true;
+      const o = ressort(ud, 2.2, 4.5), grand = sortie(ud * 2.2);
+      const D = 0.5 * retrait;
+      drapeau.scale.set(grand * (1 - 0.18 * o) * D, grand * (1 + 0.32 * o) * D, grand * (1 - 0.18 * o) * D);
+      drapeau.position.y = RP * 0.45;
+      drapeau.rotation.set(-22 * RAD, cap, 0, 'YXZ');
+      for (let i = 0; i < tp.count; i++) { const u = (tx[i] - 0.003) / L; tp.setZ(i, tz[i] + 0.009 * u * Math.sin(u * 6.5 - t * 6.5)); tp.setY(i, ty[i] - 0.004 * u * u); }
+      tp.needsUpdate = true; toileGeo.computeVertexNormals();
+    }
+    boudin.visible = boudin.visible && retrait > 0.01;
+    if (retrait < 1) boudinGeo.setDrawRange(0, Math.floor(nf * retrait) * RS * 6);
+
+    // la vignette « France / Paris » (12,9 s), accrochée au haut du mât
+    const uv = phase(t, 12.9, 0.45);
+    if (uv < 0 || retrait < 0.01) vignette.style.opacity = '0';
+    else {
+      const [x, y] = versEcran(repere, RP * 0.45 + HM * 0.5);
+      vignette.style.opacity = String(clamp01(uv * 3) * retrait);
+      vignette.style.transform = 'translate(' + (x - 34) + 'px,' + (y - 30) + 'px) translateY(-100%) rotate(-4deg) scale(' + (rebond(uv, 2.4) * (0.4 + 0.6 * retrait)) + ')';
+    }
+
+    // l'accueil se monte autour de la Terre (17,6 → 19,6 s), puis fondu vers la vraie Terre (19,6 → 21 s)
+    entree(lang, t, 17.6, 0.55, 0, -90);
+    entree(nom, t, 17.9, 0.6, -420, 0);
+    entree(jouer, t, 18.2, 0.6, 420, 0, 'translateX(-50%) skewX(-15deg)');
+    entree(rang2, t, 18.5, 0.6, 0, 160);
+    fondAccueil.style.opacity = String(s5(phase(t, 19.6, 1.4)));
+    credit.style.opacity = String(s5(phase(t, 20.2, 0.8)));
+    passer.style.display = t < 19.6 ? '' : 'none';
+
+    // pour les fossettes : passage objet → vue
+    terre.modelViewMatrix.multiplyMatrices(camera.matrixWorldInverse, terre.matrixWorld);
+    uEmpreinte.value.getNormalMatrix(terre.modelViewMatrix);
+  }
+
+  document.getElementById('chargement').remove();
+  let stopMotion = !params.has('fluide'), t0 = performance.now(), derniere = -1, variante = 0;
+  const horloge = document.getElementById('horloge');
+  function image() {
+    const brut = tFige ?? Math.min(FIN + 3, (performance.now() - t0) / 1000);
+    const pas = stopMotion ? Math.floor(brut * IPS) : null;
+    if (!stopMotion || pas !== derniere || tFige !== null) {
+      derniere = pas;
+      const t = stopMotion ? pas / IPS : brut;
+      let j = { x: 0, y: 0 };
+      if (stopMotion && t < FIN) {
+        variante = (variante + 1 + Math.floor(Math.random() * 2)) % 3;
+        pos.array.set(variantes[variante].q); pos.needsUpdate = true;
+        geo.attributes.normal.array.set(variantes[variante].nrm); geo.attributes.normal.needsUpdate = true;
+        j = { x: Math.random() - 0.5, y: Math.random() - 0.5 };
+        cle.intensity = 2.7 * (0.97 + Math.random() * 0.06);
+      }
+      poser(t, j);
+      renderer.render(s3, camera);
+      horloge.textContent = t.toFixed(1).replace('.', ',') + ' s';
+      window.__image = (window.__image || 0) + 1;
+    }
+    if (tFige === null) requestAnimationFrame(image);
+  }
+  requestAnimationFrame(image);
+
+  el('rejouer').addEventListener('click', () => { t0 = performance.now(); derniere = -1; });
+  el('passer').addEventListener('click', () => { t0 = performance.now() - FIN * 1000; derniere = -1; });
+  const bouton = el('stop');
+  bouton.addEventListener('click', () => { stopMotion = !stopMotion; bouton.setAttribute('aria-pressed', String(stopMotion));
+    bouton.textContent = stopMotion ? 'Stop motion 12 i/s' : 'Fluide 60 i/s'; });
+}
+
+demarrer().catch((e) => { console.error(e); document.getElementById('chargement').textContent = 'La scène 3D n’a pas pu s’afficher (WebGL indisponible).'; });
+</script>
+</body>
+</html>

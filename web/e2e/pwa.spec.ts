@@ -10,8 +10,9 @@ test.use({ serviceWorkers: 'allow', viewport: { width: 390, height: 844 } });
 
 test('le manifeste décrit une appli installable (portrait, plein écran, icônes)', async ({ page, request }) => {
   await page.goto('/?webgl');
+  // compter d'abord : `getAttribute` attendrait l'élément jusqu'au délai du test sur le serveur de dev (constaté le 10/10)
+  test.skip((await page.locator('link[rel="manifest"]').count()) === 0, 'pas de manifeste : serveur de dev');
   const href = await page.locator('link[rel="manifest"]').getAttribute('href');
-  test.skip(href === null, 'pas de manifeste : serveur de dev');
   const m = await (await request.get(href!)).json() as { display: string; orientation: string; theme_color: string; start_url: string; icons: { src: string; purpose?: string }[] };
   expect(m).toMatchObject({ display: 'standalone', orientation: 'portrait', theme_color: '#16173a', start_url: '/' });
   expect(m.icons.some((i) => i.purpose === 'maskable')).toBe(true);

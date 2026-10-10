@@ -93,7 +93,7 @@ globe.setClouds(Number(q.get('clouds') ?? 0), 0);
 const sun = lngLat(q.get('sun'));
 if (sun) globe.setSun(toVec(sun));
 // planches de réglage (10/10) : `lever=x,y` place le soleil derrière ce pixel (lever derrière le limbe) ; `sat` : saturation
-// du jour ; `bloom` : force de la lueur ; `tm=aces|agx|neutral` : tone mapping (le jeu n'en a pas) ; `exp` : exposition
+// du jour ; `bloom` : force de la lueur ; `tm=none|aces|agx|neutral` : tone mapping (le jeu : Neutral, dans le post-traitement) ; `exp` : exposition
 const lever = lngLat(q.get('lever'));
 if (lever) {
   camera.updateMatrixWorld(true);
@@ -101,15 +101,16 @@ if (lever) {
   globe.setSun([r.x, r.y, r.z]);
 }
 if (q.has('sat')) globe.setDaySaturation(Number(q.get('sat')));
-if (q.get('tm') === 'aces') renderer.toneMapping = THREE.ACESFilmicToneMapping;
-if (q.get('tm') === 'agx') renderer.toneMapping = THREE.AgXToneMapping;
-if (q.get('tm') === 'neutral') renderer.toneMapping = THREE.NeutralToneMapping;
+const TONE: Record<string, THREE.ToneMapping> = { none: THREE.NoToneMapping, aces: THREE.ACESFilmicToneMapping, agx: THREE.AgXToneMapping, neutral: THREE.NeutralToneMapping };
+const tone = TONE[q.get('tm') ?? ''];
+if (tone !== undefined) renderer.toneMapping = tone;   // sans `post`
 if (q.has('exp')) renderer.toneMappingExposure = Number(q.get('exp'));
 const scene = new THREE.Scene();
 scene.add(globe.root);
 if (q.has('post')) {
   const o = postOptions(q.get('tier') === 'haute' ? 'haute' : 'standard');
   if (q.has('bloom')) o.bloom = { ...o.bloom, strength: Number(q.get('bloom')) };
+  if (tone !== undefined) o.toneMapping = tone;
   const post = createPostProcessing(renderer, scene, camera, o);
   for (let i = 0, n = Number(q.get('frames') ?? 16); i < n; i++) {
     post.render();

@@ -1,5 +1,6 @@
 import { frameAltitude, limitingHalfAngle, overviewAltitude, type FramingParams, type Viewport } from './framing';
 import { planFlight, type Flight, type FlightParams, type Pose } from './flight';
+import { homePose } from './home';
 import { northUp, rotate, toVec, type LngLat } from '../geo/vec';
 
 export interface FrameTarget { cap: { center: LngLat; radiusDeg: number } }
@@ -11,10 +12,15 @@ export interface DirectorOptions {
   reducedMotion: boolean;
   /** Point survolé au démarrage, en vue d'ensemble. */
   start: LngLat;
+  /** Démarrer sur la vue d'accueil « lever de Terre » (home.ts) plutôt qu'en vue d'ensemble au-dessus de `start`. */
+  startAtHome?: boolean;
 }
 
-/** Pose de la frame courante ; `cut` signale une coupe (mouvement réduit) que la couche de rendu peut fondre. */
-export interface FramePose extends Pose { cut: boolean }
+/**
+ * Pose de la frame courante ; `cut` signale une coupe (mouvement réduit) que la couche de rendu peut fondre ; `pitch` :
+ * tangage de la caméra (rad), non nul seulement autour de la vue d'accueil.
+ */
+export interface FramePose extends Pose { cut: boolean; pitch: number }
 
 const AXIS_Y = [0, 1, 0] as const;
 /** Recadrage après un changement de viewport : vol court, sur place. */
@@ -29,7 +35,10 @@ export class CameraDirector {
   private viewport: Viewport;
   private framing: FramingParams;
   private readonly opts: DirectorOptions;
-  private flight: { plan: Flight; startMs: number; resolve: () => void } | null = null;
+  private flight: { plan: Flight; startMs: number; resolve: () => void; pitch: [number, number] } | null = null;
+  private pitch = 0;
+  /** À la vue d'accueil (ou en route vers elle) : un changement de viewport ne la recadre pas comme un pays. */
+  private atHome = false;
   private now = 0;
   private spinDegPerSec = 0;
   /** Calotte visée par le dernier vol ; `null` = vue d'ensemble. */
@@ -40,8 +49,15 @@ export class CameraDirector {
     this.opts = opts;
     this.viewport = opts.viewport;
     this.framing = opts.framing;
-    const dir = toVec(opts.start);
-    this.pose = { dir, altitude: overviewAltitude(opts.viewport, opts.framing), up: northUp(dir) };
+    if (opts.startAtHome) {
+      const h = homePose(opts.viewport);
+      this.pose = { dir: h.dir, altitude: h.altitude, up: h.up };
+      this.pitch = h.pitch;
+      this.atHome = true;
+    } else {
+      const dir = toVec(opts.start);
+      this.pose = { dir, altitude: overviewAltitude(opts.viewport, opts.framing), up: northUp(dir) };
+    }
   }
 
   /**
@@ -64,6 +80,7 @@ export class CameraDirector {
   /** Vole vers la calotte du pays ; la promesse se résout à l'arrivée (ou quand un autre vol la remplace). */
   flyTo(target: FrameTarget): Promise<void> {
     this.target = target;
+    this.atHome = false;
     const dir = toVec(target.cap.center);
     return this.flyToPose({ dir, altitude: frameAltitude(target.cap.radiusDeg, this.viewport, this.framing), up: northUp(dir) });
   }
@@ -71,10 +88,19 @@ export class CameraDirector {
   /** Remonte à la vue d'ensemble au-dessus du point courant. */
   flyToOverview(): Promise<void> {
     this.target = null;
+    this.atHome = false;
     return this.flyToPose({ ...this.pose, altitude: overviewAltitude(this.viewport, this.framing), up: northUp(this.pose.dir) });
   }
 
-  private flyToPose(to: Pose): Promise<void> {
+  /** Rejoint la vue d'accueil « lever de Terre » (tangage compris). */
+  flyToHome(): Promise<void> {
+    this.target = null;
+    this.atHome = true;
+    const h = homePose(this.viewport);
+    return this.flyToPose({ dir: h.dir, altitude: h.altitude, up: h.up }, h.pitch);
+  }
+
+  private flyToPose(to: Pose, toPitch = 0): Promise<void> {
     this.flight?.resolve();
     this.spinDegPerSec = 0;
     this.reframePending = false;
@@ -84,12 +110,17 @@ export class CameraDirector {
       reducedMotion: this.opts.reducedMotion,
     });
     return new Promise((resolve) => {
-      this.flight = { plan, startMs: this.now, resolve };
+      this.flight = { plan, startMs: this.now, resolve, pitch: [this.pitch, toPitch] };
     });
   }
 
   /** Vol court vers l'altitude que demande le viewport courant, même direction ; aucune promesse à résoudre. */
   private reframe(): void {
+    if (this.atHome) {
+      // l'altitude de l'accueil ne dépend pas du viewport ; le tangage suit le champ vertical
+      this.pitch = homePose(this.viewport).pitch;
+      return;
+    }
     const altitude = this.target
       ? frameAltitude(this.target.cap.radiusDeg, this.viewport, this.framing)
       : overviewAltitude(this.viewport, this.framing);
@@ -100,7 +131,7 @@ export class CameraDirector {
       alphaRad: limitingHalfAngle(this.viewport),
       reducedMotion: this.opts.reducedMotion,
     });
-    this.flight = { plan, startMs: this.now, resolve: () => {} };
+    this.flight = { plan, startMs: this.now, resolve: () => {}, pitch: [this.pitch, this.pitch] };
   }
 
   update(nowMs: number): FramePose {
@@ -108,9 +139,11 @@ export class CameraDirector {
     this.now = nowMs;
     let cut = false;
     if (this.flight) {
-      const { plan, startMs, resolve } = this.flight;
+      const { plan, startMs, resolve, pitch } = this.flight;
       const t = plan.durationMs === 0 ? 1 : (nowMs - startMs) / plan.durationMs;
       this.pose = plan.at(t);
+      const s = Math.min(1, Math.max(0, t));
+      this.pitch = pitch[0] + (pitch[1] - pitch[0]) * s * s * (3 - 2 * s);
       if (t >= 1) {
         cut = plan.durationMs === 0;
         this.flight = null;
@@ -124,6 +157,6 @@ export class CameraDirector {
       const dir = rotate(this.pose.dir, AXIS_Y, (-this.spinDegPerSec * Math.PI / 180) * (dt / 1000));
       this.pose = { ...this.pose, dir, up: northUp(dir) };
     }
-    return { ...this.pose, cut };
+    return { ...this.pose, cut, pitch: this.pitch };
   }
 }

@@ -1,3 +1,4 @@
+import { homePose } from '../camera/home';
 import * as THREE from 'three/webgpu';
 import { CameraDirector, type FramePose } from '../camera/director';
 import { FLIGHT, FOV_Y_DEG, FRAMING } from '../camera/config';
@@ -79,9 +80,12 @@ if (rec) {
   });
   void director.flyTo(rec);
   pose = director.update(0);
+} else if (q.has('home')) {
+  // vue d'accueil « lever de Terre » (camera/home.ts)
+  pose = { ...homePose({ width, height, fovYDeg: FOV_Y_DEG }), cut: false };
 } else {
   const dir = toVec(lngLat(q.get('at')) ?? [0, 0]);
-  pose = { dir, altitude: Number(q.get('alt') ?? 1.4), up: northUp(dir), cut: false };
+  pose = { dir, altitude: Number(q.get('alt') ?? 1.4), up: northUp(dir), cut: false, pitch: (Number(q.get('pitch') ?? 0) * Math.PI) / 180 };
 }
 globe.applyPose(pose, camera);
 globe.setBeacon(lngLat(q.get('beacon')));

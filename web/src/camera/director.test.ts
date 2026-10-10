@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CameraDirector } from './director';
+import { homePose } from './home';
 import { angleBetween, toLngLat, toVec } from '../geo/vec';
 
 const opts = {
@@ -121,6 +122,60 @@ describe('CameraDirector', () => {
     await flight;
     expect(p.cut).toBe(true);
     expect(angleBetween(p.dir, toVec(japan.cap.center))).toBeLessThan(1e-9);
+  });
+
+  it('sans vue d’accueil, le tangage reste nul', () => {
+    const d = new CameraDirector(opts);
+    expect(d.update(0).pitch).toBe(0);
+  });
+
+  it('démarre sur la vue d’accueil quand on la demande : pose et tangage immédiats', () => {
+    const phone = { width: 390, height: 844, fovYDeg: 50 };
+    const d = new CameraDirector({ ...opts, viewport: phone, startAtHome: true });
+    const p = d.update(0), h = homePose(phone);
+    expect(angleBetween(p.dir, h.dir)).toBeLessThan(1e-9);
+    expect(p.altitude).toBe(h.altitude);
+    expect(p.pitch).toBeCloseTo(h.pitch, 12);
+  });
+
+  it('un vol vers un pays depuis l’accueil ramène le tangage à 0 sans saut', async () => {
+    const phone = { width: 390, height: 844, fovYDeg: 50 };
+    const d = new CameraDirector({ ...opts, viewport: phone, startAtHome: true });
+    const h = homePose(phone).pitch;
+    d.update(0);
+    const flight = d.flyTo(france);
+    expect(d.update(0).pitch).toBeCloseTo(h, 9);
+    const mid = d.update(800).pitch;
+    expect(mid).toBeGreaterThan(0);
+    expect(mid).toBeLessThan(h);
+    d.update(10_000);
+    await flight;
+    expect(d.update(10_000).pitch).toBe(0);
+  });
+
+  it('flyToHome rejoint la vue d’accueil et y reste au changement de viewport', async () => {
+    const phone = { width: 390, height: 844, fovYDeg: 50 };
+    const d = new CameraDirector({ ...opts, viewport: phone });
+    d.update(0);
+    void d.flyTo(france);
+    d.update(10_000);
+    const home = d.flyToHome();
+    d.update(20_000);
+    await home;
+    const p = d.update(20_000), h = homePose(phone);
+    expect(angleBetween(p.dir, h.dir)).toBeLessThan(1e-9);
+    expect(p.altitude).toBeCloseTo(h.altitude, 9);
+    expect(p.pitch).toBeCloseTo(h.pitch, 9);
+    d.setViewport({ width: 1300, height: 750, fovYDeg: 50 });
+    expect(d.update(21_000).altitude).toBeCloseTo(h.altitude, 9);
+  });
+
+  it('la rotation lente garde le tangage de l’accueil', () => {
+    const phone = { width: 390, height: 844, fovYDeg: 50 };
+    const d = new CameraDirector({ ...opts, viewport: phone, startAtHome: true });
+    d.update(0);
+    d.setIdleSpin(1.5);
+    expect(d.update(4000).pitch).toBeCloseTo(homePose(phone).pitch, 12);
   });
 
   it('rotation lente au repos : la caméra glisse vers l’ouest, la Terre semble tourner vers l’est', () => {

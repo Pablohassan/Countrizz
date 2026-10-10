@@ -147,12 +147,14 @@ export class Globe {
     }
   }
 
-  /** Place la caméra (regard vers le centre, `up` en haut) et le soleil pour la pose de la frame. */
+  /** Place la caméra (regard vers le centre, `up` en haut, puis tangage) et le soleil pour la pose de la frame. */
   applyPose(pose: FramePose, camera: THREE.PerspectiveCamera): void {
     const d = 1 + pose.altitude;
     camera.position.set(pose.dir[0] * d, pose.dir[1] * d, pose.dir[2] * d);
     camera.up.set(...pose.up);
     camera.lookAt(0, 0, 0);
+    // tangage (vue d'accueil « lever de Terre ») : le regard monte autour de la droite de l'image, la Terre descend
+    if (pose.pitch) camera.rotateX(pose.pitch);
     this.cameraPosition.copy(camera.position);
     this.updateBeaconVisibility();
     camera.near = Math.max(pose.altitude * 0.2, 1e-5);

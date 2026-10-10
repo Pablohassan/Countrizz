@@ -71,3 +71,16 @@
 - B1-B5 `096d756` : `vite-plugin-pwa` 2.0.0 (Vite 8 déclaré compatible) ; précache de l'appli (27 fichiers) ; caches `countrizz-lourd-<empreinte>`, `countrizz-pays-<empreinte>` (CacheFirst, `ignoreVary`), `countrizz-donnees` (StaleWhileRevalidate) ; anciens caches supprimés ; passage une fois par le service worker dès qu'il contrôle la page ; installée : stockage persistant ; invitation à installer sur téléphone ; e2e `pwa.spec.ts` 2/2 et `intro.spec.ts` 4/4 sur `vite preview` ; budget local : démo 6 627 397, intro prête 2 179 353, accueil standard 7 579 601, haute 11 155 534.
 - Décisions en route (B) : (1) service worker bloqué dans les configurations Playwright sauf `pwa.spec.ts` (il servirait les fichiers du cache et fausserait le budget) ; (2) drapeau des crochets e2e posé pour toute cible (une version de production en local n'en installait aucun) ; (3) `ignoreURLParametersMatching: [/.*/]` (`/?webgl` hors ligne) ; (4) `toktx` 4.4.2 refuse `--wmode`, pourtant documenté : la couture des nuages est réglée dans l'image (fondu en miroir), les autres textures ne sont pas refaites.
 - Suite complète locale avant les références : 473 passés, 24 échecs tous dans `visual.spec.ts` (rendu changé), refaits ensuite.
+
+## Revue finale (relecteur neuf, 10/10)
+
+Aucun critique. Corrigés :
+- Final: fixed globe en échec → intro figée à 19,6 s, « Réessayer » caché — `GlobeView.onFailed` débloque le fondu ; e2e « globe en échec » (écrit après le correctif, pas vu rouge).
+- Final: fixed « Passer » sans effet pendant le chargement de la pâte — accueil direct ; e2e « Passer pendant que la pâte se charge » (écrit après le correctif, pas vu rouge).
+- Final: fixed rotation de l'accueil en mouvement réduit — `setIdleSpin` ignoré ; test unitaire vu rouge puis vert.
+- Final: fixed index de données périmés (cache à nom fixe) — `countrizz-donnees-<empreinte>`.
+- Final: fixed précompilation pendant la toupie — `warmUp` à l'entrée de l'accueil (16,8 s).
+- Final: fixed saut de rotation au retour d'onglet — pas plafonné à 100 ms ; test vu rouge puis vert (le premier écrit à 60 s passait par un tour complet : refait à 50 s).
+- Final: fixed NaN possibles (`1 − ndv` borné, est défini aux pôles) ; relief sous les nuages ; canvas et billes retirés au démontage (StrictMode) ; frémissement pendant l'attente ; sonde et calibration hors du précache ; SDF dans l'empreinte des pays ; première visite : seuls les fichiers de l'intro repassent par le service worker ; budget « intro prête » sans les fichiers du globe ; DPR de l'intro ≤ 2, ombre 2048 sur téléphone.
+- Final: minor (deferred): `useSyncExternalStore` réabonné à chaque rendu (sans effet, instantané stable).
+- Tests après correctifs : `npm run check` 298/298 ; e2e intro 6/6 et PWA 2/2 sur `vite preview`.

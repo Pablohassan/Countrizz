@@ -36,7 +36,7 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
 
   // repère local : P (sphère unité, le globe n'est ni tourné ni déplacé), est, nord
   const P = normalize(positionWorld);
-  const east = normalize(vec3(P.z, float(0), P.x.negate()));
+  const east = normalize(vec3(P.z, float(0), P.x.negate()).add(vec3(1e-6, 0, 0)));   // + ε : défini aux pôles
   const north = cross(P, east);
   const cosLat = max(sqrt(P.x.mul(P.x).add(P.z.mul(P.z))), 0.05);
   const st = uv();
@@ -47,11 +47,12 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const gE = h(vec2(du, 0)).sub(h(vec2(-du, 0))).div(cosLat.mul(2 * Math.PI * 2 * du));
   const gN = h(vec2(0, dv)).sub(h(vec2(0, -dv))).div(Math.PI * 2 * dv);
   const relief = normalize(P.sub(east.mul(gE).add(north.mul(gN)).mul(RELIEF.exaggeration)));
-  material.normalNode = normalize(transformNormalToView(relief));
 
   // Nuages : blancs et mats par-dessus le sol ; leur ombre tombe décalée à l'opposé du soleil (plus longue au soleil
   // rasant) et assombrit le sol ; ils voilent les lumières des villes.
   const cover = clouds ? clouds.coverageAt(st) : float(0);
+  // sous les nuages, pas de relief : les montagnes ne s'ombrent pas à travers eux
+  material.normalNode = normalize(transformNormalToView(normalize(mix(relief, P, cover))));
   const sunTangent = sun.sub(P.mul(dot(P, sun)));
   const c = clamp(dot(P, sun), 0.15, 1);
   const shift = normalize(sunTangent.add(vec3(1e-6, 0, 0))).mul(sqrt(c.mul(c).oneMinus()).div(c).mul(CLOUD_SHADOW_HEIGHT));
@@ -75,7 +76,7 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   // de l'émissif : le bloom ne les prend pas.
   const day = clamp(ndl.mul(1.5).add(0.25), 0, 1);
   const view = normalize(cameraPosition.sub(positionWorld));
-  const ndv = abs(dot(P, view));
+  const ndv = clamp(abs(dot(P, view)), 0, 1);   // borné : pow(1 − x) d'un x > 1 rendrait NaN, et le bloom l'étalerait
   const grazing = pow(float(1).sub(ndv), float(3));
   const dusk = smoothstep(float(-0.12), float(0.35), ndl);
   const veilColor = mix(vec3(1.0, 0.55, 0.25), vec3(0.32, 0.55, 1.0), dusk);

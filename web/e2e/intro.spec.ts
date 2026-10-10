@@ -52,3 +52,20 @@ test('image figée à 5 s : la Terre en pâte est dessinée au centre', async ({
   // le fond de l'intro est #16173a (22, 23, 58) : au centre du disque, il y a de la pâte
   expect(Math.abs(r - 22) + Math.abs(g - 23) + Math.abs(b - 58)).toBeGreaterThan(60);
 });
+
+test('globe en échec : le fondu part quand même et « Réessayer » se voit (revue du 10/10)', async ({ page }) => {
+  await page.route('**/data/borders.json', (r) => r.abort());
+  await page.goto('/?webgl');
+  await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 120_000 });
+  await passer(page).click();
+  await expect(page.locator('.intro')).toHaveCount(0, { timeout: 60_000 });
+  await expect(page.getByRole('button', { name: 'Réessayer' })).toBeVisible({ timeout: 60_000 });
+});
+
+test('« Passer » pendant que la pâte se charge : accueil tout de suite (revue du 10/10)', async ({ page }) => {
+  await page.route(/\/intro\/monde\.jpg$/, () => { /* jamais servi : la pâte ne vient pas */ });
+  await page.goto('/?webgl');
+  await expect(passer(page)).toBeVisible({ timeout: 30_000 });
+  await passer(page).click();
+  await expect(page.locator('.accueil-titre')).toBeVisible({ timeout: 5_000 });
+});

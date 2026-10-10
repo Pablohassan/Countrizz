@@ -65,11 +65,16 @@ interface Props {
    * est rendue une fois prêt, pour compiler ses shaders avant le fondu. Par défaut `true`.
    */
   active?: boolean;
+  /** Inactif : compiler maintenant (une image) ; l'appelant le demande peu avant le fondu, pas pendant l'intro. */
+  warmUp?: boolean;
+  /** Le globe ne viendra pas (navigateur incompatible, textures ou frontières introuvables) : l'appelant ne l'attend plus. */
+  onFailed?(): void;
 }
 
-class Unsupported extends Component<{ children: ReactNode }, { failed: boolean }> {
+class Unsupported extends Component<{ children: ReactNode; onFailed?(): void }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
+  componentDidCatch() { this.props.onFailed?.(); }
   render() {
     return this.state.failed
       ? <p className="globe-unsupported">Ton navigateur ne peut pas afficher le globe : il faut WebGPU ou WebGL 2.</p>
@@ -78,7 +83,7 @@ class Unsupported extends Component<{ children: ReactNode }, { failed: boolean }
 }
 
 /** Globe plein cadre : R3F habille `Globe` ; l'état (caméra, pays, patchs) vit dans `GlobeController`. */
-export function GlobeView({ ref, framing, onReady, startAtHome = false, active = true }: Props) {
+export function GlobeView({ ref, framing, onReady, startAtHome = false, active = true, warmUp = false, onFailed }: Props) {
   const [controller] = useState(() => new GlobeController('/', matchMedia('(prefers-reduced-motion: reduce)').matches, undefined, startAtHome));
   const [generation, setGeneration] = useState(0);
   // Mouvement réduit (spec §5 : fondu + coupe) : chaque coupe relance un voile noir qui s'efface en 250 ms.
@@ -104,7 +109,7 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
   }), [controller]);
 
   return (
-    <Unsupported>
+    <Unsupported onFailed={onFailed}>
       <div style={{ position: 'absolute', inset: 0 }}>
         <Canvas
           key={`gl-${generation}`}
@@ -120,7 +125,7 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
             return info.renderer;
           }}
         >
-          <GlobeScene controller={controller} generation={generation} active={active} onReady={onReady} onError={(e) => setLoadError(String(e))} onCut={() => setCuts((c) => c + 1)} onDpr={setDprProp} />
+          <GlobeScene controller={controller} generation={generation} active={active} warmUp={warmUp} onReady={onReady} onError={(e) => { setLoadError(String(e)); onFailed?.(); }} onCut={() => setCuts((c) => c + 1)} onDpr={setDprProp} />
         </Canvas>
         {loadError && (
           <div role="alert" title={loadError} style={{ position: 'absolute', inset: 0, display: 'grid', placeContent: 'center', gap: 12, color: '#f7dc6f', background: '#16173a', textAlign: 'center', fontFamily: 'sans-serif' }}>
@@ -139,7 +144,7 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
   );
 }
 
-function GlobeScene({ controller, generation, active, onReady, onError, onCut, onDpr }: { controller: GlobeController; generation: number; active: boolean; onReady?: Props['onReady']; onError(e: unknown): void; onCut(): void; onDpr(dpr: number): void }) {
+function GlobeScene({ controller, generation, active, warmUp, onReady, onError, onCut, onDpr }: { controller: GlobeController; generation: number; active: boolean; warmUp: boolean; onReady?: Props['onReady']; onError(e: unknown): void; onCut(): void; onDpr(dpr: number): void }) {
   const renderer = useThree((s) => s.gl) as unknown as THREE.WebGPURenderer & { userData: { backend: Backend; tier: QualityTier } };
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const scene = useThree((s) => s.scene) as unknown as THREE.Scene;
@@ -158,10 +163,11 @@ function GlobeScene({ controller, generation, active, onReady, onError, onCut, o
     document.addEventListener('visibilitychange', onVisibility);
     return () => document.removeEventListener('visibilitychange', onVisibility);
   }, [setFrameloop, active]);
-  // Inactif mais prêt : une image, pour que shaders et textures soient sur le GPU avant le fondu (pas d'à-coup à l'entrée).
+  // Inactif, prêt, et l'appelant le demande (peu avant le fondu, pas pendant la toupie de l'intro : la compilation bloque
+  // le fil principal) : une image, pour que shaders et textures soient sur le GPU avant le fondu.
   useEffect(() => {
-    if (!active && globe && post) advance(performance.now());
-  }, [active, globe, post, advance]);
+    if (!active && warmUp && globe && post) advance(performance.now());
+  }, [active, warmUp, globe, post, advance]);
   // onReady passe par une ref : un parent qui le donne en flèche inline ne doit pas reconstruire le globe à chaque rendu.
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;

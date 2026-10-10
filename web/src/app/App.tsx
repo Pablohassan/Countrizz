@@ -6,7 +6,7 @@ import { GlobeView, type GlobeHandle } from '../globe/GlobeView';
 import { Intro } from '../intro/Intro';
 import { Home } from '../ui/Home';
 import type { QualityTier } from '../globe/renderer';
-import { heavyUrls, persist, purgeOutdated, warm } from '../pwa/cache';
+import { INTRO_URLS, heavyUrls, persist, purgeOutdated, warm } from '../pwa/cache';
 import { useInstall } from '../pwa/install';
 
 const storage = ((): KeyValueStorage | null => { try { return localStorage; } catch { return null; } })();
@@ -30,9 +30,10 @@ export function App() {
 
   // caches d'une version précédente du site : supprimés (leurs noms portent l'empreinte de leur contenu)
   useEffect(() => { void purgeOutdated(__COUNTRIZZ_CACHES__); }, []);
-  // Dès que le service worker contrôle la page, tout ce qu'il faut pour jouer passe une fois par lui : à la première
-  // visite, l'intro a chargé ses fichiers avant lui (ils viennent alors du cache HTTP, sans nouveau téléchargement).
-  // Appli installée (ou qui vient de l'être) : en plus, stockage demandé persistant. Une fois par jeu de caches.
+  // Dès que le service worker contrôle la page : les fichiers de l'intro passent une fois par lui (à la première visite,
+  // elle les a chargés avant lui ; ils viennent du cache HTTP, sans nouveau téléchargement). Le globe, lui, charge après.
+  // Appli installée (ou qui vient de l'être) : tout ce qu'il faut pour jouer, au niveau du téléphone, et stockage
+  // demandé persistant. Une fois par jeu de caches.
   const [installedNow, setInstalledNow] = useState(false);
   const [controlled, setControlled] = useState(() => typeof navigator !== 'undefined' && !!navigator.serviceWorker?.controller);
   useEffect(() => {
@@ -49,7 +50,7 @@ export function App() {
     if (readPref(storage, PREF_KEYS.preloaded) === key) return;
     void (async () => {
       if (installed) await persist();
-      const r = await warm(heavyUrls(tier));
+      const r = await warm(installed ? heavyUrls(tier) : INTRO_URLS);
       if (r.failed.length === 0) writePref(storage, PREF_KEYS.preloaded, key);
     })();
   }, [tier, controlled, installed]);
@@ -59,7 +60,10 @@ export function App() {
 
   return (
     <>
-      <GlobeView ref={globe} startAtHome active={phase !== 'intro'} onReady={(info) => { setGlobeReady(true); setTier(info.tier); }} />
+      <GlobeView ref={globe} startAtHome active={phase !== 'intro'} warmUp={homeShown}
+        onReady={(info) => { setGlobeReady(true); setTier(info.tier); }}
+        // globe en échec : le fondu part quand même, et l'écran d'erreur (« Réessayer ») apparaît sous l'accueil
+        onFailed={() => setGlobeReady(true)} />
       {phase !== 'accueil' && (
         <Intro m={m} globeReady={globeReady} onHome={() => setHomeShown(true)} onFade={() => setPhase((p) => (p === 'intro' ? 'fondu' : p))} onDone={() => setPhase('accueil')} />
       )}

@@ -31,7 +31,8 @@ function collect(page: import('@playwright/test').Page) {
     const body = /javascript|json|html|css|wasm/.test(type) ? await r.body().catch(() => null) : null;
     rows.push({ url, bytes: body ? gzipSync(body, { level: 9 }).length : sent });
   };
-  const sum = async () => { await Promise.all(pending); return rows.reduce((s, r) => s + r.bytes, 0); };
+  /** Somme, éventuellement restreinte (l'intro prête : sans les textures, données et transcodeur du globe, chargés en parallèle). */
+  const sum = async (keep: (url: string) => boolean = () => true) => { await Promise.all(pending); return rows.filter((r) => keep(r.url)).reduce((s, r) => s + r.bytes, 0); };
   const stop = async () => { page.off('response', onResponse); await Promise.all(pending); };
   const report = (budget: number) => {
     rows.sort((a, b) => b.bytes - a.bytes);
@@ -60,7 +61,7 @@ for (const tier of ['standard', 'haute'] as const) {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(tier === 'standard' ? '/?webgl' : '/');
     await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 0 });
-    const intro = await m.sum();
+    const intro = await m.sum((u) => !/^\/(textures|basis|data)\//.test(u));
     console.log(`intro prête : ${intro} octets (budget ${FIRST_LOAD_BUDGET.intro})`);
     await page.getByRole('button', { name: /Passer|Skip/ }).click();
     await expect(page.locator('.intro')).toHaveCount(0, { timeout: 0 });

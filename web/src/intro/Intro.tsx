@@ -30,7 +30,7 @@ interface Props {
  * textures avant la chute (2 s) et le globe avant le fondu (19,6 s).
  */
 export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
-  const layer = useRef<HTMLDivElement>(null), canvas = useRef<HTMLCanvasElement>(null), title = useRef<HTMLDivElement>(null);
+  const layer = useRef<HTMLDivElement>(null), title = useRef<HTMLDivElement>(null);
   const label = useRef<HTMLDivElement>(null), stars = useRef<HTMLDivElement>(null);
   const ready = useRef(globeReady);
   ready.current = globeReady;
@@ -44,6 +44,15 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
     const frozen = hooks() ? new URLSearchParams(location.search).get('introT') : null;
     if (hooks()) window.__intro = { t: 0, frames: 0, ready: false, skipped: false };
     const vp = (): Viewport => ({ width: innerWidth, height: innerHeight });
+    // un canvas à chaque montage : en StrictMode (dev), le premier renderer détruit le sien (perte du contexte)
+    const cv = document.createElement('canvas');
+    cv.className = 'intro-canvas';
+    cv.setAttribute('aria-label', 'Countrizz : une Terre en pâte à modeler');
+    stars.current!.after(cv);
+    const canvas = { current: cv };
+    const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch { return false; } })();
+    // stop motion à 12 i/s : une densité de 2 suffit ; ombre plus légère sur téléphone (mémoire)
+    const ratio = () => Math.min(2, devicePixelRatio || 1);
     const finish = () => { if (done) return; done = true; cb.current.onHome(); cb.current.onFade(); cb.current.onDone(); };
     const giveUp = setTimeout(() => { if (!scene) finish(); }, INTRO_GIVE_UP_MS);
 
@@ -56,14 +65,14 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
         stars.current!.appendChild(el); billes.push({ el, debut: 0.2 + a() * 1.4, phase: a() * 6 });
       } }
 
-    createIntroScene(canvas.current!).then((s) => {
+    createIntroScene(canvas.current!, '/', { shadowSize: coarse ? 2048 : 4096 }).then((s) => {
       if (!alive) { s.dispose(); return; }
       scene = s;
-      scene.resize(vp(), Math.min(3, devicePixelRatio || 1));
+      scene.resize(vp(), ratio());
       if (window.__intro) window.__intro.ready = true;
     }, (e: unknown) => { console.warn('intro abandonnée :', e); finish(); });
 
-    const onResize = () => scene?.resize(vp(), Math.min(3, devicePixelRatio || 1));
+    const onResize = () => scene?.resize(vp(), ratio());
     addEventListener('resize', onResize);
 
     const loop = (now: number) => {
@@ -71,6 +80,7 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
       const dt = Math.min(0.25, (now - last) / 1000);   // un téléphone lent ralentit l'intro plutôt que de sauter des phases
       last = now;
       if (frozen !== null) t = Number(frozen);
+      else if (skip.current && !scene) { finish(); return; }   // « Passer » pendant le chargement de la pâte : accueil direct
       else if (skip.current) t = INTRO.FIN;
       else t += dt;
       // attentes : les textures de la pâte avant la chute, le globe avant le fondu
@@ -80,10 +90,12 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
       if (!home && t >= INTRO.ACCUEIL) { home = true; cb.current.onHome(); }
       if (!fade && t >= INTRO.FONDU) { fade = true; cb.current.onFade(); }
       if (!done && t >= INTRO.FIN && frozen === null) { done = true; cb.current.onDone(); return; }
-      const n = Math.floor(t * INTRO.IPS);
+      // en attente (pâte ou globe), le temps ne bouge plus mais la pâte frémit toujours, au rythme du stop motion
+      const attente = (!scene && t >= INTRO.CHUTE - 0.05) || (!ready.current && t >= INTRO.FONDU - 0.001);
+      const n = attente ? -1 - Math.floor((now / 1000) * INTRO.IPS) : Math.floor(t * INTRO.IPS);
       if (n === step && frozen === null) return;
       step = n;
-      const tq = frozen !== null ? t : n / INTRO.IPS, f = frameAt(tq, vp());
+      const tq = frozen !== null || attente ? t : n / INTRO.IPS, f = frameAt(tq, vp());
       // DOM, dans la même horloge que la pâte
       for (const b of billes) {
         const u = (tq - b.debut) / 0.35;
@@ -111,13 +123,14 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
       clearTimeout(giveUp);
       removeEventListener('resize', onResize);
       scene?.dispose();
+      cv.remove();
+      for (const b of billes) b.el.remove();
     };
   }, []);
 
   return (
     <div className="intro" ref={layer} aria-hidden="false">
       <div className="intro-etoiles" ref={stars} />
-      <canvas className="intro-canvas" ref={canvas} aria-label="Countrizz : une Terre en pâte à modeler" />
       <div className="intro-titre" ref={title}>Countrizz</div>
       <div className="intro-vignette" ref={label}><b>France</b><span>Paris</span></div>
       <button type="button" className="intro-passer" onClick={() => { skip.current = true; }}>{m.intro.skip}</button>

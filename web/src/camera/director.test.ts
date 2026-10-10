@@ -170,6 +170,21 @@ describe('CameraDirector', () => {
     expect(d.update(21_000).altitude).toBeCloseTo(h.altitude, 9);
   });
 
+  it('mouvement réduit : pas de rotation lente à l’accueil (spec 2A §5.7)', () => {
+    const d = new CameraDirector({ ...opts, reducedMotion: true });
+    d.update(0);
+    d.setIdleSpin(6);
+    expect(angleBetween(d.update(0).dir, d.update(5000).dir)).toBe(0);
+  });
+
+  it('au retour d’un onglet caché, la rotation ne saute pas de toute la durée d’absence', () => {
+    const d = new CameraDirector(opts);
+    d.update(0);
+    d.setIdleSpin(6);
+    const a = toLngLat(d.update(0).dir), b = toLngLat(d.update(50_000).dir);
+    expect(Math.abs(b[0] - a[0])).toBeLessThan(1);   // 6°/s × 50 s = 300° (60° modulo le tour) sans plafond ; ≤ 0,6° avec
+  });
+
   it('la rotation lente garde le tangage de l’accueil', () => {
     const phone = { width: 390, height: 844, fovYDeg: 50 };
     const d = new CameraDirector({ ...opts, viewport: phone, startAtHome: true });
@@ -182,7 +197,9 @@ describe('CameraDirector', () => {
     const d = new CameraDirector(opts);
     d.update(0);
     d.setIdleSpin(6);
-    const a = toLngLat(d.update(0).dir), b = toLngLat(d.update(1000).dir);
+    const a = toLngLat(d.update(0).dir);
+    for (let ms = 20; ms < 1000; ms += 20) d.update(ms);   // des images de 20 ms (le pas est plafonné à 100 ms)
+    const b = toLngLat(d.update(1000).dir);
     expect(b[0] - a[0]).toBeCloseTo(-6, 9);
     expect(b[1]).toBeCloseTo(a[1], 9);
   });

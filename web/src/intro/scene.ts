@@ -49,7 +49,7 @@ function bruit3(seed: number) {
 }
 const vec = (lng: number, lat: number, r = 1) => new THREE.Vector3(...toVec([lng, lat])).multiplyScalar(r);
 
-export async function createIntroScene(canvas: HTMLCanvasElement, base = '/'): Promise<IntroScene> {
+export async function createIntroScene(canvas: HTMLCanvasElement, base = '/', opts: { shadowSize?: number } = {}): Promise<IntroScene> {
   const dbg = import.meta.env.DEV ? new URLSearchParams(location.search).getAll('introDbg') : [];
   const renderer = new THREE.WebGPURenderer({ canvas, antialias: true, alpha: true });
   await renderer.init();
@@ -70,7 +70,7 @@ export async function createIntroScene(canvas: HTMLCanvasElement, base = '/'): P
   scene.add(new THREE.HemisphereLight(0xd6e4ff, 0x2a2350, 0.6));
   const cle = new THREE.DirectionalLight(0xffe9cc, 2.7);
   cle.castShadow = true;
-  cle.shadow.mapSize.set(4096, 4096);
+  cle.shadow.mapSize.set(opts.shadowSize ?? 4096, opts.shadowSize ?? 4096);
   cle.shadow.bias = -0.0004;
   cle.shadow.normalBias = 0.002;
   Object.assign(cle.shadow.camera, { left: -1.3, right: 1.3, top: 1.3, bottom: -1.3, near: 2.6, far: 7.5 });

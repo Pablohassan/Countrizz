@@ -74,8 +74,8 @@ export class CameraDirector {
   /** Change le cadrage des vols suivants (page de calibration). */
   setFraming(p: FramingParams): void { this.framing = p; }
 
-  /** Rotation lente au repos (degrés de longitude par seconde, vers l'ouest) ; 0 l'arrête. */
-  setIdleSpin(degPerSec: number): void { this.spinDegPerSec = degPerSec; }
+  /** Rotation lente au repos (degrés de longitude par seconde, vers l'ouest) ; 0 l'arrête ; aucune en mouvement réduit (spec 2A §5.7). */
+  setIdleSpin(degPerSec: number): void { this.spinDegPerSec = this.opts.reducedMotion ? 0 : degPerSec; }
 
   /** Vole vers la calotte du pays ; la promesse se résout à l'arrivée (ou quand un autre vol la remplace). */
   flyTo(target: FrameTarget): Promise<void> {
@@ -135,7 +135,8 @@ export class CameraDirector {
   }
 
   update(nowMs: number): FramePose {
-    const dt = Math.max(0, nowMs - this.now);
+    // plafonné : au retour d'un onglet caché (plus aucune image), la rotation ne rattrape pas toute l'absence
+    const dt = Math.min(100, Math.max(0, nowMs - this.now));
     this.now = nowMs;
     let cut = false;
     if (this.flight) {

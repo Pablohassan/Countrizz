@@ -22,9 +22,12 @@ export const CACHES = {
   /** Textures du globe, transcodeur, intro, police, icônes. */
   lourd: `countrizz-lourd-${empreinte(`${P}/textures`, `${P}/basis`, `${P}/intro`, `${P}/fonts`, `${P}/icons`)}`,
   /** Pays déjà vus : patchs (indexés par imagery.json et countries.json, qui portent leurs empreintes) et drapeaux. */
-  pays: `countrizz-pays-${empreinte(`${P}/data/imagery.json`, `${P}/data/countries.json`, `${P}/data/flags`)}`,
-  /** Index de données : servis du cache, revalidés en arrière-plan. */
-  donnees: 'countrizz-donnees',
+  pays: `countrizz-pays-${empreinte(`${P}/data/imagery.json`, `${P}/data/countries.json`, `${P}/data/flags`, `${P}/data/patches/sdf`)}`,
+  /**
+   * Index de données : servis du cache, revalidés en arrière-plan ; nommés par leur empreinte, comme les autres : après un
+   * déploiement, un ancien countries.json ne doit jamais servir un code neuf (revue du 10/10).
+   */
+  donnees: `countrizz-donnees-${empreinte(`${P}/data/countries.json`, `${P}/data/imagery.json`, `${P}/data/borders.json`, `${P}/data/credits.json`)}`,
 } as const;
 
 // Les pages de sonde et de calibration sont publiées avec le site : les e2e tournent sur la version déployée
@@ -60,6 +63,8 @@ export default defineConfig({
         // ignoreVary (caches ci-dessous) : une image demandée par <img> doit retrouver celle qu'a rangée un fetch() (en-têtes
         // différents ; sinon, hors ligne, l'intro ne trouvait pas ses textures — constaté le 10/10)
         globPatterns: ['index.html', 'demo.html', 'registerSW.js', 'assets/**/*.{js,css}', 'fonts/*.woff2', 'icons/*.png'],
+        // pages de test (sonde, calibration) : publiées pour les e2e, aucun visiteur n'a à télécharger leur code
+        globIgnores: ['**/node_modules/**', 'probe.html', 'calibrate.html', 'assets/probe-*', 'assets/calibrate-*'],
         maximumFileSizeToCacheInBytes: 3_000_000,
         cleanupOutdatedCaches: true,
         clientsClaim: true,

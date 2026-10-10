@@ -37,6 +37,17 @@ describe('vol de van Wijk sur la sphère', () => {
     }
   });
 
+  it('sans pointe de vitesse au milieu : accélération du regard ≤ 400 °/s², nulle au départ et à l’arrivée', () => {
+    // Regard vers l'origine : sa rotation est celle de `dir`. Échantillons à 60 i/s sur la durée réelle du vol (méthode du
+    // vérificateur de parcours, skill mise-en-scene-camera-voyage, 10/10 : la cubique culminait à 844 °/s² au milieu).
+    const n = Math.round((f.durationMs / 1000) * 60), dt = 1 / 60;
+    const s = Array.from({ length: n + 1 }, (_, i) => f.at(i / n).dir);
+    const w = s.slice(1).map((d, i) => angleBetween(s[i]!, d) / deg / dt);
+    const acc = w.slice(1).map((v, i) => Math.abs(v - w[i]!) / dt);
+    expect(Math.max(...acc)).toBeLessThanOrEqual(400);
+    expect(Math.max(acc[0]!, acc[acc.length - 1]!)).toBeLessThan(5);
+  });
+
   it('durée bornée à [1500 ; 3500] ms', () => {
     expect(f.durationMs).toBeGreaterThanOrEqual(1500);
     expect(f.durationMs).toBeLessThanOrEqual(3500);

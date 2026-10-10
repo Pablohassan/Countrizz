@@ -22,13 +22,15 @@ export interface Flight { durationMs: number; at(t: number): Pose }
 // (d3-interpolate 3.0.1, src/zoom.js : `zoom.rho = function(_) { … return zoomRho(…) }`).
 const zoomWithRho = (rho: number) => (interpolateZoom as unknown as { rho(r: number): typeof interpolateZoom }).rho(rho);
 
-const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+// smootherstep (vitesse et accélération nulles aux bornes) : la cubique ajoutait sa pente ×3 au milieu au profil de van
+// Wijk, qui y concentre déjà le trajet ; pointe de 844 °/s² mesurée le 10/10 (vérificateur de parcours), 284 ainsi.
+const smootherstep = (t: number) => t * t * t * (t * (6 * t - 15) + 10);
 
 /** Angle signé de `a` vers `b` autour de l'axe unitaire `axis` (a, b ⟂ axis). */
 const signedAngle = (a: Vec3, b: Vec3, axis: Vec3) => Math.atan2(dot(axis, cross(a, b)), dot(a, b));
 
 /**
- * Vol en grand cercle avec le profil d'altitude de van Wijk & Nuij (d3.interpolateZoom), temps en cubique.
+ * Vol en grand cercle avec le profil d'altitude de van Wijk & Nuij (d3.interpolateZoom), temps en smootherstep.
  * Le haut de l'image est transporté parallèlement le long du grand cercle (aucun retournement au passage
  * d'un pôle), puis tourné progressivement pour arriver « nord en haut » sur la cible.
  */
@@ -56,7 +58,7 @@ export function planFlight(from: Pose, to: Pose, p: FlightParams): Flight {
     durationMs,
     at(t: number): Pose {
       if (t >= 1) return to;
-      const s = easeInOutCubic(Math.max(0, t));
+      const s = smootherstep(Math.max(0, t));
       const [u, , w] = zoom(s) as [number, number, number];
       const dir = dirAt(u);
       return { dir, altitude: w / (2 * tanA), up: rotate(transportedUp(u), dir, roll * s) };

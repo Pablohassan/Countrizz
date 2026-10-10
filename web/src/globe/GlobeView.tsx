@@ -36,6 +36,11 @@ export interface GlobeDebug {
   backend: Backend;
   generation: number;
   frames: number;
+  /**
+   * Rendus tombés dans une trame de three déjà rendue : la passe de scène n'est rendue qu'une fois par trame (`PassNode`,
+   * `NodeFrame.frameId`), un second rendu montre une image périmée (skill threejs-r186-webgpu-tsl, règle 3). Doit rester à 0.
+   */
+  staleFrames: number;
   /** Opacité des nuages à la dernière frame. */
   cloudOpacity: number;
   /** Densité de pixels du renderer. */
@@ -173,6 +178,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onError, 
   onReadyRef.current = onReady;
   const onErrorRef = useRef(onError);
   onErrorRef.current = onError;
+  const lastFrame = useRef(-1);
 
   useEffect(() => {
     let alive = true;
@@ -225,6 +231,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onError, 
       backend: renderer.userData.backend,
       generation,
       frames: 0,
+      staleFrames: 0,
       cloudOpacity: 1,
       dpr: () => renderer.getPixelRatio(),
       project(p) {
@@ -254,6 +261,8 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onError, 
     // Mouvement réduit : les nuages ne dérivent pas.
     globe.setClouds(clouds, controller.reducedMotion ? 0 : (now / 1000) * CLOUD_DRIFT_TURNS_PER_S);
     if (pose.cut) onCut();
+    if (window.__globe && renderer.info.frame === lastFrame.current) window.__globe.staleFrames++;
+    lastFrame.current = renderer.info.frame;
     if (post) post.render();
     else renderer.render(scene, camera);
     if (window.__globe) { window.__globe.frames++; window.__globe.cloudOpacity = clouds; }

@@ -93,7 +93,7 @@ globe.setClouds(Number(q.get('clouds') ?? 0), 0);
 const sun = lngLat(q.get('sun'));
 if (sun) globe.setSun(toVec(sun));
 // planches de réglage (10/10) : `lever=x,y` place le soleil derrière ce pixel (lever derrière le limbe) ; `sat` : saturation
-// du jour ; `bloom` : force de la lueur ; `tm=aces|agx` : tone mapping (le jeu n'en a pas)
+// du jour ; `bloom` : force de la lueur ; `tm=aces|agx|neutral` : tone mapping (le jeu n'en a pas) ; `exp` : exposition
 const lever = lngLat(q.get('lever'));
 if (lever) {
   camera.updateMatrixWorld(true);
@@ -103,6 +103,8 @@ if (lever) {
 if (q.has('sat')) globe.setDaySaturation(Number(q.get('sat')));
 if (q.get('tm') === 'aces') renderer.toneMapping = THREE.ACESFilmicToneMapping;
 if (q.get('tm') === 'agx') renderer.toneMapping = THREE.AgXToneMapping;
+if (q.get('tm') === 'neutral') renderer.toneMapping = THREE.NeutralToneMapping;
+if (q.has('exp')) renderer.toneMappingExposure = Number(q.get('exp'));
 const scene = new THREE.Scene();
 scene.add(globe.root);
 if (q.has('post')) {

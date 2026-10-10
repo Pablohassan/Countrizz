@@ -10,6 +10,14 @@ test.use({ viewport: { width: 390, height: 844 } });
 
 const credit = (page: Page) => page.getByRole('contentinfo', { name: 'Crédits de l’imagerie' });
 const passer = (page: Page) => page.getByRole('button', { name: /Passer|Skip/ });
+/**
+ * Une passe de scène par trame de three (skill threejs-r186-webgpu-tsl, règle 3) : un second rendu dans la même trame montre
+ * une image périmée. Le globe compte ces rendus ; après quelques images rendues, il n'y en a aucun.
+ */
+async function expectNoStaleFrame(page: Page) {
+  await page.waitForFunction(() => (window.__globe?.frames ?? 0) > 5, null, { timeout: 60_000 });
+  expect(await page.evaluate(() => window.__globe?.staleFrames)).toBe(0);
+}
 
 test('l’intro mène à l’accueil ; « Passer » la saute ; « Jouer » ouvre la démo', async ({ page }) => {
   await page.goto('/?webgl');
@@ -19,6 +27,7 @@ test('l’intro mène à l’accueil ; « Passer » la saute ; « Jouer » ouvre
   await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 }); // globe prêt, fondu fini
   await expect(page.getByRole('link', { name: /Jouer|Play/ })).toHaveAttribute('href', '/demo.html');
   await expect(credit(page)).toBeVisible();
+  await expectNoStaleFrame(page);
 });
 
 test('sans les textures de la pâte, accueil direct sur le globe', async ({ page }) => {
@@ -41,6 +50,7 @@ test('globe lent : l’accueil se monte sur la pâte et le fondu attend le globe
   await expect(page.locator('.intro')).toHaveCount(1); // la pâte reste sous l'accueil
   release();
   await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 });
+  await expectNoStaleFrame(page); // l'image de préchauffage (globe inactif) compte aussi
 });
 
 test('image figée à 5 s : la Terre en pâte est dessinée au centre', async ({ page }) => {

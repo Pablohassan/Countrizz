@@ -11,6 +11,7 @@ import { loadMosaic } from '../imagery/lib/mosaic';
 import { IMG_CACHE_DIR } from '../imagery/paths';
 import { BUDGET_BYTES, CLOUDS_SIZE, COLOR_SIZES, CREDITS, DAY_S2, SURFACE_SIZE, TEXTURE_SOURCES } from './config';
 import { polarFill } from './lib/polarFill';
+import { seamless } from './lib/seamless';
 import { rasterizeLandMask } from './lib/landMask';
 import { NE_COUNTRIES, TEX_CACHE_DIR, TEX_OUT_DIR, TEX_REPORT_PATH } from './paths';
 
@@ -73,7 +74,9 @@ async function surfaceTexture(size: number): Promise<string> {
 /** Nuages : couverture (luminance du canal R) en un canal, ETC1S linéaire, mipmaps, origine en bas à gauche. */
 async function cloudsTexture(size: number): Promise<string> {
   const png = path.join(TMP, `clouds-${size}.png`);
-  await sharp(source('clouds'), { limitInputPixels: false }).extractChannel(0).resize(size, size / 2, { kernel: 'lanczos3' }).toColourspace('b-w').png({ compressionLevel: 6 }).toFile(png);
+  const w = size, h = size / 2;
+  const raw = await sharp(source('clouds'), { limitInputPixels: false }).extractChannel(0).resize(w, h, { kernel: 'lanczos3' }).raw().toBuffer();
+  await sharp(seamless(raw, w, h, Math.round(w / 96)), { raw: { width: w, height: h, channels: 1 } }).png({ compressionLevel: 6 }).toFile(png);
   const name = outName('clouds', size);
   toktx(['--t2', '--encode', 'etc1s', '--clevel', '2', '--qlevel', '128', '--genmipmap', '--assign_oetf', 'linear', '--lower_left_maps_to_s0t0', path.join(TEX_OUT_DIR, name), png]);
   return name;
@@ -83,14 +86,17 @@ async function main(): Promise<void> {
   checkToktx();
   mkdirSync(TMP, { recursive: true });
   mkdirSync(TEX_OUT_DIR, { recursive: true });
+  // `npm run textures -- --seulement clouds` : une seule texture refaite, les autres reprises telles qu'elles sont sur le disque
+  const seulement = process.argv.includes('--seulement') ? process.argv[process.argv.indexOf('--seulement') + 1] : null;
+  const faire = (k: string) => seulement === null || seulement === k;
   const names: string[] = [];
-  const day = await daySource();
+  const day = faire('day') ? await daySource() : null;
   for (const size of COLOR_SIZES) {
-    names.push(await colorTexture('day', size, 192, day));
-    names.push(await colorTexture('night', size, 128, source('night')));
+    names.push(day ? await colorTexture('day', size, 192, day) : outName('day', size));
+    names.push(faire('night') ? await colorTexture('night', size, 128, source('night')) : outName('night', size));
   }
-  names.push(await surfaceTexture(SURFACE_SIZE));
-  names.push(await cloudsTexture(CLOUDS_SIZE));
+  names.push(faire('surface') ? await surfaceTexture(SURFACE_SIZE) : outName('surface', SURFACE_SIZE));
+  names.push(faire('clouds') ? await cloudsTexture(CLOUDS_SIZE) : outName('clouds', CLOUDS_SIZE));
   writeJson(path.join(TEX_OUT_DIR, 'credits.json'), CREDITS);
 
   const bytes = Object.fromEntries(names.map((n) => [n, statSync(path.join(TEX_OUT_DIR, n)).size]));

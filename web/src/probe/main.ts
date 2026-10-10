@@ -92,10 +92,23 @@ globe.setBeacon(lngLat(q.get('beacon')));
 globe.setClouds(Number(q.get('clouds') ?? 0), 0);
 const sun = lngLat(q.get('sun'));
 if (sun) globe.setSun(toVec(sun));
+// planches de réglage (10/10) : `lever=x,y` place le soleil derrière ce pixel (lever derrière le limbe) ; `sat` : saturation
+// du jour ; `bloom` : force de la lueur ; `tm=aces|agx` : tone mapping (le jeu n'en a pas)
+const lever = lngLat(q.get('lever'));
+if (lever) {
+  camera.updateMatrixWorld(true);
+  const r = new THREE.Vector3((lever[0] / width) * 2 - 1, 1 - (lever[1] / height) * 2, 0.5).unproject(camera).sub(camera.position).normalize();
+  globe.setSun([r.x, r.y, r.z]);
+}
+if (q.has('sat')) globe.setDaySaturation(Number(q.get('sat')));
+if (q.get('tm') === 'aces') renderer.toneMapping = THREE.ACESFilmicToneMapping;
+if (q.get('tm') === 'agx') renderer.toneMapping = THREE.AgXToneMapping;
 const scene = new THREE.Scene();
 scene.add(globe.root);
 if (q.has('post')) {
-  const post = createPostProcessing(renderer, scene, camera, postOptions(q.get('tier') === 'haute' ? 'haute' : 'standard'));
+  const o = postOptions(q.get('tier') === 'haute' ? 'haute' : 'standard');
+  if (q.has('bloom')) o.bloom = { ...o.bloom, strength: Number(q.get('bloom')) };
+  const post = createPostProcessing(renderer, scene, camera, o);
   for (let i = 0, n = Number(q.get('frames') ?? 16); i < n; i++) {
     post.render();
     await new Promise((r) => requestAnimationFrame(r));

@@ -34,6 +34,8 @@ export async function loadGlobeTextures(renderer: THREE.WebGPURenderer, tier: Qu
   surface.colorSpace = THREE.NoColorSpace;
   // L'anisotropie se pose avant le premier rendu : l'échantillonneur est construit à ce moment-là.
   for (const t of [day, night, surface]) t.anisotropy = 8;
+  // le relief lit la surface à un texel de part et d'autre : au 180ᵉ méridien, la lecture fait le tour
+  surface.wrapS = THREE.RepeatWrapping;
   if (clouds) {
     clouds.colorSpace = THREE.NoColorSpace;
     clouds.wrapS = THREE.RepeatWrapping; // la dérive fait sortir la lecture de [0, 1] en longitude

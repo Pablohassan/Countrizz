@@ -35,6 +35,7 @@ export class Globe {
   readonly earthMaterial: THREE.MeshStandardNodeMaterial;
   private readonly sun = new THREE.DirectionalLight(0xffffff, 3);
   private readonly sunListeners: ((dir: Vec3) => void)[] = [];
+  private setSaturation: (s: number) => void = () => {};
   private readonly altitudeListeners: ((altitude: number) => void)[] = [];
   private readonly beacon = createBeacon();
   private beaconDir: Vec3 | null = null;
@@ -63,6 +64,7 @@ export class Globe {
       const atmosphere = createAtmosphere();
       const sunDisc = createSunDisc();
       this.sunListeners.push(earth.setSun, atmosphere.setSun, sunDisc.setDirection);
+      this.setSaturation = earth.setSaturation;
       this.root.add(atmosphere.mesh, createStars(), sunDisc.sprite, this.beacon.sprite);
       if (parts.borders) {
         const borders = createBorders(parts.borders);
@@ -179,6 +181,9 @@ export class Globe {
     this.placeholder.dispose();
     this.image?.dispose();
   }
+
+  /** Saturation de la texture de jour (1 = telle quelle) : planches de réglage. */
+  setDaySaturation(s: number): void { this.setSaturation(s); }
 
   /** Direction du soleil (unitaire) ; applyPose la place par rapport à la caméra, la sonde peut la forcer. */
   setSun(dir: Vec3): void {

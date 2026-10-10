@@ -39,7 +39,7 @@ test('après une visite, les fichiers lourds sont sur l’appareil et l’accuei
   await page.reload();
   await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 120_000 });
   await page.getByRole('button', { name: /Passer|Skip/ }).click();
-  await expect(page.locator('.accueil-titre')).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator('.accueil .accueil-titre')).toBeVisible({ timeout: 30_000 });
   await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 });
   await context.setOffline(false);
 });

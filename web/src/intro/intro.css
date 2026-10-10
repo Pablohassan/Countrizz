@@ -1,9 +1,17 @@
-/* Calque de l'intro, par-dessus le globe ; l'accueil se monte par-dessus lui (z-index de App). */
-.intro { position: absolute; inset: 0; background: var(--nuit); overflow: hidden; font-family: var(--cartoon); }
+/* Calque de l'intro, par-dessus le globe ; l'accueil se monte par-dessus lui. Le fond de nuit s'efface au fondu, la Terre en pâte reste. */
+.intro { position: absolute; inset: 0; overflow: hidden; font-family: var(--cartoon); pointer-events: none; }
+.intro > * { pointer-events: auto; }
+.intro-fond { position: absolute; inset: 0; background: var(--nuit); }
 .intro-etoiles { position: absolute; inset: 0; }
+/* Logo du milieu : la Terre en pâte vient dans le « o » (le glyphe reste invisible, il ne sert qu'à l'espacement). */
+.intro-logo { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; white-space: nowrap; color: var(--jaune);
+  font-size: min(13.5vw, 7vh);   /* « C🌍untrizz » tient dans un téléphone de 390 px */ letter-spacing: 1px; text-shadow: var(--ombre-titre); pointer-events: none; }
+.intro-logo-l { display: inline-block; opacity: 0; }
+.intro-logo-o { position: relative; display: inline-block; color: transparent; text-shadow: none; }
+.intro-logo-terre { position: absolute; left: 50%; top: 58%; width: 0.66em; height: 0.66em; transform: translate(-50%, -50%); }
+.intro-fantome { position: absolute; inset: 0; visibility: hidden; pointer-events: none; }
 .intro-etoiles i { position: absolute; border-radius: 50%; background: var(--jaune); box-shadow: 0 0 6px rgba(247, 220, 111, .5); opacity: 0; }
 .intro-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; }
-.intro-titre { position: absolute; top: calc(110px + env(safe-area-inset-top, 0px)); left: 0; right: 0; text-align: center; color: var(--jaune); font-size: 54px; letter-spacing: 1px; text-shadow: var(--ombre-titre); opacity: 0; }
 .intro-vignette { position: absolute; left: 0; top: 0; opacity: 0; transform-origin: 0 100%; background: var(--creme); color: var(--nuit); border: 2px solid #000; border-radius: 10px; box-shadow: 4px 4px 0 #000; padding: 4px 10px 5px; white-space: nowrap; line-height: 1.05; pointer-events: none; }
 .intro-vignette b { display: block; font-weight: normal; font-size: 19px; }
 .intro-vignette span { display: block; font-size: 12px; color: var(--violet); }

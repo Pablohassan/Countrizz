@@ -6,7 +6,14 @@
 .accueil-lang button { font: 14px var(--cartoon); padding: 5px 10px; border: 0; background: var(--nuit); color: var(--jaune); cursor: pointer; }
 .accueil-lang button[aria-pressed="true"] { background: var(--jaune); color: var(--nuit); }
 .accueil-titre { position: absolute; top: calc(110px + env(safe-area-inset-top, 0px)); left: 0; right: 0; margin: 0; text-align: center; font: 54px/1.1 var(--cartoon); font-weight: normal; letter-spacing: 1px;
-  color: var(--jaune); text-shadow: var(--ombre-titre); animation: accueil-gauche .9s cubic-bezier(.25, .46, .45, 1.54) both; }
+  color: var(--jaune); text-shadow: var(--ombre-titre); white-space: nowrap; }
+/* C🌍untrizz : les lettres surgissent une à une ; la petite Terre (24 images, un tour en 4 s) tient la place du « o ». */
+.logo-l { display: inline-block; animation: logo-lettre .45s cubic-bezier(.25, .46, .45, 1.54) calc(.5s + var(--i) * .09s) both; }
+.logo-o { position: relative; display: inline-block; color: transparent; text-shadow: none; }
+.logo-terre { position: absolute; left: 50%; top: 58%; width: .66em; height: .66em; transform: translate(-50%, -50%); background: url('/intro/logo-terre.webp') 0 0 / 15.84em .66em no-repeat;
+  animation: logo-tourne 4s steps(24) infinite; transition: opacity .2s; }
+@keyframes logo-lettre { from { transform: translateY(.3em) scale(0); opacity: 0; } 40% { opacity: 1; } }
+@keyframes logo-tourne { to { background-position: -15.84em 0; } }
 .accueil-commandes { position: absolute; top: calc(215px + env(safe-area-inset-top, 0px)); left: 50%; width: min(calc(100% - 56px), 384px); transform: translateX(-50%); display: flex; flex-direction: column; gap: 18px; pointer-events: none; }
 .accueil-commandes > * { pointer-events: auto; }
 .accueil-nom { display: flex; align-items: center; gap: 8px; background: var(--nuit); border: 3px solid var(--jaune); box-shadow: 4px 4px 0 #000; color: rgba(247, 220, 111, .55); padding: 10px 14px; font-size: 16px; border-radius: 4px;

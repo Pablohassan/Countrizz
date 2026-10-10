@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import type { Messages } from '../i18n';
 import { createIntroScene, type IntroScene } from './scene';
-import { INTRO, frameAt, type Viewport } from './timeline';
+import { INTRO, LOGO_LETTRES, defaultTargets, frameAt, logoAngleAt, rebond, spriteFrame, type Target, type Targets, type Viewport } from './timeline';
+import { LogoTitle } from '../ui/LogoTitle';
 import './intro.css';
 
 /** Crochets de test (dev, ou drapeau des e2e posé par Playwright) : `?introT=13` fige l'intro à 13 s. */
@@ -16,21 +17,22 @@ interface Props {
   m: Messages;
   /** Le vrai globe est prêt : le fondu peut partir. */
   globeReady: boolean;
-  /** 16,8 s : l'accueil se monte. */
+  /** 16,2 s : l'accueil se monte. */
   onHome(): void;
-  /** 19,6 s : le globe reprend son rendu, le calque de l'intro s'efface. */
+  /** 17,4 s : le globe reprend son rendu, le fond de nuit s'efface. */
   onFade(): void;
-  /** Fin (ou abandon) : l'intro peut être démontée. */
-  onDone(): void;
+  /** Fin (ou abandon) : l'intro peut être démontée ; `angle` : celui de la Terre, pour la petite Terre du titre. */
+  onDone(angle: number | null): void;
 }
 
 /**
- * Intro en pâte à modeler (spec `2026-10-10-countrizz-intro-pate-accueil-design.md`) : un calque par-dessus le globe,
- * son canvas, ses étoiles en billes, son titre. Tout passe par une horloge en stop motion (12 i/s) ; elle attend ses
- * textures avant la chute (2 s) et le globe avant le fondu (19,6 s).
+ * Intro en pâte à modeler (spec `2026-10-10-countrizz-intro-pate-accueil-design.md`, déroulé du 10/10 : double dézoom) :
+ * un calque par-dessus le globe, son fond de nuit, son canvas, le logo C🌍untrizz du milieu. Tout passe par une horloge
+ * en stop motion (12 i/s) ; elle attend ses textures avant la chute et le globe avant le fondu. Les deux « o » où se
+ * loge la Terre sont mesurés dans la page : le logo du milieu, et un double invisible du titre de l'accueil.
  */
 export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
-  const layer = useRef<HTMLDivElement>(null), title = useRef<HTMLDivElement>(null);
+  const fond = useRef<HTMLDivElement>(null), logo = useRef<HTMLDivElement>(null), fantome = useRef<HTMLDivElement>(null);
   const label = useRef<HTMLDivElement>(null), stars = useRef<HTMLDivElement>(null);
   const ready = useRef(globeReady);
   ready.current = globeReady;
@@ -41,19 +43,31 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
   useEffect(() => {
     let alive = true, scene: IntroScene | null = null, raf = 0, last = performance.now(), t = 0, step = -1;
     let home = false, fade = false, done = false;
-    const frozen = hooks() ? new URLSearchParams(location.search).get('introT') : null;
+    const sprite = hooks() ? new URLSearchParams(location.search).get('introSprite') : null;   // fabrication de la petite Terre du titre
+    const frozen = hooks() ? new URLSearchParams(location.search).get('introT') ?? (sprite !== null ? '7' : null) : null;
     if (hooks()) window.__intro = { t: 0, frames: 0, ready: false, skipped: false };
     const vp = (): Viewport => ({ width: innerWidth, height: innerHeight });
     // un canvas à chaque montage : en StrictMode (dev), le premier renderer détruit le sien (perte du contexte)
     const cv = document.createElement('canvas');
     cv.className = 'intro-canvas';
     cv.setAttribute('aria-label', 'Countrizz : une Terre en pâte à modeler');
-    stars.current!.after(cv);
+    fond.current!.after(cv);   // au-dessus du fond de nuit (qui s'efface), sous le logo
     const canvas = { current: cv };
     const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch { return false; } })();
     // stop motion à 12 i/s : une densité de 2 suffit ; ombre plus légère sur téléphone (mémoire)
     const ratio = () => Math.min(2, devicePixelRatio || 1);
-    const finish = () => { if (done) return; done = true; cb.current.onHome(); cb.current.onFade(); cb.current.onDone(); };
+    const finish = () => { if (done) return; done = true; cb.current.onHome(); cb.current.onFade(); cb.current.onDone(null); };
+    // les deux « o » : centre et rayon de la petite Terre (px CSS), mesurés sur les marqueurs posés dans les « o »
+    const mesure = (el: Element | null | undefined): Target | null => {
+      const r = el?.getBoundingClientRect();
+      return r && r.width > 0 ? { x: r.left + r.width / 2, y: r.top + r.height / 2, r: r.width / 2 } : null;
+    };
+    const cibles = (): Targets => {
+      const d = defaultTargets(vp());
+      return { logo: mesure(logo.current?.querySelector('.intro-logo-terre')) ?? d.logo, titre: mesure(fantome.current?.querySelector('.logo-terre')) ?? d.titre };
+    };
+    let c = cibles();
+    void document.fonts?.ready.then(() => { c = cibles(); });
     const giveUp = setTimeout(() => { if (!scene) finish(); }, INTRO_GIVE_UP_MS);
 
     // étoiles en billes, toujours les mêmes (graine fixe)
@@ -72,7 +86,7 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
       if (window.__intro) window.__intro.ready = true;
     }, (e: unknown) => { console.warn('intro abandonnée :', e); finish(); });
 
-    const onResize = () => scene?.resize(vp(), ratio());
+    const onResize = () => { scene?.resize(vp(), ratio()); c = cibles(); };
     addEventListener('resize', onResize);
 
     const loop = (now: number) => {
@@ -89,22 +103,27 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
       // les seuils se jugent sur le temps exact : « Passer » pose t = FIN, que l'arrondi à l'image ferait retomber à 21,1667
       if (!home && t >= INTRO.ACCUEIL) { home = true; cb.current.onHome(); }
       if (!fade && t >= INTRO.FONDU) { fade = true; cb.current.onFade(); }
-      if (!done && t >= INTRO.FIN && frozen === null) { done = true; cb.current.onDone(); return; }
+      if (!done && t >= INTRO.FIN && frozen === null) { done = true; cb.current.onDone(logoAngleAt(INTRO.FIN)); return; }
       // en attente (pâte ou globe), le temps ne bouge plus mais la pâte frémit toujours, au rythme du stop motion
       const attente = (!scene && t >= INTRO.CHUTE - 0.05) || (!ready.current && t >= INTRO.FONDU - 0.001);
       const n = attente ? -1 - Math.floor((now / 1000) * INTRO.IPS) : Math.floor(t * INTRO.IPS);
       if (n === step && frozen === null) return;
       step = n;
-      const tq = frozen !== null || attente ? t : n / INTRO.IPS, f = frameAt(tq, vp());
+      const tq = frozen !== null || attente ? t : n / INTRO.IPS, f = sprite !== null ? spriteFrame((Number(sprite) * Math.PI) / 180, vp()) : frameAt(tq, vp(), c);
       // DOM, dans la même horloge que la pâte
       for (const b of billes) {
         const u = (tq - b.debut) / 0.35;
         b.el.style.opacity = String(Math.max(0, Math.min(1, u)) * (0.55 + 0.35 * Math.sin(b.phase + tq * 2.1)));
         b.el.style.transform = `scale(${u <= 0 ? 0 : Math.min(1.3, 1 + 0.3 * Math.sin(Math.min(1, u) * Math.PI))})`;
       }
-      title.current!.style.opacity = String(f.title.opacity);
-      title.current!.style.transform = `translate(${f.title.x}px, ${f.title.y}px)`;
-      layer.current!.style.opacity = String(f.layerOpacity);
+      // le logo du milieu : « C » arrive de la gauche, « untrizz » lettre après lettre ; tout s'envole au rezoom
+      logo.current!.querySelectorAll<HTMLElement>('.intro-logo-l').forEach((el, i) => {
+        const p = f.logo.letters[i] ?? 0, k = rebond(p, 2.2), out = f.logo.out;
+        const dx = i === 0 ? -80 * (1 - k) - 260 * out : (60 + 25 * i) * out, dy = i === 0 ? 0 : 30 * (1 - k);
+        el.style.opacity = String(Math.min(1, p * 3) * (1 - out));
+        el.style.transform = `translate(${dx}px, ${dy}px) scale(${i === 0 ? 1 : Math.max(0.01, k)}) rotate(${i === 0 ? 0 : (1 - k) * (i % 2 ? 12 : -12)}deg)`;
+      });
+      fond.current!.style.opacity = String(f.backdrop);
       canvas.current!.style.filter = f.blur > 0.3 ? `blur(${f.blur.toFixed(1)}px)` : 'none';
       canvas.current!.style.opacity = String(scene ? f.opacity : 0);
       if (scene) {
@@ -129,9 +148,15 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
   }, []);
 
   return (
-    <div className="intro" ref={layer} aria-hidden="false">
-      <div className="intro-etoiles" ref={stars} />
-      <div className="intro-titre" ref={title}>Countrizz</div>
+    <div className="intro">
+      <div className="intro-fond" ref={fond}><div className="intro-etoiles" ref={stars} /></div>
+      <div className="intro-logo" ref={logo} aria-label="Countrizz">
+        <span className="intro-logo-l">{LOGO_LETTRES[0]}</span>
+        <span className="intro-logo-o" aria-hidden="true">o<i className="intro-logo-terre" /></span>
+        {LOGO_LETTRES.slice(1).map((l, i) => <span key={i} className="intro-logo-l" aria-hidden="true">{l}</span>)}
+      </div>
+      {/* double invisible du titre de l'accueil : sa petite Terre donne la cible du second dézoom */}
+      <div className="intro-fantome" ref={fantome} aria-hidden="true"><LogoTitle angle={null} visible={false} /></div>
       <div className="intro-vignette" ref={label}><b>France</b><span>Paris</span></div>
       <button type="button" className="intro-passer" onClick={() => { skip.current = true; }}>{m.intro.skip}</button>
     </div>

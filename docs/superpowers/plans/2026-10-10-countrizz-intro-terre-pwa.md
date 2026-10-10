@@ -84,3 +84,7 @@ Aucun critique. Corrigés :
 - Final: fixed NaN possibles (`1 − ndv` borné, est défini aux pôles) ; relief sous les nuages ; canvas et billes retirés au démontage (StrictMode) ; frémissement pendant l'attente ; sonde et calibration hors du précache ; SDF dans l'empreinte des pays ; première visite : seuls les fichiers de l'intro repassent par le service worker ; budget « intro prête » sans les fichiers du globe ; DPR de l'intro ≤ 2, ombre 2048 sur téléphone.
 - Final: minor (deferred): `useSyncExternalStore` réabonné à chaque rendu (sans effet, instantané stable).
 - Tests après correctifs : `npm run check` 298/298 ; e2e intro 6/6 et PWA 2/2 sur `vite preview`.
+
+## Double dézoom (10/10 au soir, demande de l'utilisateur)
+
+- Chronologie refaite (`timeline.ts`, 10 tests : Terre au centre et au rayon des deux « o », lettres, toupie ≤ 21,6°/image, continuité, Paris au gros plan) ; cibles des « o » mesurées dans la page (logo du milieu, double invisible du titre) ; `LogoTitle` (titre C🌍untrizz de l'accueil) ; petite Terre animée fabriquée par l'intro (`?introSprite=`), 116 632 octets. `npm run check` 301/301 ; e2e intro 6/6 et PWA 2/2 sur `vite preview` (sélecteur du titre précisé : le double invisible porte la même classe).

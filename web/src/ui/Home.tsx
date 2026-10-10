@@ -3,6 +3,7 @@ import type { Lang } from '../game/types';
 import { NAME_MAX, normalizeName } from '../game/prefs';
 import type { Messages } from '../i18n';
 import { InstallOffer } from './InstallOffer';
+import { LogoTitle } from './LogoTitle';
 import './home.css';
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
   name: string;
   onLang(lang: Lang): void;
   onName(name: string): void;
+  /** La petite Terre du titre : visible quand l'intro a fini, à l'angle où elle l'a laissée. */
+  logo: { angle: number | null; visible: boolean };
 }
 
 /**
@@ -18,7 +21,7 @@ interface Props {
  * titre, FR/EN, nom, « Jouer », Scores, À propos flottent au-dessus. Les éléments entrent l'un après l'autre, avec
  * élan (comme l'intro de l'ancien jeu). « Jouer » ouvre la démo des vols jusqu'aux écrans du jeu (plan 2A-5).
  */
-export function Home({ lang, m, name, onLang, onName }: Props) {
+export function Home({ lang, m, name, onLang, onName, logo }: Props) {
   const [draft, setDraft] = useState(name);
   const commit = () => { const n = normalizeName(draft, ''); setDraft(n); onName(n); };
   return (
@@ -28,7 +31,7 @@ export function Home({ lang, m, name, onLang, onName }: Props) {
           <button key={l} type="button" aria-pressed={lang === l} onClick={() => onLang(l)}>{l.toUpperCase()}</button>
         ))}
       </div>
-      <h1 className="accueil-titre">Countrizz</h1>
+      <LogoTitle angle={logo.angle} visible={logo.visible} />
       <div className="accueil-commandes">
         <label className="accueil-nom">
           <span>{m.home.yourName}</span>

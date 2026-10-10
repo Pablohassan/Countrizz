@@ -15,7 +15,7 @@ test('l’intro mène à l’accueil ; « Passer » la saute ; « Jouer » ouvre
   await page.goto('/?webgl');
   await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 120_000 });
   await passer(page).click();
-  await expect(page.locator('.accueil-titre')).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator('.accueil .accueil-titre')).toBeVisible({ timeout: 30_000 });
   await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 }); // globe prêt, fondu fini
   await expect(page.getByRole('link', { name: /Jouer|Play/ })).toHaveAttribute('href', '/demo.html');
   await expect(credit(page)).toBeVisible();
@@ -25,7 +25,7 @@ test('sans les textures de la pâte, accueil direct sur le globe', async ({ page
   // les textures seules (en dev, src/intro/ sert aussi le code de l'intro)
   await page.route(/\/intro\/[^/]+\.(jpg|json)$/, (r) => r.abort());
   await page.goto('/?webgl');
-  await expect(page.locator('.accueil-titre')).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator('.accueil .accueil-titre')).toBeVisible({ timeout: 30_000 });
   await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 });
 });
 
@@ -36,7 +36,7 @@ test('globe lent : l’accueil se monte sur la pâte et le fondu attend le globe
   await page.goto('/?webgl');
   await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 120_000 });
   await passer(page).click();
-  await expect(page.locator('.accueil-titre')).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator('.accueil .accueil-titre')).toBeVisible({ timeout: 30_000 });
   await page.waitForTimeout(3000);
   await expect(page.locator('.intro')).toHaveCount(1); // la pâte reste sous l'accueil
   release();
@@ -67,5 +67,5 @@ test('« Passer » pendant que la pâte se charge : accueil tout de suite (revue
   await page.goto('/?webgl');
   await expect(passer(page)).toBeVisible({ timeout: 30_000 });
   await passer(page).click();
-  await expect(page.locator('.accueil-titre')).toBeVisible({ timeout: 5_000 });
+  await expect(page.locator('.accueil .accueil-titre')).toBeVisible({ timeout: 5_000 });
 });

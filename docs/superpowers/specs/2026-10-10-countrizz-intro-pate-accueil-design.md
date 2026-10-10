@@ -37,7 +37,17 @@ Hors de ce plan : la PWA (plan B) ; l'avion de l'accueil et le reste de l'API du
 | 10/10 | Budget en **deux plafonds** (§7) ; « Jouer » ouvre la **démo des vols** jusqu'au plan 2A-5 |
 | 10/10 | **Mouvement réduit : rien de particulier** — l'intro se joue pareil |
 
-## 2. Déroulé de l'intro (temps en secondes, valeurs du prototype v5)
+## 2. Déroulé de l'intro
+
+> **Révisé le 10/10 au soir (décision de l'utilisateur) — prime sur le tableau suivant : double dézoom.** 0 → 1,2 s nuit et
+> étoiles (plus de titre au début) ; 1,2 → 2,8 s chute ; impact, toupie ; 5,0 → 6,4 s premier dézoom : la Terre devient le « o »
+> de **C🌍untrizz** au milieu de l'écran, les lettres surgissent (5,6 → 6,6 s) ; 8,0 → 10,0 s les lettres s'envolent,
+> rezoom vers la France ; point (10,0 s), frontière (10,7 s), drapeau (12,2 s), vignette (12,9 s) inchangés ; 15,6 → 17,6 s
+> second dézoom : la Terre se loge dans le « o » du titre de l'accueil (C🌍untrizz) ; accueil monté à 16,2 s ; 17,4 → 19 s le
+> fond de nuit s'efface sur la vraie Terre ; à 19 s une petite Terre animée (24 vues, `public/intro/logo-terre.webp`,
+> `scripts/intro/build-logo-sprite.mjs`) prend le relais dans le « o » du titre. Le raccord pâte → vraie Terre du §4 ne vaut plus.
+
+### Déroulé d'origine (prototype v5)
 
 | t | Ce qui se passe |
 |---|---|

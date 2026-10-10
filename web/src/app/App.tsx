@@ -23,6 +23,7 @@ export function App() {
   const [globeReady, setGlobeReady] = useState(false);
   const [phase, setPhase] = useState<'intro' | 'fondu' | 'accueil'>('intro');
   const [homeShown, setHomeShown] = useState(false);
+  const [logoAngle, setLogoAngle] = useState<number | null>(null);
   const globe = useRef<GlobeHandle>(null);
   const [tier, setTier] = useState<QualityTier | null>(null);
   const install = useInstall();
@@ -65,10 +66,10 @@ export function App() {
         // globe en échec : le fondu part quand même, et l'écran d'erreur (« Réessayer ») apparaît sous l'accueil
         onFailed={() => setGlobeReady(true)} />
       {phase !== 'accueil' && (
-        <Intro m={m} globeReady={globeReady} onHome={() => setHomeShown(true)} onFade={() => setPhase((p) => (p === 'intro' ? 'fondu' : p))} onDone={() => setPhase('accueil')} />
+        <Intro m={m} globeReady={globeReady} onHome={() => setHomeShown(true)} onFade={() => setPhase((p) => (p === 'intro' ? 'fondu' : p))} onDone={(angle) => { setLogoAngle(angle); setPhase('accueil'); }} />
       )}
       {homeShown && (
-        <Home lang={lang} m={m} name={name}
+        <Home lang={lang} m={m} name={name} logo={{ angle: logoAngle, visible: phase === 'accueil' }}
           onLang={(l) => { setLang(l); writePref(storage, PREF_KEYS.lang, l); }}
           onName={(n) => { setName(n); writePref(storage, PREF_KEYS.name, n); }} />
       )}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Lang } from '../game/types';
 import { NAME_MAX, normalizeName } from '../game/prefs';
 import type { Messages } from '../i18n';
+import { InstallOffer } from './InstallOffer';
 import './home.css';
 
 interface Props {
@@ -42,6 +43,7 @@ export function Home({ lang, m, name, onLang, onName }: Props) {
           <button type="button" className="accueil-sec" aria-disabled="true" title={m.home.soon}><span>{m.home.scores}</span><small>{m.home.soon}</small></button>
           <button type="button" className="accueil-sec" aria-disabled="true" title={m.home.soon}><span>{m.home.about}</span><small>{m.home.soon}</small></button>
         </div>
+        <InstallOffer m={m} />
       </div>
     </div>
   );

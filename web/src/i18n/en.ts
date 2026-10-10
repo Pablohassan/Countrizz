@@ -3,7 +3,7 @@ import type { Messages } from './types';
 export const en: Messages = {
   modes: { flag: 'Flag', country: 'Country', capital: 'Capital' },
   prompts: { flag: 'Which is its flag?', country: 'Which country is this?', capital: 'What is its capital?' },
-  home: { yourName: 'Your name:', defaultName: 'Globetrotter', play: 'Play', scores: 'Scores', about: 'About', language: 'Language', soon: 'Soon' },
+  home: { yourName: 'Your name:', defaultName: 'Globetrotter', play: 'Play', scores: 'Scores', about: 'About', language: 'Language', soon: 'Soon', later: 'Later' },
   intro: { skip: 'Skip ›' },
   mode: { back: '‹ Back', player: 'Player:', choose: 'Pick your mode', record: 'Best', new: 'New' },
   countdown: { go: 'GO!' },

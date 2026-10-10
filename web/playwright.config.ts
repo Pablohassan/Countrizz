@@ -25,8 +25,11 @@ export default defineConfig({
   use: {
     baseURL: E2E_TARGET,
     launchOptions: { args: CHROME_ARGS },
-    // Sur le site déployé, le drapeau qui installe les crochets de test (window.__globe) ; voir GlobeView.tsx.
-    ...(LOCAL ? {} : { storageState: { cookies: [], origins: [{ origin: new URL(E2E_TARGET).origin, localStorage: [{ name: 'countrizz:e2e', value: '1' }] }] } }),
+    // le service worker (PWA) servirait les fichiers du cache : bloqué partout sauf dans pwa.spec.ts
+    serviceWorkers: 'block',
+    // Le drapeau qui installe les crochets de test (window.__globe, window.__intro) ; voir GlobeView.tsx et Intro.tsx.
+    // Partout (site déployé, `vite preview` en local) : sans lui, une version de production n'installe aucun crochet.
+    storageState: { cookies: [], origins: [{ origin: new URL(E2E_TARGET).origin, localStorage: [{ name: 'countrizz:e2e', value: '1' }] }] },
   },
   ...(LOCAL ? {
     webServer: {

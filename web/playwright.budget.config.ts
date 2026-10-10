@@ -10,7 +10,7 @@ export default defineConfig({
   testDir: 'e2e-budget',
   timeout: process.env.CI ? 360_000 : 120_000,
   reporter: [['list']],
-  use: { baseURL: target, launchOptions: { args: CHROME_ARGS } },
+  use: { baseURL: target, launchOptions: { args: CHROME_ARGS }, serviceWorkers: 'block' }, // premier chargement : tout vient du réseau
   ...(target.includes('localhost')
     ? { webServer: { command: 'npm run build && npx vite preview --port 5175 --strictPort', url: 'http://localhost:5175/', reuseExistingServer: false, timeout: 300_000 } }
     : {}),

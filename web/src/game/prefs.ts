@@ -1,7 +1,13 @@
 /** Ce qu'il faut d'un `Storage` (localStorage, ou un double en test). */
 export type KeyValueStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
-export const PREF_KEYS = { name: 'countrizz:name', lang: 'countrizz:lang', vibrations: 'countrizz:vibrations' } as const;
+export const PREF_KEYS = {
+  name: 'countrizz:name', lang: 'countrizz:lang', vibrations: 'countrizz:vibrations',
+  /** « Plus tard » sur l'invitation à installer : on ne la remontre pas. */
+  installLater: 'countrizz:installer-plus-tard',
+  /** Caches déjà remplis d'avance (appli installée) : la liste des noms, pour ne pas recommencer. */
+  preloaded: 'countrizz:precharge',
+} as const;
 
 /** Nom du joueur : 12 caractères au plus (spec 2A §3, accueil). */
 export const NAME_MAX = 12;

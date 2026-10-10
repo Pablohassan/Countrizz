@@ -29,3 +29,12 @@
 @keyframes accueil-bas { from { transform: translateY(160px); opacity: 0; } 30% { opacity: 1; } }
 @keyframes accueil-droite { from { transform: translateX(420px) skewX(-15deg); opacity: 0; } 30% { opacity: 1; } to { transform: skewX(-15deg); } }
 .accueil-commandes .accueil-nom { animation-name: accueil-gauche; }
+
+/* Invitation à installer (téléphones) : une carte crème sous les commandes. */
+.installer { position: relative; margin-top: 6px; background: var(--creme); color: var(--nuit); border: 2px solid #000; border-radius: 12px; box-shadow: 4px 4px 0 #000; padding: 12px 14px 10px; display: grid; gap: 6px; justify-items: start;
+  animation: accueil-bas .6s cubic-bezier(.25, .46, .45, 1.54) 2s both; }
+.installer-bouton { font: 16px var(--cartoon); background: var(--jaune); color: var(--nuit); border: 2px solid #000; box-shadow: 3px 3px 0 #000; padding: 6px 14px; transform: skewX(-12deg); cursor: pointer; }
+.installer-bouton > span { display: inline-block; transform: skewX(12deg); }
+.installer-texte { margin: 0; font: 13px/1.35 system-ui, sans-serif; }
+.installer-plus-tard { justify-self: end; font: 12px system-ui, sans-serif; background: none; border: 0; color: #5f5d76; text-decoration: underline; cursor: pointer; padding: 2px; }
+.installer-bouton:focus-visible, .installer-plus-tard:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }

@@ -3,11 +3,14 @@ import { gzipSync } from 'node:zlib';
 import { expect, test } from '@playwright/test';
 import type { ImageryIndex } from '../src/data/imagery';
 
-/** Octets transférés jusqu'à l'arrivée sur le premier pays (texte compté gzip, comme le servira nginx). */
-export const FIRST_LOAD_BUDGET = { standard: 8_000_000 } as const;
+/**
+ * Octets transférés (texte compté gzip, comme le servira nginx). Démo : jusqu'à l'arrivée sur le premier pays (spec 2A §11).
+ * Accueil (spec intro §7, 10/10/2026) : l'intro prête ≤ 3 Mo, puis tout jusqu'à la fin du fondu ≤ 12 Mo en « standard ».
+ */
+export const FIRST_LOAD_BUDGET = { standard: 8_000_000, intro: 3_000_000, accueil: 12_000_000 } as const;
 const imagery = JSON.parse(readFileSync('public/data/imagery.json', 'utf8')) as ImageryIndex;
 
-test('premier chargement au niveau « standard » (WebGL 2) : globe, données, premier pays', async ({ page }) => {
+function collect(page: import('@playwright/test').Page) {
   const rows: { url: string; bytes: number }[] = [];
   const pending: Promise<void>[] = []; // mesures asynchrones : toutes attendues avant le total
   const onResponse = (r: import('@playwright/test').Response) => { pending.push(measure(r)); };
@@ -28,15 +31,44 @@ test('premier chargement au niveau « standard » (WebGL 2) : globe, données, p
     const body = /javascript|json|html|css|wasm/.test(type) ? await r.body().catch(() => null) : null;
     rows.push({ url, bytes: body ? gzipSync(body, { level: 9 }).length : sent });
   };
+  const sum = async () => { await Promise.all(pending); return rows.reduce((s, r) => s + r.bytes, 0); };
+  const stop = async () => { page.off('response', onResponse); await Promise.all(pending); };
+  const report = (budget: number) => {
+    rows.sort((a, b) => b.bytes - a.bytes);
+    const total = rows.reduce((s, r) => s + r.bytes, 0);
+    console.log(rows.map((r) => `${String(r.bytes).padStart(9)}  ${r.url}`).join('\n'));
+    console.log(`total ${total} octets (budget ${budget})`);
+    return total;
+  };
+  return { sum, stop, report };
+}
+
+test('premier chargement au niveau « standard » (WebGL 2) : globe, données, premier pays', async ({ page }) => {
+  const m = collect(page);
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/?demo=FRA&webgl');
+  await page.goto('/demo.html?demo=FRA&webgl');
   await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 0 });
   await page.waitForLoadState('networkidle');
-  page.off('response', onResponse); // ce qui arrive après le premier pays n'est pas du premier chargement
-  await Promise.all(pending);
-  rows.sort((a, b) => b.bytes - a.bytes);
-  const total = rows.reduce((s, r) => s + r.bytes, 0);
-  console.log(rows.map((r) => `${String(r.bytes).padStart(9)}  ${r.url}`).join('\n'));
-  console.log(`total ${total} octets (budget ${FIRST_LOAD_BUDGET.standard})`);
-  expect(total).toBeLessThanOrEqual(FIRST_LOAD_BUDGET.standard);
+  await m.stop(); // ce qui arrive après le premier pays n'est pas du premier chargement
+  expect(m.report(FIRST_LOAD_BUDGET.standard)).toBeLessThanOrEqual(FIRST_LOAD_BUDGET.standard);
 });
+
+for (const tier of ['standard', 'haute'] as const) {
+  test(`accueil (${tier}) : l'intro prête ≤ 3 Mo, tout jusqu'à la fin du fondu`, async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('countrizz:e2e', '1')); // crochets window.__intro
+    const m = collect(page);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(tier === 'standard' ? '/?webgl' : '/');
+    await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 0 });
+    const intro = await m.sum();
+    console.log(`intro prête : ${intro} octets (budget ${FIRST_LOAD_BUDGET.intro})`);
+    await page.getByRole('button', { name: /Passer|Skip/ }).click();
+    await expect(page.locator('.intro')).toHaveCount(0, { timeout: 0 });
+    await page.waitForLoadState('networkidle');
+    await m.stop();
+    const total = m.report(FIRST_LOAD_BUDGET.accueil);
+    expect(intro).toBeLessThanOrEqual(FIRST_LOAD_BUDGET.intro);
+    // « haute » : mesuré, pas encore borné (plafond à proposer à l'utilisateur sur ce chiffre)
+    if (tier === 'standard') expect(total).toBeLessThanOrEqual(FIRST_LOAD_BUDGET.accueil);
+  });
+}

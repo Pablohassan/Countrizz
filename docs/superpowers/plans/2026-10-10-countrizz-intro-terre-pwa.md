@@ -25,20 +25,20 @@
 ## Tâches
 
 ### A — intro et accueil
-- [ ] A1 `camera/home.ts` : `homePose(viewport)` (regard, altitude, haut, tangage) + tests (Paris et haut du disque aux
+- [x] A1 `camera/home.ts` : `homePose(viewport)` (regard, altitude, haut, tangage) + tests (Paris et haut du disque aux
       positions de la capture validée)
-- [ ] A2 tangage dans le pilote de caméra (`FramePose.pitch`, animé pendant les vols, 0 pour les pays) et
+- [x] A2 tangage dans le pilote de caméra (`FramePose.pitch`, animé pendant les vols, 0 pour les pays) et
       `Globe.applyPose` ; tests
-- [ ] A3 `GlobeView` : départ sur la vue d'accueil, `home()`, rendu suspendu (`active`) avec précompilation ; rotation
+- [x] A3 `GlobeView` : départ sur la vue d'accueil, `home()`, rendu suspendu (`active`) avec précompilation ; rotation
       légère
-- [ ] A4 fabrique des textures de l'intro dans `web/scripts/intro/` → `public/intro/` (≤ 3 Mo avec le code)
-- [ ] A5 `intro/timeline.ts` : chronologie pure (caméra relative, objets, DOM) + tests (continuité, toupie ≤ 21,6°/image,
+- [x] A4 fabrique des textures de l'intro dans `web/scripts/intro/` → `public/intro/` (≤ 3 Mo avec le code)
+- [x] A5 `intro/timeline.ts` : chronologie pure (caméra relative, objets, DOM) + tests (continuité, toupie ≤ 21,6°/image,
       image finale = vue d'accueil)
-- [ ] A6 `intro/scene.ts` : la Terre en pâte en TSL (couleur monde + Europe, pentes, empreintes, frémissement), nuages,
+- [x] A6 `intro/scene.ts` : la Terre en pâte en TSL (couleur monde + Europe, pentes, empreintes, frémissement), nuages,
       point, drapeau, frontière, lumières, ombres
-- [ ] A7 `intro/Intro.tsx` + écran d'accueil `ui/Home.tsx` + `App.tsx` (raccord, attentes, « Passer ») ; démo dans
+- [x] A7 `intro/Intro.tsx` + écran d'accueil `ui/Home.tsx` + `App.tsx` (raccord, attentes, « Passer ») ; démo dans
       `demo.html`
-- [ ] A8 e2e (intro → accueil, Passer, Jouer → démo, globe lent, pâte absente) ; budget à deux plafonds
+- [x] A8 e2e (intro → accueil, Passer, Jouer → démo, globe lent, pâte absente) ; budget à deux plafonds
 
 ### C — la Terre dans l'espace
 - [ ] C1 relief : normal map précalculée (pipeline textures) à la place du `bumpMap`
@@ -58,3 +58,10 @@
 ## Registre d'avancement
 
 (une ligne par tâche terminée : commits, tests)
+
+- A1-A2 `a80af9d` : `camera/home.ts` (4 tests), tangage dans le pilote (5 tests) ; `npm run check` 279/279. Vue d'accueil vérifiée sur le GPU du Mac contre `acc-16.jpg` (sonde `?home&mode=game&post`).
+- A3-A4 `2f2be6e` : `GlobeView` `startAtHome`, `active`, `home()` ; fabrique `npm run intro`.
+- A5 `94ad625` : chronologie, 7 tests (fin = caméra d'accueil, toupie ≤ 21,6°/image, continuité, Paris au gros plan, rayon 115 px).
+- A6-A7 `b6c8afa` : scène TSL, `Intro.tsx`, `Home.tsx`, `App.tsx`, démo dans `demo.html`, Chango (OFL). Film temps réel sur le GPU du Mac : déroulé complet, aucune erreur.
+- A8 : e2e `intro.spec.ts` 4/4 en local ; budget local : démo 6 628 481 ≤ 8 000 000 ; intro prête 2 177 043 ≤ 3 000 000 ; accueil standard 7 579 111 ≤ 12 000 000 ; accueil haute 11 155 044 (mesuré, non borné).
+- Décisions en route : (1) relief fin par `bumpMap` sur une hauteur (et non un gradient lu dans la normale : Terre noire et zone noire au-delà du limbe, constaté sur le GPU du Mac) ; empreintes de doigts retirées ; (2) intro : seuils jugés sur le temps exact (« Passer » restait bloqué à 21,1667 s par l'arrondi à l'image) ; (3) pas de temps plafonné à 0,25 s : un appareil lent ralentit l'intro ; (4) pendant l'attente du globe, la pâte ne tourne pas (frémissement seul) : le globe doit partir de la même pose.

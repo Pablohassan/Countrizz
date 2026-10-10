@@ -68,7 +68,7 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
 
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop);
-      const dt = Math.min(0.1, (now - last) / 1000);
+      const dt = Math.min(0.25, (now - last) / 1000);   // un téléphone lent ralentit l'intro plutôt que de sauter des phases
       last = now;
       if (frozen !== null) t = Number(frozen);
       else if (skip.current) t = INTRO.FIN;
@@ -76,6 +76,10 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
       // attentes : les textures de la pâte avant la chute, le globe avant le fondu
       if (!scene) t = Math.min(t, INTRO.CHUTE - 0.05);
       if (!ready.current) t = Math.min(t, INTRO.FONDU - 0.001);
+      // les seuils se jugent sur le temps exact : « Passer » pose t = FIN, que l'arrondi à l'image ferait retomber à 21,1667
+      if (!home && t >= INTRO.ACCUEIL) { home = true; cb.current.onHome(); }
+      if (!fade && t >= INTRO.FONDU) { fade = true; cb.current.onFade(); }
+      if (!done && t >= INTRO.FIN && frozen === null) { done = true; cb.current.onDone(); return; }
       const n = Math.floor(t * INTRO.IPS);
       if (n === step && frozen === null) return;
       step = n;
@@ -99,9 +103,6 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
         } else label.current!.style.opacity = '0';
       }
       if (window.__intro) { window.__intro.t = tq; window.__intro.frames++; window.__intro.skipped = skip.current; }
-      if (!home && tq >= INTRO.ACCUEIL) { home = true; cb.current.onHome(); }
-      if (!fade && tq >= INTRO.FONDU) { fade = true; cb.current.onFade(); }
-      if (!done && tq >= INTRO.FIN && frozen === null) { done = true; cb.current.onHome(); cb.current.onDone(); }
     };
     raf = requestAnimationFrame(loop);
     return () => {

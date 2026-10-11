@@ -21,9 +21,10 @@ export function homePose(v: Viewport): PitchedPose {
 
 /**
  * Projection d'un point du monde (sphère unité) pour une caméra en `dir · (1 + altitude)`, regard vers l'origine, `up` en
- * haut, puis inclinée de `pitch` autour de sa droite — les gestes de `Globe.applyPose`. Pixels CSS ; `null` derrière.
+ * haut, puis inclinée de `pitch` autour de sa droite — les gestes de `Globe.applyPose`. `axisY` : hauteur de l'axe optique,
+ * NDC, comme `OffsetCamera`. Pixels CSS ; `null` derrière.
  */
-export function projectOnScreen(p: Pose & { pitch?: number }, v: Viewport, point: Vec3): [number, number] | null {
+export function projectOnScreen(p: Pose & { pitch?: number; axisY?: number }, v: Viewport, point: Vec3): [number, number] | null {
   const pitch = p.pitch ?? 0;
   const camera = scale(p.dir, 1 + p.altitude);
   const fwd0 = scale(p.dir, -1);
@@ -35,5 +36,6 @@ export function projectOnScreen(p: Pose & { pitch?: number }, v: Viewport, point
   const z = dot(rel, fwd);
   if (z <= 1e-9) return null;
   const tanV = Math.tan((v.fovYDeg * Math.PI) / 360), tanH = tanV * (v.width / v.height);
-  return [v.width / 2 + (dot(rel, right) / z / tanH) * (v.width / 2), v.height / 2 - (dot(rel, up) / z / tanV) * (v.height / 2)];
+  const axisY = p.axisY ?? 0;
+  return [v.width / 2 + (dot(rel, right) / z / tanH) * (v.width / 2), v.height / 2 - (dot(rel, up) / z / tanV + axisY) * (v.height / 2)];
 }

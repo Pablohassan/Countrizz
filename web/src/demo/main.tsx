@@ -48,6 +48,10 @@ function Demo() {
 
   // `?spin=6` : rotation lente au repos (contrôle du mouvement réduit à chaud)
   useEffect(() => { if (ready && q.has('spin')) globe.current!.setIdleSpin(Number(q.get('spin'))); }, [ready]);
+  // `?safe=80,300` : bandes occupées (HUD, grille) — le pays se centre dans la zone libre
+  useEffect(() => {
+    if (ready && q.has('safe')) { const [top, bottom] = q.get('safe')!.split(',').map(Number); globe.current!.setSafeArea({ top: top!, bottom: bottom! }); }
+  }, [ready]);
 
   const random = () => countries[Math.floor(Math.random() * countries.length)]!;
   return (

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { CameraDirector } from './director';
+import { frameAltitude } from './framing';
 import { homePose } from './home';
+import { safeViewport } from './safeArea';
 import { angleBetween, toLngLat, toVec } from '../geo/vec';
 
 const opts = {
@@ -232,5 +234,55 @@ describe('CameraDirector', () => {
     d.update(10_000);
     expect(await first.arrived).toBe(true);
     expect(d.flyTo(france).durationMs).toBe(0);
+  });
+
+  it('zone libre au repos : altitude et axe rejoignent la zone par un vol court, sans saut', () => {
+    const phone = { width: 390, height: 844, fovYDeg: 50 };
+    const d = new CameraDirector({ ...opts, viewport: phone });
+    d.update(0);
+    void d.flyTo(france);
+    d.update(10_000);
+    const before = d.update(10_000);
+    expect(before.axisY).toBe(0);
+    const { zone, axisY } = safeViewport(phone, { top: 80, bottom: 300 });
+    d.setViewport(zone, axisY);
+    const start = d.update(10_000);
+    expect(start.axisY).toBe(0);
+    expect(start.altitude).toBe(before.altitude);
+    const mid = d.update(10_200).axisY;
+    expect(mid).toBeGreaterThan(0);
+    expect(mid).toBeLessThan(axisY);
+    const end = d.update(11_000);
+    expect(end.axisY).toBeCloseTo(axisY, 12);
+    expect(end.altitude).toBeCloseTo(frameAltitude(france.cap.radiusDeg, zone, opts.framing), 9);
+  });
+
+  it('zone libre posée pendant un vol : appliquée à l’arrivée, par le recadrage', async () => {
+    const phone = { width: 390, height: 844, fovYDeg: 50 };
+    const d = new CameraDirector({ ...opts, viewport: phone });
+    d.update(0);
+    const t = d.flyTo(japan);
+    const a = d.update(800);
+    const { zone, axisY } = safeViewport(phone, { top: 80, bottom: 300 });
+    d.setViewport(zone, axisY);
+    const b = d.update(800);
+    expect(b.axisY).toBe(a.axisY);
+    expect(angleBetween(a.dir, b.dir)).toBeLessThan(1e-12);
+    d.update(10_000);
+    expect(await t.arrived).toBe(true);
+    expect(d.update(11_000).axisY).toBeCloseTo(axisY, 12);
+  });
+
+  it('un vol interpole l’axe vers la zone courante', () => {
+    const phone = { width: 390, height: 844, fovYDeg: 50 };
+    const d = new CameraDirector({ ...opts, viewport: phone });
+    const { zone, axisY } = safeViewport(phone, { top: 80, bottom: 300 });
+    d.update(0);
+    d.setViewport(zone, axisY);
+    d.update(2000);
+    const t = d.flyTo(japan);
+    expect(d.update(2000).axisY).toBeCloseTo(axisY, 12);
+    d.update(2000 + t.durationMs);
+    expect(d.update(2000 + t.durationMs).axisY).toBeCloseTo(axisY, 12);
   });
 });

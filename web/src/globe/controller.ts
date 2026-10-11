@@ -2,6 +2,7 @@ import type * as THREE from 'three/webgpu';
 import { CameraDirector, type FlightTicket } from '../camera/director';
 import { FLIGHT, FOV_Y_DEG, FRAMING } from '../camera/config';
 import type { FramingParams, Viewport } from '../camera/framing';
+import { safeViewport, type SafeArea } from '../camera/safeArea';
 import { imagePatchUrl, type ImageryIndex } from '../data/imagery';
 import type { CountryRecord } from '../data/types';
 import { needsBeacon } from './beacon';
@@ -31,7 +32,10 @@ export class GlobeController {
   /** Arrivé sur la cible : sans patch à ce moment-là, la balise montre le pays (patch lent). */
   private arrived = false;
   private next: CountryRecord | null = null;
+  /** Viewport de cadrage : la zone libre (`layout`) ; `fullViewport` : tout le canvas. */
   private viewport: Viewport;
+  private fullViewport: Viewport;
+  private safeArea: SafeArea | null = null;
   private framing: FramingParams;
   private readonly cache = createPatchCache((sdf: string) => loadPatchTexture(`${this.baseUrl}data/${sdf}`), disposePatchTexture);
   private imagery: ImageryIndex | null = null;
@@ -44,6 +48,7 @@ export class GlobeController {
 
   constructor(private readonly baseUrl = '/', reducedMotion = false, private readonly clock: () => number = () => performance.now(), startAtHome = false) {
     this.viewport = { width: 960, height: 600, fovYDeg: FOV_Y_DEG };
+    this.fullViewport = this.viewport;
     this.framing = FRAMING;
     this.reduced = reducedMotion;
     this.director = new CameraDirector({ viewport: this.viewport, framing: FRAMING, flight: FLIGHT, reducedMotion, start: [2.35, 30], startAtHome });
@@ -63,8 +68,21 @@ export class GlobeController {
   }
 
   setViewport(v: Viewport): void {
-    this.viewport = v;
-    this.director.setViewport(v);
+    this.fullViewport = v;
+    this.layout();
+  }
+
+  /** Bandes occupées par l'interface (D1) : le pays se cadre et se centre dans la zone libre ; `null` : tout l'écran. */
+  setSafeArea(a: SafeArea | null): void {
+    this.safeArea = a;
+    this.layout();
+  }
+
+  /** Viewport de cadrage (zone libre) pour le directeur et la balise ; l'axe optique suit le milieu de la zone. */
+  private layout(): void {
+    const { zone, axisY } = safeViewport(this.fullViewport, this.safeArea);
+    this.viewport = zone;
+    this.director.setViewport(zone, axisY);
     this.apply();
   }
 

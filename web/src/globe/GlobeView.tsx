@@ -4,12 +4,14 @@ import * as THREE from 'three/webgpu';
 import { FOV_Y_DEG } from '../camera/config';
 import type { FlightTicket, FramePose } from '../camera/director';
 import type { FramingParams } from '../camera/framing';
+import type { SafeArea } from '../camera/safeArea';
 import type { CountryRecord, LngLat } from '../data/types';
 import { toLngLat, toVec } from '../geo/vec';
 import { GlobeController } from './controller';
 import { Globe } from './globe';
 import { CLOUD_DRIFT_TURNS_PER_S } from './clouds';
 import { ImageryCredit } from './credits';
+import { OffsetCamera } from './offsetCamera';
 import { createDprGovernor, dprOptions } from './dynamicResolution';
 import { createImageSource, loadImageryIndex } from './imagePatch';
 import { createPostProcessing, postOptions } from './postprocessing';
@@ -31,6 +33,8 @@ export interface GlobeHandle {
   /** Vue d'accueil « lever de Terre » (camera/home.ts). */
   home(): FlightTicket;
   setIdleSpin(degPerSec: number): void;
+  /** Bandes occupées par l'interface (px CSS) : le pays se cadre et se centre dans la zone libre (D1) ; `null` : tout l'écran. */
+  setSafeArea(a: SafeArea | null): void;
 }
 
 /** Crochets de test (dev, ou drapeau des e2e) : backend, recréations du renderer, projection écran, perte simulée du GPU. */
@@ -95,6 +99,8 @@ class Unsupported extends Component<{ children: ReactNode; onFailed?(): void }, 
 export function GlobeView({ ref, framing, onReady, startAtHome = false, active = true, warmUp = false, onFailed }: Props) {
   const [controller] = useState(() => new GlobeController('/', matchMedia('(prefers-reduced-motion: reduce)').matches, undefined, startAtHome));
   const [generation, setGeneration] = useState(0);
+  // Caméra décentrée (zone libre, D1) : une par GlobeView, réutilisée par les Canvas recréés après une perte du GPU.
+  const [camera] = useState(() => new OffsetCamera(FOV_Y_DEG, 1, 0.001, 100));
   // Mouvement réduit relu à chaud (spec 2A §5.7) : le réglage du système peut changer pendant la visite.
   useEffect(() => {
     const mq = matchMedia('(prefers-reduced-motion: reduce)');
@@ -123,6 +129,7 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
     overview: () => controller.director.flyToOverview(),
     home: () => controller.director.flyToHome(),
     setIdleSpin: (d) => controller.director.setIdleSpin(d),
+    setSafeArea: (a) => controller.setSafeArea(a),
   }), [controller]);
 
   return (
@@ -132,7 +139,7 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
           key={`gl-${generation}`}
           flat
           dpr={dpr}
-          camera={{ fov: FOV_Y_DEG, near: 0.001, far: 100 }}
+          camera={camera}
           gl={async (props) => {
             const info = await createRenderer(props.canvas as HTMLCanvasElement, { forceWebGL });
             const tier = qualityTier({ backend: info.backend, coarsePointer: matchMedia('(pointer: coarse)').matches, maxTexture2D: info.maxTexture2D });

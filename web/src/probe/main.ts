@@ -12,6 +12,8 @@ import { createRenderer } from '../globe/renderer';
 import { loadGlobeTextures } from '../globe/textures';
 import { createImageSource, loadImageryIndex } from '../globe/imagePatch';
 import { createPostProcessing, postOptions } from '../globe/postprocessing';
+import { OffsetCamera } from '../globe/offsetCamera';
+import { safeViewport } from '../camera/safeArea';
 import { imagePatchUrl } from '../data/imagery';
 
 /** API exposée aux contrôles Playwright (e2e/). */
@@ -35,6 +37,7 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `reveal`, `state`, `t` : apparence du pays (défaut : question, vague achevée) ;
  * - `borders` : frontières de vue d'ensemble ;
  * - `beacon=lng,lat` : balise ;
+ * - `safe=top,bottom` : bandes occupées, px (zone libre de la Task 4 du plan 2A-4) ;
  * - `k`, `margin`, `ctx` (θ_min) : cadrage autre que celui du jeu (contrôles de précision à cadrage serré) ;
  * - `img` (avec `cca3`, mode jeu) : patch image du pays, à la taille du niveau (`img`) ou forcée (`img=1024`) ;
  * - `clouds=x` : opacité des nuages (0 par défaut), sans dérive ;
@@ -58,7 +61,7 @@ const mode = q.get('mode') === 'game' ? 'game' : 'mask';
 const textures = mode === 'game' ? await loadGlobeTextures(renderer, q.get('tier') === 'haute' ? 'haute' : 'standard') : undefined;
 const borders = q.has('borders') ? ((await (await fetch('/data/borders.json')).json()) as LngLat[][]) : undefined;
 const globe = new Globe(mode, { textures, borders });
-const camera = new THREE.PerspectiveCamera(FOV_Y_DEG, width / height, 0.001, 100);
+const camera = new OffsetCamera(FOV_Y_DEG, width / height, 0.001, 100);
 
 const rec = q.get('cca3') ? (await loadCountries('/')).find((c) => c.cca3 === q.get('cca3')) : undefined;
 if (q.get('cca3') && !rec) throw new Error(`pays inconnu : ${q.get('cca3')}`);
@@ -78,14 +81,16 @@ if (rec) {
   const director = new CameraDirector({
     viewport: { width, height, fovYDeg: FOV_Y_DEG }, framing, flight: FLIGHT, reducedMotion: true, start: rec.cap.center,
   });
+  const safe = lngLat(q.get('safe'));
+  if (safe) { const s = safeViewport({ width, height, fovYDeg: FOV_Y_DEG }, { top: safe[0], bottom: safe[1] }); director.setViewport(s.zone, s.axisY); }
   void director.flyTo(rec);
   pose = director.update(0);
 } else if (q.has('home')) {
   // vue d'accueil « lever de Terre » (camera/home.ts)
-  pose = { ...homePose({ width, height, fovYDeg: FOV_Y_DEG }), cut: false };
+  pose = { ...homePose({ width, height, fovYDeg: FOV_Y_DEG }), cut: false, axisY: 0 };
 } else {
   const dir = toVec(lngLat(q.get('at')) ?? [0, 0]);
-  pose = { dir, altitude: Number(q.get('alt') ?? 1.4), up: northUp(dir), cut: false, pitch: (Number(q.get('pitch') ?? 0) * Math.PI) / 180 };
+  pose = { dir, altitude: Number(q.get('alt') ?? 1.4), up: northUp(dir), cut: false, pitch: (Number(q.get('pitch') ?? 0) * Math.PI) / 180, axisY: 0 };
 }
 globe.applyPose(pose, camera);
 globe.setBeacon(lngLat(q.get('beacon')));

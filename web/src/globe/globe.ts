@@ -10,6 +10,7 @@ import { createBorders } from './borders';
 import { createClouds } from './clouds';
 import { createCountryLayer, STATE } from './countryLayer';
 import { createEarthMaterial } from './earth';
+import { OffsetCamera } from './offsetCamera';
 import type { createImageLayer } from './imageLayer';
 import { tangentFrame } from './patchFrame';
 import { createStars } from './stars';
@@ -161,6 +162,8 @@ export class Globe {
     this.updateBeaconVisibility();
     camera.near = Math.max(pose.altitude * 0.2, 1e-5);
     camera.far = d + 60;
+    // zone libre (D1) : l'axe optique au milieu de la zone, pays vu d'aplomb
+    if (camera instanceof OffsetCamera) camera.axisY = pose.axisY;
     camera.updateProjectionMatrix();
     this.setSun(sunDirection(pose));
     for (const f of this.altitudeListeners) f(pose.altitude);

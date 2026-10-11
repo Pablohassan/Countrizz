@@ -29,4 +29,25 @@ describe('accessoires de la scène (spec 2A §5.3)', () => {
     expect(s.objects).toHaveLength(1);
     spy.mockRestore();
   });
+
+  it('un accessoire qui lève à la mise à jour est retiré ; les autres continuent (revue finale 2A-4)', () => {
+    const log: string[] = [], s = scene(), host = createAccessoryHost(s);
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const bad: Accessory = { create: () => ({ object: { name: 'cassé' } as unknown as THREE.Object3D, update: () => { throw new Error('update'); }, dispose: () => log.push('-cassé') }) };
+    host.sync([bad, acc('avion', log)]);
+    expect(() => host.update(frame)).not.toThrow();
+    host.update(frame);
+    expect(log).toEqual(['+avion', '-cassé', '~avion', '~avion']);
+    expect(s.objects).toHaveLength(1);
+    spy.mockRestore();
+  });
+
+  it('un dispose() qui lève ne remonte pas (le globe n’est pas remplacé par l’écran d’erreur)', () => {
+    const s = scene(), host = createAccessoryHost(s);
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    host.sync([{ create: () => ({ object: {} as THREE.Object3D, dispose: () => { throw new Error('dispose'); } }) }]);
+    expect(() => host.dispose()).not.toThrow();
+    expect(s.objects).toEqual([]);
+    spy.mockRestore();
+  });
 });

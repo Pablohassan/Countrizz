@@ -134,3 +134,14 @@ test('accessoire monté : dessiné, et recréé après une perte du GPU', async 
   const [r2, g2, b2] = await magenta();
   expect(r2 > 150 && b2 > 150 && g2 < 100).toBe(true);
 });
+
+test('perte du GPU puis recréation en échec : onError « lost », carte « Réessayer » qui relance (revue finale 2A-4)', async ({ page }) => {
+  await page.goto('/demo.html');
+  await page.waitForFunction(() => (window.__demo?.ready ?? 0) > 0, null, { timeout: 120_000 });
+  await page.evaluate(() => { window.__globe!.failNextRenderer = true; window.__globe!.simulateDeviceLost(); });
+  await page.waitForFunction(() => (window.__demo?.errors.length ?? 0) > 0, null, { timeout: 60_000 });
+  expect(await page.evaluate(() => window.__demo!.errors[0]!.reason)).toBe('lost');
+  await expect(page.getByText('Ton navigateur ne peut pas afficher le globe')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Réessayer' }).click();
+  await page.waitForFunction(() => window.__demo!.ready === 2, null, { timeout: 120_000 });
+});

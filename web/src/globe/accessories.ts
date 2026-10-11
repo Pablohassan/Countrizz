@@ -12,17 +12,20 @@ export interface AccessoryInstance { object: THREE.Object3D; update?(f: Accessor
 export interface Accessory { create(): AccessoryInstance }
 export interface SceneLike { add(o: THREE.Object3D): unknown; remove(o: THREE.Object3D): unknown }
 
-/** Monte dans une scène les accessoires demandés ; un accessoire qui lève à la création est ignoré (le globe continue). */
+/**
+ * Monte dans une scène les accessoires demandés. Un accessoire qui lève à la création est ignoré, à la mise à jour il est
+ * retiré, à la libération l'erreur est journalisée : le globe continue (une exception dans la boucle de rendu le figerait).
+ */
 export function createAccessoryHost(scene: SceneLike) {
   const live = new Map<Accessory, AccessoryInstance>();
+  const unmount = (a: Accessory, inst: AccessoryInstance) => {
+    live.delete(a);
+    scene.remove(inst.object);
+    try { inst.dispose(); } catch (e) { console.error(e); }
+  };
   const sync = (list: Iterable<Accessory>) => {
     const want = new Set(list);
-    for (const [a, inst] of live) {
-      if (want.has(a)) continue;
-      scene.remove(inst.object);
-      inst.dispose();
-      live.delete(a);
-    }
+    for (const [a, inst] of live) if (!want.has(a)) unmount(a, inst);
     for (const a of want) {
       if (live.has(a)) continue;
       try {
@@ -34,7 +37,11 @@ export function createAccessoryHost(scene: SceneLike) {
   };
   return {
     sync,
-    update(f: AccessoryFrame): void { for (const inst of live.values()) inst.update?.(f); },
+    update(f: AccessoryFrame): void {
+      for (const [a, inst] of live) {
+        try { inst.update?.(f); } catch (e) { console.error(e); unmount(a, inst); }
+      }
+    },
     dispose(): void { sync([]); },
   };
 }

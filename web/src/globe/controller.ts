@@ -125,7 +125,7 @@ export class GlobeController {
   private layout(): void {
     const { zone, axisY } = safeViewport(this.fullViewport, this.safeArea);
     this.viewport = zone;
-    this.director.setViewport(zone, axisY);
+    this.director.setViewport(zone, axisY, this.fullViewport);
     this.apply();
   }
 

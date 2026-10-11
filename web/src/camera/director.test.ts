@@ -285,4 +285,36 @@ describe('CameraDirector', () => {
     d.update(2000 + t.durationMs);
     expect(d.update(2000 + t.durationMs).axisY).toBeCloseTo(axisY, 12);
   });
+
+  it('l’accueil ignore la zone libre : au repos, poser la zone ne bouge ni le tangage ni l’axe (revue finale 2A-4)', () => {
+    const phone = { width: 390, height: 844, fovYDeg: 50 };
+    const d = new CameraDirector({ ...opts, viewport: phone, startAtHome: true });
+    const before = d.update(0);
+    const { zone, axisY } = safeViewport(phone, { top: 80, bottom: 300 });
+    d.setViewport(zone, axisY, phone);
+    const after = d.update(1000);
+    expect(after.pitch).toBeCloseTo(before.pitch, 12);
+    expect(after.axisY).toBe(0);
+    expect(after.altitude).toBe(before.altitude);
+  });
+
+  it('home() avec la zone posée : la vue d’accueil exacte, sans saut quand la zone s’efface (revue finale 2A-4)', async () => {
+    const phone = { width: 390, height: 844, fovYDeg: 50 };
+    const d = new CameraDirector({ ...opts, viewport: phone });
+    const { zone, axisY } = safeViewport(phone, { top: 80, bottom: 300 });
+    d.update(0);
+    d.setViewport(zone, axisY, phone);
+    void d.flyTo(france);
+    d.update(10_000);
+    const t = d.flyToHome();
+    d.update(20_000);
+    expect(await t.arrived).toBe(true);
+    const p = d.update(20_000), h = homePose(phone);
+    expect(p.pitch).toBeCloseTo(h.pitch, 9);
+    expect(p.axisY).toBe(0);
+    d.setViewport(phone, 0, phone);
+    const q = d.update(20_016);
+    expect(q.pitch).toBeCloseTo(h.pitch, 9);
+    expect(q.axisY).toBe(0);
+  });
 });

@@ -71,6 +71,8 @@ export interface GlobeDebug {
   /** Point visé (sous l'axe de la caméra) à la dernière image. */
   view(): LngLat | null;
   simulateDeviceLost(): void;
+  /** La prochaine création du renderer échoue (contrôle de la recréation en échec après une perte du GPU). */
+  failNextRenderer?: boolean;
 }
 declare global { interface Window { __globe?: GlobeDebug } }
 
@@ -112,14 +114,30 @@ interface Props {
 export type GlobeErrorReason = 'unsupported' | 'load' | 'lost';
 export interface GlobeError { reason: GlobeErrorReason; detail: string }
 
-class Unsupported extends Component<{ children: ReactNode; ui: boolean; texts: Messages['errors']; onFailed(detail: string): void }, { failed: boolean }> {
-  state = { failed: false };
-  static getDerivedStateFromError() { return { failed: true }; }
+/** Carte d'erreur « le globe n'a pas pu se charger » avec « Réessayer » (spec §10) : chargement en échec, ou recréation après une perte du GPU. */
+function LoadErrorCard({ texts, detail, onRetry }: { texts: Messages['errors']; detail: string; onRetry(): void }) {
+  return (
+    <div role="alert" title={detail} style={{ position: 'absolute', inset: 0, display: 'grid', placeContent: 'center', gap: 12, color: '#f7dc6f', background: '#16173a', textAlign: 'center', fontFamily: 'sans-serif' }}>
+      <p>{texts.loadTitle}</p>
+      <p>{texts.loadText}</p>
+      <button onClick={onRetry}>{texts.retry}</button>
+    </div>
+  );
+}
+
+/**
+ * Frontière d'erreur du renderer : à la première création, navigateur incompatible ; après une perte du GPU (`lost()`),
+ * la recréation a échoué — carte « Réessayer », pas « navigateur incompatible » (revue finale 2A-4).
+ */
+class Unsupported extends Component<{ children: ReactNode; ui: boolean; texts: Messages['errors']; lost(): boolean; onRetry(): void; onFailed(detail: string): void }, { failed: boolean; detail: string }> {
+  state = { failed: false, detail: '' };
+  static getDerivedStateFromError(e: unknown) { return { failed: true, detail: String(e) }; }
   componentDidCatch(e: unknown) { this.props.onFailed(String(e)); }
   render() {
     if (!this.state.failed) return this.props.children;
     if (!this.props.ui) return null;
     const t = this.props.texts;
+    if (this.props.lost()) return <LoadErrorCard texts={t} detail={this.state.detail} onRetry={this.props.onRetry} />;
     return <div className="globe-unsupported" role="alert"><p>{t.unsupportedTitle}</p><p>{t.unsupportedHint}</p></div>;
   }
 }
@@ -150,8 +168,8 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
   // Signaux par ref : un parent qui les donne en flèches inline ne doit pas recréer le renderer.
   const signals = useRef({ onError, onLoading, onLost });
   signals.current = { onError, onLoading, onLost };
-  // Déjà prêt une fois : une erreur du renderer ensuite vient de sa recréation après une perte du GPU.
-  const everReady = useRef(false);
+  // Perte du GPU en cours de traitement : une erreur du renderer d'ici au prochain `onReady` vient de sa recréation.
+  const recreating = useRef(false);
   const fail = (e: GlobeError) => signals.current.onError?.(e);
   const retry = () => { setLoadError(null); regenerate(); };
 
@@ -173,7 +191,8 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
   }), [controller]); // eslint-disable-line react-hooks/exhaustive-deps -- retry ne touche que des setters stables
 
   return (
-    <Unsupported key={generation} ui={errorUi} texts={texts} onFailed={(detail) => fail({ reason: everReady.current ? 'lost' : 'unsupported', detail })}>
+    <Unsupported key={generation} ui={errorUi} texts={texts} lost={() => recreating.current} onRetry={retry}
+      onFailed={(detail) => fail({ reason: recreating.current ? 'lost' : 'unsupported', detail })}>
       <div style={{ position: 'absolute', inset: 0 }}>
         <Canvas
           key={`gl-${generation}`}
@@ -181,25 +200,20 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
           dpr={dpr}
           camera={camera}
           gl={async (props) => {
+            if (window.__globe?.failNextRenderer) { window.__globe.failNextRenderer = false; throw new Error('test : création du renderer en échec'); }
             const info = await createRenderer(props.canvas as HTMLCanvasElement, { forceWebGL });
             const tier = qualityTier({ backend: info.backend, coarsePointer: matchMedia('(pointer: coarse)').matches, maxTexture2D: info.maxTexture2D });
             // Perte du GPU : on recrée le renderer (nouveau Canvas) ; le contrôleur garde la partie.
-            info.renderer.onDeviceLost = () => { signals.current.onLost?.(); regenerate(); };
+            info.renderer.onDeviceLost = () => { recreating.current = true; signals.current.onLost?.(); regenerate(); };
             Object.assign(info.renderer, { userData: { backend: info.backend, tier } });
             return info.renderer;
           }}
         >
-          <GlobeScene controller={controller} generation={generation} active={active} warmUp={warmUp} onReady={(info) => { everReady.current = true; onReady?.(info); }}
+          <GlobeScene controller={controller} generation={generation} active={active} warmUp={warmUp} onReady={(info) => { recreating.current = false; onReady?.(info); }}
             onLoading={(p) => signals.current.onLoading?.(p)}
             onError={(e) => { setLoadError(String(e)); fail({ reason: 'load', detail: String(e) }); }} onCut={() => setCuts((c) => c + 1)} onDpr={setDprProp} />
         </Canvas>
-        {loadError && errorUi && (
-          <div role="alert" title={loadError} style={{ position: 'absolute', inset: 0, display: 'grid', placeContent: 'center', gap: 12, color: '#f7dc6f', background: '#16173a', textAlign: 'center', fontFamily: 'sans-serif' }}>
-            <p>{texts.loadTitle}</p>
-            <p>{texts.loadText}</p>
-            <button onClick={retry}>{texts.retry}</button>
-          </div>
-        )}
+        {loadError && errorUi && <LoadErrorCard texts={texts} detail={loadError} onRetry={retry} />}
         <ImageryCredit placement={credit} />
         <style>{'@keyframes countrizz-cut { from { opacity: 1 } to { opacity: 0 } }'}</style>
         <div

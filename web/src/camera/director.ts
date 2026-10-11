@@ -37,6 +37,8 @@ const REFRAME_MS = { minMs: 300, maxMs: 600 } as const;
 export class CameraDirector {
   private pose: Pose;
   private viewport: Viewport;
+  /** Tout le canvas : la vue d'accueil s'y règle (maquette H3), sans zone libre ni axe décalé. */
+  private full: Viewport;
   private framing: FramingParams;
   private readonly opts: DirectorOptions;
   private flight: { plan: Flight; startMs: number; settle: (arrived: boolean) => void; pitch: [number, number]; axis: [number, number] } | null = null;
@@ -58,6 +60,7 @@ export class CameraDirector {
     this.opts = opts;
     this.reducedMotion = opts.reducedMotion;
     this.viewport = opts.viewport;
+    this.full = opts.viewport;
     this.framing = opts.framing;
     if (opts.startAtHome) {
       const h = homePose(opts.viewport);
@@ -74,9 +77,11 @@ export class CameraDirector {
    * Spec §5 : α est recalculé au redimensionnement. Le vol en cours finit tel qu'il a été planifié (aucun saut) ;
    * ensuite, ou tout de suite au repos, un vol court recadre la cible courante (ou la vue d'ensemble).
    */
-  setViewport(v: Viewport, axisY = 0): void {
-    if (v.width === this.viewport.width && v.height === this.viewport.height && v.fovYDeg === this.viewport.fovYDeg && axisY === this.axisTarget) return;
+  setViewport(v: Viewport, axisY = 0, full: Viewport = v): void {
+    const same = (a: Viewport, b: Viewport) => a.width === b.width && a.height === b.height && a.fovYDeg === b.fovYDeg;
+    if (same(v, this.viewport) && same(full, this.full) && axisY === this.axisTarget) return;
     this.viewport = v;
+    this.full = full;
     this.axisTarget = axisY;
     if (this.flight) this.reframePending = true;
     else this.reframe();
@@ -110,11 +115,12 @@ export class CameraDirector {
   flyToHome(): FlightTicket {
     this.target = null;
     this.atHome = true;
-    const h = homePose(this.viewport);
-    return this.flyToPose({ dir: h.dir, altitude: h.altitude, up: h.up }, h.pitch);
+    // la zone libre ne vaut que pour les pays : l'accueil garde tout l'écran et l'axe au centre (revue finale 2A-4)
+    const h = homePose(this.full);
+    return this.flyToPose({ dir: h.dir, altitude: h.altitude, up: h.up }, h.pitch, 0);
   }
 
-  private flyToPose(to: Pose, toPitch = 0): FlightTicket {
+  private flyToPose(to: Pose, toPitch = 0, toAxis = this.axisTarget): FlightTicket {
     this.flight?.settle(false);
     this.spinDegPerSec = 0;
     this.reframePending = false;
@@ -125,7 +131,7 @@ export class CameraDirector {
     });
     let settle!: (arrived: boolean) => void;
     const arrived = new Promise<boolean>((r) => { settle = r; });
-    this.flight = { plan, startMs: this.now, settle, pitch: [this.pitch, toPitch], axis: [this.axisY, this.axisTarget] };
+    this.flight = { plan, startMs: this.now, settle, pitch: [this.pitch, toPitch], axis: [this.axisY, toAxis] };
     return { durationMs: plan.durationMs, arrived };
   }
 
@@ -133,8 +139,8 @@ export class CameraDirector {
   private reframe(): void {
     if (this.atHome) {
       // l'altitude de l'accueil ne dépend pas du viewport ; le tangage suit le champ vertical
-      this.pitch = homePose(this.viewport).pitch;
-      this.axisY = this.axisTarget;
+      this.pitch = homePose(this.full).pitch;
+      this.axisY = 0;
       return;
     }
     const altitude = this.target

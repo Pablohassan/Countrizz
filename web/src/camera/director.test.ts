@@ -206,4 +206,31 @@ describe('CameraDirector', () => {
     expect(b[0] - a[0]).toBeCloseTo(-6, 9);
     expect(b[1]).toBeCloseTo(a[1], 9);
   });
+
+  it('mouvement réduit activé à chaud : la rotation s’arrête, puis reprend quand on le retire', () => {
+    const d = new CameraDirector(opts);
+    d.update(0);
+    d.setIdleSpin(6);
+    for (let ms = 20; ms <= 500; ms += 20) d.update(ms);
+    d.setReducedMotion(true);
+    const a = d.update(520).dir;
+    for (let ms = 540; ms <= 1500; ms += 20) d.update(ms);
+    expect(angleBetween(a, d.update(1500).dir)).toBe(0);
+    d.setReducedMotion(false);
+    for (let ms = 1520; ms <= 2500; ms += 20) d.update(ms);
+    expect(angleBetween(a, d.update(2500).dir)).toBeGreaterThan(0.05);
+  });
+
+  it('mouvement réduit activé pendant un vol : le vol finit tel quel, le suivant coupe', async () => {
+    const d = new CameraDirector(opts);
+    d.update(0);
+    const first = d.flyTo(japan);
+    const a = d.update(800);
+    d.setReducedMotion(true);
+    const b = d.update(816);
+    expect(angleBetween(a.dir, b.dir)).toBeLessThan(2 * Math.PI / 180);   // pas de saut vers l'arrivée
+    d.update(10_000);
+    expect(await first.arrived).toBe(true);
+    expect(d.flyTo(france).durationMs).toBe(0);
+  });
 });

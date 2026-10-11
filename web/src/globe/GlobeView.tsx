@@ -2,10 +2,10 @@ import { Component, useEffect, useImperativeHandle, useMemo, useRef, useState, t
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three/webgpu';
 import { FOV_Y_DEG } from '../camera/config';
-import type { FlightTicket } from '../camera/director';
+import type { FlightTicket, FramePose } from '../camera/director';
 import type { FramingParams } from '../camera/framing';
 import type { CountryRecord, LngLat } from '../data/types';
-import { toVec } from '../geo/vec';
+import { toLngLat, toVec } from '../geo/vec';
 import { GlobeController } from './controller';
 import { Globe } from './globe';
 import { CLOUD_DRIFT_TURNS_PER_S } from './clouds';
@@ -50,6 +50,8 @@ export interface GlobeDebug {
   /** Remplace le temps de frame vu par la résolution dynamique (contrôles headless). */
   frameMsOverride?: number;
   project(p: LngLat): [number, number] | null;
+  /** Point visé (sous l'axe de la caméra) à la dernière image. */
+  view(): LngLat | null;
   simulateDeviceLost(): void;
 }
 declare global { interface Window { __globe?: GlobeDebug } }
@@ -93,6 +95,14 @@ class Unsupported extends Component<{ children: ReactNode; onFailed?(): void }, 
 export function GlobeView({ ref, framing, onReady, startAtHome = false, active = true, warmUp = false, onFailed }: Props) {
   const [controller] = useState(() => new GlobeController('/', matchMedia('(prefers-reduced-motion: reduce)').matches, undefined, startAtHome));
   const [generation, setGeneration] = useState(0);
+  // Mouvement réduit relu à chaud (spec 2A §5.7) : le réglage du système peut changer pendant la visite.
+  useEffect(() => {
+    const mq = matchMedia('(prefers-reduced-motion: reduce)');
+    const on = () => controller.setReducedMotion(mq.matches);
+    on();
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, [controller]);
   // Mouvement réduit (spec §5 : fondu + coupe) : chaque coupe relance un voile noir qui s'efface en 250 ms.
   const [cuts, setCuts] = useState(0);
   // Textures globales ou frontières introuvables après les nouvelles tentatives : message et « Réessayer ».
@@ -181,6 +191,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onError, 
   const onErrorRef = useRef(onError);
   onErrorRef.current = onError;
   const lastFrame = useRef(-1);
+  const lastPose = useRef<FramePose | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -242,6 +253,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onError, 
         v.project(camera);
         return [((v.x + 1) / 2) * size.width, ((1 - v.y) / 2) * size.height];
       },
+      view: () => (lastPose.current ? toLngLat(lastPose.current.dir) : null),
       simulateDeviceLost: () => renderer.onDeviceLost({ api: 'WebGPU', message: 'test', reason: null, originalEvent: null }),
     };
     window.__globe = debug;
@@ -256,6 +268,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onError, 
     if (!globe) return;
     const now = performance.now();
     const pose = controller.director.update(now);
+    lastPose.current = pose;
     globe.setLook(lookAt(controller.timeline, now));
     globe.setTime(now / 1000);
     globe.applyPose(pose, camera);

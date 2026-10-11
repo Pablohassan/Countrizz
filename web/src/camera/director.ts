@@ -43,6 +43,8 @@ export class CameraDirector {
   /** À la vue d'accueil (ou en route vers elle) : un changement de viewport ne la recadre pas comme un pays. */
   private atHome = false;
   private now = 0;
+  private reducedMotion: boolean;
+  /** Rotation demandée ; effective seulement hors mouvement réduit. */
   private spinDegPerSec = 0;
   /** Calotte visée par le dernier vol ; `null` = vue d'ensemble. */
   private target: FrameTarget | null = null;
@@ -50,6 +52,7 @@ export class CameraDirector {
 
   constructor(opts: DirectorOptions) {
     this.opts = opts;
+    this.reducedMotion = opts.reducedMotion;
     this.viewport = opts.viewport;
     this.framing = opts.framing;
     if (opts.startAtHome) {
@@ -77,8 +80,11 @@ export class CameraDirector {
   /** Change le cadrage des vols suivants (page de calibration). */
   setFraming(p: FramingParams): void { this.framing = p; }
 
-  /** Rotation lente au repos (degrés de longitude par seconde, vers l'ouest) ; 0 l'arrête ; aucune en mouvement réduit (spec 2A §5.7). */
-  setIdleSpin(degPerSec: number): void { this.spinDegPerSec = this.opts.reducedMotion ? 0 : degPerSec; }
+  /** Rotation lente au repos (degrés de longitude par seconde, vers l'ouest) ; 0 l'arrête ; suspendue en mouvement réduit (spec 2A §5.7). */
+  setIdleSpin(degPerSec: number): void { this.spinDegPerSec = degPerSec; }
+
+  /** Spec 2A §5.7, relu à chaud : le vol en cours finit tel quel ; les suivants coupent ; la rotation demandée attend. */
+  setReducedMotion(on: boolean): void { this.reducedMotion = on; }
 
   /** Vole vers la calotte du pays ; `arrived` : true à l'arrivée, false si un autre vol le remplace. */
   flyTo(target: FrameTarget): FlightTicket {
@@ -110,7 +116,7 @@ export class CameraDirector {
     const plan = planFlight(this.pose, to, {
       ...this.opts.flight,
       alphaRad: limitingHalfAngle(this.viewport),
-      reducedMotion: this.opts.reducedMotion,
+      reducedMotion: this.reducedMotion,
     });
     let settle!: (arrived: boolean) => void;
     const arrived = new Promise<boolean>((r) => { settle = r; });
@@ -133,7 +139,7 @@ export class CameraDirector {
       ...this.opts.flight,
       ...REFRAME_MS,
       alphaRad: limitingHalfAngle(this.viewport),
-      reducedMotion: this.opts.reducedMotion,
+      reducedMotion: this.reducedMotion,
     });
     this.flight = { plan, startMs: this.now, settle: () => {}, pitch: [this.pitch, this.pitch] };
   }
@@ -158,7 +164,7 @@ export class CameraDirector {
           this.reframe();
         }
       }
-    } else if (this.spinDegPerSec !== 0) {
+    } else if (this.spinDegPerSec !== 0 && !this.reducedMotion) {
       const dir = rotate(this.pose.dir, AXIS_Y, (-this.spinDegPerSec * Math.PI / 180) * (dt / 1000));
       this.pose = { ...this.pose, dir, up: northUp(dir) };
     }

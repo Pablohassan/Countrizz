@@ -4,7 +4,9 @@ import { loadCountries } from '../data/countries';
 import type { CountryRecord } from '../data/types';
 import { GlobeView, type GlobeHandle } from '../globe/GlobeView';
 
-declare global { interface Window { __demo?: { arrived: string[]; done: boolean } } }
+declare global { interface Window { __demo?: { arrived: string[]; done: boolean; ready: number } } }
+window.__demo = { arrived: [], done: false, ready: 0 };
+const q = new URLSearchParams(location.search);
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -30,7 +32,6 @@ function Demo() {
   useEffect(() => {
     const list = new URLSearchParams(location.search).get('demo');
     if (!ready || !countries.length) return;
-    window.__demo = { arrived: [], done: false };
     if (!list) return;
     const codes = list.split(',');
     void (async () => {
@@ -45,10 +46,13 @@ function Demo() {
     })();
   }, [ready, countries]);
 
+  // `?spin=6` : rotation lente au repos (contrôle du mouvement réduit à chaud)
+  useEffect(() => { if (ready && q.has('spin')) globe.current!.setIdleSpin(Number(q.get('spin'))); }, [ready]);
+
   const random = () => countries[Math.floor(Math.random() * countries.length)]!;
   return (
     <>
-      <GlobeView ref={globe} onReady={() => setReady(true)} />
+      <GlobeView ref={globe} onReady={() => { window.__demo!.ready++; setReady(true); }} />
       <div style={{ position: 'absolute', left: 12, bottom: 12, display: 'flex', gap: 8, fontFamily: 'sans-serif' }}>
         <button disabled={!ready} onClick={() => void visit(random())}>Pays suivant</button>
         <button disabled={!current} onClick={() => globe.current!.answer('correct')}>Bonne réponse</button>

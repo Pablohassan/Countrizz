@@ -40,11 +40,21 @@ export class GlobeController {
   private readonly images = createPatchCache((url: string) => this.imageSource!.load(url), (t: THREE.Texture) => t.dispose());
 
   private cloudFade: CloudFade = { from: 1, to: 1, atMs: 0 };
+  private reduced: boolean;
 
-  constructor(private readonly baseUrl = '/', readonly reducedMotion = false, private readonly clock: () => number = () => performance.now(), startAtHome = false) {
+  constructor(private readonly baseUrl = '/', reducedMotion = false, private readonly clock: () => number = () => performance.now(), startAtHome = false) {
     this.viewport = { width: 960, height: 600, fovYDeg: FOV_Y_DEG };
     this.framing = FRAMING;
+    this.reduced = reducedMotion;
     this.director = new CameraDirector({ viewport: this.viewport, framing: FRAMING, flight: FLIGHT, reducedMotion, start: [2.35, 30], startAtHome });
+  }
+
+  get reducedMotion(): boolean { return this.reduced; }
+
+  /** Réglage du système changé pendant la visite (spec 2A §5.7) : caméra et dérive des nuages le suivent. */
+  setReducedMotion(on: boolean): void {
+    this.reduced = on;
+    this.director.setReducedMotion(on);
   }
 
   attach(globe: Globe | null): void {

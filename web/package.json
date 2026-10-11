@@ -27,6 +27,9 @@
     "budget": "playwright test -c playwright.budget.config.ts",
     "budget:local": "BUDGET_BASE_URL=http://localhost:5175 playwright test -c playwright.budget.config.ts",
     "intro:sources": "tsx scripts/intro/sources.ts",
+    "intro:temoins": "tsx scripts/intro/blender.ts temoins",
+    "intro:apercu": "tsx scripts/intro/blender.ts apercu",
+    "intro:rendu": "tsx scripts/intro/blender.ts rendu",
     "intro:keys": "tsx scripts/intro/export-keys.ts"
   },
   "dependencies": {

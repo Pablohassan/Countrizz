@@ -31,6 +31,8 @@
     "intro:apercu": "tsx scripts/intro/blender.ts apercu",
     "intro:rendu": "tsx scripts/intro/blender.ts rendu",
     "intro:sprite": "tsx scripts/intro/blender.ts sprite",
+    "intro:planche": "tsx scripts/intro/planche.ts",
+    "intro:avancement": "tsx scripts/intro/avancement.ts",
     "intro:keys": "tsx scripts/intro/export-keys.ts"
   },
   "dependencies": {

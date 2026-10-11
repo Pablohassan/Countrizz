@@ -2,7 +2,7 @@
  * Décisions pures du lanceur de Blender (`scripts/intro/blender.ts`, spec intro vidéo §2.4) : lecture de la demande,
  * arguments de Blender, instants témoins, garde du disque, fraîcheur des entrées, périphérique annoncé par Cycles.
  */
-import { CADRAGES, INTRO, IPS_MAITRE, type Cadrage } from '../../../src/intro/temps';
+import { BULLES, CADRAGES, INTRO, IPS_MAITRE, type Cadrage } from '../../../src/intro/temps';
 
 export type Mode = 'temoins' | 'apercu' | 'rendu' | 'sprite';
 const MODES: readonly Mode[] = ['temoins', 'apercu', 'rendu', 'sprite'];
@@ -26,19 +26,28 @@ export const DISQUE_MIN_RENDU = 15e9;
 /** Image n ↔ t = (n − 1) / 120 s (rendre.py, anim.py). */
 export const imageA = (t: number): number => Math.round(t * IPS_MAITRE) + 1;
 
+const T_SOL = INTRO.CHUTE + INTRO.D_CHUTE;
 /**
- * Instants témoins, rendus à pleine qualité pour mesurer le temps par image et juger la matière (planche, Task 6). Les
- * instants sans constante dans temps.ts suivent timeline.ts : logo complet entre la dernière lettre (7,48 s) et le rezoom
- * (8,8 s) ; frontière à mi-déroulé (11,5 → 13,0 s) ; drapeau grandi (13,0 → 13,45 s).
+ * Instants témoins, rendus à pleine qualité pour mesurer le temps par image et juger la matière (planche, Task 6) :
+ * la chute (0,7 s avant l'impact, la Terre bien entrée dans l'image — elle n'y entre que ≈ 1,1 s avant l'impact —, puis
+ * filée juste avant l'impact), l'impact, la toupie, le logo, le rezoom, chaque bulle (son objet à l'instant où elle
+ * apparaît), le drapeau quand les bulles se retournent, les lettres du titre de fin qui surgissent, la dernière image.
+ * Les instants sans constante dans temps.ts suivent timeline.ts : toupie à pleine vitesse avant le freinage
+ * (T_SOL + 0,8 s) ; logo complet entre la dernière lettre (7,48 s) et le rezoom (8,8 s) ; rezoom à mi-course (8,8 → 10,8 s).
  */
 export const TEMOINS: readonly { nom: string; t: number }[] = [
-  { nom: 'chute', t: INTRO.CHUTE + INTRO.D_CHUTE / 2 },
-  { nom: 'impact', t: INTRO.CHUTE + INTRO.D_CHUTE + 0.08 },
+  { nom: 'chute, départ', t: T_SOL - 0.7 },
+  { nom: 'chute, avant l’impact', t: T_SOL - 1 / 30 },
+  { nom: 'impact', t: T_SOL + 0.08 },
+  { nom: 'toupie', t: T_SOL + 0.4 },
   { nom: 'logo', t: 8.2 },
-  { nom: 'frontiere', t: 12.2 },
-  { nom: 'drapeau', t: 14.0 },
+  { nom: 'rezoom', t: 9.8 },
+  { nom: 'bulle Capitale', t: BULLES.capitale.apparait },
+  { nom: 'bulle Pays', t: BULLES.pays.apparait },
+  { nom: 'bulle Drapeau', t: BULLES.drapeau.apparait },
+  { nom: 'drapeau', t: BULLES.drapeau.retourne },
   { nom: 'titre', t: INTRO.ACCUEIL + 0.8 },
-  { nom: 'fin', t: INTRO.FIN },
+  { nom: 'titre de fin', t: INTRO.FIN },
 ];
 
 function entier(nom: string, v: string | undefined): number {

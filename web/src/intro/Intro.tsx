@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import type { Messages } from '../i18n';
 import { createIntroScene, type IntroScene } from './scene';
-import { INTRO, LOGO_LETTRES, defaultTargets, frameAt, logoAngleAt, rebond, spriteFrame, type Target, type Targets, type Viewport } from './timeline';
+import { INTRO, LOGO_LETTRES, defaultTargets, frameAt, logoAngleAt, rebond, spriteFrame, type Target, type Targets, type Viewport } from './timeline-v1';
+import { INTRO_GIVE_UP_MS } from './temps';
 import { LogoTitle } from '../ui/LogoTitle';
 import './intro.css';
 
@@ -9,9 +10,6 @@ import './intro.css';
 const E2E_FLAG = 'countrizz:e2e';
 const hooks = (): boolean => { try { return import.meta.env.DEV || localStorage.getItem(E2E_FLAG) === '1'; } catch { return import.meta.env.DEV; } };
 declare global { interface Window { __intro?: { t: number; frames: number; ready: boolean; skipped: boolean } } }
-
-/** Sans ses textures au bout de 8 s, l'intro est abandonnée : accueil direct sur le globe (spec intro §4). */
-export const INTRO_GIVE_UP_MS = 8000;
 
 interface Props {
   m: Messages;

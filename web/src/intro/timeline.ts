@@ -1,49 +1,34 @@
 import * as THREE from 'three/webgpu';
+import { REFERENCES, TITRES } from './cadrages';
+import { BULLES_RANGE, CADRAGES, INTRO, LOGO_LETTRES, LOGO_TOUR_S, type Cadrage } from './temps';
 
 /**
- * Chronologie de l'intro en pâte à modeler, en fonctions pures du temps. Déroulé validé par l'utilisateur le 10/10 :
- * la Terre tombe du ciel et tourne ; un premier dézoom en fait le « o » de C🌍untrizz au milieu de l'écran ; rezoom vers
- * la France (point, frontière, drapeau, vignette) ; un second dézoom la loge dans le « o » du titre de l'accueil.
- * La Terre en pâte est la sphère unité fixe à l'origine (repère du globe : lng 0 → +X, lng 90 → −Z, pôle Nord → +Y) ;
- * c'est la caméra qui bouge : la Terre est placée à l'écran (centre, rayon en px CSS) par une caméra fixe de 20°,
- * ramenée dans son repère. Les cibles des deux « o » sont mesurées dans la page (Intro.tsx) ; `defaultTargets` sert
- * aux tests et en attendant la mesure. Longueurs du prototype : px d'une scène 390 × 844, `U = min(largeur, ½ hauteur)`.
+ * Chronologie de l'intro en pâte à modeler, en fonctions pures du temps : la source unique des clés de la vidéo Blender
+ * (spec `2026-10-11-countrizz-intro-video-blender-design.md` §2-3). Déroulé du 10/10 : la Terre tombe du ciel (lente au
+ * départ, puis de plus en plus vite) et tourne ; un premier dézoom en fait le « o » de C🌍untrizz au milieu de l'image ;
+ * rezoom vers la France (point, frontière, drapeau ; les bulles du site s'y posent) ; un second dézoom la loge dans le
+ * « o » du titre de fin. La Terre en pâte est la sphère unité fixe à l'origine (repère du globe : lng 0 → +X,
+ * lng 90 → −Z, pôle Nord → +Y) ; c'est la caméra qui bouge : la Terre est placée à l'image (centre, rayon en px de la
+ * vidéo) par une caméra fixe de 20°, ramenée dans son repère. Deux cadrages (temps.ts) ; les deux « o » et les lettres
+ * des titres sont mesurés une fois pour toutes (cadrages.ts). Longueurs du prototype : px d'une scène 390 × 844,
+ * `U = min(largeur, ½ hauteur)`.
  */
-export const INTRO = {
-  /** Début de la chute de la Terre : il faut ses textures. */
-  CHUTE: 1.2,
-  /** L'accueil se monte (titre, commandes) ; la Terre part vers le « o » du titre. */
-  ACCUEIL: 16.2,
-  /** Le vrai globe reprend son rendu, le fond de nuit s'efface : il faut le globe. */
-  FONDU: 17.4,
-  /** Fin : la petite Terre animée du titre prend le relais de la 3D. */
-  FIN: 19.0,
-  /** Stop motion « en deux » : 12 images par seconde. */
-  IPS: 12,
-} as const;
 
 export const PARIS: readonly [number, number] = [2.35, 48.86];
 /** Repère posé à Paris : rayon de la bille, hauteur du mât (unités du repère, qui est grossi × 1,6). */
 export const POINT_RP = 0.0062, MAT_HM = 0.135, REPERE_ECHELLE = 1.6;
-/** Le nom autour du « o » (la Terre) : « C », puis « untrizz ». */
-export const LOGO_LETTRES = ['C', 'u', 'n', 't', 'r', 'i', 'z', 'z'] as const;
-/** La petite Terre du titre de l'accueil fait un tour en 4 s (24 images, stop motion à 6 i/s). */
-export const LOGO_TOUR_S = 4;
 
-export interface Viewport { width: number; height: number }
-export interface Target { x: number; y: number; r: number }
-/** Les deux « o » : celui du logo au milieu de l'écran, celui du titre de l'accueil (px CSS). */
-export interface Targets { logo: Target; titre: Target }
 export interface IntroCamera { position: [number, number, number]; quaternion: [number, number, number, number]; fov: number }
+/**
+ * Une lettre d'un titre, autour de son centre mesuré (cadrages.ts) : décalage (px de la vidéo), échelle, rotation (rad,
+ * sens horaire à l'image, comme `rotate` en CSS) et opacité.
+ */
+export interface LettreAnim { dx: number; dy: number; echelle: number; rot: number; alpha: number }
 export interface IntroFrame {
+  /** Caméra dans le repère de la Terre (repère three, Y en haut), quaternion [x, y, z, w], champ vertical 20°. */
   camera: IntroCamera;
-  /** Écrasement de la Terre (axe vertical de l'image) à l'impact ; 1 = ronde. */
+  /** Étirement de la Terre le long de l'axe vertical de l'image : allongée avant l'impact, écrasée après ; 1 = ronde. */
   squash: { sx: number; sy: number };
-  /** Flou (px) et opacité du canvas pendant la chute. */
-  blur: number;
-  opacity: number;
-  /** Opacité du fond de nuit et de ses étoiles (le vrai globe apparaît dessous pendant le fondu). */
-  backdrop: number;
   /** Nuages : échelle (ils se retirent avant le premier dézoom) et rotation propre (rad). */
   clouds: { scale: number; spin: number };
   point: { visible: boolean; y: number; sxz: number; sy: number };
@@ -51,9 +36,12 @@ export interface IntroFrame {
   border: number;
   bead: number | null;
   flag: { visible: boolean; sx: number; sy: number; y: number };
-  label: { opacity: number; scale: number };
-  /** Logo du milieu : progression d'entrée de chaque lettre (0 → 1), puis leur envol (0 → 1). */
-  logo: { letters: number[]; out: number };
+  /** Les 8 lettres du logo du milieu (ordre LOGO_LETTRES) : elles surgissent au premier dézoom, s'envolent au rezoom. */
+  logo: LettreAnim[];
+  /** Les 8 lettres du titre de fin : elles surgissent comme celles de l'accueil (home.css `.logo-l`), après ACCUEIL. */
+  titre: LettreAnim[];
+  /** Les 46 étoiles en billes : centre et rayon (px de la vidéo), opacité, échelle. */
+  etoiles: { x: number; y: number; r: number; alpha: number; echelle: number }[];
 }
 
 const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
@@ -70,31 +58,52 @@ function hermite(t: number, t0: number, t1: number, p0: number, p1: number, v0: 
   const d = t1 - t0, s = clamp01((t - t0) / d), s2 = s * s, s3 = s2 * s;
   return (2 * s3 - 3 * s2 + 1) * p0 + (s3 - 2 * s2 + s) * d * v0 + (-2 * s3 + 3 * s2) * p1 + (s3 - s2) * d * v1;
 }
-const RAD = Math.PI / 180;
-const U0 = 390, H0 = 844;
-const unit = (vp: Viewport) => Math.min(vp.width, vp.height / 2) / U0;
-
-/** Cibles approchées (avant la mesure dans la page) : le logo au milieu, le titre de l'accueil (Chango 54 px à 110 px). */
-export function defaultTargets(vp: Viewport): Targets {
-  const u = unit(vp);
-  return {
-    logo: { x: vp.width / 2 - 70 * u, y: vp.height / 2, r: 21 * u },
-    titre: { x: vp.width / 2 - 104 * u, y: 151 * u, r: 16 * u },
+/** Courbe CSS `cubic-bezier(x1, y1, x2, y2)` : x résolu par Newton, puis par dichotomie s'il le faut. */
+function bezier(x1: number, y1: number, x2: number, y2: number): (x: number) => number {
+  const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+  const X = (s: number) => ((ax * s + bx) * s + cx) * s, Y = (s: number) => ((ay * s + by) * s + cy) * s;
+  const dX = (s: number) => (3 * ax * s + 2 * bx) * s + cx;
+  return (x) => {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    let s = x;
+    for (let i = 0; i < 8; i++) {
+      const f = X(s) - x, d = dX(s);
+      if (Math.abs(f) < 1e-9) return Y(s);
+      if (Math.abs(d) < 1e-6) break;
+      s -= f / d;
+    }
+    let a = 0, b = 1;
+    s = x;
+    while (b - a > 1e-9) { if (X(s) < x) a = s; else b = s; s = (a + b) / 2; }
+    return Y(s);
   };
 }
+/** L'élan des entrées de l'accueil (home.css : `cubic-bezier(.25, .46, .45, 1.54)`). */
+const ELAN = bezier(0.25, 0.46, 0.45, 1.54);
+const RAD = Math.PI / 180;
+const U0 = 390, H0 = 844;
+interface Ecran { width: number; height: number }
+interface Cible { x: number; y: number; r: number }
+const unit = (vp: Ecran) => Math.min(vp.width, vp.height / 2) / U0;
 
-// ---------- les étapes ----------
-const T_SOL = INTRO.CHUTE + 1.6;            // la Terre touche le sol
-const DEZOOM1 = 5.0, D_DEZOOM1 = 1.4;       // premier dézoom : vers le « o » du logo
-const LETTRES = 5.6;                        // les lettres surgissent
-const REZOOM = 8.0, D_REZOOM = 2.0;         // rezoom vers la France
-const RETRAIT = 15.4;                       // le drapeau et la frontière se rangent
-const DEZOOM2 = 15.6, D_DEZOOM2 = INTRO.FONDU + 0.2 - 15.6;   // second dézoom : vers le « o » du titre
+// ---------- les étapes (s) : tout ce qui suit la chute de 2,4 s est décalé de +0,8 s (spec vidéo §3.1) ----------
+const T_SOL = INTRO.CHUTE + INTRO.D_CHUTE;  // 3,6 : la Terre touche le sol
+const DEZOOM1 = 5.8, D_DEZOOM1 = 1.4;       // premier dézoom : vers le « o » du logo
+const LETTRES = 6.4, D_LETTRE = 0.45;       // les lettres du logo surgissent (0,09 s d'écart, 0,45 s chacune)
+const REZOOM = 8.8, D_REZOOM = 2.0;         // rezoom vers la France
+const T_POINT = 10.8, D_POINT = 0.42;       // le point tombe sur Paris
+const T_LENT = 11.1;                        // gros plan : le disque grandit encore un peu, lentement, jusqu'au second dézoom
+const T_FRONTIERE = 11.5, D_FRONTIERE = 1.5;   // la frontière se déroule
+const T_DRAPEAU = 13.0, D_DRAPEAU = 0.9;    // le drapeau sort du point
+const RETRAIT = BULLES_RANGE, D_RETRAIT = 0.7;   // le drapeau, la frontière et les bulles se rangent
+const DEZOOM2 = 16.4, D_DEZOOM2 = INTRO.FONDU + 0.2 - DEZOOM2;   // second dézoom : vers le « o » du titre
+const T_TITRE = INTRO.ACCUEIL + 0.5;        // lettres du titre : au rythme de celles de l'accueil, monté à ACCUEIL
 
 // ---------- la toupie ----------
 const BETA = 40 * RAD;                      // au gros plan, Paris est 40° au-dessus du centre du disque
 const CIBLE = -Math.PI / 2 - PARIS[0] * RAD;
-const W_MAX = 2 * Math.PI * 0.72;           // 0,72 tour/s au plus : 21,6° par image à 12 i/s
+const W_MAX = 2 * Math.PI * 0.72;           // 0,72 tour/s au plus : 2,16° par image à 120 i/s
 const W_LOGO = 0.3;                         // rotation lente pendant le logo (rad/s)
 const W_TITRE = (2 * Math.PI) / LOGO_TOUR_S;
 const T_FREIN = T_SOL + 0.8, T_LOGO = T_FREIN + 1.8;
@@ -136,43 +145,57 @@ export function logoAngleAt(t: number): number {
   return ((a % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
 }
 
-// ---------- où est la Terre à l'écran ----------
+// ---------- où est la Terre à l'image ----------
 const R_LOIN = 115, R_PRES = 507, CY_LOIN = 470, PARIS_Y = 430;
-interface Placement { cx: number; cy: number; R: number; blur: number; opacity: number; sx: number; sy: number }
-function placement(t: number, vp: Viewport, c: Targets): Placement {
+/**
+ * La chute : rayon au départ (× celui d'arrivée), hauteur de départ (en rayons au-dessus du bord haut : nuages compris,
+ * rien ne dépasse dans l'image), allongement à l'impact (il suit la vitesse, en v²).
+ */
+const R_CHUTE = 2.3, HORS_CADRE = 1.4, ALLONGE = 0.12;
+/** L'impact : l'allongement se mue en écrasement sans saut (pente de départ en 1/s, fréquence en Hz, amortissement en 1/s). */
+const PENTE_IMPACT = 2.0, F_IMPACT = 1.8, AMORTI = 3;
+/** Largeur à l'impact : `sx = 1 − LARGE·(sy − 1)` (la pâte s'étale quand elle s'écrase). */
+const LARGE = 0.7;
+/** Écart à la forme ronde (`sy − 1`) après l'impact (`w` en s) : part de l'allongement de la chute, oscille, s'amortit. */
+function ecartImpact(w: number): number {
+  const om = 2 * Math.PI * F_IMPACT, b = (AMORTI * ALLONGE - PENTE_IMPACT) / om;
+  return Math.exp(-AMORTI * w) * (ALLONGE * Math.cos(om * w) + b * Math.sin(om * w));
+}
+interface Placement { cx: number; cy: number; R: number; sx: number; sy: number }
+function placement(t: number, vp: Ecran, c: { logo: Cible; titre: Cible }): Placement {
   const u = unit(vp), hy = vp.height / H0;
   const rl = R_LOIN * u, rp = R_PRES * u, cyl = CY_LOIN * hy, cx0 = vp.width / 2;
-  if (t < T_SOL) {                                  // elle tombe du ciel, énorme, floue, puis nette
-    const v = clamp01(phase(t, INTRO.CHUTE, 1.6));
-    return { cx: cx0, cy: lerp(-560 * hy, cyl, v * v), R: lerp(rl * 2.3, rl, sortie(v)), blur: 30 * Math.pow(1 - v, 1.6),
-      opacity: clamp01(phase(t, INTRO.CHUTE, 0.6)), sx: 1 - 0.06 * v, sy: 1 + 0.12 * v };
+  if (t < T_SOL) {                                  // elle tombe du ciel : grande, presque en flottant, puis de plus en plus vite
+    const v = clamp01(phase(t, INTRO.CHUTE, INTRO.D_CHUTE)), v3 = v * v * v, e = ALLONGE * v * v;
+    const R0 = rl * R_CHUTE;
+    // le centre arrive là où le bas de la Terre allongée touche le sol (comme après l'impact)
+    return { cx: cx0, cy: lerp(-HORS_CADRE * R0, cyl - rl * ALLONGE, v3), R: lerp(R0, rl, v3), sx: 1 - LARGE * e, sy: 1 + e };
   }
   if (t < DEZOOM1) {                                // l'impact : elle s'écrase, rebondit, se calme
-    const w = t - T_SOL, o = ressort(w, 2.2, 4.2), sy = 1 - 0.2 * o;
-    const cy = cyl - 20 * hy * Math.max(0, Math.sin(Math.PI * clamp01(w / 0.42))) * (1 - clamp01(w / 0.42) * 0.3) + rl * (1 - sy);
-    return { cx: cx0, cy, R: rl, blur: 0, opacity: 1, sx: 1 + 0.14 * o, sy };
+    const w = t - T_SOL, e = ecartImpact(w);
+    const cy = cyl - 20 * hy * Math.max(0, Math.sin(Math.PI * clamp01(w / 0.42))) * (1 - clamp01(w / 0.42) * 0.3) - rl * e;
+    return { cx: cx0, cy, R: rl, sx: 1 - LARGE * e, sy: 1 + e };
   }
   if (t < REZOOM) {                                 // premier dézoom : elle devient le « o » du logo
     const z = s5(phase(t, DEZOOM1, D_DEZOOM1));
-    return { cx: lerp(cx0, c.logo.x, z), cy: lerp(cyl, c.logo.y, z), R: rl * Math.pow(c.logo.r / rl, z), blur: 0, opacity: 1, sx: 1, sy: 1 };
+    return { cx: lerp(cx0, c.logo.x, z), cy: lerp(cyl, c.logo.y, z), R: rl * Math.pow(c.logo.r / rl, z), sx: 1, sy: 1 };
   }
   // rezoom : Paris glisse vers sa place, le disque grandit autour (l'horizon reste visible)
   const proche = (tt: number) => {
-    const z = s5(phase(tt, REZOOM, D_REZOOM)), lent = 1 + 0.035 * clamp01(phase(Math.min(tt, DEZOOM2), 10.3, 5.3));
+    const z = s5(phase(tt, REZOOM, D_REZOOM)), lent = 1 + 0.035 * clamp01(phase(Math.min(tt, DEZOOM2), T_LENT, DEZOOM2 - T_LENT));
     const R = c.logo.r * Math.pow((rp / c.logo.r) * lent, z);
     const parisY = lerp(c.logo.y, PARIS_Y * hy, z);
     return { cx: lerp(c.logo.x, cx0, z), cy: parisY + R * Math.sin(BETA) * redresse(tt), R };
   };
-  if (t < DEZOOM2) return { ...proche(t), blur: 0, opacity: 1, sx: 1, sy: 1 };
-  // second dézoom : vers le « o » du titre de l'accueil
+  if (t < DEZOOM2) return { ...proche(t), sx: 1, sy: 1 };
+  // second dézoom : vers le « o » du titre de fin
   const a = proche(DEZOOM2), z = s5(phase(t, DEZOOM2, D_DEZOOM2));
-  return { cx: lerp(a.cx, c.titre.x, z), cy: lerp(a.cy, c.titre.y, z), R: a.R * Math.pow(c.titre.r / a.R, z), blur: 0, opacity: 1, sx: 1, sy: 1 };
+  return { cx: lerp(a.cx, c.titre.x, z), cy: lerp(a.cy, c.titre.y, z), R: a.R * Math.pow(c.titre.r / a.R, z), sx: 1, sy: 1 };
 }
 
 /** Caméra fixe de 20° ramenée dans le repère de la Terre : position Q⁻¹(−T)/R, orientation Q⁻¹. */
 const FOV = 20, PROF = 12;
-function camera(t: number, vp: Viewport, c: Targets): IntroCamera { return cameraFrom(placement(t, vp, c), orientation(t), vp); }
-function cameraFrom(p: { cx: number; cy: number; R: number }, q: THREE.Quaternion, vp: Viewport): IntroCamera {
+function cameraFrom(p: { cx: number; cy: number; R: number }, q: THREE.Quaternion, vp: Ecran): IntroCamera {
   const k = PROF * Math.tan((FOV * RAD) / 2) / (vp.height / 2);   // px → unités du monde à la profondeur PROF
   const T = new THREE.Vector3((p.cx - vp.width / 2) * k, -(p.cy - vp.height / 2) * k, -PROF);
   const qi = q.clone().invert();
@@ -180,54 +203,78 @@ function cameraFrom(p: { cx: number; cy: number; R: number }, q: THREE.Quaternio
   return { position: pos.toArray() as [number, number, number], quaternion: qi.toArray() as [number, number, number, number], fov: FOV };
 }
 
+// ---------- les lettres et les étoiles (px de la vidéo) ----------
 /**
- * Une image de la petite Terre du titre (fabrication du sprite, `?introSprite=` en dev) : la Terre seule au centre, axe
- * incliné comme pendant le logo, tournée de `angle` (rad) — la même orientation que `logoAngleAt`.
+ * Logo du milieu (formules de l'intro three.js du 10/10, en px CSS de l'écran de référence, × `e`) : « C » arrive de la
+ * gauche, « untrizz » lettre après lettre en tournant, chacune avec élan ; tout s'envole au rezoom.
  */
-export function spriteFrame(angle: number, vp: Viewport): IntroFrame {
-  const base = frameAt(7, vp);
-  const q = new THREE.Quaternion().setFromAxisAngle(AZ, -23.4 * RAD).multiply(new THREE.Quaternion().setFromAxisAngle(AY, angle));
-  const R = 0.45 * Math.min(vp.width, vp.height);
-  return { ...base, camera: cameraFrom({ cx: vp.width / 2, cy: vp.height / 2, R }, q, vp), backdrop: 0, clouds: { scale: 0.0001, spin: 0 }, logo: { letters: base.logo.letters.map(() => 0), out: 1 } };
+function lettresLogo(t: number, e: number): LettreAnim[] {
+  const out = clamp01(phase(t, REZOOM, 0.5));
+  return LOGO_LETTRES.map((_, i) => {
+    const p = clamp01(phase(t, LETTRES + 0.09 * i, D_LETTRE)), k = rebond(p, 2.2), alpha = Math.min(1, p * 3) * (1 - out);
+    if (i === 0) return { dx: (-80 * (1 - k) - 260 * out) * e, dy: 0, echelle: 1, rot: 0, alpha };
+    return { dx: (60 + 25 * i) * out * e, dy: 30 * (1 - k) * e, echelle: Math.max(0.01, k), rot: (1 - k) * (i % 2 ? 12 : -12) * RAD, alpha };
+  });
+}
+/**
+ * Titre de fin : l'animation des lettres de l'accueil (home.css `.logo-l` : 0,45 s, retard 0,5 s + 0,09 s·i ; depuis
+ * `translateY(.3em) scale(0)` avec l'élan ; opacité de 0 à 1 sur les premiers 40 %, avec l'élan, bornée à 1).
+ */
+function lettresTitre(t: number, police: number): LettreAnim[] {
+  return LOGO_LETTRES.map((_, i) => {
+    const p = clamp01(phase(t, T_TITRE + 0.09 * i, D_LETTRE)), k = ELAN(p);
+    return { dx: 0, dy: 0.3 * police * (1 - k), echelle: k, rot: 0, alpha: clamp01(ELAN(p / 0.4)) };
+  });
+}
+/** Étoiles en billes, toujours les mêmes (graine fixe) : diamètre 1,5 à 5 px CSS, position en part de l'image, entrée 0,2 à 1,6 s. */
+const BILLES = (() => {
+  let g = 12345;
+  const a = () => (g = (g * 16807) % 2147483647) / 2147483647;
+  return Array.from({ length: 46 }, () => {
+    const d = 1.5 + a() * 3.5, x = a(), y = a();
+    return { d, x, y, debut: 0.2 + a() * 1.4, phase: a() * 6 };
+  });
+})();
+function etoiles(t: number, vp: Ecran, e: number): IntroFrame['etoiles'] {
+  return BILLES.map((b) => {
+    const u = (t - b.debut) / 0.35, r = (b.d * e) / 2;   // bord gauche et haut posés en %, comme en CSS : le centre est à + r
+    return { x: b.x * vp.width + r, y: b.y * vp.height + r, r, alpha: clamp01(u) * (0.55 + 0.35 * Math.sin(b.phase + t * 2.1)),
+      echelle: u <= 0 ? 0 : Math.min(1.3, 1 + 0.3 * Math.sin(Math.min(1, u) * Math.PI)) };
+  });
 }
 
-export function frameAt(t: number, vp: Viewport, c: Targets = defaultTargets(vp)): IntroFrame {
-  const p = placement(t, vp, c);
-  const retrait = 1 - s5(phase(t, RETRAIT, 0.7));   // le drapeau et la frontière se rangent
+export function frameAt(t: number, cadrage: Cadrage): IntroFrame {
+  const vp = CADRAGES[cadrage], titres = TITRES[cadrage];
+  const p = placement(t, vp, { logo: titres.logo.o, titre: titres.titre.o });
+  const retrait = 1 - s5(phase(t, RETRAIT, D_RETRAIT));
 
-  // le point tombe sur Paris (10,0 s), s'écrase en pastille et y reste : le drapeau en sortira
-  const ue = phase(t, 10.0, 0.42);
+  // le point tombe sur Paris, s'écrase en pastille et y reste : le drapeau en sortira
+  const ue = phase(t, T_POINT, D_POINT), pose = T_POINT + D_POINT;
   let point: IntroFrame['point'] = { visible: false, y: 0, sxz: 0, sy: 0 };
   if (ue >= 0 && retrait > 0.01) {
-    const chute = clamp01(ue), o = ue > 1 ? ressort(t - 10.42, 2.6, 5.5) : 0, tasse = ue > 1 ? s5((t - 10.42) / 0.5) : 0;
+    const chute = clamp01(ue), o = ue > 1 ? ressort(t - pose, 2.6, 5.5) : 0, tasse = ue > 1 ? s5((t - pose) / 0.5) : 0;
     const sy = (chute < 1 ? 1.25 : 1) * (1 - 0.42 * tasse) * (1 - 0.3 * o), sxz = (chute < 1 ? 0.85 : 1) * (1 + 0.3 * tasse) * (1 + 0.22 * o);
     point = { visible: true, y: POINT_RP * sy * 0.8 + 0.5 * (1 - chute * chute), sxz: POINT_RP * sxz * retrait, sy: POINT_RP * sy * retrait };
   }
-  const f = clamp01(phase(t, 10.7, 1.5));
+  const f = clamp01(phase(t, T_FRONTIERE, D_FRONTIERE));
   const border = retrait > 0.01 ? sortie(f) * retrait : 0;
-  const ud = phase(t, 12.2, 0.9);
+  const ud = phase(t, T_DRAPEAU, D_DRAPEAU);
   let flag: IntroFrame['flag'] = { visible: false, sx: 0, sy: 0, y: 0 };
   if (ud >= 0 && retrait > 0.01) {
     const o = ressort(ud, 2.2, 4.5), grand = sortie(ud * 2.2), D = 0.5 * retrait;
     flag = { visible: true, sx: grand * (1 - 0.18 * o) * D, sy: grand * (1 + 0.32 * o) * D, y: POINT_RP * 0.45 };
   }
-  const uv = phase(t, 12.9, 0.45);
-  const label = uv < 0 || retrait < 0.01 ? { opacity: 0, scale: 0 } : { opacity: clamp01(uv * 3) * retrait, scale: rebond(uv, 2.4) * (0.4 + 0.6 * retrait) };
-  // les lettres du logo : « C » d'abord, puis « untrizz », chacune avec élan ; elles s'envolent au rezoom
-  const letters = LOGO_LETTRES.map((_, i) => clamp01(phase(t, LETTRES + 0.09 * i, 0.45)));
 
   return {
-    camera: camera(t, vp, c),
+    camera: cameraFrom(p, orientation(t), vp),
     squash: { sx: p.sx, sy: p.sy },
-    blur: p.blur,
-    opacity: p.opacity,
-    backdrop: 1 - s5(phase(t, INTRO.FONDU, INTRO.FIN - INTRO.FONDU)),
     clouds: { scale: Math.max(0.0001, 1 - s5(phase(t, DEZOOM1 - 0.3, 0.8))), spin: t * 0.16 },
     point,
     border,
     bead: f > 0 && f < 1 && retrait > 0.01 ? sortie(f) : null,
     flag,
-    label,
-    logo: { letters, out: clamp01(phase(t, REZOOM, 0.5)) },
+    logo: lettresLogo(t, REFERENCES[cadrage].echelle),
+    titre: lettresTitre(t, titres.titre.police),
+    etoiles: etoiles(t, vp, REFERENCES[cadrage].echelle),
   };
 }

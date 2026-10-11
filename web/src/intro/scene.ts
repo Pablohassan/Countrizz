@@ -4,7 +4,7 @@ import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { toVec } from '../geo/vec';
 import { INTRO_EUROPE } from './boxes';
-import { MAT_HM, PARIS, POINT_RP, REPERE_ECHELLE, type IntroFrame, type Viewport } from './timeline';
+import { MAT_HM, PARIS, POINT_RP, REPERE_ECHELLE, type IntroFrame, type Viewport } from './timeline-v1';
 
 /**
  * Scène de la Terre en pâte à modeler (spec intro §3) : `three/webgpu` (repli WebGL 2), son propre canvas, détruite après

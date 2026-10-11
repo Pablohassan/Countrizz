@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { LOGO_LETTRES, LOGO_TOUR_S } from '../intro/timeline';
+import { LOGO_LETTRES, LOGO_TOUR_S } from '../intro/temps';
 
 /**
  * Le titre C🌍untrizz (déroulé du 10/10) : une petite Terre en pâte tient la place du « o ». Elle tourne en stop motion

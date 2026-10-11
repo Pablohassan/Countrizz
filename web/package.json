@@ -26,7 +26,7 @@
     "imagery:fetch": "tsx scripts/imagery/fetch-patches.ts",
     "budget": "playwright test -c playwright.budget.config.ts",
     "budget:local": "BUDGET_BASE_URL=http://localhost:5175 playwright test -c playwright.budget.config.ts",
-    "intro": "tsx scripts/intro/build-intro.ts"
+    "intro:sources": "tsx scripts/intro/sources.ts"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.1",

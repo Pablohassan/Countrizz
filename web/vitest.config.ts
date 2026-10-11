@@ -7,7 +7,7 @@ export default defineConfig({
         test: {
           name: 'unit',
           environment: 'node',
-          include: ['src/**/*.test.ts', 'scripts/geodata/__tests__/unit/**/*.test.ts', 'scripts/textures/__tests__/unit/**/*.test.ts', 'scripts/imagery/__tests__/unit/**/*.test.ts'],
+          include: ['src/**/*.test.ts', 'scripts/geodata/__tests__/unit/**/*.test.ts', 'scripts/textures/__tests__/unit/**/*.test.ts', 'scripts/imagery/__tests__/unit/**/*.test.ts', 'scripts/intro/__tests__/unit/**/*.test.ts'],
         },
       },
       {

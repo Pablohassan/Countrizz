@@ -1,37 +1,50 @@
-/**
- * Textures de l'intro en pâte à modeler (spec `2026-10-10-countrizz-intro-pate-accueil-design.md` §6), depuis les
- * sources déjà en cache (`npm run geodata:fetch`, `npm run textures:fetch`) :
- *  - `monde.jpg` : la peinture « pâte » du monde, 4096 × 2048 (22,8 px/° divisé par 2) ;
- *  - `europe.jpg` : l'Europe et le Maghreb à 48 px/° (là où la caméra s'approche) ;
- *  - `relief-fin.jpg` : la hauteur fine de ce relief (ce que le maillage ne porte pas, compressée en tanh), 24 px/° ;
- *  - `relief.jpg` : le déplacement du maillage (R = altitude, G = terre adoucie), 1024 × 512 ;
- *  - `france.json` : la frontière de la France métropolitaine (Douglas-Peucker 0,008°).
- * Les flous et liserés sont donnés en DEGRÉS : les deux peintures se raccordent sans couture.
- * Usage : `npm run intro`.
- */
-import { mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import sharp, { type Sharp } from 'sharp';
-import { TEXTURE_SOURCES } from '../textures/config';
-import { NE_COUNTRIES, TEX_CACHE_DIR } from '../textures/paths';
-import { INTRO_EUROPE } from '../../src/intro/boxes';
+import { TEXTURE_SOURCES } from '../../textures/config';
+import { NE_COUNTRIES, TEX_CACHE_DIR } from '../../textures/paths';
+import { HAUTEUR_MAX, hauteurDe } from './terre';
 
+/**
+ * Peintures « pâte » de la Terre de l'intro (extraites de l'ancien `build-intro.ts`, spec intro §6), depuis les sources
+ * en cache (`npm run geodata:fetch`, `npm run textures:fetch`) : couleurs du monde et de l'Europe, relief fin, hauteur
+ * du relief, frontière de la France. Les flous et liserés sont donnés en DEGRÉS : la peinture garde son aspect à toute
+ * définition, et les deux peintures se raccordent sans couture.
+ */
 sharp.cache(false);
-const OUT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../public/intro');
 const GEBCO = path.join(TEX_CACHE_DIR, TEXTURE_SOURCES.elevation.file);
 const BMNG = path.join(TEX_CACHE_DIR, TEXTURE_SOURCES.day.file);
 const SRC = 21600 / 360;   // les deux sources : 60 px par degré
 
-interface Box { lng0: number; lng1: number; lat0: number; lat1: number }
-const MONDE: Box = { lng0: -180, lng1: 180, lat0: -90, lat1: 90 };
-const EUROPE: Box = INTRO_EUROPE;
+export interface Box { lng0: number; lng1: number; lat0: number; lat1: number }
+export const MONDE: Box = { lng0: -180, lng1: 180, lat0: -90, lat1: 90 };
+/** Boîte de la peinture fine de l'Europe (degrés), là où la caméra s'approche. */
+export const INTRO_EUROPE = { lng0: -25, lng1: 45, lat0: 20, lat1: 72 } as const;
 
-const ne = JSON.parse(readFileSync(NE_COUNTRIES, 'utf8')) as FeatureCollection<Polygon | MultiPolygon>;
-const polys = ne.features.flatMap((f) => (f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates));
+/**
+ * Les trois flous qui étaient en pixels dans `build-intro.ts`, convertis en degrés à la définition où ils avaient été
+ * réglés (aspect validé le 10/10) ; les autres y étaient déjà en degrés.
+ */
+export const FLOUS = {
+  /** Masque terre/mer, anticrénelage des côtes : 0,6 px de la peinture du monde à 8192 px (22,76 px/°). */
+  cote: 0.6 / (8192 / 360),
+  /** Relief fin, hauteur avant d'en ôter ce que porte le maillage : 1,2 px de `relief-fin.jpg` à 24 px/°. */
+  reliefFin: 1.2 / 24,
+  /** Hauteur du relief, altitude : 0,7 px de `relief.jpg` à 1024 px (2,84 px/°). */
+  altitude: 0.7 / (1024 / 360),
+  /** Hauteur du relief, terre adoucie : 1,6 px de `relief.jpg` à 1024 px. */
+  terre: 1.6 / (1024 / 360),
+} as const;
+/** Écart type d'un flou de `deg` degrés à `pxDeg` px/° (sharp refuse moins de 0,3). */
+export const sigmaPx = (deg: number, pxDeg: number) => Math.max(0.3, deg * pxDeg);
 
-function svgTerre(b: Box, w: number, h: number): Buffer {
+/** Les pays de Natural Earth (13 Mo, lus une fois par la fabrique). */
+export type Pays = FeatureCollection<Polygon | MultiPolygon>;
+export const lirePays = (fichier = NE_COUNTRIES): Pays => JSON.parse(readFileSync(fichier, 'utf8')) as Pays;
+
+function svgTerre(pays: Pays, b: Box, w: number, h: number): Buffer {
+  const polys = pays.features.flatMap((f) => (f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates));
   const X = (lng: number) => ((lng - b.lng0) / (b.lng1 - b.lng0) * w).toFixed(1), Y = (lat: number) => ((b.lat1 - lat) / (b.lat1 - b.lat0) * h).toFixed(1);
   const pxDeg = w / (b.lng1 - b.lng0);
   // un chemin par polygone (nonzero) et un fin trait : les pays voisins se touchent sans couture
@@ -69,12 +82,13 @@ const MONT = hex('#a8764c'), NEIGE = hex('#fff8ec'), PLAGE = hex('#f6e0a0');
 const PROFOND = hex('#2b6fd9'), LAGON = hex('#5cc3f3');
 const n1 = bruit(3), n2 = bruit(11);
 
-async function peindre(b: Box, W: number, H: number): Promise<Sharp> {
-  const pxDeg = W / (b.lng1 - b.lng0), f = (deg: number) => Math.max(0.3, deg * pxDeg);
+/** La peinture « pâte » de la boîte `b`, W × H, RGB 8 bits. */
+export async function peindre(pays: Pays, b: Box, W: number, H: number): Promise<Sharp> {
+  const pxDeg = W / (b.lng1 - b.lng0), f = (deg: number) => sigmaPx(deg, pxDeg);
   const [masque, masqueFlou, eauProche, elev, bm] = await Promise.all([
-    gris(sharp(svgTerre(b, W, H), { limitInputPixels: false }).blur(0.6)),
-    gris(sharp(svgTerre(b, W, H), { limitInputPixels: false }).blur(f(0.1))),
-    gris(sharp(svgTerre(b, W / 4, H / 4), { limitInputPixels: false }).blur(f(0.7) / 4).resize(W, H, { kernel: 'cubic' })),
+    gris(sharp(svgTerre(pays, b, W, H), { limitInputPixels: false }).blur(f(FLOUS.cote))),
+    gris(sharp(svgTerre(pays, b, W, H), { limitInputPixels: false }).blur(f(0.1))),
+    gris(sharp(svgTerre(pays, b, W / 4, H / 4), { limitInputPixels: false }).blur(f(0.7) / 4).resize(W, H, { kernel: 'cubic' })),
     gris(source(GEBCO, b, W, H).blur(f(0.07))),
     source(BMNG, b, W, H).blur(f(0.11)).removeAlpha().raw().toBuffer(),
   ]);
@@ -126,25 +140,41 @@ function flouF(src: Float32Array, W: number, H: number, rayon: number): Float32A
   return a;
 }
 
-/** Relief fin : h = 0,09 · √e^2,4 (comme le maillage) moins ce que le maillage porte déjà (flou de 0,35°). */
-async function reliefFin(b: Box, W: number, H: number): Promise<Sharp> {
+/**
+ * Relief fin : h = 0,09 · √e^2,4 (comme le maillage) moins ce que le maillage porte déjà (flou de 0,35°), en gris
+ * 16 bits : v / 65535 = ½ + ½ · tanh(détail / S), S = 99ᵉ centile de |détail| (rayons terrestres) ; ½ = rien à ajouter.
+ */
+export async function reliefFin(b: Box, W: number, H: number): Promise<{ img: Sharp; S: number }> {
   const pxDeg = W / (b.lng1 - b.lng0);
   const brutH = await gris(source(GEBCO, b, W, H));
   const h = new Float32Array(W * H); for (let i = 0; i < W * H; i++) h[i] = 0.09 * Math.pow(Math.sqrt(brutH[i]! / 255), 2.4);
-  const hl = flouF(h, W, H, 1.2), floue = flouF(h, W, H, (0.35 * pxDeg) / 1.7);
+  const hl = flouF(h, W, H, FLOUS.reliefFin * pxDeg), floue = flouF(h, W, H, (0.35 * pxDeg) / 1.7);
   const det = new Float32Array(W * H); for (let i = 0; i < W * H; i++) det[i] = hl[i]! - floue[i]!;
-  // hauteur fine, compressée (tanh) sur le 99ᵉ centile ; 128 = rien à ajouter au maillage
   const tri = Float32Array.from(det.filter((_, i) => i % 7 === 0).map(Math.abs)).sort();
   const S = tri[Math.floor(tri.length * 0.99)] || 1;
-  const px = Buffer.alloc(W * H);
-  for (let i = 0; i < W * H; i++) px[i] = Math.round(127.5 + 127.5 * Math.tanh(det[i]! / S));
-  console.log(`relief fin : échelle de codage ${S.toFixed(5)} (rayons terrestres)`);
-  return sharp(px, { raw: { width: W, height: H, channels: 1 } });
+  const px = new Uint16Array(W * H);
+  for (let i = 0; i < W * H; i++) px[i] = Math.round(32767.5 + 32767.5 * Math.tanh(det[i]! / S));
+  return { img: sharp(px, { raw: { width: W, height: H, channels: 1 } }).toColourspace('grey16'), S };
+}
+
+/**
+ * Hauteur du relief en pâte sur le monde, W × H, en gris 16 bits : v / 65535 · HAUTEUR_MAX = `hauteurDe(terre, altitude)`
+ * (rayons terrestres), la terre adoucie et l'altitude floutées comme `relief.jpg` l'était pour le maillage de scene.ts.
+ */
+export async function hauteur(pays: Pays, W: number, H: number): Promise<Uint16Array> {
+  const pxDeg = W / 360;
+  const [terre, alt] = await Promise.all([
+    gris(sharp(svgTerre(pays, MONDE, W, H), { limitInputPixels: false }).blur(sigmaPx(FLOUS.terre, pxDeg))),
+    gris(source(GEBCO, MONDE, W, H).blur(sigmaPx(FLOUS.altitude, pxDeg))),
+  ]);
+  const out = new Uint16Array(W * H);
+  for (let i = 0; i < W * H; i++) out[i] = Math.round((hauteurDe(terre[i]! / 255, alt[i]! / 255) / HAUTEUR_MAX) * 65535);
+  return out;
 }
 
 /** Frontière de la France métropolitaine : le plus grand anneau dans sa boîte, simplifié (Douglas-Peucker 0,008°). */
-function france(): [number, number][] {
-  const fra = ne.features.find((f) => f.properties?.ADM0_A3 === 'FRA')!;
+export function france(pays: Pays): [number, number][] {
+  const fra = pays.features.find((f) => f.properties?.ADM0_A3 === 'FRA')!;
   const anneaux = (fra.geometry.type === 'Polygon' ? [fra.geometry.coordinates] : fra.geometry.coordinates).map((p) => p[0]!);
   const aire = (r: number[][]) => Math.abs(r.reduce((s, [a, b], i) => { const [c, e] = r[(i + 1) % r.length]!; return s + a! * e! - c! * b!; }, 0) / 2);
   const ring = anneaux.filter((r) => r.every(([a, b]) => a! > -6 && a! < 10 && b! > 41 && b! < 52)).sort((a, b) => aire(b) - aire(a))[0]!;
@@ -163,21 +193,3 @@ function france(): [number, number][] {
   const mi = Math.floor(ring.length / 2);
   return [...dp(ring.slice(0, mi + 1), 0.008).slice(0, -1), ...dp(ring.slice(mi), 0.008)].map(([a, b]) => [+a!.toFixed(3), +b!.toFixed(3)]);
 }
-
-mkdirSync(OUT, { recursive: true });
-// Peintures : aplats doux, la couleur sous-échantillonnée (4:2:0) ne se voit pas ; pentes et relief : deux canaux de données (4:4:4).
-const jpeg = { quality: 90, mozjpeg: true } as const, donnees = { quality: 92, mozjpeg: true, chromaSubsampling: '4:4:4' } as const;
-const monde = await peindre(MONDE, 8192, 4096);
-await monde.resize(4096, 2048, { kernel: 'lanczos3' }).jpeg(jpeg).toFile(path.join(OUT, 'monde.jpg'));
-const EW = (EUROPE.lng1 - EUROPE.lng0) * 48, EH = (EUROPE.lat1 - EUROPE.lat0) * 48;
-await (await peindre(EUROPE, EW, EH)).jpeg(jpeg).toFile(path.join(OUT, 'europe.jpg'));
-await (await reliefFin(EUROPE, (EUROPE.lng1 - EUROPE.lng0) * 24, (EUROPE.lat1 - EUROPE.lat0) * 24)).jpeg(donnees).toFile(path.join(OUT, 'relief-fin.jpg'));
-const DW = 1024, DH = 512;
-const [dm, de] = await Promise.all([gris(sharp(svgTerre(MONDE, DW, DH)).blur(1.6)), gris(source(GEBCO, MONDE, DW, DH).blur(0.7))]);
-const d3 = Buffer.alloc(DW * DH * 3);
-for (let i = 0; i < DW * DH; i++) { d3[i * 3] = de[i]!; d3[i * 3 + 1] = dm[i]!; }
-await sharp(d3, { raw: { width: DW, height: DH, channels: 3 } }).jpeg({ ...donnees, quality: 95 }).toFile(path.join(OUT, 'relief.jpg'));
-writeFileSync(path.join(OUT, 'france.json'), JSON.stringify(france()));
-let total = 0;
-for (const f of ['monde.jpg', 'europe.jpg', 'relief-fin.jpg', 'relief.jpg', 'france.json']) { const s = statSync(path.join(OUT, f)).size; total += s; console.log(`${f} ${s} octets`); }
-console.log(`total ${total} octets`);

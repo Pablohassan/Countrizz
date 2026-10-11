@@ -50,7 +50,7 @@ timeline.ts ──(Node)──► intro-keys.json ──(Blender -b -P)──►
    cadrages de référence, **portrait 1080 × 2340** et **paysage 1920 × 1080** (px de la vidéo). Pour chaque image :
    caméra (position, orientation, champ), écrasement de la Terre, rotation, nuages, point, avancée de la frontière,
    drapeau, lettres des deux titres, étoiles. Les **ancres des bulles** (point, milieu de la frontière, haut du mât, en px
-   de la vidéo) sont exportées à part pour le lecteur (`intro-ancres.json`, fenêtre des bulles seulement). L'export est
+   de la vidéo) sont exportées à part pour le lecteur (`web/public/intro/ancres.json`, fenêtre des bulles seulement). L'export est
    déterministe : deux exports donnent les mêmes octets.
 3. **Scène Blender construite par script Python versionné** (`web/scripts/intro/blender/`), lancé par
    `/Applications/Blender.app/Contents/MacOS/Blender -b -P …` (Blender 5.0.1 sur le Mac) ; pas de `.blend` fait à la
@@ -60,9 +60,9 @@ timeline.ts ──(Node)──► intro-keys.json ──(Blender -b -P)──►
      empreintes de doigts, frémissement continu très léger ;
    - nuages en boules de pâte, point rouge, frontière en boudin jaune avec sa perle, drapeau tricolore ondulant ;
    - étoiles en billes de pâte jaunes ;
-   - les lettres « Countrizz » en pâte (police Chango, OFL — le TTF, Blender ne lit pas le WOFF2 du site) : le logo
+   - les lettres « Countrizz » en pâte (police Chango, OFL — le fichier du site `web/public/fonts/chango-latin.woff2`, que Blender 5.0.1 lit tel quel : D6) : le logo
      C🌍untrizz du milieu et le titre de fin où la Terre se loge.
-4. **Rendu Cycles (Metal) sur le Mac** : vrai flou de mouvement, profondeur de champ légère, débruitage. Fond rendu
+4. **Rendu Cycles (Metal) sur le Mac** : vrai flou de mouvement, débruitage, sans profondeur de champ (D10). Fond rendu
    **transparent**, la nuit `#16173a` est posée à l'encodage (couleur exacte, même que l'accueil). Le rendu **reprend où
    il s'est arrêté** (images déjà faites gardées). Trois niveaux :
    - **images témoins** : quelques instants clés à pleine qualité, pour **mesurer** le temps par image et régler
@@ -70,7 +70,7 @@ timeline.ts ──(Node)──► intro-keys.json ──(Blender -b -P)──►
    - **prévisualisation** : toute l'intro en basse qualité, pour juger le rythme ;
    - **rendu final** : 120 i/s, deux cadrages.
 5. **Encodage ffmpeg** : par cadrage, 60 et 120 i/s, en **AV1** (`libsvtav1`) et **HEVC** (`libx265`, étiquette
-   `hvc1` pour Safari) ; une **affiche** WebP (première image) par cadrage. Sorties dans `web/public/intro/`,
+   `hvc1` pour Safari) ; une **affiche** WebP (première image) par cadrage. Vidéos et manifeste dans `web/public/video/` (hors du service worker : D1), affiches dans `web/public/intro/`,
    versionnées ; les PNG restent hors du dépôt (dossier ignoré par git).
 6. **Petite Terre du titre** (`logo-terre.webp`, 24 vues d'un tour) : rendue dans la même scène Blender.
 7. **Commande unique** par étape (`npm run intro:keys`, `intro:temoins`, `intro:apercu`, `intro:rendu`, `intro:encode`),
@@ -104,8 +104,9 @@ ne part qu'après son accord.
 - **Cadrage** : fenêtre plus haute que large → portrait ; sinon paysage. `object-fit: cover` (bords rognés).
 - **Cadence** : avant de lancer la vidéo, ≈ 0,15 s de mesure de l'intervalle entre images de l'écran
   (`requestAnimationFrame`) ; ≥ 100 Hz → 120 i/s, sinon 60.
-- **Codec** : AV1 si `canPlayType`/`MediaCapabilities` le permet, sinon HEVC ; `<video muted playsinline autoplay>`.
-- **Globe** : monté caché dès le début, chargé pendant la vidéo (inchangé) ; la vidéo est décodée par le circuit vidéo,
+- **Codec** : la variante la plus économe, puis la plus fluide, AV1 avant HEVC à égalité (D11) ; `<video muted playsinline>`
+  lancée par `play()`, sans attribut `autoplay` (D13).
+- **Globe** : monté caché dès que son code est arrivé (import différé : D15), chargé pendant la vidéo ; la vidéo est décodée par le circuit vidéo,
   le GPU reste au globe.
 - **Synchronisation** : bulles, montage de l'accueil et fondu suivent l'image affichée (`requestVideoFrameCallback`,
   `currentTime` en repli).
@@ -126,7 +127,7 @@ ne part qu'après son accord.
 
 - Textes des catalogues : `modes.capital`, `modes.country`, `modes.flag` suivis de « ? » ; réponses « Paris »,
   « France » (identiques en FR et EN) et le drapeau 🇫🇷. Style de l'accueil (Chango, couleurs, inclinaison, élan).
-- Chaque bulle pointe vers son ancre (`intro-ancres.json`), convertie du repère de la vidéo vers l'écran selon le
+- Chaque bulle pointe vers son ancre (`ancres.json`), convertie du repère de la vidéo vers l'écran selon le
   rognage `cover` de la fenêtre courante ; recalculée au redimensionnement.
 - Les bulles sont décoratives pour les lecteurs d'écran (`aria-hidden`) ; la vidéo porte un `aria-label`.
 
@@ -139,8 +140,8 @@ vignette, les étoiles en DOM, et les textures de l'intro dans `public/intro/` (
 
 ## 7. Budget (amende le §7 du spec de l'intro)
 
-- **Démarrage** : affiche + début de la vidéo → première image en < 1 s sur une bonne connexion ; plafond en octets fixé
-  au plan après mesure des vidéos témoins.
+- **Démarrage** : affiche + début de la vidéo → première image en < 1 s sur une bonne connexion, mesurée en temps de
+  première image (médiane de 3, 40 ms par requête, 10 Mbit/s) ; affiche ≤ 100 000 octets (D14).
 - **Chaque vidéo** (portrait/paysage × 60/120 × AV1/HEVC) a son plafond, fixé au plan après mesure : la meilleure
   qualité qui reste fluide en 4G.
 - **Le reste du premier chargement** (globe, données, code) garde le plafond de 12 Mo en « standard » ; la vidéo n'y
@@ -151,9 +152,9 @@ vignette, les étoiles en DOM, et les textures de l'intro dans `public/intro/` (
 
 - **Unitaires (Vitest)** :
   - chronologie : la chute part plus lentement qu'avant et sa vitesse croît jusqu'à l'impact ; continuité aux bornes de
-    phase ; bulles dans l'ordre Capitale, Pays, Drapeau puis retournement ; durée totale dans 20-25 s ;
+    phase ; bulles dans l'ordre Capitale, Pays, Drapeau puis retournement ; durée totale ≈ 20 s (test : entre 19 et 25 s, D12) ;
   - export : une clé par 1/120 s, sortie déterministe, ancres dans le cadre ;
-  - lecteur : cadrage selon la fenêtre, cadence selon l'intervalle mesuré, AV1 puis HEVC, conversion des ancres par le
+  - lecteur : cadrage selon la fenêtre, cadence selon l'intervalle mesuré, la plus économe puis la plus fluide, AV1 avant HEVC à égalité (D11), conversion des ancres par le
     rognage `cover`, chaque cas d'échec du §4 mène à l'accueil direct.
 - **Fabrique (sur le Mac, hors suite)** : rendu « aperçu » de quelques images basse définition (la scène se construit) ;
   contrôle de l'encodage (durée, cadence, résolution, codec lus par `ffprobe`) ; fond de la vidéo à ± 3 de `#16173a`.
@@ -171,8 +172,8 @@ vignette, les étoiles en DOM, et les textures de l'intro dans `public/intro/` (
 - **Poids des vidéos** : à 120 i/s, le plafond peut forcer à baisser le débit ; le 60 i/s reste la version de tous les
   écrans courants.
 - **Lecture automatique** refusée sur certains iPhone (économie d'énergie) : accueil direct, sans intro.
-- **HEVC** non lu par Chromium sans matériel ; l'AV1 y est lu partout (décodeur logiciel) — les e2e (Chromium) lisent
-  l'AV1.
+- **HEVC** : sa lecture par Chromium sans décodeur matériel n'est pas garantie ; l'AV1 y est lu (décodeur logiciel) — les
+  e2e (Chromium) forcent une variante AV1 et ne dépendent pas de HEVC (D6).
 
 ## 10. Contraintes globales
 
@@ -193,3 +194,23 @@ vignette, les étoiles en DOM, et les textures de l'intro dans `public/intro/` (
 | 6 | fabrique des textures servies | **sources de la fabrique Blender**, plus servies |
 | 7 | intro prête ≤ 3 Mo | **§7 de ce spec** |
 | 9 | images de référence de l'intro à des instants figés | **contrôles des bulles et des étapes** |
+
+## 12. Décisions du plan (validées à la relecture du plan `docs/superpowers/plans/2026-10-11-countrizz-intro-video-blender.md`)
+
+| | Décision |
+|---|---|
+| D1 | Vidéos et manifeste dans `web/public/video/`, hors du service worker et de l'empreinte `CACHES.lourd` ; calque d'image à part ; hors ligne : accueil direct |
+| D2 | Variante portrait légère 720 × 1560 à 60 i/s (AV1 et HEVC), servie quand la 1080 n'est ni fluide ni économe : 10 vidéos |
+| D3 | 120 i/s seulement si l'intervalle mesuré est ≤ 10 ms et que le décodage à 120 est économe ; Safari (≈ 60 Hz par défaut) reçoit 60 |
+| D4 | Drapeau des bulles : l'image `/data/flags/fra.svg` (l'émoji n'est pas rendu sous Windows) |
+| D5 | Titre de fin en pâte dans la vidéo ; le titre HTML de l'accueil reste invisible jusqu'au fondu puis entre en fondu ; la petite Terre repart de l'angle de la vidéo |
+| D6 | Blender lit la police WOFF2 du site ; les e2e (Chromium) lisent l'AV1 et ne dépendent pas de HEVC |
+| D7 | Images rendues en PNG RGBA 8 bits ; AV1 en 10 bits |
+| D8 | Vidéo portrait calée en haut (`object-position: 50% 0`), paysage centrée ; ancres converties par la même règle |
+| D9 | Échantillons réglés sur la mesure des images témoins ; au-delà de ≈ 10 h de rendu, l'utilisateur choisit (moins d'échantillons ou deux nuits) |
+| D10 | Pas de profondeur de champ (les lettres sont à 2 unités de la caméra, la Terre à ≥ 4,27) |
+| D11 | Ordre d'essai des variantes : économe, puis fluide, puis lisible ; AV1 avant HEVC à égalité |
+| D12 | Fin à 19,8 s (≈ 20 s) |
+| D13 | `<video muted playsinline>` sans `autoplay`, `src` posé en JS puis `play()` |
+| D14 | Démarrage ≤ 1000 ms (médiane de 3, 40 ms par requête, 10 Mbit/s) et affiche ≤ 100 000 o ; débit plafonné à 4000 kb/s, CRF de départ 30 (AV1) / 22 (HEVC) |
+| D15 | `GlobeView` chargé par import différé pour tenir le démarrage |

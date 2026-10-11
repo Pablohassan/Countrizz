@@ -21,32 +21,34 @@ describe('CameraDirector', () => {
     expect(angleBetween(p.dir, toVec([2.35, 48.85]))).toBeLessThan(1e-9);
   });
 
-  it('flyTo se résout à l’arrivée, pas avant', async () => {
+  it('flyTo rend sa durée et se résout à true à l’arrivée, pas avant', async () => {
     const d = new CameraDirector(opts);
     d.update(0);
-    let done = false;
-    const flight = d.flyTo(japan).then(() => { done = true; });
-    d.update(100);
+    const t = d.flyTo(japan);
+    expect(t.durationMs).toBeGreaterThanOrEqual(1500);
+    expect(t.durationMs).toBeLessThanOrEqual(3500);
+    let done: boolean | null = null;
+    void t.arrived.then((ok) => { done = ok; });
+    d.update(t.durationMs - 1);
     await Promise.resolve();
-    expect(done).toBe(false);
-    d.update(100 + 3500);
-    await flight;
+    expect(done).toBeNull();
+    d.update(t.durationMs);
+    await t.arrived;
     expect(done).toBe(true);
     expect(angleBetween(d.update(5000).dir, toVec(japan.cap.center))).toBeLessThan(1e-9);
   });
 
-  it('un second flyTo repart de la pose courante, sans saut, et libère le premier', async () => {
+  it('un vol remplacé se résout à false tout de suite ; le second repart de la pose courante, sans saut', async () => {
     const d = new CameraDirector(opts);
     d.update(0);
     const first = d.flyTo(japan);
-    d.update(800);
     const before = d.update(800);
     const second = d.flyTo(france);
     const after = d.update(800);
     expect(angleBetween(before.dir, after.dir)).toBeLessThan(1e-9);
-    await first;
+    expect(await first.arrived).toBe(false);
     d.update(10_000);
-    await second;
+    expect(await second.arrived).toBe(true);
   });
 
   it('le cadrage suit le viewport courant', () => {
@@ -119,7 +121,8 @@ describe('CameraDirector', () => {
     d.update(0);
     const flight = d.flyTo(japan);
     const p = d.update(16);
-    await flight;
+    expect(flight.durationMs).toBe(0);
+    await flight.arrived;
     expect(p.cut).toBe(true);
     expect(angleBetween(p.dir, toVec(japan.cap.center))).toBeLessThan(1e-9);
   });
@@ -149,7 +152,7 @@ describe('CameraDirector', () => {
     expect(mid).toBeGreaterThan(0);
     expect(mid).toBeLessThan(h);
     d.update(10_000);
-    await flight;
+    await flight.arrived;
     expect(d.update(10_000).pitch).toBe(0);
   });
 
@@ -161,7 +164,7 @@ describe('CameraDirector', () => {
     d.update(10_000);
     const home = d.flyToHome();
     d.update(20_000);
-    await home;
+    await home.arrived;
     const p = d.update(20_000), h = homePose(phone);
     expect(angleBetween(p.dir, h.dir)).toBeLessThan(1e-9);
     expect(p.altitude).toBeCloseTo(h.altitude, 9);

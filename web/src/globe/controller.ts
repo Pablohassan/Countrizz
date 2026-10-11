@@ -1,5 +1,5 @@
 import type * as THREE from 'three/webgpu';
-import { CameraDirector } from '../camera/director';
+import { CameraDirector, type FlightTicket } from '../camera/director';
 import { FLIGHT, FOV_Y_DEG, FRAMING } from '../camera/config';
 import type { FramingParams, Viewport } from '../camera/framing';
 import { imagePatchUrl, type ImageryIndex } from '../data/imagery';
@@ -75,8 +75,11 @@ export class GlobeController {
     this.apply();
   }
 
-  /** Vole vers le pays ; résolue à l'arrivée, que le patch soit chargé, en retard ou en échec (la manche n'attend pas). */
-  flyTo(rec: CountryRecord): Promise<void> {
+  /**
+   * Vole vers le pays. `arrived` : true à l'arrivée (patch chargé, en retard ou en échec : la manche n'attend pas), false
+   * si un autre vol l'a remplacé ou si `clear()` est passé entre-temps.
+   */
+  flyTo(rec: CountryRecord): FlightTicket {
     this.target = rec;
     this.timeline = null;
     this.patch = null;
@@ -91,9 +94,17 @@ export class GlobeController {
     this.requestImage();
     this.fadeClouds(1);
     this.apply();
-    return this.director.flyTo(rec).then(() => {
-      if (this.target === rec) { this.arrived = true; this.fadeClouds(0); this.apply(); }
-    });
+    const t = this.director.flyTo(rec);
+    return {
+      durationMs: t.durationMs,
+      arrived: t.arrived.then((ok) => {
+        if (!ok || this.target !== rec) return false;
+        this.arrived = true;
+        this.fadeClouds(0);
+        this.apply();
+        return true;
+      }),
+    };
   }
 
   prefetch(rec: CountryRecord): void {

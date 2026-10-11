@@ -22,6 +22,9 @@ export interface DirectorOptions {
  */
 export interface FramePose extends Pose { cut: boolean; pitch: number }
 
+/** Vol lancé : sa durée (le 3-2-1 s'y règle) et son issue — `true` à l'arrivée, `false` s'il a été remplacé avant. */
+export interface FlightTicket { durationMs: number; arrived: Promise<boolean> }
+
 const AXIS_Y = [0, 1, 0] as const;
 /** Recadrage après un changement de viewport : vol court, sur place. */
 const REFRAME_MS = { minMs: 300, maxMs: 600 } as const;
@@ -35,7 +38,7 @@ export class CameraDirector {
   private viewport: Viewport;
   private framing: FramingParams;
   private readonly opts: DirectorOptions;
-  private flight: { plan: Flight; startMs: number; resolve: () => void; pitch: [number, number] } | null = null;
+  private flight: { plan: Flight; startMs: number; settle: (arrived: boolean) => void; pitch: [number, number] } | null = null;
   private pitch = 0;
   /** À la vue d'accueil (ou en route vers elle) : un changement de viewport ne la recadre pas comme un pays. */
   private atHome = false;
@@ -77,31 +80,31 @@ export class CameraDirector {
   /** Rotation lente au repos (degrés de longitude par seconde, vers l'ouest) ; 0 l'arrête ; aucune en mouvement réduit (spec 2A §5.7). */
   setIdleSpin(degPerSec: number): void { this.spinDegPerSec = this.opts.reducedMotion ? 0 : degPerSec; }
 
-  /** Vole vers la calotte du pays ; la promesse se résout à l'arrivée (ou quand un autre vol la remplace). */
-  flyTo(target: FrameTarget): Promise<void> {
+  /** Vole vers la calotte du pays ; `arrived` : true à l'arrivée, false si un autre vol le remplace. */
+  flyTo(target: FrameTarget): FlightTicket {
     this.target = target;
     this.atHome = false;
     const dir = toVec(target.cap.center);
     return this.flyToPose({ dir, altitude: frameAltitude(target.cap.radiusDeg, this.viewport, this.framing), up: northUp(dir) });
   }
 
-  /** Remonte à la vue d'ensemble au-dessus du point courant. */
-  flyToOverview(): Promise<void> {
+  /** Remonte à la vue d'ensemble au-dessus du point courant (même ticket que `flyTo`). */
+  flyToOverview(): FlightTicket {
     this.target = null;
     this.atHome = false;
     return this.flyToPose({ ...this.pose, altitude: overviewAltitude(this.viewport, this.framing), up: northUp(this.pose.dir) });
   }
 
-  /** Rejoint la vue d'accueil « lever de Terre » (tangage compris). */
-  flyToHome(): Promise<void> {
+  /** Rejoint la vue d'accueil « lever de Terre », tangage compris (même ticket que `flyTo`). */
+  flyToHome(): FlightTicket {
     this.target = null;
     this.atHome = true;
     const h = homePose(this.viewport);
     return this.flyToPose({ dir: h.dir, altitude: h.altitude, up: h.up }, h.pitch);
   }
 
-  private flyToPose(to: Pose, toPitch = 0): Promise<void> {
-    this.flight?.resolve();
+  private flyToPose(to: Pose, toPitch = 0): FlightTicket {
+    this.flight?.settle(false);
     this.spinDegPerSec = 0;
     this.reframePending = false;
     const plan = planFlight(this.pose, to, {
@@ -109,9 +112,10 @@ export class CameraDirector {
       alphaRad: limitingHalfAngle(this.viewport),
       reducedMotion: this.opts.reducedMotion,
     });
-    return new Promise((resolve) => {
-      this.flight = { plan, startMs: this.now, resolve, pitch: [this.pitch, toPitch] };
-    });
+    let settle!: (arrived: boolean) => void;
+    const arrived = new Promise<boolean>((r) => { settle = r; });
+    this.flight = { plan, startMs: this.now, settle, pitch: [this.pitch, toPitch] };
+    return { durationMs: plan.durationMs, arrived };
   }
 
   /** Vol court vers l'altitude que demande le viewport courant, même direction ; aucune promesse à résoudre. */
@@ -131,7 +135,7 @@ export class CameraDirector {
       alphaRad: limitingHalfAngle(this.viewport),
       reducedMotion: this.opts.reducedMotion,
     });
-    this.flight = { plan, startMs: this.now, resolve: () => {}, pitch: [this.pitch, this.pitch] };
+    this.flight = { plan, startMs: this.now, settle: () => {}, pitch: [this.pitch, this.pitch] };
   }
 
   update(nowMs: number): FramePose {
@@ -140,7 +144,7 @@ export class CameraDirector {
     this.now = nowMs;
     let cut = false;
     if (this.flight) {
-      const { plan, startMs, resolve, pitch } = this.flight;
+      const { plan, startMs, settle, pitch } = this.flight;
       const t = plan.durationMs === 0 ? 1 : (nowMs - startMs) / plan.durationMs;
       this.pose = plan.at(t);
       const s = Math.min(1, Math.max(0, t));
@@ -148,7 +152,7 @@ export class CameraDirector {
       if (t >= 1) {
         cut = plan.durationMs === 0;
         this.flight = null;
-        resolve();
+        settle(true);
         if (this.reframePending) {
           this.reframePending = false;
           this.reframe();

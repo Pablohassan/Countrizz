@@ -2,6 +2,7 @@ import { Component, useEffect, useImperativeHandle, useMemo, useRef, useState, t
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three/webgpu';
 import { FOV_Y_DEG } from '../camera/config';
+import type { FlightTicket } from '../camera/director';
 import type { FramingParams } from '../camera/framing';
 import type { CountryRecord, LngLat } from '../data/types';
 import { toVec } from '../geo/vec';
@@ -20,14 +21,15 @@ import { disposeGlobeTextures, loadGlobeTextures, type GlobeTextures } from './t
 extend(THREE as unknown as Parameters<typeof extend>[0]);
 
 export interface GlobeHandle {
-  flyTo(rec: CountryRecord): Promise<void>;
+  /** Vole vers le pays : `durationMs` (le 3-2-1 s'y règle) ; `arrived` à true à l'arrivée, false si remplacé. */
+  flyTo(rec: CountryRecord): FlightTicket;
   prefetch(rec: CountryRecord): void;
   showQuestion(): void;
   answer(kind: 'correct' | 'wrong'): void;
   clear(): void;
-  overview(): Promise<void>;
+  overview(): FlightTicket;
   /** Vue d'accueil « lever de Terre » (camera/home.ts). */
-  home(): Promise<void>;
+  home(): FlightTicket;
   setIdleSpin(degPerSec: number): void;
 }
 

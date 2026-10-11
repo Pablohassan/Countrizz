@@ -22,7 +22,7 @@ function Demo() {
   async function visit(rec: CountryRecord, next?: CountryRecord) {
     setCurrent(rec);
     if (next) globe.current!.prefetch(next);
-    await globe.current!.flyTo(rec);
+    await globe.current!.flyTo(rec).arrived;
     window.__demo!.arrived.push(rec.cca3);
     globe.current!.showQuestion();
   }

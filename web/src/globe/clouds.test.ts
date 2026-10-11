@@ -24,7 +24,7 @@ describe('opacité des nuages (spec §4.2 : ils s’effacent à l’arrivée sur
     c.director.update(0);
     now = 10_000;
     c.director.update(now);
-    await flight;
+    await flight.arrived;
     expect(c.cloudOpacityAt(now)).toBe(1);
     expect(c.cloudOpacityAt(now + CLOUD_FADE_MS)).toBe(0);
     now += 2 * CLOUD_FADE_MS;

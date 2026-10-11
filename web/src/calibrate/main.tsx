@@ -31,7 +31,7 @@ function Calibrate() {
   useEffect(() => { const f = () => setSize({ width: innerWidth, height: innerHeight }); addEventListener('resize', f); return () => removeEventListener('resize', f); }, []);
   const refs = useMemo(() => REFERENCES.map((c) => countries.find((x) => x.cca3 === c)).filter((c): c is CountryRecord => !!c), [countries]);
 
-  const go = (rec: CountryRecord) => { setCurrent(rec); void globe.current!.flyTo(rec).then(() => globe.current!.showQuestion()); };
+  const go = (rec: CountryRecord) => { setCurrent(rec); void globe.current!.flyTo(rec).arrived.then(() => globe.current!.showQuestion()); };
   useEffect(() => { if (current) go(current); }, [framing]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const code = new URLSearchParams(location.search).get('country');

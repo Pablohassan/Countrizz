@@ -64,3 +64,25 @@ describe('patch image du pays visé (GlobeController)', () => {
     expect(disposed).toEqual(['fra']);
   });
 });
+
+describe('ticket de vol (GlobeController)', () => {
+  it('clear() pendant le vol : l’arrivée ne compte pas', async () => {
+    const { c } = setup(async () => tex('x'));
+    c.director.update(0);
+    const t = c.flyTo(by('FRA'));
+    c.clear();
+    c.director.update(10_000);
+    expect(await t.arrived).toBe(false);
+  });
+
+  it('perte du GPU pendant le vol (globe détaché puis rattaché) : l’arrivée compte', async () => {
+    const { c } = setup(async () => tex('x'));
+    c.director.update(0);
+    const t = c.flyTo(by('FRA'));
+    c.director.update(500);
+    c.attach(null);
+    c.attach({ setPatch() {}, setBeacon() {}, setImagePatch() {} } as unknown as Globe);
+    c.director.update(10_000);
+    expect(await t.arrived).toBe(true);
+  });
+});

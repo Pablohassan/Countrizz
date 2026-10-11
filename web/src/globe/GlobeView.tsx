@@ -7,14 +7,17 @@ import type { FramingParams } from '../camera/framing';
 import type { SafeArea } from '../camera/safeArea';
 import type { CountryRecord, LngLat } from '../data/types';
 import { toLngLat, toVec } from '../geo/vec';
+import type { Messages } from '../i18n';
+import { fr } from '../i18n/fr';
 import { GlobeController } from './controller';
 import { Globe } from './globe';
 import { CLOUD_DRIFT_TURNS_PER_S } from './clouds';
-import { ImageryCredit } from './credits';
+import { ImageryCredit, type CreditPlacement } from './credits';
 import { OffsetCamera } from './offsetCamera';
 import type { ScreenPoint } from './project';
 import { createDprGovernor, dprOptions } from './dynamicResolution';
 import { createImageSource, loadImageryIndex } from './imagePatch';
+import { createProgress } from './loading';
 import { createPostProcessing, postOptions } from './postprocessing';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
 import { lookAt } from './reveal';
@@ -40,6 +43,8 @@ export interface GlobeHandle {
   project(p: LngLat): ScreenPoint | null;
   /** Appelé à chaque image, pose posée, avant le rendu : les calques DOM s'y recalent. Rend la désinscription. */
   onFrame(cb: () => void): () => void;
+  /** Après une erreur (chargement, recréation) : nouvel essai complet. */
+  retry(): void;
 }
 
 /** Crochets de test (dev, ou drapeau des e2e) : backend, recréations du renderer, projection écran, perte simulée du GPU. */
@@ -85,23 +90,38 @@ interface Props {
   active?: boolean;
   /** Inactif : compiler maintenant (une image) ; l'appelant le demande peu avant le fondu, pas pendant l'intro. */
   warmUp?: boolean;
-  /** Le globe ne viendra pas (navigateur incompatible, textures ou frontières introuvables) : l'appelant ne l'attend plus. */
-  onFailed?(): void;
+  /** Progression du chargement des fichiers du globe, 0 à 1 (écran de chargement, D15) ; repart de 0 à chaque essai. */
+  onLoading?(progress: number): void;
+  /** Le GPU a été perdu : le renderer se recrée (`onReady` suivra, ou `onError` « lost »). */
+  onLost?(): void;
+  /** Le globe ne viendra pas (sans nouvel essai, `retry`) : l'appelant ne l'attend plus et peut montrer ses écrans (D16). */
+  onError?(e: GlobeError): void;
+  /** Textes de l'interface d'erreur intégrée (catalogue `errors`) ; défaut : français. */
+  texts?: Messages['errors'];
+  /** `false` : pas d'interface d'erreur intégrée, l'appelant affiche la sienne sur `onError`. Par défaut `true`. */
+  errorUi?: boolean;
+  /** Place du crédit de l'imagerie (D2). */
+  credit?: CreditPlacement;
 }
 
-class Unsupported extends Component<{ children: ReactNode; onFailed?(): void }, { failed: boolean }> {
+/** `unsupported` : ni WebGPU ni WebGL 2 ; `load` : textures ou frontières introuvables ; `lost` : recréation après une perte du GPU en échec. */
+export type GlobeErrorReason = 'unsupported' | 'load' | 'lost';
+export interface GlobeError { reason: GlobeErrorReason; detail: string }
+
+class Unsupported extends Component<{ children: ReactNode; ui: boolean; texts: Messages['errors']; onFailed(detail: string): void }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
-  componentDidCatch() { this.props.onFailed?.(); }
+  componentDidCatch(e: unknown) { this.props.onFailed(String(e)); }
   render() {
-    return this.state.failed
-      ? <p className="globe-unsupported">Ton navigateur ne peut pas afficher le globe : il faut WebGPU ou WebGL 2.</p>
-      : this.props.children;
+    if (!this.state.failed) return this.props.children;
+    if (!this.props.ui) return null;
+    const t = this.props.texts;
+    return <div className="globe-unsupported" role="alert"><p>{t.unsupportedTitle}</p><p>{t.unsupportedHint}</p></div>;
   }
 }
 
 /** Globe plein cadre : R3F habille `Globe` ; l'état (caméra, pays, patchs) vit dans `GlobeController`. */
-export function GlobeView({ ref, framing, onReady, startAtHome = false, active = true, warmUp = false, onFailed }: Props) {
+export function GlobeView({ ref, framing, onReady, startAtHome = false, active = true, warmUp = false, onLoading, onLost, onError, texts = fr.errors, errorUi = true, credit }: Props) {
   const [controller] = useState(() => new GlobeController('/', matchMedia('(prefers-reduced-motion: reduce)').matches, undefined, startAtHome));
   const [generation, setGeneration] = useState(0);
   // Caméra décentrée (zone libre, D1) : une par GlobeView, réutilisée par les Canvas recréés après une perte du GPU.
@@ -123,6 +143,13 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
   const [dpr, setDprProp] = useState<number | [number, number]>([1, 2]);
   const regenerate = () => { setDprProp([1, 2]); setGeneration((g) => g + 1); };
   const forceWebGL = new URLSearchParams(location.search).has('webgl');
+  // Signaux par ref : un parent qui les donne en flèches inline ne doit pas recréer le renderer.
+  const signals = useRef({ onError, onLoading, onLost });
+  signals.current = { onError, onLoading, onLost };
+  // Déjà prêt une fois : une erreur du renderer ensuite vient de sa recréation après une perte du GPU.
+  const everReady = useRef(false);
+  const fail = (e: GlobeError) => signals.current.onError?.(e);
+  const retry = () => { setLoadError(null); regenerate(); };
 
   useEffect(() => { if (framing) controller.setFraming(framing); }, [controller, framing]);
   useImperativeHandle(ref, () => ({
@@ -137,10 +164,11 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
     setSafeArea: (a) => controller.setSafeArea(a),
     project: (p) => controller.project(p),
     onFrame: (cb) => controller.onFrame(cb),
-  }), [controller]);
+    retry,
+  }), [controller]); // eslint-disable-line react-hooks/exhaustive-deps -- retry ne touche que des setters stables
 
   return (
-    <Unsupported onFailed={onFailed}>
+    <Unsupported key={generation} ui={errorUi} texts={texts} onFailed={(detail) => fail({ reason: everReady.current ? 'lost' : 'unsupported', detail })}>
       <div style={{ position: 'absolute', inset: 0 }}>
         <Canvas
           key={`gl-${generation}`}
@@ -151,20 +179,23 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
             const info = await createRenderer(props.canvas as HTMLCanvasElement, { forceWebGL });
             const tier = qualityTier({ backend: info.backend, coarsePointer: matchMedia('(pointer: coarse)').matches, maxTexture2D: info.maxTexture2D });
             // Perte du GPU : on recrée le renderer (nouveau Canvas) ; le contrôleur garde la partie.
-            info.renderer.onDeviceLost = regenerate;
+            info.renderer.onDeviceLost = () => { signals.current.onLost?.(); regenerate(); };
             Object.assign(info.renderer, { userData: { backend: info.backend, tier } });
             return info.renderer;
           }}
         >
-          <GlobeScene controller={controller} generation={generation} active={active} warmUp={warmUp} onReady={onReady} onError={(e) => { setLoadError(String(e)); onFailed?.(); }} onCut={() => setCuts((c) => c + 1)} onDpr={setDprProp} />
+          <GlobeScene controller={controller} generation={generation} active={active} warmUp={warmUp} onReady={(info) => { everReady.current = true; onReady?.(info); }}
+            onLoading={(p) => signals.current.onLoading?.(p)}
+            onError={(e) => { setLoadError(String(e)); fail({ reason: 'load', detail: String(e) }); }} onCut={() => setCuts((c) => c + 1)} onDpr={setDprProp} />
         </Canvas>
-        {loadError && (
+        {loadError && errorUi && (
           <div role="alert" title={loadError} style={{ position: 'absolute', inset: 0, display: 'grid', placeContent: 'center', gap: 12, color: '#f7dc6f', background: '#16173a', textAlign: 'center', fontFamily: 'sans-serif' }}>
-            <p>Le globe n’a pas pu se charger (réseau ?).</p>
-            <button onClick={() => { setLoadError(null); regenerate(); }}>Réessayer</button>
+            <p>{texts.loadTitle}</p>
+            <p>{texts.loadText}</p>
+            <button onClick={retry}>{texts.retry}</button>
           </div>
         )}
-        <ImageryCredit />
+        <ImageryCredit placement={credit} />
         <style>{'@keyframes countrizz-cut { from { opacity: 1 } to { opacity: 0 } }'}</style>
         <div
           key={`cut-${cuts}`}
@@ -175,7 +206,7 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
   );
 }
 
-function GlobeScene({ controller, generation, active, warmUp, onReady, onError, onCut, onDpr }: { controller: GlobeController; generation: number; active: boolean; warmUp: boolean; onReady?: Props['onReady']; onError(e: unknown): void; onCut(): void; onDpr(dpr: number): void }) {
+function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading, onError, onCut, onDpr }: { controller: GlobeController; generation: number; active: boolean; warmUp: boolean; onReady?: Props['onReady']; onLoading(p: number): void; onError(e: unknown): void; onCut(): void; onDpr(dpr: number): void }) {
   const renderer = useThree((s) => s.gl) as unknown as THREE.WebGPURenderer & { userData: { backend: Backend; tier: QualityTier } };
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const scene = useThree((s) => s.scene) as unknown as THREE.Scene;
@@ -204,6 +235,8 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onError, 
   onReadyRef.current = onReady;
   const onErrorRef = useRef(onError);
   onErrorRef.current = onError;
+  const onLoadingRef = useRef(onLoading);
+  onLoadingRef.current = onLoading;
   const lastFrame = useRef(-1);
 
   useEffect(() => {
@@ -215,7 +248,15 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onError, 
       if (!r.ok) throw new Error(`borders.json : HTTP ${r.status}`);
       return (await r.json()) as LngLat[][];
     };
-    void withRetry(() => Promise.all([loadGlobeTextures(renderer, tier), loadBorders()]), { attempts: 3, delayMs: 800 }).then(([textures, borders]) => {
+    // chaque essai repart de 0 : 4 textures et les frontières
+    const attempt = () => {
+      const progress = createProgress(5, (p) => onLoadingRef.current(p));
+      return Promise.all([
+        loadGlobeTextures(renderer, tier, '/', (i, f) => progress.update(i, f)),
+        loadBorders().finally(() => progress.update(4, 1)),
+      ]);
+    };
+    void withRetry(attempt, { attempts: 3, delayMs: 800 }).then(([textures, borders]) => {
       if (!alive) { disposeGlobeTextures(textures); return; }
       const g = new Globe('game', { textures, borders });
       built = { globe: g, textures };

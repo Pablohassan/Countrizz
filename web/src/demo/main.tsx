@@ -6,9 +6,15 @@ import { GlobeView, type GlobeHandle } from '../globe/GlobeView';
 import type { ScreenPoint } from '../globe/project';
 
 declare global {
-  interface Window { __demo?: { arrived: string[]; done: boolean; ready: number; project(p: LngLat): ScreenPoint | null } }
+  interface Window {
+    __demo?: {
+      arrived: string[]; done: boolean; ready: number; project(p: LngLat): ScreenPoint | null;
+      /** signaux du globe : progression, pertes du GPU, erreurs ; `retry` : nouvel essai */
+      loading: number[]; lost: number; errors: { reason: string; detail: string }[]; retry(): void;
+    };
+  }
 }
-window.__demo = { arrived: [], done: false, ready: 0, project: () => null };
+window.__demo = { arrived: [], done: false, ready: 0, project: () => null, loading: [], lost: 0, errors: [], retry: () => {} };
 const q = new URLSearchParams(location.search);
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -23,7 +29,10 @@ function Demo() {
   const [current, setCurrent] = useState<CountryRecord | null>(null);
   const [ready, setReady] = useState(false);
   useEffect(() => { void loadCountries('/').then(setCountries); }, []);
-  useEffect(() => { window.__demo!.project = (p) => globe.current?.project(p) ?? null; }, []);
+  useEffect(() => {
+    window.__demo!.project = (p) => globe.current?.project(p) ?? null;
+    window.__demo!.retry = () => globe.current?.retry();
+  }, []);
 
   async function visit(rec: CountryRecord, next?: CountryRecord) {
     setCurrent(rec);
@@ -60,7 +69,9 @@ function Demo() {
   const random = () => countries[Math.floor(Math.random() * countries.length)]!;
   return (
     <>
-      <GlobeView ref={globe} onReady={() => { window.__demo!.ready++; setReady(true); }} />
+      <GlobeView ref={globe} onReady={() => { window.__demo!.ready++; setReady(true); }}
+        onLoading={(p) => window.__demo!.loading.push(p)} onLost={() => window.__demo!.lost++} onError={(e) => window.__demo!.errors.push(e)}
+        errorUi={!q.has('noerrorui')} credit={q.has('credit') ? { bottom: `${q.get('credit')}px` } : undefined} />
       <div style={{ position: 'absolute', left: 12, bottom: 12, display: 'flex', gap: 8, fontFamily: 'sans-serif' }}>
         <button disabled={!ready} onClick={() => void visit(random())}>Pays suivant</button>
         <button disabled={!current} onClick={() => globe.current!.answer('correct')}>Bonne réponse</button>

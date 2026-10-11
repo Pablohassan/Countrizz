@@ -12,18 +12,23 @@ export function disposeGlobeTextures(t: GlobeTextures): void {
   t.clouds?.dispose();
 }
 
-/** Textures globales KTX2 (pipeline scripts/textures) : 8K en « haute », 4K en « standard » ; surface et nuages toujours en 4K. */
-export async function loadGlobeTextures(renderer: THREE.WebGPURenderer, tier: QualityTier, base = '/'): Promise<GlobeTextures> {
+/**
+ * Textures globales KTX2 (pipeline scripts/textures) : 8K en « haute », 4K en « standard » ; surface et nuages toujours en 4K.
+ * `onProgress` : fichier 0 à 3 (jour, nuit, surface, nuages) et sa fraction ; 1 à la fin, échec compris.
+ */
+export async function loadGlobeTextures(renderer: THREE.WebGPURenderer, tier: QualityTier, base = '/', onProgress?: (file: number, fraction: number) => void): Promise<GlobeTextures> {
   // detectSupport exige un renderer initialisé (await renderer.init(), fait par createRenderer).
   const loader = new KTX2Loader().setTranscoderPath(`${base}basis/`).detectSupport(renderer);
   const size = tier === 'haute' ? '8k' : '4k';
+  const step = (i: number, url: string) =>
+    loader.loadAsync(url, (e: ProgressEvent) => onProgress?.(i, e.total ? e.loaded / e.total : 0)).finally(() => onProgress?.(i, 1));
   let loaded: [THREE.Texture, THREE.Texture, THREE.Texture, THREE.Texture | null];
   try {
     loaded = await Promise.all([
-      loader.loadAsync(`${base}textures/day-${size}.ktx2`),
-      loader.loadAsync(`${base}textures/night-${size}.ktx2`),
-      loader.loadAsync(`${base}textures/surface-4k.ktx2`),
-      loader.loadAsync(`${base}textures/clouds-4k.ktx2`).catch(() => null),
+      step(0, `${base}textures/day-${size}.ktx2`),
+      step(1, `${base}textures/night-${size}.ktx2`),
+      step(2, `${base}textures/surface-4k.ktx2`),
+      step(3, `${base}textures/clouds-4k.ktx2`).catch(() => null),
     ]);
   } finally {
     loader.dispose();

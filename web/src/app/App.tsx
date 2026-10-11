@@ -64,7 +64,7 @@ export function App() {
       <GlobeView ref={globe} startAtHome active={phase !== 'intro'} warmUp={homeShown}
         onReady={(info) => { setGlobeReady(true); setTier(info.tier); }}
         // globe en échec : le fondu part quand même, et l'écran d'erreur (« Réessayer ») apparaît sous l'accueil
-        onFailed={() => setGlobeReady(true)} />
+        onError={() => setGlobeReady(true)} texts={m.errors} />
       {phase !== 'accueil' && (
         <Intro m={m} globeReady={globeReady} onHome={() => setHomeShown(true)} onFade={() => setPhase((p) => (p === 'intro' ? 'fondu' : p))} onDone={(angle) => { setLogoAngle(angle); setPhase('accueil'); }} />
       )}

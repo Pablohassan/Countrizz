@@ -69,7 +69,7 @@ test('globe en échec : le fondu part quand même et « Réessayer » se voit (r
   await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 120_000 });
   await passer(page).click();
   await expect(page.locator('.intro')).toHaveCount(0, { timeout: 60_000 });
-  await expect(page.getByRole('button', { name: 'Réessayer' })).toBeVisible({ timeout: 60_000 });
+  await expect(page.getByRole('button', { name: /Réessayer|Try again/ })).toBeVisible({ timeout: 60_000 });
 });
 
 test('« Passer » pendant que la pâte se charge : accueil tout de suite (revue du 10/10)', async ({ page }) => {

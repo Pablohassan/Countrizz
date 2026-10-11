@@ -78,3 +78,41 @@ test('project du handle : même point que la caméra three, avec visibilité', a
   expect(Math.abs(pub!.y - cam![1])).toBeLessThan(0.5);
   expect(back === null || back.visible === false).toBe(true);
 });
+
+test('chargement : progression croissante jusqu’à 1, puis prêt', async ({ page }) => {
+  await page.goto('/demo.html');
+  await page.waitForFunction(() => (window.__demo?.ready ?? 0) > 0, null, { timeout: 120_000 });
+  const p = await page.evaluate(() => window.__demo!.loading);
+  expect(p.length).toBeGreaterThan(1);
+  for (let i = 1; i < p.length; i++) expect(p[i]!).toBeGreaterThan(p[i - 1]!);
+  expect(p.at(-1)).toBe(1);
+});
+
+test('perte du GPU : onLost, puis prêt de nouveau', async ({ page }) => {
+  await page.goto('/demo.html');
+  await page.waitForFunction(() => (window.__demo?.ready ?? 0) > 0, null, { timeout: 120_000 });
+  await page.evaluate(() => window.__globe!.simulateDeviceLost());
+  await page.waitForFunction(() => window.__demo!.ready === 2, null, { timeout: 120_000 });
+  expect(await page.evaluate(() => window.__demo!.lost)).toBe(1);
+});
+
+test('frontières introuvables : onError « load », sans interface intégrée ; retry() recharge', async ({ page }) => {
+  let failing = true;
+  await page.route('**/data/borders.json', (r) => (failing ? r.abort() : r.continue()));
+  await page.goto('/demo.html?noerrorui');
+  await page.waitForFunction(() => (window.__demo?.errors.length ?? 0) > 0, null, { timeout: 120_000 });
+  expect(await page.evaluate(() => window.__demo!.errors[0]!.reason)).toBe('load');
+  await expect(page.getByRole('alert')).toHaveCount(0);
+  failing = false;
+  await page.evaluate(() => window.__demo!.retry());
+  await page.waitForFunction(() => (window.__demo?.ready ?? 0) > 0, null, { timeout: 120_000 });
+});
+
+test('le crédit se place où l’interface le demande, sans quitter l’écran', async ({ page }) => {
+  await page.goto('/demo.html?credit=120');
+  const credit = page.getByRole('contentinfo', { name: 'Crédits de l’imagerie' });
+  await expect(credit).toBeVisible({ timeout: 120_000 });
+  const box = (await credit.boundingBox())!;
+  expect(Math.abs(844 - 120 - (box.y + box.height))).toBeLessThan(1.5);
+  expect(box.x).toBeGreaterThanOrEqual(0);
+});

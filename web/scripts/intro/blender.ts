@@ -2,7 +2,8 @@
  * Lanceur de la scène Blender de l'intro (spec intro vidéo §2.4, §2.7) :
  *   npm run intro:temoins  — les instants témoins à pleine qualité (temps par image, matière) ;
  *   npm run intro:apercu   — toute l'intro en basse qualité (rythme) ;
- *   npm run intro:rendu    — le rendu final des deux cadrages (refusé sous 15 Go libres).
+ *   npm run intro:rendu    — le rendu final des deux cadrages (refusé sous 15 Go libres) ;
+ *   npm run intro:sprite   — les 24 vues de la petite Terre du titre (sans clés).
  * Options après « -- » : --cadrage portrait|paysage (les deux sinon), --images 1,600, --echelle 25, --echantillons 32,
  * --neuf (efface les images déjà rendues ; sinon le rendu reprend où il s'était arrêté).
  * Vérifie que les sources (`npm run intro:sources`) et les clés (`npm run intro:keys`) sont à jour, lance
@@ -42,9 +43,9 @@ function verifierEntrees(d: Demande): void {
   if (erreurs.length) throw new Error(erreurs.join('\n'));
 }
 
-/** Un passage de Blender pour un cadrage ; rejette si Blender échoue ou si Cycles n'est pas sur le GPU. */
-function lancer(d: Demande, c: Cadrage): Promise<void> {
-  const nomJournal = path.join(CACHE, `journal-${d.mode}-${c}.log`);
+/** Un passage de Blender pour un cadrage (null : le sprite) ; rejette si Blender échoue ou si Cycles n'est pas sur le GPU. */
+function lancer(d: Demande, c: Cadrage | null): Promise<void> {
+  const nomJournal = path.join(CACHE, `journal-${d.mode}${c ? `-${c}` : ''}.log`);
   const args = argumentsBlender(d, c, RENDRE, CACHE);
   const journal = createWriteStream(nomJournal, { flags: 'a' });
   journal.write(`\n=== ${new Date().toISOString()} ${BLENDER} ${args.join(' ')}\n`);
@@ -79,10 +80,10 @@ async function main(): Promise<void> {
   const refus = refusDisque(bavail * bsize, d.mode);
   if (refus) throw new Error(refus);
   verifierEntrees(d);
-  for (const c of d.cadrages) {
+  for (const c of d.mode === 'sprite' ? [null] : d.cadrages) {
     const t0 = Date.now();
     await lancer(d, c);
-    console.log(`[blender] ${d.mode} ${c} : ${((Date.now() - t0) / 1000).toFixed(1)} s`);
+    console.log(`[blender] ${d.mode}${c ? ` ${c}` : ''} : ${((Date.now() - t0) / 1000).toFixed(1)} s`);
   }
 }
 

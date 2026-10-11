@@ -4,11 +4,12 @@
  */
 import { CADRAGES, INTRO, IPS_MAITRE, type Cadrage } from '../../../src/intro/temps';
 
-export type Mode = 'temoins' | 'apercu' | 'rendu';
-const MODES: readonly Mode[] = ['temoins', 'apercu', 'rendu'];
+export type Mode = 'temoins' | 'apercu' | 'rendu' | 'sprite';
+const MODES: readonly Mode[] = ['temoins', 'apercu', 'rendu', 'sprite'];
 
 export interface Demande {
   mode: Mode;
+  /** Vide pour le sprite (une seule passe, sans clés). */
   cadrages: Cadrage[];
   /** Numéros d'image (1 → t = 0) ; vide : toutes. */
   images: number[];
@@ -46,7 +47,7 @@ function entier(nom: string, v: string | undefined): number {
   return n;
 }
 
-/** `temoins|apercu|rendu [--cadrage portrait|paysage] [--images 1,600] [--echelle 25] [--echantillons 32] [--neuf]`. */
+/** `temoins|apercu|rendu|sprite [--cadrage portrait|paysage] [--images 1,600] [--echelle 25] [--echantillons 32] [--neuf]`. */
 export function lireDemande(argv: string[]): Demande {
   const [mode, ...reste] = argv;
   if (!MODES.includes(mode as Mode)) throw new Error(`mode « ${mode} » inconnu : ${MODES.join(', ')}`);
@@ -64,14 +65,15 @@ export function lireDemande(argv: string[]): Demande {
     else throw new Error(`option « ${opt} » inconnue`);
   }
   if (d.mode === 'temoins' && d.images.length === 0) d.images = TEMOINS.map((x) => imageA(x.t));
+  if (d.mode === 'sprite') d.cadrages = [];
   return d;
 }
 
 /** Ligne de commande de Blender : sans préférences, code de sortie 1 si Python lève, journal de Cycles (périphérique). */
-export function argumentsBlender(d: Demande, cadrage: Cadrage, rendrePy: string, cache: string): string[] {
+export function argumentsBlender(d: Demande, cadrage: Cadrage | null, rendrePy: string, cache: string): string[] {
   return [
     '-b', '--factory-startup', '--python-exit-code', '1', '--debug-cycles', '-P', rendrePy, '--',
-    '--mode', d.mode, '--cadrage', cadrage, '--cache', cache,
+    '--mode', d.mode, ...(cadrage ? ['--cadrage', cadrage] : []), '--cache', cache,
     ...(d.images.length ? ['--images', d.images.join(',')] : []),
     ...(d.echelle ? ['--echelle', String(d.echelle)] : []),
     ...(d.echantillons ? ['--echantillons', String(d.echantillons)] : []),

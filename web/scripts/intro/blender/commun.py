@@ -8,7 +8,7 @@ import sys
 
 import bpy
 
-MODES = ('temoins', 'apercu', 'rendu')
+MODES = ('temoins', 'apercu', 'rendu', 'sprite')
 CADRAGES = ('portrait', 'paysage')
 IPS = 120
 
@@ -19,6 +19,7 @@ REGLAGES = {
     'temoins': {'echantillons': 128, 'seuil': 0.02, 'minimum': 16, 'pourcent': 100, 'flou': True},
     'apercu': {'echantillons': 16, 'seuil': 0.05, 'minimum': 8, 'pourcent': 50, 'flou': True},
     'rendu': {'echantillons': 128, 'seuil': 0.02, 'minimum': 16, 'pourcent': 100, 'flou': True},
+    'sprite': {'echantillons': 128, 'seuil': 0.01, 'minimum': 32, 'pourcent': 100, 'flou': False},
 }
 
 

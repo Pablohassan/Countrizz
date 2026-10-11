@@ -2,8 +2,9 @@
 Scène de l'intro en pâte à modeler, construite par script (spec intro vidéo §2.3) ; référence visuelle : l'ancienne scène
 three.js `src/intro/scene.ts`. Tout est en coordonnées three.js (Y en haut) sous l'objet racine `monde` (rotation X +90°) :
 les clés de export-keys.ts s'y appliquent telles quelles, seul l'ordre du quaternion change ([w, x, y, z]).
-  monde ─ camera ─ cle, contre (lumières liées à la caméra)
-        └ ecrasement_rot ─ ecrasement_echelle ─ ecrasement_retour ─ terre_groupe ─ terre
+  monde ─ camera ─ cle, contre (lumières liées à la caméra) ; etoile_00…45, logo_00…07, titre_00…07 (plan de l'image)
+        └ ecrasement_rot ─ ecrasement_echelle ─ ecrasement_retour ─ terre_groupe ─ terre, nuages, frontiere, perle,
+          repere (point, drapeau)
 L'écrasement de l'impact est B·S·Bᵀ (B : orientation de la caméra, S : (sx, sy, sx)) : trois Empties en chaîne, sans
 décomposer le cisaillement. La géométrie de la Terre est FIXE (rendu à données persistantes) : le relief est dans le
 maillage, le relief fin, le frémissement et les empreintes de doigts sont dans la matière (bump).
@@ -12,14 +13,15 @@ import json
 import math
 import os
 
+import bmesh
 import bpy
 import numpy as np
 from bpy_extras import anim_utils
-from mathutils import Vector
+from mathutils import Matrix, Quaternion, Vector
 
 IPS = 120
 # cellules par arête de la cube-sphère : 768 → 3,5 millions de sommets, ~0,12° entre deux sommets (≈ 3 px au gros plan)
-SUBDIV = {'temoins': 768, 'apercu': 384, 'rendu': 768}
+SUBDIV = {'temoins': 768, 'apercu': 384, 'rendu': 768, 'sprite': 384}
 # pâte « roulée à la main » (scene.ts) : bosses de 0,0022 rayon, ~8° de large
 BOSSE_AMP, BOSSE_FREQ = 0.0022, 7.0
 # frémissement : ondulation lente et continue de la surface (spec §3.2), dans le bump
@@ -335,6 +337,204 @@ def ambiance(scene):
     nt.links.new(bg.outputs[0], nt.nodes.new('ShaderNodeOutputWorld').inputs['Surface'])
 
 
+# ---------- les objets posés sur la Terre (scene.ts l.148-188) ----------
+
+MAT_HM = 0.135   # hauteur du mât (timeline.ts)
+NUAGES = ((-35, 22, 1), (75, -12, 0.85), (160, 42, 0.9), (-120, -32, 0.8), (30, -45, 0.7), (-80, 52, 0.75), (110, 10, 0.8))
+BOULES = ((0, 0, 0, 0.07), (0.075, -0.01, 0.01, 0.052), (-0.075, -0.012, 0, 0.048), (0.025, 0.04, 0, 0.05))
+TOILE_L, TOILE_H, TOILE_E = 0.088, 0.058, 0.0042
+TOILE_COLONNES = 30   # multiple de 3 : les trois bandes tombent sur des arêtes, aux couleurs nettes
+FRONTIERE_RAYON = 0.0026
+
+
+def vers(lng, lat, r=1.0):
+    """lng/lat (°) → point du repère three (lng 0 → +X, lng 90 → −Z, pôle Nord → +Y), comme toVec de geo/vec.ts."""
+    l, p = math.radians(lng), math.radians(lat)
+    return Vector((math.cos(p) * math.cos(l) * r, math.sin(p) * r, -math.cos(p) * math.sin(l) * r))
+
+
+def boule(nom, mat, rayon=1.0):
+    """Sphère lisse 40 × 28 (la SphereGeometry de scene.ts), centrée, de rayon `rayon`."""
+    bm = bmesh.new()
+    bmesh.ops.create_uvsphere(bm, u_segments=40, v_segments=28, radius=rayon)
+    me = bpy.data.meshes.new(nom)
+    bm.to_mesh(me)
+    bm.free()
+    me.shade_smooth()
+    me.materials.append(mat)
+    return me
+
+
+def nuages(groupe):
+    """Sept nuages de quatre boules à 1,24 rayon ; `nuages` tourne sur l'axe des pôles et rétrécit (clés)."""
+    mat = pate('pate_nuage', '#ffffff', rugosite=0.75)[0]
+    me = boule('boule_nuage', mat)
+    tout = vide('nuages', groupe)
+    for k, (lng, lat, s) in enumerate(NUAGES):
+        d = vers(lng, lat)
+        g = vide(f'nuage_{k}', tout, True)
+        g.location = d * 1.24
+        g.rotation_quaternion = Vector((0, 1, 0)).rotation_difference(d)
+        g.scale = (s, s, s)
+        for j, (x, y, z, r) in enumerate(BOULES):
+            b = objet(f'nuage_{k}_{j}', me, g)
+            b.location = (x, y, z)
+            b.scale = (r * 1.15, r * 0.9, r)
+
+
+def ondulation(L):
+    """Geometry Nodes : la toile ondule avec le temps de la scène (scene.ts l.251) — z += 0,009·u·sin(6,5u − 6,5t),
+    y −= 0,004·u², u = (x − 0,003) / L, t = (image − 1) / 120. Évalué aussi entre deux images (flou de mouvement)."""
+    ng = bpy.data.node_groups.new('ondulation', 'GeometryNodeTree')
+    ng.interface.new_socket(name='Geometry', in_out='INPUT', socket_type='NodeSocketGeometry')
+    ng.interface.new_socket(name='Geometry', in_out='OUTPUT', socket_type='NodeSocketGeometry')
+    entree, sortie = ng.nodes.new('NodeGroupInput'), ng.nodes.new('NodeGroupOutput')
+    pos = ng.nodes.new('GeometryNodeSetPosition')
+    ng.links.new(entree.outputs['Geometry'], pos.inputs['Geometry'])
+    ng.links.new(pos.outputs['Geometry'], sortie.inputs['Geometry'])
+    xyz = ng.nodes.new('ShaderNodeSeparateXYZ')
+    ng.links.new(ng.nodes.new('GeometryNodeInputPosition').outputs['Position'], xyz.inputs[0])
+    u = math_(ng, 'MULTIPLY', math_(ng, 'SUBTRACT', xyz.outputs['X'], 0.003), 1 / L)
+    t = math_(ng, 'MULTIPLY', math_(ng, 'SUBTRACT', ng.nodes.new('GeometryNodeInputSceneTime').outputs['Frame'], 1.0), 1 / IPS)
+    vague = math_(ng, 'SINE', math_(ng, 'MULTIPLY', math_(ng, 'SUBTRACT', u, t), 6.5))
+    decal = ng.nodes.new('ShaderNodeCombineXYZ')
+    ng.links.new(math_(ng, 'MULTIPLY', math_(ng, 'MULTIPLY', u, u), -0.004), decal.inputs['Y'])
+    ng.links.new(math_(ng, 'MULTIPLY', math_(ng, 'MULTIPLY', u, vague), 0.009), decal.inputs['Z'])
+    ng.links.new(decal.outputs[0], pos.inputs['Offset'])
+    return ng
+
+
+def toile():
+    """Le drapeau tricolore : une grille de 30 × 4 cellules (x de 0,003 à 0,003 + L), couleurs par face (bleu, blanc,
+    rouge), ondulée (Geometry Nodes) puis épaissie de 0,0042 (Solidify) — la boîte de scene.ts l.172-179."""
+    nx, ny = TOILE_COLONNES, 4
+    x = 0.003 + np.linspace(0, TOILE_L, nx + 1)
+    y = np.linspace(-TOILE_H / 2, TOILE_H / 2, ny + 1)
+    gx, gy = np.meshgrid(x, y, indexing='ij')
+    co = np.stack([gx, gy, np.zeros_like(gx)], axis=-1).reshape(-1, 3).astype(np.float32)
+    i, j = np.meshgrid(np.arange(nx), np.arange(ny), indexing='ij')
+    q = np.stack([i * (ny + 1) + j, (i + 1) * (ny + 1) + j, (i + 1) * (ny + 1) + j + 1, i * (ny + 1) + j + 1], axis=-1).reshape(-1, 4)
+    me = bpy.data.meshes.new('toile')
+    me.vertices.add(len(co))
+    me.vertices.foreach_set('co', co.ravel())
+    me.loops.add(q.size)
+    me.loops.foreach_set('vertex_index', q.astype(np.int32).ravel())
+    me.polygons.add(len(q))
+    me.polygons.foreach_set('loop_start', np.arange(0, q.size, 4, dtype=np.int32))
+    me.update(calc_edges=True)
+    me.shade_smooth()
+    bandes = [lin('#2b55c9'), lin('#fff8ec'), lin('#e8413a')]
+    attr = me.color_attributes.new('couleur', 'FLOAT_COLOR', 'CORNER')
+    attr.data.foreach_set('color', np.repeat([bandes[c * 3 // nx] for c in i.ravel()], 4, axis=0).astype(np.float32).ravel())
+    mat, nt, p = pate('pate_toile', '#ffffff')
+    ca = nt.nodes.new('ShaderNodeVertexColor')
+    ca.layer_name = 'couleur'
+    nt.links.new(ca.outputs['Color'], p.inputs['Base Color'])
+    me.materials.append(mat)
+    return me
+
+
+def drapeau(rep):
+    """Mât, tête et toile (scene.ts l.169-179), sous `drapeau` : sa position, son orientation (penché de −22°, tourné
+    vers la caméra) et son échelle (sx, sy, sx) sont des clés (export-keys.ts)."""
+    dr = vide('drapeau', rep, True)
+    bm = bmesh.new()
+    bmesh.ops.create_cone(bm, cap_ends=True, cap_tris=False, segments=16, radius1=0.0034, radius2=0.0026, depth=MAT_HM)
+    bmesh.ops.rotate(bm, verts=bm.verts, matrix=Matrix.Rotation(-math.pi / 2, 3, 'X'))   # axe Z de bmesh → axe Y de three
+    bmesh.ops.translate(bm, verts=bm.verts, vec=(0.0, MAT_HM / 2, 0.0))
+    me = bpy.data.meshes.new('mat')
+    bm.to_mesh(me)
+    bm.free()
+    me.shade_smooth()
+    me.materials.append(pate('pate_mat', '#fff8ec')[0])
+    objet('mat', me, dr)
+    tete = objet('tete', boule('boule_tete', pate('pate_tete', '#f7dc6f')[0], 0.0062), dr)
+    tete.location = (0.0, MAT_HM + 0.002, 0.0)
+    t = objet('toile', toile(), dr)
+    t.location = (0.0, MAT_HM - TOILE_H / 2 - 0.004, 0.0)
+    t.modifiers.new('ondulation', 'NODES').node_group = ondulation(TOILE_L)
+    epais = t.modifiers.new('epaisseur', 'SOLIDIFY')
+    epais.thickness, epais.offset = TOILE_E, 0.0
+
+
+def repere(groupe, reperes):
+    """Le repère posé à Paris (reperes.json, sur la surface déplacée ; position, orientation et échelle × 1,6 : clés), le
+    point rouge (sphère de rayon 1 : position et échelle sont des clés) et le drapeau."""
+    rep = vide('repere', groupe, True)
+    rep.location = reperes['paris']
+    rep.rotation_quaternion = Vector((0, 1, 0)).rotation_difference(Vector(reperes['paris']).normalized())
+    objet('point', boule('boule_point', pate('pate_point', '#e8413a', rugosite=0.5)[0]), rep)
+    drapeau(rep)
+
+
+def frontiere(groupe, points):
+    """Le boudin jaune de la frontière : une spline POLY OUVERTE par les 2601 points de frontiere.json (les sommets du
+    TubeGeometry de scene.ts, le dernier = le premier), bevel rond rapporté à l'INDICE des points ('RESOLUTION') :
+    bevel_factor_end = border arrête le boudin à l'indice border·2600, comme three (Task 3). Sur une spline cyclique,
+    bevel_factor serait sans effet. La perle, sphère de rayon 1 : position (sur la frontière) et échelle sont des clés."""
+    co = np.asarray(points, dtype=np.float32)
+    cu = bpy.data.curves.new('frontiere', 'CURVE')
+    cu.dimensions = '3D'
+    cu.twist_mode = 'MINIMUM'
+    cu.bevel_mode = 'ROUND'
+    cu.bevel_depth, cu.bevel_resolution = FRONTIERE_RAYON, 3
+    cu.use_fill_caps = True
+    cu.bevel_factor_mapping_start = cu.bevel_factor_mapping_end = 'RESOLUTION'
+    sp = cu.splines.new('POLY')
+    sp.points.add(len(co) - 1)
+    sp.points.foreach_set('co', np.hstack([co, np.ones((len(co), 1), dtype=np.float32)]).ravel())
+    mat = pate('pate_frontiere', '#f7dc6f', rugosite=0.5)[0]
+    cu.materials.append(mat)
+    objet('frontiere', cu, groupe)
+    objet('perle', boule('boule_perle', mat), groupe)
+
+
+# ---------- les objets du plan de l'image : étoiles, lettres (enfants de la caméra, posés par les clés) ----------
+
+ETOILES = 46
+LOGO_LETTRES = ('C', 'u', 'n', 't', 'r', 'i', 'z', 'z')
+# Les clés comptent 1 unité = 1 em (police · unités/px · échelle, export-keys.ts). Chango (hhea) : ascendante 995,
+# descendante 216 pour 1000 unités par em, et Blender met ascendante + descendante à 1 unité à la taille 1 (mesuré :
+# « C » haut de 0,6135 au lieu de 0,743) : taille 1,211. Calage CENTER/CENTER : l'origine est le milieu de la boîte de
+# la lettre dans la page (avance × hauteur de contenu), le centre mesuré de cadrages.ts.
+TAILLE_EM = (995 + 216) / 1000
+LETTRE_LUEUR = 0.25
+LETTRE_RELIEF, LETTRE_BISEAU = 0.09, 0.02   # en em ; un biseau de 0,03 em vide la face avant du « z »
+
+
+def etoiles(cam):
+    """46 billes de pâte jaune (le fond étoilé d'Intro.tsx), légèrement lumineuses : elles ne s'éteignent pas dans
+    l'ombre de la Terre. Ni ombre portée ; position, échelle et opacité : clés."""
+    mat, nt, p = pate('pate_etoile', '#f7dc6f', rugosite=0.5, sss_echelle=0.0)
+    p.inputs['Emission Color'].default_value = lin('#f7dc6f')
+    p.inputs['Emission Strength'].default_value = 0.6
+    me = boule('boule_etoile', mat)
+    for i in range(ETOILES):
+        e = objet(f'etoile_{i:02d}', me, cam)
+        e.visible_shadow = False
+        e.scale = (0.0, 0.0, 0.0)
+
+
+def lettres(cam, police):
+    """Les lettres en pâte du logo du milieu (logo_00…07) et du titre de fin (titre_00…07), une par objet texte (Chango) :
+    relief et biseau arrondi, contour gardé (offset = −biseau). Position, rotation, échelle (1 = 1 em) et opacité : clés."""
+    mat, nt, p = pate('pate_lettre', '#f7dc6f', rugosite=0.5, sss_echelle=0.0008)
+    # un peu de lumière propre : la face avant garde le jaune du titre HTML (#f7dc6f), qui prend le relais au fondu
+    p.inputs['Emission Color'].default_value = lin('#f7dc6f')
+    p.inputs['Emission Strength'].default_value = LETTRE_LUEUR
+    for titre in ('logo', 'titre'):
+        for i, c in enumerate(LOGO_LETTRES):
+            cu = bpy.data.curves.new(f'{titre}_{i:02d}', 'FONT')
+            cu.body, cu.font, cu.size = c, police, TAILLE_EM
+            cu.align_x, cu.align_y = 'CENTER', 'CENTER'
+            cu.extrude = LETTRE_RELIEF
+            cu.bevel_depth, cu.bevel_resolution, cu.offset = LETTRE_BISEAU, 3, -LETTRE_BISEAU
+            cu.materials.append(mat)
+            ob = objet(f'{titre}_{i:02d}', cu, cam)
+            ob.visible_shadow = False
+            ob.scale = (0.0, 0.0, 0.0)
+
+
 # ---------- la scène ----------
 
 def lire_json(dossier, nom):
@@ -342,8 +542,8 @@ def lire_json(dossier, nom):
         return json.load(f)
 
 
-def construire(scene, dossier, mode, fov):
-    """Vide la scène de démarrage et construit le socle : racine, caméra, lumières, ambiance, écrasement, Terre. Les
+def construire(scene, dossier, mode, fov, police=None):
+    """Vide la scène de démarrage et construit tout (le sprite : la Terre seule, sans police) ; rend sources.json. Les
     objets animés portent les noms des pistes de keys-<cadrage>.json (anim.py)."""
     for ob in list(bpy.data.objects):
         bpy.data.objects.remove(ob)
@@ -359,3 +559,27 @@ def construire(scene, dossier, mode, fov):
     me = maillage_terre(carte, src, SUBDIV[mode])
     me.materials.append(matiere_terre(dossier, src))
     objet('terre', me, groupe)
+    if mode != 'sprite':
+        nuages(groupe)
+        repere(groupe, lire_json(dossier, 'reperes.json'))
+        frontiere(groupe, lire_json(dossier, 'frontiere.json'))
+        etoiles(cam)
+        lettres(cam, bpy.data.fonts.load(police))
+    return src
+
+
+# rayon de la Terre / côté du cadre : 58,2 px sur 128, comme le sprite actuel (home.css) ; marge du relief au bord (px)
+SPRITE_RAYON, SPRITE_MARGE, SPRITE_COTE = 0.4545, 1.0, 128
+
+
+def vue_sprite(cam, i, src, fov=20):
+    """Vue i (0…23) de la petite Terre du titre : la Terre tournée de Rz(−23,4°)·Ry(i·15°) en axes three (l'orientation
+    de logoAngleAt), centrée, vue de la distance de `cameraFrom` (timeline.ts) pour un rayon SPRITE_RAYON — ou de plus
+    loin s'il le faut pour que le relief le plus haut (1 + hauteurMax + bosses) reste à SPRITE_MARGE px du bord."""
+    t = math.tan(math.radians(fov / 2))
+    plus_haut = 1 + src['hauteurMax'] + BOSSE_AMP
+    d = max(0.5 / (SPRITE_RAYON * t), plus_haut / math.sin(math.atan((1 - 2 * SPRITE_MARGE / SPRITE_COTE) * t)))
+    q = Quaternion((0, 0, 1), math.radians(-23.4)) @ Quaternion((0, 1, 0), math.radians(15 * i))
+    qi = q.inverted()
+    cam.location = qi @ Vector((0.0, 0.0, d))
+    cam.rotation_quaternion = qi

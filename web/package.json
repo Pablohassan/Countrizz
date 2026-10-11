@@ -30,6 +30,7 @@
     "intro:temoins": "tsx scripts/intro/blender.ts temoins",
     "intro:apercu": "tsx scripts/intro/blender.ts apercu",
     "intro:rendu": "tsx scripts/intro/blender.ts rendu",
+    "intro:sprite": "tsx scripts/intro/blender.ts sprite",
     "intro:keys": "tsx scripts/intro/export-keys.ts"
   },
   "dependencies": {

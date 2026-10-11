@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import bpy  # noqa: E402
 import numpy as np  # noqa: E402
+from mathutils import Vector  # noqa: E402
 
 import anim  # noqa: E402
 import commun  # noqa: E402
@@ -125,6 +126,65 @@ class Terre(unittest.TestCase):
         self.assertEqual(scene.lin('#ffffff'), (1.0, 1.0, 1.0, 1.0))
         self.assertAlmostEqual(scene.lin('#16173a')[0], 0.0080, places=4)
         self.assertTrue(math.isclose(scene.lin('#808080')[1], 0.2158605, rel_tol=1e-5))
+
+
+POLICE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'public', 'fonts', 'chango-latin.woff2')
+
+
+class Objets(unittest.TestCase):
+    def setUp(self):
+        for ob in list(bpy.data.objects):
+            bpy.data.objects.remove(ob)
+        for cu in list(bpy.data.curves):
+            bpy.data.curves.remove(cu)
+
+    def test_frontiere_deroulee_a_l_indice_des_points(self):
+        """bevel_factor_end = f arrête le boudin à l'indice f·N des points (spline ouverte, 'RESOLUTION'), comme three."""
+        x = np.array([0, 0.1, 0.15, 0.5, 1.2, 1.25, 2.0, 3.0, 3.1])   # pas inégaux : l'indice n'est pas la longueur
+        scene.frontiere(scene.vide('terre_groupe', None), np.stack([x, 0 * x, 0 * x], axis=1).tolist())
+        fr = bpy.data.objects['frontiere']
+        self.assertFalse(fr.data.splines[0].use_cyclic_u)
+        for f in (0.3, 0.7):
+            fr.data.bevel_factor_end = f
+            dg = bpy.context.evaluated_depsgraph_get()
+            dg.update()
+            bout = max(v.co.x for v in fr.evaluated_get(dg).to_mesh().vertices)   # le boudin avance vers +x
+            fr.evaluated_get(dg).to_mesh_clear()
+            i = f * (len(x) - 1)
+            self.assertAlmostEqual(bout, x[int(i)] + (x[int(i) + 1] - x[int(i)]) * (i - int(i)), places=4)
+
+    def test_objets_et_rotations_que_lisent_les_cles(self):
+        """Les noms et modes de rotation des pistes d'export-keys.ts (Task 3) : une piste sans objet arrête rendre.py."""
+        cam = scene.objet('camera', bpy.data.cameras.new('camera'), None)
+        groupe = scene.vide('terre_groupe', None)
+        scene.nuages(groupe)
+        scene.repere(groupe, {'paris': [0.66, 0.757, -0.027]})
+        scene.frontiere(groupe, [[1, 0, 0], [0, 1, 0], [1, 0, 0]])
+        scene.etoiles(cam)
+        scene.lettres(cam, bpy.data.fonts.load(POLICE))
+        plan = [f'{t}_{i:02d}' for t in ('logo', 'titre') for i in range(8)] + [f'etoile_{i:02d}' for i in range(46)]
+        for nom in ['nuages', 'repere', 'point', 'drapeau', 'frontiere', 'perle'] + plan:
+            self.assertIn(nom, bpy.data.objects)
+        self.assertIn('frontiere', bpy.data.curves)
+        self.assertEqual({bpy.data.objects[n].rotation_mode for n in ('repere', 'drapeau')}, {'QUATERNION'})
+        self.assertEqual({bpy.data.objects[n].rotation_mode for n in ('nuages', 'logo_00', 'titre_07')}, {'XYZ'})
+        self.assertEqual({bpy.data.objects[n].parent.name for n in ('nuages', 'repere', 'frontiere', 'perle')}, {'terre_groupe'})
+        self.assertEqual({bpy.data.objects[n].parent.name for n in plan}, {'camera'})
+        self.assertFalse(any(bpy.data.objects[n].visible_shadow for n in plan))
+
+    def test_vue_sprite_terre_centree_axe_penche_relief_dans_le_cadre(self):
+        cam = bpy.data.objects.new('essai_cam', bpy.data.cameras.new('essai_cam'))
+        cam.rotation_mode = 'QUATERNION'
+        t = math.tan(math.radians(10))
+        bord = lambda rho: scene.SPRITE_COTE / 2 * math.tan(math.asin(rho / cam.location.length)) / t   # px du centre
+        for i in (0, 7, 18):
+            scene.vue_sprite(cam, i, {'hauteurMax': 0.0})   # relief bas : le rayon du sprite actuel est gardé
+            self.assertAlmostEqual(cam.location.length, 0.5 / (scene.SPRITE_RAYON * t), places=5)
+            self.assertLess((cam.rotation_quaternion @ Vector((0, 0, -1)) + cam.location.normalized()).length, 1e-6)
+        scene.vue_sprite(cam, 0, {'hauteurMax': 0.0945})    # relief caricaturé maximal : la caméra recule
+        self.assertAlmostEqual(bord(1 + 0.0945 + scene.BOSSE_AMP), scene.SPRITE_COTE / 2 - scene.SPRITE_MARGE, places=4)
+        pole = cam.rotation_quaternion.inverted() @ Vector((0, 1, 0))   # le pôle Nord, en repère caméra
+        self.assertAlmostEqual(math.degrees(math.atan2(pole.x, pole.y)), 23.4, places=4)   # penché vers la droite
 
 
 resultat = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromModule(sys.modules[__name__]))

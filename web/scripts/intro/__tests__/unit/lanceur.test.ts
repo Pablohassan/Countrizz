@@ -37,6 +37,12 @@ describe('lanceur de Blender (fabrique de l’intro vidéo, spec §2.4)', () => 
       .toEqual(['--mode', 'rendu', '--cadrage', 'paysage', '--cache', 'c', '--echantillons', '96', '--neuf']);
   });
 
+  it('sprite : une seule passe, sans cadrage ni clés', () => {
+    const d = lireDemande(['sprite']);
+    expect(d).toEqual({ mode: 'sprite', cadrages: [], images: [], neuf: false });
+    expect(argumentsBlender(d, null, 'r.py', 'c').slice(8)).toEqual(['--mode', 'sprite', '--cache', 'c']);
+  });
+
   it('refuse un rendu complet sous 15 Go libres, jamais un aperçu ni des témoins', () => {
     expect(refusDisque(DISQUE_MIN_RENDU - 1, 'rendu')).toMatch(/15 Go/);
     expect(refusDisque(DISQUE_MIN_RENDU, 'rendu')).toBeNull();

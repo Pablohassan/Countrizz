@@ -2,7 +2,7 @@ import { Component, useEffect, useImperativeHandle, useMemo, useRef, useState, t
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three/webgpu';
 import { FOV_Y_DEG } from '../camera/config';
-import type { FlightTicket, FramePose } from '../camera/director';
+import type { FlightTicket } from '../camera/director';
 import type { FramingParams } from '../camera/framing';
 import type { SafeArea } from '../camera/safeArea';
 import type { CountryRecord, LngLat } from '../data/types';
@@ -12,6 +12,7 @@ import { Globe } from './globe';
 import { CLOUD_DRIFT_TURNS_PER_S } from './clouds';
 import { ImageryCredit } from './credits';
 import { OffsetCamera } from './offsetCamera';
+import type { ScreenPoint } from './project';
 import { createDprGovernor, dprOptions } from './dynamicResolution';
 import { createImageSource, loadImageryIndex } from './imagePatch';
 import { createPostProcessing, postOptions } from './postprocessing';
@@ -35,6 +36,10 @@ export interface GlobeHandle {
   setIdleSpin(degPerSec: number): void;
   /** Bandes occupées par l'interface (px CSS) : le pays se cadre et se centre dans la zone libre (D1) ; `null` : tout l'écran. */
   setSafeArea(a: SafeArea | null): void;
+  /** Position écran d'un point du sol à la dernière image (px CSS) ; `null` avant la première image ou derrière la caméra. */
+  project(p: LngLat): ScreenPoint | null;
+  /** Appelé à chaque image, pose posée, avant le rendu : les calques DOM s'y recalent. Rend la désinscription. */
+  onFrame(cb: () => void): () => void;
 }
 
 /** Crochets de test (dev, ou drapeau des e2e) : backend, recréations du renderer, projection écran, perte simulée du GPU. */
@@ -130,6 +135,8 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
     home: () => controller.director.flyToHome(),
     setIdleSpin: (d) => controller.director.setIdleSpin(d),
     setSafeArea: (a) => controller.setSafeArea(a),
+    project: (p) => controller.project(p),
+    onFrame: (cb) => controller.onFrame(cb),
   }), [controller]);
 
   return (
@@ -198,7 +205,6 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onError, 
   const onErrorRef = useRef(onError);
   onErrorRef.current = onError;
   const lastFrame = useRef(-1);
-  const lastPose = useRef<FramePose | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -260,7 +266,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onError, 
         v.project(camera);
         return [((v.x + 1) / 2) * size.width, ((1 - v.y) / 2) * size.height];
       },
-      view: () => (lastPose.current ? toLngLat(lastPose.current.dir) : null),
+      view: () => (controller.pose ? toLngLat(controller.pose.dir) : null),
       simulateDeviceLost: () => renderer.onDeviceLost({ api: 'WebGPU', message: 'test', reason: null, originalEvent: null }),
     };
     window.__globe = debug;
@@ -275,10 +281,10 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onError, 
     if (!globe) return;
     const now = performance.now();
     const pose = controller.director.update(now);
-    lastPose.current = pose;
     globe.setLook(lookAt(controller.timeline, now));
     globe.setTime(now / 1000);
     globe.applyPose(pose, camera);
+    controller.notePose(pose);
     const clouds = controller.cloudOpacityAt(now);
     // Mouvement réduit : les nuages ne dérivent pas.
     globe.setClouds(clouds, controller.reducedMotion ? 0 : (now / 1000) * CLOUD_DRIFT_TURNS_PER_S);

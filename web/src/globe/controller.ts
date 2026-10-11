@@ -1,15 +1,16 @@
 import type * as THREE from 'three/webgpu';
-import { CameraDirector, type FlightTicket } from '../camera/director';
+import { CameraDirector, type FlightTicket, type FramePose } from '../camera/director';
 import { FLIGHT, FOV_Y_DEG, FRAMING } from '../camera/config';
 import type { FramingParams, Viewport } from '../camera/framing';
 import { safeViewport, type SafeArea } from '../camera/safeArea';
 import { imagePatchUrl, type ImageryIndex } from '../data/imagery';
-import type { CountryRecord } from '../data/types';
+import type { CountryRecord, LngLat } from '../data/types';
 import { needsBeacon } from './beacon';
 import type { Globe } from './globe';
 import { createPatchCache } from './patchCache';
 import { disposePatchTexture, loadPatchTexture } from './patchTexture';
 import { cloudOpacity, type CloudFade } from './clouds';
+import { screenPoint, type ScreenPoint } from './project';
 import type { RevealTimeline } from './reveal';
 
 /** Fondu d'apparition d'un patch image arrivé en cours de route. */
@@ -45,6 +46,8 @@ export class GlobeController {
 
   private cloudFade: CloudFade = { from: 1, to: 1, atMs: 0 };
   private reduced: boolean;
+  private lastPose: FramePose | null = null;
+  private readonly frameListeners = new Set<() => void>();
 
   constructor(private readonly baseUrl = '/', reducedMotion = false, private readonly clock: () => number = () => performance.now(), startAtHome = false) {
     this.viewport = { width: 960, height: 600, fovYDeg: FOV_Y_DEG };
@@ -52,6 +55,27 @@ export class GlobeController {
     this.framing = FRAMING;
     this.reduced = reducedMotion;
     this.director = new CameraDirector({ viewport: this.viewport, framing: FRAMING, flight: FLIGHT, reducedMotion, start: [2.35, 30], startAtHome });
+  }
+
+  /** Pose dessinée à l'image courante (boucle de rendu, avant le rendu), puis les abonnés de `onFrame`. */
+  notePose(p: FramePose): void {
+    this.lastPose = p;
+    for (const f of this.frameListeners) {
+      try { f(); } catch (e) { console.error(e); }   // un calque cassé n'arrête pas le globe
+    }
+  }
+
+  get pose(): FramePose | null { return this.lastPose; }
+
+  /** Appelé à chaque image, pose posée : les calques DOM s'y recalent. Rend la désinscription. */
+  onFrame(cb: () => void): () => void {
+    this.frameListeners.add(cb);
+    return () => { this.frameListeners.delete(cb); };
+  }
+
+  /** Position écran d'un point du sol à la dernière image (viewport complet) ; `null` avant la première image. */
+  project(p: LngLat): ScreenPoint | null {
+    return this.lastPose ? screenPoint(this.lastPose, this.fullViewport, p) : null;
   }
 
   get reducedMotion(): boolean { return this.reduced; }

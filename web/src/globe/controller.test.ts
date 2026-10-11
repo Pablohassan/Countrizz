@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import type * as THREE from 'three/webgpu';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { ImageryIndex } from '../data/imagery';
 import type { CountryRecord } from '../data/types';
 import { GlobeController, IMAGE_FADE_S } from './controller';
@@ -84,5 +84,24 @@ describe('ticket de vol (GlobeController)', () => {
     c.attach({ setPatch() {}, setBeacon() {}, setImagePatch() {} } as unknown as Globe);
     c.director.update(10_000);
     expect(await t.arrived).toBe(true);
+  });
+});
+
+describe('rappels à chaque image (GlobeController.onFrame)', () => {
+  it('appelle chaque abonné après la pose, même si l’un d’eux lève ; se désinscrit', () => {
+    const c = new GlobeController('/');
+    const calls: string[] = [];
+    const errors: unknown[] = [];
+    const spy = vi.spyOn(console, 'error').mockImplementation((e) => { errors.push(e); });
+    c.onFrame(() => { throw new Error('calque cassé'); });
+    const off = c.onFrame(() => calls.push(c.project([2.35, 30]) ? 'ok' : 'vide'));
+    expect(c.project([2.35, 30])).toBeNull();          // avant la première image
+    c.notePose(c.director.update(0));
+    expect(calls).toEqual(['ok']);
+    expect(errors).toHaveLength(1);
+    off();
+    c.notePose(c.director.update(16));
+    expect(calls).toEqual(['ok']);
+    spy.mockRestore();
   });
 });

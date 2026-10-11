@@ -1,11 +1,14 @@
 import { StrictMode, useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { loadCountries } from '../data/countries';
-import type { CountryRecord } from '../data/types';
+import type { CountryRecord, LngLat } from '../data/types';
 import { GlobeView, type GlobeHandle } from '../globe/GlobeView';
+import type { ScreenPoint } from '../globe/project';
 
-declare global { interface Window { __demo?: { arrived: string[]; done: boolean; ready: number } } }
-window.__demo = { arrived: [], done: false, ready: 0 };
+declare global {
+  interface Window { __demo?: { arrived: string[]; done: boolean; ready: number; project(p: LngLat): ScreenPoint | null } }
+}
+window.__demo = { arrived: [], done: false, ready: 0, project: () => null };
 const q = new URLSearchParams(location.search);
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -20,6 +23,7 @@ function Demo() {
   const [current, setCurrent] = useState<CountryRecord | null>(null);
   const [ready, setReady] = useState(false);
   useEffect(() => { void loadCountries('/').then(setCountries); }, []);
+  useEffect(() => { window.__demo!.project = (p) => globe.current?.project(p) ?? null; }, []);
 
   async function visit(rec: CountryRecord, next?: CountryRecord) {
     setCurrent(rec);

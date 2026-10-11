@@ -68,3 +68,13 @@ test('jeu : setSafeArea recentre le pays visé dans la zone libre', async ({ pag
   expect(c).not.toBeNull();
   expect(Math.abs(c![1] - 312)).toBeLessThan(15);
 });
+
+test('project du handle : même point que la caméra three, avec visibilité', async ({ page }) => {
+  await page.goto('/demo.html?demo=FRA&safe=80,300');
+  await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 120_000 });
+  const [pub, cam, back] = await page.evaluate(() => [window.__demo!.project([2.35, 46.6]), window.__globe!.project([2.35, 46.6]), window.__demo!.project([-177.65, -46.6])]);
+  expect(pub!.visible).toBe(true);
+  expect(Math.abs(pub!.x - cam![0])).toBeLessThan(0.5);
+  expect(Math.abs(pub!.y - cam![1])).toBeLessThan(0.5);
+  expect(back === null || back.visible === false).toBe(true);
+});

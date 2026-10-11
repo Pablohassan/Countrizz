@@ -116,3 +116,21 @@ test('le crédit se place où l’interface le demande, sans quitter l’écran'
   expect(Math.abs(844 - 120 - (box.y + box.height))).toBeLessThan(1.5);
   expect(box.x).toBeGreaterThanOrEqual(0);
 });
+
+test('accessoire monté : dessiné, et recréé après une perte du GPU', async ({ page }) => {
+  await page.goto('/demo.html?demo=FRA&accessoire');
+  await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 120_000 });
+  const magenta = async () => {
+    await page.waitForTimeout(800);
+    const p = (await page.evaluate(() => window.__demo!.project([2.35, 48.85])))!;
+    const png = PNG.sync.read(await page.screenshot());
+    const i = (Math.round(p.y) * png.width + Math.round(p.x)) * 4;
+    return [png.data[i]!, png.data[i + 1]!, png.data[i + 2]!];
+  };
+  const [r, g, b] = await magenta();
+  expect(r > 150 && b > 150 && g < 100).toBe(true);
+  await page.evaluate(() => window.__globe!.simulateDeviceLost());
+  await page.waitForFunction(() => window.__demo!.ready === 2, null, { timeout: 120_000 });
+  const [r2, g2, b2] = await magenta();
+  expect(r2 > 150 && b2 > 150 && g2 < 100).toBe(true);
+});

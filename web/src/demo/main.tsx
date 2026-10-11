@@ -1,7 +1,9 @@
 import { StrictMode, useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import * as THREE from 'three/webgpu';
 import { loadCountries } from '../data/countries';
 import type { CountryRecord, LngLat } from '../data/types';
+import { toVec } from '../geo/vec';
 import { GlobeView, type GlobeHandle } from '../globe/GlobeView';
 import type { ScreenPoint } from '../globe/project';
 
@@ -64,6 +66,18 @@ function Demo() {
   // `?safe=80,300` : bandes occupées (HUD, grille) — le pays se centre dans la zone libre
   useEffect(() => {
     if (ready && q.has('safe')) { const [top, bottom] = q.get('safe')!.split(',').map(Number); globe.current!.setSafeArea({ top: top!, bottom: bottom! }); }
+  }, [ready]);
+
+  // `?accessoire` : une bille magenta posée sur Paris (contrôle du montage, et de sa recréation après une perte du GPU)
+  useEffect(() => {
+    if (!ready || !q.has('accessoire')) return;
+    return globe.current!.mount({
+      create: () => {
+        const m = new THREE.Mesh(new THREE.SphereGeometry(0.02, 16, 8), new THREE.MeshBasicNodeMaterial({ color: 0xff00ff }));
+        m.position.set(...toVec([2.35, 48.85]));
+        return { object: m, dispose: () => { m.geometry.dispose(); m.material.dispose(); } };
+      },
+    });
   }, [ready]);
 
   const random = () => countries[Math.floor(Math.random() * countries.length)]!;

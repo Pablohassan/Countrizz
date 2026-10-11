@@ -11,6 +11,7 @@ import { createPatchCache } from './patchCache';
 import { disposePatchTexture, loadPatchTexture } from './patchTexture';
 import { cloudOpacity, type CloudFade } from './clouds';
 import { screenPoint, type ScreenPoint } from './project';
+import type { Accessory } from './accessories';
 import type { RevealTimeline } from './reveal';
 
 /** Fondu d'apparition d'un patch image arrivé en cours de route. */
@@ -48,6 +49,8 @@ export class GlobeController {
   private reduced: boolean;
   private lastPose: FramePose | null = null;
   private readonly frameListeners = new Set<() => void>();
+  private readonly mounted = new Set<Accessory>();
+  private readonly accessoryListeners = new Set<() => void>();
 
   constructor(private readonly baseUrl = '/', reducedMotion = false, private readonly clock: () => number = () => performance.now(), startAtHome = false) {
     this.viewport = { width: 960, height: 600, fovYDeg: FOV_Y_DEG };
@@ -77,6 +80,22 @@ export class GlobeController {
   project(p: LngLat): ScreenPoint | null {
     return this.lastPose ? screenPoint(this.lastPose, this.fullViewport, p) : null;
   }
+
+  /** Objet de scène (survit à la perte du GPU : la scène le recrée). Rend le retrait. */
+  mount(a: Accessory): () => void {
+    this.mounted.add(a);
+    this.emitAccessories();
+    return () => { if (this.mounted.delete(a)) this.emitAccessories(); };
+  }
+
+  accessories(): Accessory[] { return [...this.mounted]; }
+
+  onAccessories(cb: () => void): () => void {
+    this.accessoryListeners.add(cb);
+    return () => { this.accessoryListeners.delete(cb); };
+  }
+
+  private emitAccessories(): void { for (const f of this.accessoryListeners) f(); }
 
   get reducedMotion(): boolean { return this.reduced; }
 

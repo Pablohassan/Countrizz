@@ -5,6 +5,7 @@ import { FOV_Y_DEG } from '../camera/config';
 import type { FlightTicket } from '../camera/director';
 import type { FramingParams } from '../camera/framing';
 import type { SafeArea } from '../camera/safeArea';
+import { sunDirection } from '../camera/sun';
 import type { CountryRecord, LngLat } from '../data/types';
 import { toLngLat, toVec } from '../geo/vec';
 import type { Messages } from '../i18n';
@@ -12,6 +13,7 @@ import { fr } from '../i18n/fr';
 import { GlobeController } from './controller';
 import { Globe } from './globe';
 import { CLOUD_DRIFT_TURNS_PER_S } from './clouds';
+import { createAccessoryHost, type Accessory } from './accessories';
 import { ImageryCredit, type CreditPlacement } from './credits';
 import { OffsetCamera } from './offsetCamera';
 import type { ScreenPoint } from './project';
@@ -45,6 +47,8 @@ export interface GlobeHandle {
   onFrame(cb: () => void): () => void;
   /** Après une erreur (chargement, recréation) : nouvel essai complet. */
   retry(): void;
+  /** Objet de scène (avion de l'accueil, 2A-6), recréé avec le renderer. Rend le retrait. */
+  mount(a: Accessory): () => void;
 }
 
 /** Crochets de test (dev, ou drapeau des e2e) : backend, recréations du renderer, projection écran, perte simulée du GPU. */
@@ -165,6 +169,7 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
     project: (p) => controller.project(p),
     onFrame: (cb) => controller.onFrame(cb),
     retry,
+    mount: (a) => controller.mount(a),
   }), [controller]); // eslint-disable-line react-hooks/exhaustive-deps -- retry ne touche que des setters stables
 
   return (
@@ -271,6 +276,16 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     };
   }, [renderer, controller]);
 
+  // Accessoires (avion de l'accueil) : un hôte par scène, donc par renderer ; recréés après une perte du GPU.
+  const host = useMemo(() => createAccessoryHost(scene), [scene]);
+  useEffect(() => {
+    if (!globe) return;
+    const sync = () => host.sync(controller.accessories());
+    sync();
+    const off = controller.onAccessories(sync);
+    return () => { off(); host.dispose(); };
+  }, [globe, host, controller]);
+
   // Post-traitement (spec §4.1) : un par renderer ; recréé avec lui après une perte du GPU.
   useEffect(() => {
     const p = createPostProcessing(renderer, scene, camera, postOptions(renderer.userData.tier));
@@ -325,6 +340,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     globe.setLook(lookAt(controller.timeline, now));
     globe.setTime(now / 1000);
     globe.applyPose(pose, camera);
+    host.update({ nowMs: now, pose, sun: sunDirection(pose) });
     controller.notePose(pose);
     const clouds = controller.cloudOpacityAt(now);
     // Mouvement réduit : les nuages ne dérivent pas.

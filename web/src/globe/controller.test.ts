@@ -105,3 +105,18 @@ describe('rappels à chaque image (GlobeController.onFrame)', () => {
     spy.mockRestore();
   });
 });
+
+describe('registre des accessoires (GlobeController)', () => {
+  it('mount ajoute, le retour retire, les abonnés sont prévenus', () => {
+    const c = new GlobeController('/');
+    const a = { create: () => { throw new Error('non appelé ici'); } };
+    let changes = 0;
+    c.onAccessories(() => changes++);
+    const off = c.mount(a);
+    expect(c.accessories()).toEqual([a]);
+    off();
+    off();
+    expect(c.accessories()).toEqual([]);
+    expect(changes).toBe(2);
+  });
+});

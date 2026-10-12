@@ -9,14 +9,14 @@
 
 L'intro en pâte à modeler n'est plus calculée dans le navigateur : elle devient une **vidéo précalculée**, rendue par
 **Blender (Cycles)** à partir de la chronologie existante, **fluide à 120 images/s**, avec une **chute plus douce au
-départ puis accélérée**, et des **bulles de questions** (« Capitale ? », « Pays ? », « Drapeau ? ») qui surgissent au
-zoom sur la France pour faire le lien avec le jeu.
+départ puis accélérée**, et des **questions** en lettres Chango (« Capitale ? », « Pays ? », « Drapeau ? ») qui naissent
+de leur objet au zoom sur la France pour faire le lien avec le jeu.
 
 Dans ce plan :
 - l'export de la chronologie en clés par image (`timeline.ts` → `intro-keys.json`) ;
 - la scène Blender construite par script, son rendu (images témoins, prévisualisation, rendu final) et l'encodage ;
 - la petite Terre animée du titre (24 vues) rendue dans Blender ;
-- le lecteur vidéo du site (format, cadence, codec, fin, cas d'échec) et les bulles en HTML ;
+- le lecteur vidéo du site (format, cadence, codec, fin, cas d'échec) et les questions en HTML ;
 - la suppression de la scène three.js de l'intro et de ses textures ;
 - le budget révisé, les tests, le déploiement d'une nouvelle image.
 
@@ -32,13 +32,15 @@ Hors de ce plan : la PWA (plan B du spec de l'intro) ; les écrans du jeu (2A-5)
 | 11/10 | **Deux vidéos** (portrait, paysage), plein écran avec rognage des bords, **fondu** vers l'accueil sans raccord géométrique exact |
 | 11/10 | Rendu maître à **120 i/s** ; deux encodages, **60 et 120 i/s** ; le 120 n'est servi qu'aux écrans ≥ 100 Hz |
 | 11/10 | **Chute** lente au départ puis accélérée (≈ 2,4 s au lieu de 1,6 s) |
-| 11/10 | **Bulles** aux trois modes du jeu : point → « Capitale ? », frontière → « Pays ? », drapeau → « Drapeau ? », puis chacune se retourne sur sa réponse (Paris, France, 🇫🇷) ; la vignette « France / Paris » disparaît |
-| 11/10 | Bulles en **HTML** par-dessus la vidéo (bilingues, nettes) ; titre « Countrizz » du milieu et étoiles **dans la vidéo**, en pâte |
+| 11/10 | **Bulles** aux trois modes du jeu : point → « Capitale ? », frontière → « Pays ? », drapeau → « Drapeau ? », puis chacune se retourne sur sa réponse (Paris, France, 🇫🇷) ; la vignette « France / Paris » disparaît — **remplacée le 12/10** (questions sans bulles, trois dernières lignes ; la vignette disparaît toujours) |
+| 11/10 | Bulles en **HTML** par-dessus la vidéo (bilingues, nettes) — devenues les **questions en HTML** le 12/10 ; titre « Countrizz » du milieu et étoiles **dans la vidéo**, en pâte |
 | 11/10 | Rendu **sur le Mac** (M4 Pro, 48 Go) ; vidéos **versionnées** dans le dépôt |
 | 11/10 | Le **jeu et son globe restent en WebGPU** (WebGL 2 en repli) ; l'intro n'utilise plus aucun moteur 3D |
 | 10/10 (inchangé) | Jouée à chaque visite ; toujours la France, Paris ; mouvement réduit : rien de particulier ; « Jouer » ouvre la démo jusqu'au 2A-5 |
 | 11/10 | Planche des témoins validée : « oui ça me paraît plutôt ok » (planche des mêmes témoins montrée à l'utilisateur ; celle du dépôt est identique à l'œil) ; rendu final à 128 échantillons (≈ 4,4 h, ≈ 5,9 Go de PNG) |
 | 12/10 | Aperçu validé : « tout me paraît ok » ; seconde de plus pour les bulles : non (les bulles elles-mêmes sont refusées le même jour, ligne suivante) |
+| 12/10 | Les questions sans bulles : « l'apparition des bulles questions pointant directement sur le pays ou la ville n'est pas ok il faudrait quelque chose de plus fun, on n'a pas besoin de concentrer les questions sur le pays, les pin et l'affichage existant sur la carte suffit, ici d'ailleurs même le concept de bulle me paraît superflu ça pourrait être juste une question dans la police Countrizz » ; puis : « il faut que les mots apparaissent de manière logique avec l'affichage des différents points noms sur la carte, il faut pas juste mettre les 3 questions fixes, on doit garder la même dynamique que pour le reste » |
+| 12/10 | Maquette des questions validée : « ok go » — trois mots en Chango jaune, sans bulle ni réponse, dont les lettres jaillissent de leur objet quand il apparaît (le point sur Paris, la frontière qui se déroule, le drapeau qui monte), volent jusqu'à leur place près de lui, y ondulent, puis y rentrent quand la carte se range |
 
 ## 2. Chaîne de fabrication
 
@@ -51,8 +53,8 @@ timeline.ts ──(Node)──► intro-keys.json ──(Blender -b -P)──►
 2. **Export des clés** (script Node dans `web/scripts/intro/`) : `timeline.ts` évalué à chaque 1/120 s pour les deux
    cadrages de référence, **portrait 1080 × 2340** et **paysage 1920 × 1080** (px de la vidéo). Pour chaque image :
    caméra (position, orientation, champ), écrasement de la Terre, rotation, nuages, point, avancée de la frontière,
-   drapeau, lettres des deux titres, étoiles. Les **ancres des bulles** (point, milieu de la frontière, haut du mât, en px
-   de la vidéo) sont exportées à part pour le lecteur (`web/public/intro/ancres.json`, fenêtre des bulles seulement). L'export est
+   drapeau, lettres des deux titres, étoiles. Les **ancres des questions** (point, milieu de la frontière, haut du mât, en px
+   de la vidéo) sont exportées à part pour le lecteur (`web/public/intro/ancres.json`, de 10,8 à 16,2 s, 60 par seconde). L'export est
    déterministe : deux exports donnent les mêmes octets.
 3. **Scène Blender construite par script Python versionné** (`web/scripts/intro/blender/`), lancé par
    `/Applications/Blender.app/Contents/MacOS/Blender -b -P …` (Blender 5.0.1 sur le Mac) ; pas de `.blend` fait à la
@@ -88,14 +90,16 @@ On garde le déroulé du 10/10 au soir (double dézoom), avec ces changements :
    écrasée). Tout ce qui suit est décalé d'autant (≈ + 0,8 s).
 2. **Fluidité** : plus de quantification à 12 i/s (`INTRO.IPS` disparaît) ; le frémissement devient une ondulation
    continue et lente de la surface ; plus de tremblé de la lumière. La toupie garde sa vitesse et son freinage.
-3. **Bulles** (HTML, §5) : ≈ 0,3 s après chaque apparition — point → « Capitale ? », frontière → « Pays ? »,
-   drapeau → « Drapeau ? » ; puis elles se retournent l'une après l'autre sur Paris, France, 🇫🇷 ; elles se rangent avec
-   le reste au second dézoom. Les instants sont des constantes de `timeline.ts`. L'intro peut gagner ≈ 1 s si le rythme
-   est trop serré (jugé sur la prévisualisation).
+3. **Questions** (HTML, §5) : chacune naît de son objet au moment où il apparaît — « Capitale ? » quand le point touche
+   Paris (11,22 s), « Pays ? » pendant que la frontière se déroule (dès 11,6 s), « Drapeau ? » avec le drapeau qui sort
+   du point (dès 13,15 s) ; plus de retournement sur la réponse. Elles rentrent dans leur objet de 15,6 s à 16,37 s au plus,
+   au début du rangement des objets (16,2-16,9 s), avant que la caméra reparte (second dézoom, 16,4 s). Les instants des
+   objets sont des constantes de `timeline.ts`, ceux des questions de `questions.ts`, calés sur eux (testé). Pas de
+   seconde de plus (aperçu validé le 12/10).
 4. **Fin** : le second dézoom loge la Terre dans le « o » d'un titre « Countrizz » en pâte, placé où est le titre de
    l'accueil sur l'écran de référence de chaque cadrage ; puis fondu vers l'accueil HTML. Les cibles des deux « o »
    deviennent des constantes de chaque cadrage (plus de mesure dans la page).
-5. **Durée** : ≈ 20 s (≈ 21 s avec la seconde de plus des bulles), dans les 20-25 s du 09/10.
+5. **Durée** : ≈ 20 s (19,8 s, D12), dans les 20-25 s du 09/10.
 
 Validation par l'utilisateur, dans l'ordre : planche d'images témoins, puis prévisualisation complète ; le rendu final
 ne part qu'après son accord.
@@ -110,8 +114,8 @@ ne part qu'après son accord.
   lancée par `play()`, sans attribut `autoplay` (D13).
 - **Globe** : monté caché dès que son code est arrivé (import différé : D15), chargé pendant la vidéo ; la vidéo est décodée par le circuit vidéo,
   le GPU reste au globe.
-- **Synchronisation** : bulles, montage de l'accueil et fondu suivent l'image affichée (`requestVideoFrameCallback`,
-  `currentTime` en repli).
+- **Synchronisation** : questions, montage de l'accueil et fondu suivent l'image affichée (`requestVideoFrameCallback`,
+  `currentTime` en repli) ; les questions sont une fonction pure de cet instant.
 - **« Passer › »** : saute à la fin (accueil monté, fondu).
 - **Fin** : l'accueil HTML se monte 1,2 s avant le fondu, comme aujourd'hui (`ACCUEIL` 16,2 s, `FONDU` 17,4 s, décalés
   avec la chute) ; la vidéo fond vers le vrai globe
@@ -120,25 +124,63 @@ ne part qu'après son accord.
   l'écran d'erreur existant (« Réessayer ») sous l'accueil.
 - **Accueil direct sur le globe** si : lecture automatique refusée (`play()` rejeté, ex. mode économie d'énergie
   d'iOS) ; aucune image au bout de 8 s ; vidéo en erreur ou aucun codec lisible ; plus de 8 s sans progrès en cours de
-  lecture (avant cela, les bulles attendent avec la vidéo).
+  lecture (avant cela, les questions attendent avec la vidéo).
 - **Mouvement réduit** : rien de particulier (décision du 10/10).
 - **Crochets de test** (dev ou drapeau `countrizz:e2e`, comme aujourd'hui) : `?introT=13` place la vidéo à 13 s en
-  pause ; `window.__intro` donne `t`, `ready`, `skipped` et la variante choisie (cadrage, cadence, codec).
+  pause, questions comprises ; `window.__intro` donne `t`, `ready`, `skipped` et la variante choisie (cadrage, cadence, codec).
 
-## 5. Bulles de questions
+## 5. Questions
 
-- Textes des catalogues : `modes.capital`, `modes.country`, `modes.flag` suivis de « ? » ; réponses « Paris »,
-  « France » (identiques en FR et EN) et le drapeau 🇫🇷. Style de l'accueil (Chango, couleurs, inclinaison, élan).
-- Chaque bulle pointe vers son ancre (`ancres.json`), convertie du repère de la vidéo vers l'écran selon le
-  rognage `cover` de la fenêtre courante ; recalculée au redimensionnement.
-- Les bulles sont décoratives pour les lecteurs d'écran (`aria-hidden`) ; la vidéo porte un `aria-label`.
+Réécrit le 12/10 (§1 : bulles refusées, maquette des questions validée).
+
+- **Plus de bulles** : ni cadre, ni queue, ni retournement sur la réponse (Paris, France, 🇫🇷 disparaissent), ni image du
+  drapeau (D4 abandonnée). Le point, la frontière et le drapeau de la vidéo suffisent.
+- **Trois mots** en Chango, jaune `--jaune`, ombre `--ombre-titre` mise à l'échelle (en em) : textes des catalogues
+  `modes.capital`, `modes.country`, `modes.flag` suivis de « ? » à la typographie de la langue (FR : espace fine
+  insécable U+202F avant « ? » ; EN : collé, « Capital? »). En HTML par-dessus la vidéo, bilingues et nets : la vidéo est
+  la même pour FR et EN.
+- **Chaque mot naît de son objet, au moment où il apparaît** : « Capitale ? » quand le point touche Paris (11,22 s),
+  « Pays ? » pendant que la frontière se déroule (dès 11,6 s, une lettre toutes les 0,16 s), « Drapeau ? » avec le drapeau
+  qui sort du point (dès 13,15 s, une lettre toutes les 0,06 s). Les lettres jaillissent l'une après l'autre de
+  l'**ancre courante** de l'objet (`web/public/intro/ancres.json`, px de la vidéo, 60 par seconde de 10,8 à 16,2 s : le
+  point, le milieu de la frontière, le haut du mât — le drapeau monte, l'ancre suit), volent avec un saut et une vrille,
+  se posent avec élan à leur place de repos près de l'objet ; puis elles ondulent (une vague à travers les lettres), le
+  « ? » sautille, le mot oscille un peu.
+- **Au rangement, elles rentrent dans leur objet**, la dernière lettre d'abord, en rétrécissant : de 15,6 s à 16,37 s au plus
+  (0,04 s par lettre, 0,45 s chacune : 16,21 s pour 5 lettres, 16,37 s pour 9), au début du rangement des objets
+  (16,2-16,9 s) et avant que la caméra reparte (16,4 s) ; au-delà de 16,2 s (fin de la fenêtre d'`ancres.json`), l'ancre
+  est tenue à sa dernière valeur.
+- **Places de repos et tailles** (px de la vidéo : centre du mot, inclinaison), celles de la maquette validée :
+
+  | Cadrage | Taille des lettres | « Capitale ? » | « Pays ? » | « Drapeau ? » |
+  |---|---|---|---|---|
+  | portrait | 62 | 860, 1262, −4° | 330, 1470, 4° | 560, 900, −3° |
+  | paysage | 64 | 1300, 600, −4° | 680, 730, 4° | 990, 330, −3° |
+
+- **Repère** : le calque des questions vit dans le repère de la vidéo (1080 × 2340 ou 1920 × 1080) ; un seul `transform`
+  le pose sur l'écran selon le rognage `cover` (échelle `max(W/vw, H/vh)`, portrait calé en haut, paysage centré : D8),
+  recalculé au redimensionnement et à la rotation. **Chaque mot reste entier dans la partie visible** : si sa place de
+  repos sort de la fenêtre (écran loin des références), il est ramené dedans, à 8 px CSS des bords, son mouvement
+  compris. L'enveloppe du mouvement est large (cercle de chaque lettre) : un mot peut glisser de quelques px même sur un
+  écran de référence (« Capitale ? » de ≈ 6 px CSS sur le téléphone 390 × 844), invisible à l'œil.
+- **Fonction pure de t**, le temps de la vidéo (image affichée par `requestVideoFrameCallback`, `currentTime` en repli) :
+  `?introT=` fige les questions avec la vidéo ; le réseau qui cale les fige avec elle.
+- Les questions sont décoratives pour les lecteurs d'écran (`aria-hidden` sur le calque) ; la vidéo porte un
+  `aria-label`. Mouvement réduit : rien de particulier (décision du 10/10).
+- Code de référence : le script `lettre()` de la maquette validée (page de suivi, version 3 ; la maquette elle-même vit
+  hors dépôt et disparaît avec le dossier de travail), repris dans `web/src/intro/questions.ts` (plan, Task 9) avec ses
+  instants, ses envols, ses places de repos et ses fonctions d'élan. Relecture du 12/10 : `etatLettre` et la maquette
+  confrontées sur 144 566 instants (deux cadrages, FR et EN, 10,5 à 17,5 s), écart max 2,3e-13 px, mêmes visibilités.
+  Deux différences : le retour part de 15,6 s au lieu de 16,2, et chaque lettre tourne autour du centre de sa boîte
+  (`transform-origin: 50% 50%` au lieu de 50% 60%, ≈ 2 px pendant la vrille).
 
 ## 6. Ce qui disparaît du site
 
 `web/src/intro/scene.ts`, `web/src/intro/boxes.ts`, la mesure des « o » dans la page, le double invisible du titre, la
 vignette, les étoiles en DOM, et les textures de l'intro dans `public/intro/` (`monde.jpg`, `europe.jpg`, `relief.jpg`,
 `relief-fin.jpg`, `france.json`) — elles restent des **sources** de la fabrique (régénérables), plus des fichiers servis.
-`timeline.ts` reste (source des clés et de l'horloge des bulles), sans `IPS`.
+`timeline.ts` reste (source des clés et des ancres ; les instants des questions, dans `questions.ts`, sont calés sur
+elle), sans `IPS`.
 
 ## 7. Budget (amende le §7 du spec de l'intro)
 
@@ -154,14 +196,18 @@ vignette, les étoiles en DOM, et les textures de l'intro dans `public/intro/` (
 
 - **Unitaires (Vitest)** :
   - chronologie : la chute part plus lentement qu'avant et sa vitesse croît jusqu'à l'impact ; continuité aux bornes de
-    phase ; bulles dans l'ordre Capitale, Pays, Drapeau puis retournement ; durée totale ≈ 20 s (test : entre 19 et 25 s, D12) ;
+    phase ; point, frontière et drapeau dans l'ordre, rangés avec le reste ; durée totale ≈ 20 s (test : entre 19 et 25 s, D12) ;
   - export : une clé par 1/120 s, sortie déterministe, ancres dans le cadre ;
-  - lecteur : cadrage selon la fenêtre, cadence selon l'intervalle mesuré, la plus économe puis la plus fluide, AV1 avant HEVC à égalité (D11), conversion des ancres par le
-    rognage `cover`, chaque cas d'échec du §4 mène à l'accueil direct.
+  - lecteur : cadrage selon la fenêtre, cadence selon l'intervalle mesuré, la plus économe puis la plus fluide, AV1 avant HEVC à égalité (D11), rognage
+    `cover` (un seul transform du repère de la vidéo à l'écran), chaque cas d'échec du §4 mène à l'accueil direct ;
+  - questions : nées de leur objet dans l'ordre Capitale, Pays, Drapeau, rien avant (instants calés sur la chronologie) ;
+    chaque lettre part de l'ancre courante et se pose à sa place ; retour dans l'objet, la dernière lettre d'abord, fini
+    avant le second dézoom ; typographie FR (U+202F) et EN ; chaque mot entier dans l'écran, de sa pose à son retour, sur
+    les écrans éloignés des références et après rotation (ancres livrées) ; fonction pure du temps de la vidéo.
 - **Fabrique (sur le Mac, hors suite)** : rendu « aperçu » de quelques images basse définition (la scène se construit) ;
   contrôle de l'encodage (durée, cadence, résolution, codec lus par `ffprobe`) ; fond de la vidéo à ± 3 de `#16173a`.
-- **Bout en bout sur countrizz.fr (Playwright)** : la vidéo mène à l'accueil ; « Passer › » ; bulles en FR et en EN aux
-  bons instants, posées sur leur ancre (instants figés par `?introT=`) ; globe lent → dernière image puis fondu ;
+- **Bout en bout sur countrizz.fr (Playwright)** : la vidéo mène à l'accueil ; « Passer › » ; questions en FR et en EN aux
+  bons instants, nées de leur objet et entières dans l'écran (instants figés par `?introT=`) ; globe lent → dernière image puis fondu ;
   vidéo absente ou refusée → accueil direct ; globe en rotation après le fondu ; « Jouer » ouvre la démo ; e2e du globe
   (WebGPU et WebGL 2) inchangés. Les images de référence de l'intro three.js sont remplacées par ces contrôles.
 - **Budget** : §7.
@@ -190,12 +236,12 @@ vignette, les étoiles en DOM, et les textures de l'intro dans `public/intro/` (
 |---|---|---|
 | 1 (09/10) | rendu en temps réel, pas de vidéo | **vidéo précalculée, Blender** |
 | 2 | stop motion à 12 i/s | **fluide, 120 i/s** (60 servi aux écrans < 100 Hz) |
-| 2 (déroulé) | chute 1,2 → 2,8 s ; vignette « France / Paris » | **chute ≈ 2,4 s accélérée ; bulles Capitale/Pays/Drapeau** |
+| 2 (déroulé) | chute 1,2 → 2,8 s ; vignette « France / Paris » | **chute ≈ 2,4 s accélérée ; questions Capitale/Pays/Drapeau nées de leur objet** |
 | 2 (format) | l'intro remplit la fenêtre, tailles en `U` | **deux cadrages fixes, `cover`, fondu** |
 | 3 | Terre en pâte three.js dans le navigateur | **Terre en pâte Blender, dans la vidéo** |
 | 6 | fabrique des textures servies | **sources de la fabrique Blender**, plus servies |
 | 7 | intro prête ≤ 3 Mo | **§7 de ce spec** |
-| 9 | images de référence de l'intro à des instants figés | **contrôles des bulles et des étapes** |
+| 9 | images de référence de l'intro à des instants figés | **contrôles des questions et des étapes** |
 
 ## 12. Décisions du plan (validées à la relecture du plan `docs/superpowers/plans/2026-10-11-countrizz-intro-video-blender.md`)
 
@@ -204,11 +250,11 @@ vignette, les étoiles en DOM, et les textures de l'intro dans `public/intro/` (
 | D1 | Vidéos et manifeste dans `web/public/video/`, hors du service worker et de l'empreinte `CACHES.lourd` ; calque d'image à part ; hors ligne : accueil direct |
 | D2 | Variante portrait légère 720 × 1560 à 60 i/s (AV1 et HEVC), servie quand la 1080 n'est ni fluide ni économe : 10 vidéos |
 | D3 | 120 i/s seulement si l'intervalle mesuré est ≤ 10 ms et que le décodage à 120 est économe ; Safari (≈ 60 Hz par défaut) reçoit 60 |
-| D4 | Drapeau des bulles : l'image `/data/flags/fra.svg` (l'émoji n'est pas rendu sous Windows) |
+| D4 | **Abandonnée le 12/10** (§1, §5 : plus de bulles ni de réponses, le drapeau de la vidéo suffit). Elle disait : drapeau des bulles, l'image `/data/flags/fra.svg` (l'émoji n'est pas rendu sous Windows) |
 | D5 | Titre de fin en pâte dans la vidéo ; le titre HTML de l'accueil reste invisible jusqu'au fondu puis entre en fondu ; la petite Terre repart de l'angle de la vidéo |
 | D6 | Blender lit la police WOFF2 du site ; les e2e (Chromium) lisent l'AV1 et ne dépendent pas de HEVC |
 | D7 | Images rendues en PNG RGBA 8 bits ; AV1 en 10 bits |
-| D8 | Vidéo portrait calée en haut (`object-position: 50% 0`), paysage centrée ; ancres converties par la même règle |
+| D8 | Vidéo portrait calée en haut (`object-position: 50% 0`), paysage centrée ; les questions suivent la même règle de rognage (calque dans le repère de la vidéo, un seul transform) |
 | D9 | Échantillons réglés sur la mesure des images témoins ; au-delà de ≈ 10 h de rendu, l'utilisateur choisit (moins d'échantillons ou deux nuits) |
 | D10 | Pas de profondeur de champ (les lettres sont à 2 unités de la caméra, la Terre à ≥ 4,27) |
 | D11 | Ordre d'essai des variantes : économe, puis fluide, puis lisible ; AV1 avant HEVC à égalité |

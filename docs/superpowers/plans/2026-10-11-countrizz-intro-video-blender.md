@@ -2,13 +2,13 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** remplacer l'intro three.js calculée dans le navigateur par une vidéo précalculée, rendue par Blender (Cycles) à 120 i/s en deux cadrages, avec une chute de la Terre douce puis accélérée, des bulles de questions en HTML (« Capitale ? », « Pays ? », « Drapeau ? ») et un fondu vers l'accueil. Le jeu et son globe restent en WebGPU, avec WebGL 2 en repli.
+**Goal:** remplacer l'intro three.js calculée dans le navigateur par une vidéo précalculée, rendue par Blender (Cycles) à 120 i/s en deux cadrages, avec une chute de la Terre douce puis accélérée, des questions en HTML (« Capitale ? », « Pays ? », « Drapeau ? ») qui naissent de leur objet, et un fondu vers l'accueil. Le jeu et son globe restent en WebGPU, avec WebGL 2 en repli.
 
 **Architecture:**
-- **Source unique.** `timeline.ts` reste la seule source de la chorégraphie. Un export Node la transforme en clés par image (`keys-<cadrage>.json`) et en ancres des bulles (`ancres.json`).
+- **Source unique.** `timeline.ts` reste la seule source de la chorégraphie. Un export Node la transforme en clés par image (`keys-<cadrage>.json`) et en ancres des questions (`ancres.json`).
 - **Rendu.** Une scène Blender construite par script Python rejoue ces clés et rend des PNG RGBA à 120 i/s : images témoins, aperçu, rendu final et petite Terre du titre.
 - **Encodage.** ffmpeg en tire 10 vidéos : AV1 et HEVC, 60 et 120 i/s, portrait plein et léger, paysage. Il produit aussi un manifeste et les affiches.
-- **Site.** `lecteur.ts` (pur, testé) choisit le cadrage, la cadence et la variante, et convertit les ancres. `Intro.tsx` lit la vidéo, pose les bulles et passe le relais à l'accueil. L'intro ne charge plus aucun moteur 3D.
+- **Site.** `lecteur.ts` (pur, testé) choisit le cadrage, la cadence et la variante, et pose le repère de la vidéo sur l'écran ; `questions.ts` (pur, testé) anime les questions en fonction du temps de la vidéo. `Intro.tsx` lit la vidéo, pose les questions et passe le relais à l'accueil. L'intro ne charge plus aucun moteur 3D.
 
 **Tech Stack:**
 - **Site :** React 19, Vite 8.3.2, TypeScript, Vitest (`--project unit`), Playwright 1.63 (Chromium), tsx 4.23.15, sharp 0.35.5 (déjà présent). three 0.186.1 ne sert plus qu'au globe et à l'export des clés.
@@ -28,7 +28,7 @@ Ce sont des écarts au spec ou des choix qu'il laissait ouverts. La Task 1, Step
   - Hors ligne, il n'y a pas de vidéo : accueil direct.
 - **D2. Variante portrait légère : 720 × 1560 à 60 i/s** (AV1 et HEVC). Elle sert quand le décodage de la 1080 × 2340 n'est ni fluide ni économe : cette taille exige le niveau 5 même à 60 i/s. On a donc 10 vidéos.
 - **D3. 120 i/s seulement si l'écran et le décodeur suivent :** intervalle d'image mesuré ≤ 10 ms et décodage à 120 économe (`powerEfficient`). Safari plafonne la page à environ 60 Hz par défaut : il recevra la variante à 60 i/s.
-- **D4. Drapeau des bulles :** l'image `/data/flags/fra.svg` plutôt que l'émoji 🇫🇷, qui n'est pas rendu sous Windows.
+- **D4. Abandonnée le 12/10.** Elle prenait l'image `/data/flags/fra.svg` pour le drapeau des bulles, plutôt que l'émoji 🇫🇷, qui n'est pas rendu sous Windows. Les questions n'ont plus de réponse au verso : le drapeau de la vidéo suffit (spec §5).
 - **D5. Titre de fin :**
   - La vidéo montre le titre en pâte. Ses lettres surgissent au rythme de celles de l'accueil HTML.
   - Le titre HTML de l'accueil, monté à `ACCUEIL`, reste invisible jusqu'au fondu, puis entre en fondu (prop `entree: 'pop' | 'fondu'`).
@@ -38,7 +38,7 @@ Ce sont des écarts au spec ou des choix qu'il laissait ouverts. La Task 1, Step
   - Blender 5.0.1 lit directement la police du site, `chango-latin.woff2` (le spec §2.3 disait le contraire).
   - Le Chromium de Playwright lit l'AV1. Les e2e forcent une variante AV1 et ne dépendent pas de HEVC (§9).
 - **D7. Images rendues en PNG RGBA 8 bits.** En 16 bits, le seul portrait prendrait environ 15 Go. Le fond est transparent et la nuit est composée à l'encodage, exacte à ±1. L'AV1 est encodé en 10 bits.
-- **D8. Portrait calé en haut** (`object-position: 50% 0`), paysage centré. Les ancres des bulles sont converties par la même règle.
+- **D8. Portrait calé en haut** (`object-position: 50% 0`), paysage centré. Les questions suivent la même règle de rognage : leur calque, dans le repère de la vidéo, est posé sur l'écran par un seul transform (`couverture`, Task 9).
 - **D9. Échantillons de rendu réglés sur les images témoins.**
   - La Task 6 mesure le temps par image et propose le nombre d'échantillons.
   - Si le rendu final des deux cadrages dépasse environ 10 h, l'utilisateur choisit : moins d'échantillons, ou deux nuits.
@@ -68,9 +68,9 @@ Ce sont des écarts au spec ou des choix qu'il laissait ouverts. La Task 1, Step
   - Le titre de fin en paysage est petit : le « o » fait r 17,8 px vidéo, fidèle à l'accueil HTML sur bureau.
   - La phase « en flottant » de la chute se passe hors du cadre : la Terre n'est à l'image qu'environ 1,1 s avant l'impact.
 - **Aperçu (Task 7) :**
-  - La bulle « Capitale ? » apparaît à 11,1 s alors que le point ne se pose qu'à 11,22 s. La bulle suit le point qui tombe.
-  - L'ancre « Pays ? » est le milieu de la frontière, dans les Pyrénées (0,53° E, 42,68° N).
-  - Les décalages des bulles (`DECALAGE_BULLE`) sont estimés.
+  - Tranché le 12/10 : les bulles sont refusées, les questions nées de leur objet les remplacent (maquette validée : « ok go », spec §5). « Capitale ? » naît quand le point se pose sur Paris (11,22 s), et non plus à 11,1 s pendant qu'il tombe.
+  - Les lettres de « Pays ? » jaillissent du milieu de la frontière, dans les Pyrénées (0,53° E, 42,68° N), et y rentrent.
+  - Plus de décalages estimés (`DECALAGE_BULLE`) : les places de repos sont celles de la maquette validée (`POSES`, Task 9), ramenées dans l'écran quand le rognage les coupe.
   - L'ombre de texte du titre HTML n'est pas reproduite sur les lettres de la vidéo, ce qui se voit pendant le fondu D5.
   - Il y a un écart de ligne de base de 0,75 px CSS au plus entre les deux titres pendant ce fondu (accepté).
 - **Passation (Task 12) :** plafonds pour le démarrage en Fast 4G (environ 1,16 s mesuré après D15) et pour l'accueil « haute ». D14 n'en fixe pas : ils sont mesurés, non bornés.
@@ -78,7 +78,7 @@ Ce sont des écarts au spec ou des choix qu'il laissait ouverts. La Task 1, Step
 ## Points d'arrêt de l'utilisateur
 
 1. **Task 6 :** planche des images témoins (matière, lumière, cadrage, échantillons), et décision D9 si le rendu dépasse environ 10 h.
-2. **Task 7 :** aperçu complet encodé avec les bulles (rythme, seconde de plus ou non).
+2. **Task 7 :** aperçu complet encodé, bulles esquissées (rythme, seconde de plus ou non). Passé le 12/10 : rythme validé, pas de seconde de plus ; les bulles refusées, la maquette des questions qui les remplacent validée (« ok go »).
 3. **Task 8 :** accord avant le rendu final (une nuit ou deux), puis revue des 10 vidéos.
 4. **Task 12 :** GO sur la commande exacte de construction de l'image `1.7`, puis GO pour `kubectl apply` et le rollout.
 
@@ -112,21 +112,24 @@ Ce sont des écarts au spec ou des choix qu'il laissait ouverts. La Task 1, Step
 
 Les cinq cas que le spec implique sans les nommer, du plus probable au moins probable. Chacun est épinglé par des tests dans la tâche qui porte le code ; le relecteur final les vérifie un par un.
 
-1. **Écran loin des deux références** (iPad portrait 768 × 1024, bureau 21:9 2560 × 1080, téléphone court 390 × 664) : la vidéo couvre l'écran sans bande vide, et chaque bulle reste dans l'écran, sa pointe contre son objet (ou contre le bord le plus proche s'il est rogné).
-   - Task 9, `web/src/intro/lecteur.test.ts` : « la vidéo couvre l’écran sans bande vide ; portrait calé en haut, paysage centré ; centrée en largeur », « toute ancre (coins, centre, hors du cadre rogné) : bulle dans l’écran, pointe sur l’ancre ou sur le bord le plus proche », « ancre dans un coin : la bulle passe de l’autre côté plutôt que de cacher sa pointe », « les ancres livrées (public/intro/ancres.json), sur chaque écran du Review Focus : bulles dans l’écran ».
-   - Task 11, `web/e2e/intro.spec.ts` : « <écran> <l>×<h> : la vidéo couvre l’écran, les bulles restent dedans, contre leur objet », une fois par écran.
+1. **Écran loin des deux références** (iPad portrait 768 × 1024, bureau 21:9 2560 × 1080, téléphone court 390 × 664) : la vidéo couvre l'écran sans bande vide, et chaque question reste entière dans l'écran : sa place de repos, près de son objet, est ramenée dans la partie visible quand le rognage la coupe (à 8 px CSS des bords, son mouvement compris).
+   - Task 9, `web/src/intro/lecteur.test.ts` : « la vidéo couvre l’écran sans bande vide ; portrait calé en haut, paysage centré ; centrée en largeur », « couverture : un seul transform du repère de la vidéo à l’écran (translate puis scale), celui de versEcran ».
+   - Task 9, `web/src/intro/questions.test.ts` : « partie visible : ce que l’écran montre de la vidéo, à la marge près », « l’étendue d’un mot contient chacune de ses lettres, de la pose au retour (inclinaison qui oscille, onde, saut du « ? ») », « mot dont la place de repos sort de la partie visible : ramené dedans (iPad portrait : « Pays ? » remonte ; 900 × 900 : « Capitale ? » rentre à gauche) ; gardé s’il y tient ; centré s’il est plus grand qu’elle », « les ancres livrées (public/intro/ancres.json), sur chaque écran du Review Focus : chaque mot entier dans l’écran, de sa pose à son retour ».
+   - Task 11, `web/e2e/intro.spec.ts` : « <écran> <l>×<h> : la vidéo couvre l’écran, chaque question reste entière dedans », une fois par écran.
 2. **Seconde visite, service worker actif** : la vidéo se lit, servie par le réseau avec ses plages d'octets, et n'est jamais rangée dans un cache (sinon Safari casse : D1).
    - Task 10, `web/src/pwa/pwa.test.ts` : « les vidéos de l’intro et leur manifeste passent au réseau : plages d’octets, que CacheFirst « 200 seulement » casserait (D1) », « ce sont bien les motifs de vite.config.ts (aucun motif écrit en dur à côté) ».
    - Task 11, `web/e2e/pwa.spec.ts` : « seconde visite, service worker actif : la vidéo se lit, servie par le réseau, jamais rangée dans ses caches ».
 3. **Onglet caché pendant l'intro** : rien n'est compté comme abandon pendant l'absence ; au retour, la lecture reprend d'elle-même (relancée par `Intro.tsx`), ou l'intro mène à l'accueil.
    - Task 9, `lecteur.test.ts` : « onglet caché pendant l’attente : l’absence ne compte pas ; au retour, le compte reprend où il était », « au retour de l’onglet, la vidéo reprend : plus d’abandon », « un relevé manqué (page gelée 30 s sans événement) ne compte que pour un pas ».
    - Task 11, `intro.spec.ts` : « onglet caché pendant la lecture : aucun abandon pendant l’absence ni à cause d’elle ; au retour, la lecture reprend » (le test cache l'onglet sans relancer la vidéo : la reprise doit venir d'`Intro.tsx`), « onglet caché avant la première image : l’absence ne compte pas dans les 8 s ».
-4. **Rotation ou redimensionnement pendant l'intro** : la vidéo n'est pas rechargée (le cadrage choisi au départ reste), elle couvre encore l'écran, et les bulles sont recalculées.
+4. **Rotation ou redimensionnement pendant l'intro** : la vidéo n'est pas rechargée (le cadrage choisi au départ reste), elle couvre encore l'écran, et le calque des questions est reposé (transform de `couverture`, mots ramenés par `poserMot`).
    - Task 9, `lecteur.test.ts` : « rotation pendant l’intro : la même vidéo (même cadrage) couvre encore l’écran tourné ».
-   - Task 11, `intro.spec.ts` : « rotation et redimensionnement pendant l’intro : la vidéo n’est pas rechargée, les bulles sont recalculées ».
-5. **Réseau qui cale** : les bulles, réglées sur l'horloge de la vidéo, attendent avec elle ; après 8 s sans progrès, ou si aucune image n'arrive en 8 s, accueil direct.
+   - Task 9, `questions.test.ts` : « rotation pendant l’intro (portrait gardé sur l’écran tourné 844 × 390) : chaque mot ramené dans le haut visible, entier ».
+   - Task 11, `intro.spec.ts` : « rotation et redimensionnement pendant l’intro : la vidéo n’est pas rechargée, les questions sont reposées et restent entières dans l’écran ».
+5. **Réseau qui cale** : les questions, fonction pure du temps de la vidéo, attendent avec elle ; après 8 s sans progrès, ou si aucune image n'arrive en 8 s, accueil direct.
    - Task 9, `lecteur.test.ts` : « aucune image : « pas-d-image » à 8 s, pas avant », « réseau qui cale en cours de lecture : « bloquee » au bout de 8 s sans progrès ; un progrès remet le compte à zéro », « lecture qui n’a pas à avancer (figée par ?introT, dernière image en attendant le globe) : jamais d’abandon ».
-   - Task 11, `intro.spec.ts` : « le réseau cale en pleine lecture : les bulles attendent avec la vidéo, puis accueil après 8 s sans progrès », « requête vidéo jamais servie : l’affiche du bon cadrage, puis l’accueil direct au bout de 8 s ».
+   - Task 9, `questions.test.ts` : « fonction pure du temps de la vidéo : le même instant donne la même image, quel que soit l’ordre des appels (?introT, réseau qui cale) ».
+   - Task 11, `intro.spec.ts` : « le réseau cale en pleine lecture : les questions attendent avec la vidéo, puis accueil après 8 s sans progrès », « requête vidéo jamais servie : l’affiche du bon cadrage, puis l’accueil direct au bout de 8 s ».
 
 ---
 
@@ -134,14 +137,14 @@ Les cinq cas que le spec implique sans les nommer, du plus probable au moins pro
 
 | Fichier | Rôle | Task |
 |---|---|---|
-| `web/src/intro/temps.ts` (nouveau) | constantes partagées site et fabrique, sans three : cadrages, `INTRO`, `BULLES`, `LOGO_*`, abandons | 1 |
+| `web/src/intro/temps.ts` (nouveau) | constantes partagées site et fabrique, sans three : cadrages, `INTRO`, `BULLES` (instants de la fabrique : fenêtre d'`ancres.json`, témoins, aperçu), `LOGO_*`, abandons | 1 |
 | `web/src/intro/cadrages.ts` (nouveau) | écrans de référence et géométrie mesurée des deux titres, en px vidéo | 1 |
 | `web/scripts/intro/mesurer-titres.ts` (nouveau) | mesure des titres dans Chromium (vraie police, règles CSS du site) | 1 |
 | `web/src/intro/timeline.ts` (réécrit) | chorégraphie v2 : `frameAt(t, cadrage)`, chute en v³, écrasement continu, lettres, étoiles | 1 |
 | `web/src/intro/timeline-v1.ts` (provisoire) | copie gelée de l'ancienne chronologie pour l'intro three.js, jusqu'à la Task 10 | 1 → 10 |
 | `web/scripts/intro/lib/terre.ts`, `lib/peinture.ts` (nouveaux) | géométrie de la Terre (hauteur, frontière, repères) et peintures extraites de `build-intro.ts` | 2 |
 | `web/scripts/intro/sources.ts` (nouveau) | sources de Blender dans `.cache/sources/` (peintures, hauteur et relief en 16 bits, frontière, repères) | 2 |
-| `web/scripts/intro/lib/axes.ts`, `export-keys.ts` (nouveaux) | clés par image pour Blender, et `web/public/intro/ancres.json` pour le lecteur ; à la Task 9, `export-keys.ts` ré-exporte le type `Ancres` du lecteur | 3, 9 |
+| `web/scripts/intro/lib/axes.ts`, `export-keys.ts` (nouveaux) | clés par image pour Blender, et `web/public/intro/ancres.json` pour le lecteur ; à la Task 9, `export-keys.ts` ré-exporte le type `Ancres` des questions (`questions.ts`) | 3, 9 |
 | `web/scripts/intro/blender/{commun,scene,anim,rendre}.py` (nouveaux) | scène construite par script, cuisson des clés, rendu par mode (`temoins`, `apercu`, `rendu`, `sprite`) | 4, 5 |
 | `web/scripts/intro/blender/essais.py` (nouveau) | essais Python lancés dans Blender | 4, 5 |
 | `web/scripts/intro/lib/lanceur.ts`, `blender.ts` (nouveaux) | lanceur de Blender : disque, fraîcheur des clés, modes, témoins | 4, 5, 6 |
@@ -149,9 +152,10 @@ Les cinq cas que le spec implique sans les nommer, du plus probable au moins pro
 | `web/src/intro/videos.ts` (nouveau) | types du manifeste (`Manifeste`, `Variante`, `idVariante`), partagés par la fabrique et le lecteur | 7 |
 | `web/scripts/intro/lib/{mp4,encodage,apercu}.ts`, `encode.ts` (nouveaux) | encodage ffmpeg, chaînes de codec lues dans le fichier, affiches, sprite, manifeste, aperçu avec bulles | 7 |
 | `web/public/video/*.mp4`, `videos.json`, `web/public/intro/affiche-*.webp`, `logo-terre.webp`, `web/e2e-budget/plafonds-video.json` (générés) | les 10 vidéos, le manifeste, les affiches, la petite Terre et les plafonds par fichier | 8 |
-| `web/src/intro/lecteur.ts` (nouveau) | décisions pures du lecteur : cadrage, cadence, variante, conversion à l'écran, bulles, abandons | 9 |
-| `web/src/intro/Intro.tsx`, `intro.css` (réécrits) | lecteur vidéo, bulles, « Passer › », relais vers l'accueil (la Task 1 n'y change que les imports) | 1, 10 |
-| `web/src/i18n/types.ts`, `fr.ts`, `en.ts` (modifiés) | textes de l'intro : bulles, étiquette de la vidéo | 10 |
+| `web/src/intro/lecteur.ts` (nouveau) | décisions pures du lecteur : cadrage, cadence, variante, rognage `cover` (`couverture`, `versEcran`), relais de la petite Terre, abandons | 9 |
+| `web/src/intro/questions.ts` (nouveau) | questions en fonctions pures du temps de la vidéo : textes et typographie, instants nés des objets, ancres interpolées (type `Ancres`), places de repos ramenées dans la partie visible, état de chaque lettre | 9 |
+| `web/src/intro/Intro.tsx`, `intro.css` (réécrits) | lecteur vidéo, calque des questions, « Passer › », relais vers l'accueil (la Task 1 n'y change que les imports) | 1, 10 |
+| `web/src/i18n/types.ts`, `fr.ts`, `en.ts` (modifiés) | textes de l'intro : étiquette de la vidéo (les questions prennent `modes.*` ; leur typographie est dans `questions.ts`) | 10 |
 | `web/src/ui/LogoTitle.tsx`, `Home.tsx`, `home.css`, `web/src/app/App.tsx` (modifiés) | entrée du titre en fondu (D5), relais de la petite Terre, globe chargé en différé (D15) | 10 |
 | `web/src/globe/LoadErrorCard.tsx` (nouveau), `GlobeView.tsx` (modifié) | carte « Réessayer » sortie du code du globe, pour l'afficher sans lui (D15) | 10 |
 | `web/src/pwa/motifs.ts` (nouveau), `cache.ts`, `vite.config.ts`, `web/tsconfig.json` (modifiés) | motifs du service worker testés : `/video/` jamais intercepté (D1) ; `allowImportingTsExtensions` pour importer `motifs.ts` avec son extension | 10 |
@@ -5666,39 +5670,55 @@ git commit -m "intro : vidéos de l'intro rendues dans Blender et encodées (10 
 
 ---
 
-### Task 9 : Lecteur : décisions pures (cadrage, cadence, variante, écran, bulles, abandons)
+### Task 9 : Lecteur : décisions pures (cadrage, cadence, variante, écran, questions, abandons)
 
 **Files:**
 - Create: `web/src/intro/lecteur.ts`
 - Test: `web/src/intro/lecteur.test.ts` (créé)
-- Modify: `web/scripts/intro/export-keys.ts` (Step 5 : son type `Ancres` devient celui du lecteur, ré-exporté)
+- Create: `web/src/intro/questions.ts`
+- Test: `web/src/intro/questions.test.ts` (créé)
+- Modify: `web/scripts/intro/export-keys.ts` (Step 9 : son type `Ancres` devient celui des questions, ré-exporté)
 
 **Interfaces:**
-- Consumes : `web/src/intro/temps.ts` (Task 1) : `type Cadrage`, `CADRAGES`, `INTRO`, `BULLES`, `BULLES_RANGE`, `type Bulle`, `LOGO_ANGLE_FIN`, `LOGO_TOUR_S`, `INTRO_GIVE_UP_MS` ; `web/src/intro/videos.ts` (Task 7) : `type Variante`, `type Manifeste`, `idVariante` ; `logoAngleAt` de `web/src/intro/timeline.ts` et `TITRES` de `web/src/intro/cadrages.ts` (Task 1, dans le test seulement) ; `web/public/intro/ancres.json` (Task 3, dans le test seulement) ; format `ancres.json` du contrat ; `web/scripts/intro/export-keys.ts` (Task 3 : son `interface Ancres`, remplacée au Step 5).
-- Produces (tout dans `web/src/intro/lecteur.ts`) :
-  - ré-exporte de `./videos` (Task 7, un seul jeu de types pour la fabrique et le lecteur) : `idVariante`, `type Manifeste`, `type Variante` ;
-  - types `Ancres { version: 1; fps: number; t0: number; cadrages: Record<Cadrage, { width: number; height: number } & Record<Bulle, [number, number][]>> }` (le seul type des ancres : `export-keys.ts` le ré-exporte, Step 5 ; les fabriques de la Task 6 et de la Task 7 l'importent toujours de `export-keys.ts`), `type Echec = 'lecture-refusee' | 'pas-d-image' | 'erreur' | 'aucun-codec' | 'bloquee'` ;
-  - `choisirCadrage(w: number, h: number): Cadrage` ; `INTERVALLE_DEFAUT_MS = 16.7` ; `SEUIL_120_MS = 10` ; `medianeIntervalle(echantillonsMs: number[]): number` ; `mesurerIntervalle(raf: (cb: FrameRequestCallback) => number, maxMs = 150, horloge = () => performance.now(), delaiMaxMs = 500): Promise<number>` ;
-  - `interface Capacites { decodingInfo?(c: MediaDecodingConfiguration): Promise<{ supported: boolean; smooth: boolean; powerEfficient: boolean }>; canPlayType(type: string): string }` ; `choisirVariantes(m: Manifeste, cadrage: Cadrage, intervalleMs: number, caps: Capacites): Promise<Variante[]>` ;
-  - `versEcran(p: [number, number], video: { width: number; height: number }, ecran: { width: number; height: number }, cadrage: Cadrage): [number, number]` ; `ancreA(a: Ancres, cadrage: Cadrage, b: Bulle, t: number): [number, number] | null` ;
-  - `BULLE_ENTREE_S = 0.35`, `BULLE_SORTIE_S = 0.3`, `MARGE_BULLE = 8`, `DECALAGE_BULLE: Record<Bulle, [number, number]>` ; `etatBulle(b: Bulle, t: number): { visible: boolean; retournee: boolean; entree: number }` ; `interface PoseBulle { centre: [number, number]; pointe: [number, number] }` ; `poserBulle(ancre, decalage, taille, ecran, marge = MARGE_BULLE): PoseBulle` (bornage des bulles à l'écran) ; `cheminQueue(centre, pointe, demiBase = 9): string` ;
-  - `angleTerre(t: number): number` (angle de la Terre de la vidéo entre FONDU et FIN, pour le relais de la petite Terre du titre) ;
-  - machine des abandons : `interface Releve { ms: number; visible: boolean; temps: number; image: boolean; attendue: boolean }`, `interface Suivi { precedent: Releve | null; attenteMs: number }`, `SUIVI_DEPART`, `PAS_MAX_MS = 250`, `suivreLecture(s: Suivi, r: Releve, delaiMs = INTRO_GIVE_UP_MS): { suivi: Suivi; echec: Echec | null }`.
+- Consumes : `web/src/intro/temps.ts` (Task 1) : `type Cadrage`, `CADRAGES`, `INTRO`, `INTRO_GIVE_UP_MS`, `LOGO_ANGLE_FIN`, `LOGO_TOUR_S`, et `BULLES_RANGE` dans les tests (fin de la fenêtre d'`ancres.json`) ; `web/src/intro/videos.ts` (Task 7) : `type Variante`, `type Manifeste`, `idVariante` ; `messages` de `web/src/i18n` (catalogues `modes.*`), `type Lang` et `type Mode` de `web/src/game/types.ts` (existants) ; dans les tests seulement : `frameAt`, `POINT_RP`, `logoAngleAt` de `web/src/intro/timeline.ts` et `TITRES` de `web/src/intro/cadrages.ts` (Task 1), `web/public/intro/ancres.json` (Task 3) ; `web/scripts/intro/export-keys.ts` (Task 3 : son `interface Ancres`, remplacée au Step 9). Le site ne lit plus `BULLES` ni `type Bulle` : ils restent les instants de la fabrique (`ANCRES_T0` d'`export-keys.ts`, témoins, planche, aperçu à esquisses de la Task 7) ; `temps.ts` n'est pas touché.
+- Produces :
+  - `web/src/intro/lecteur.ts` :
+    - ré-exporte de `./videos` (Task 7, un seul jeu de types pour la fabrique et le lecteur) : `idVariante`, `type Manifeste`, `type Variante` ; `type Echec = 'lecture-refusee' | 'pas-d-image' | 'erreur' | 'aucun-codec' | 'bloquee'` ;
+    - `choisirCadrage(w: number, h: number): Cadrage` ; `INTERVALLE_DEFAUT_MS = 16.7` ; `SEUIL_120_MS = 10` ; `medianeIntervalle(echantillonsMs: number[]): number` ; `mesurerIntervalle(raf: (cb: FrameRequestCallback) => number, maxMs = 150, horloge = () => performance.now(), delaiMaxMs = 500): Promise<number>` ;
+    - `interface Capacites { decodingInfo?(c: MediaDecodingConfiguration): Promise<{ supported: boolean; smooth: boolean; powerEfficient: boolean }>; canPlayType(type: string): string }` ; `choisirVariantes(m: Manifeste, cadrage: Cadrage, intervalleMs: number, caps: Capacites): Promise<Variante[]>` ;
+    - `interface Couverture { echelle: number; x: number; y: number }` ; `couverture(video: { width: number; height: number }, ecran: { width: number; height: number }, cadrage: Cadrage): Couverture` (le calque des questions, dans le repère de la vidéo, se pose par `translate(x px, y px) scale(echelle)`, origine en haut à gauche) ; `versEcran(p: [number, number], video: { width: number; height: number }, ecran: { width: number; height: number }, cadrage: Cadrage): [number, number]` ;
+    - `angleTerre(t: number): number` (angle de la Terre de la vidéo entre FONDU et FIN, pour le relais de la petite Terre du titre) ;
+    - machine des abandons : `interface Releve { ms: number; visible: boolean; temps: number; image: boolean; attendue: boolean }`, `interface Suivi { precedent: Releve | null; attenteMs: number }`, `SUIVI_DEPART`, `PAS_MAX_MS = 250`, `suivreLecture(s: Suivi, r: Releve, delaiMs = INTRO_GIVE_UP_MS): { suivi: Suivi; echec: Echec | null }`.
+  - `web/src/intro/questions.ts` (pur : ni DOM, ni three) :
+    - `type Question = 'capitale' | 'pays' | 'drapeau'` ; `interface Ancres { version: 1; fps: number; t0: number; cadrages: Record<Cadrage, { width: number; height: number } & Record<Question, [number, number][]>> }` (le seul type des ancres : `export-keys.ts` le ré-exporte, Step 9 ; les fabriques des Tasks 6 et 7 l'importent toujours de `export-keys.ts`) ;
+    - `ORDRE_QUESTIONS: readonly Question[]` (`capitale`, `pays`, `drapeau`) ; `MODE_QUESTION: Record<Question, Mode>` ; `QUESTIONS: Record<Question, { naissance: number; ecart: number; vol: number; saut: number; phase: number }>` ; `RETOUR = 15.6` ; `POSES: Record<Cadrage, { taille: number } & Record<Question, [x: number, y: number, inclinaison: number]>>` ; `MARGE_QUESTION = 8` (px CSS) ;
+    - `texteQuestion(lang: Lang, q: Question): string` (FR : le mot du catalogue, U+202F, « ? » ; EN : « Capital? ») ; `signes(texte: string): { c: string; blanc: boolean }[]` ;
+    - `ancreQuestion(a: Ancres, cadrage: Cadrage, q: Question, t: number): [number, number]` (interpolée, tenue aux bornes de la fenêtre) ;
+    - `interface Cadre { x0: number; y0: number; x1: number; y1: number }` ; `partieVisible(cadrage: Cadrage, ecran: { width: number; height: number }, marge = 0): Cadre` ;
+    - `interface Gabarit { largeur: number; hauteur: number; lettres: { x: number; y: number; w: number; h: number }[] }` (mesuré par la page, en px de la vidéo, à la taille `POSES[cadrage].taille`, blancs exclus) ; `etendue(g: Gabarit, inclinaison: number, taille: number): { gauche: number; droite: number; haut: number; bas: number }` ;
+    - `interface Mot { question: Question; cadrage: Cadrage; taille: number; centre: [number, number]; inclinaison: number; lettres: [number, number][] }` ; `poserMot(q: Question, cadrage: Cadrage, g: Gabarit, ecran: { width: number; height: number }, marge = MARGE_QUESTION): Mot` ;
+    - `interface EtatLettre { x: number; y: number; rot: number; echelle: number; opacite: number }` ; `etatLettre(t: number, mot: Mot, i: number, a: Ancres): EtatLettre | null` (null : pas encore née, ou rentrée dans son objet).
 
-Règles tranchées ici (pour le relecteur) : `choisirVariantes` rend une variante par codec lisible, rangées économe > fluide > lisible, AV1 avant HEVC à égalité ; la légère (portrait 720 × 1560) remplace la pleine qui n'est ni fluide ni économe (ou illisible) ; le 120 i/s remplace le 60 seulement si l'intervalle mesuré est ≤ 10 ms ET si `decodingInfo` à 120 dit `powerEfficient` (jamais pour la légère) ; sans `decodingInfo` (ou s'il lève), `canPlayType` dit seulement « lisible » : la légère en portrait. Les abandons ne comptent que le temps où l'onglet est visible ; un écart de plus de 250 ms entre deux relevés (page gelée, changement d'onglet manqué) ne compte que 250 ms. Review Focus épinglés : écrans éloignés des références et bulles bornées (1), onglet caché (2), rotation (3), réseau qui cale (4).
+Règles tranchées ici (pour le relecteur) : `choisirVariantes` rend une variante par codec lisible, rangées économe > fluide > lisible, AV1 avant HEVC à égalité ; la légère (portrait 720 × 1560) remplace la pleine qui n'est ni fluide ni économe (ou illisible) ; le 120 i/s remplace le 60 seulement si l'intervalle mesuré est ≤ 10 ms ET si `decodingInfo` à 120 dit `powerEfficient` (jamais pour la légère) ; sans `decodingInfo` (ou s'il lève), `canPlayType` dit seulement « lisible » : la légère en portrait. Les abandons ne comptent que le temps où l'onglet est visible ; un écart de plus de 250 ms entre deux relevés (page gelée, changement d'onglet manqué) ne compte que 250 ms.
 
-- [ ] **Step 1 : écrire les tests.** Créer `web/src/intro/lecteur.test.ts` :
+Règles des questions (pour le relecteur) :
+- Le module porte le `<script>` de la maquette validée le 12/10 (« ok go ») : instants et envols (naissance, écart, vol, saut), places de repos et tailles, `sortie`, `elan`, `recul`, onde, sautillement du « ? », oscillation. Une seule différence, le ruling du contrôleur : le retour part de `RETOUR` = 15,6 s au lieu de 16,2. Il finit entre 16,2 et 16,4 s (15,6 + (n − 1) × 0,04 + 0,45 s : 16,21 s pour 5 lettres, 16,37 s pour 9), avant le second dézoom (16,4 s) ; au-delà de 16,2 s, l'ancre est tenue à sa dernière valeur. Une lettre est invisible (null) avant sa naissance et quand son échelle tombe sous 0,001 (début du vol, fin du retour), comme dans la maquette.
+- Les instants de naissance (11,22 / 11,6 / 13,15 s) recopient des constantes privées de `timeline.ts` (T_POINT + D_POINT, T_FRONTIERE, T_DRAPEAU) : le test « chaque mot naît de son objet » les confronte à `frameAt`, qu'un déplacement de phase ferait échouer.
+- La typographie de la langue est dans `questions.ts` (`texteQuestion`), sur les mots des catalogues (`modes.*`) : FR « Capitale », U+202F, « ? » ; EN « Capital? ». Le blanc ne vole pas, il ne fait que l'espace (`signes`).
+- Places de repos : `poserMot` borne l'étendue du mot vivant (le cercle de la boîte de chaque lettre, l'inclinaison ± 2,2°, l'onde, le saut du « ? ») dans la partie visible, à `MARGE_QUESTION` px CSS des bords. Relevé au plan, avec les chasses de Chango mesurées dans Chromium : « Capitale ? » (FR) glisse de x = 860 à 843,4 px vidéo sur le téléphone de référence et le téléphone court, à 854,3 sur l'iPad portrait ; « Pays ? » remonte de y = 1470 à 1375,2 (FR) et 1368,0 (EN) sur l'iPad portrait ; partout ailleurs, les places de la maquette tiennent. Écran tourné (cadrage portrait gardé, 844 × 390) : les trois mots sont ramenés vers y ≈ 425-436 et peuvent se chevaucher ; cas dégradé accepté, les objets eux-mêmes sont alors hors de l'écran.
+- Les lettres partent de l'ancre courante et y rentrent même quand l'objet est hors de l'écran rogné (elles viennent de lui) : seul le mot posé est garanti entier dans l'écran, de sa pose au retour.
+- Review Focus épinglés : écrans éloignés des références (1), onglet caché (3), rotation (4), réseau qui cale (5).
+
+- [ ] **Step 1 : écrire les tests du lecteur.** Créer `web/src/intro/lecteur.test.ts` :
 
 ```ts
-import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
-  DECALAGE_BULLE, MARGE_BULLE, SUIVI_DEPART, ancreA, angleTerre, cheminQueue, choisirCadrage, choisirVariantes, etatBulle, idVariante,
-  medianeIntervalle, mesurerIntervalle, poserBulle, suivreLecture, versEcran,
-  type Ancres, type Capacites, type Manifeste, type Releve, type Suivi, type Variante,
+  SUIVI_DEPART, angleTerre, choisirCadrage, choisirVariantes, couverture, idVariante, medianeIntervalle, mesurerIntervalle, suivreLecture, versEcran,
+  type Capacites, type Manifeste, type Releve, type Suivi, type Variante,
 } from './lecteur';
 import { TITRES } from './cadrages';
-import { BULLES, BULLES_RANGE, CADRAGES, INTRO, type Bulle, type Cadrage } from './temps';
+import { CADRAGES, INTRO, type Cadrage } from './temps';
 import { logoAngleAt } from './timeline';
 
 // ---------- manifeste de test : les 10 vidéos de D2 ----------
@@ -5849,9 +5869,8 @@ describe('choix des variantes (ordre d’essai ; [] → accueil direct)', () => 
   });
 });
 
-// ---------- écrans de proportions éloignées des références (Review Focus 1 et 3) ----------
+// ---------- écrans de proportions éloignées des références (Review Focus 1 et 4) ----------
 const ECRANS = { telephone: { width: 390, height: 844 }, ipad: { width: 768, height: 1024 }, bureau219: { width: 2560, height: 1080 }, court: { width: 390, height: 664 }, bureau: { width: 1280, height: 800 } };
-const BULLE = { width: 200, height: 44 };
 
 describe('de la vidéo à l’écran (object-fit: cover)', () => {
   it('la vidéo couvre l’écran sans bande vide ; portrait calé en haut, paysage centré ; centrée en largeur', () => {
@@ -5881,6 +5900,17 @@ describe('de la vidéo à l’écran (object-fit: cover)', () => {
     expect(versEcran([1080, 2340], CADRAGES.portrait, ECRANS.ipad, 'portrait').map((v) => Math.round(v * 100) / 100)).toEqual([768, 1664]);
   });
 
+  it('couverture : un seul transform du repère de la vidéo à l’écran (translate puis scale), celui de versEcran', () => {
+    for (const ecran of [...Object.values(ECRANS), { width: 844, height: 390 }]) for (const cadrage of ['portrait', 'paysage'] as const) {
+      const video = CADRAGES[cadrage], c = couverture(video, ecran, cadrage);
+      expect(c.echelle).toBe(Math.max(ecran.width / video.width, ecran.height / video.height));
+      for (const p of [[0, 0], [video.width, video.height], [123.4, 567.8]] as [number, number][])
+        expect(versEcran(p, video, ecran, cadrage)).toEqual([c.x + p[0] * c.echelle, c.y + p[1] * c.echelle]);
+    }
+    expect(couverture(CADRAGES.paysage, ECRANS.bureau219, 'paysage')).toEqual({ echelle: 2560 / 1920, x: 0, y: -180 });
+    expect(couverture(CADRAGES.portrait, ECRANS.ipad, 'portrait')).toEqual({ echelle: 768 / 1080, x: 0, y: 0 });
+  });
+
   it('rotation pendant l’intro : la même vidéo (même cadrage) couvre encore l’écran tourné', () => {
     const tourne = { width: 844, height: 390 };
     const [x0, y0] = versEcran([0, 0], CADRAGES.portrait, tourne, 'portrait');
@@ -5888,112 +5918,6 @@ describe('de la vidéo à l’écran (object-fit: cover)', () => {
     expect([x0, y0]).toEqual([0, 0]);
     expect(x1).toBeCloseTo(844, 9);
     expect(y1).toBeGreaterThan(390);
-  });
-});
-
-describe('bulles bornées à l’écran, queue vers leur objet', () => {
-  /** La bulle tient dans l’écran, à la marge près. */
-  const dedans = (c: [number, number], ecran: { width: number; height: number }) => {
-    expect(c[0] - BULLE.width / 2).toBeGreaterThanOrEqual(MARGE_BULLE - 1e-9);
-    expect(c[0] + BULLE.width / 2).toBeLessThanOrEqual(ecran.width - MARGE_BULLE + 1e-9);
-    expect(c[1] - BULLE.height / 2).toBeGreaterThanOrEqual(MARGE_BULLE - 1e-9);
-    expect(c[1] + BULLE.height / 2).toBeLessThanOrEqual(ecran.height - MARGE_BULLE + 1e-9);
-  };
-
-  it('toute ancre (coins, centre, hors du cadre rogné) : bulle dans l’écran, pointe sur l’ancre ou sur le bord le plus proche', () => {
-    for (const ecran of Object.values(ECRANS)) {
-      const cadrage = choisirCadrage(ecran.width, ecran.height), video = CADRAGES[cadrage];
-      const ancres: [number, number][] = [[0, 0], [video.width, 0], [0, video.height], [video.width, video.height], [video.width / 2, video.height / 2], [-60, -60], [video.width + 60, video.height + 60]];
-      for (const b of Object.keys(BULLES) as Bulle[]) for (const p of ancres) {
-        const a = versEcran(p, video, ecran, cadrage), pose = poserBulle(a, DECALAGE_BULLE[b], BULLE, ecran);
-        dedans(pose.centre, ecran);
-        expect(pose.pointe).toEqual([Math.min(ecran.width, Math.max(0, a[0])), Math.min(ecran.height, Math.max(0, a[1]))]);
-      }
-    }
-  });
-
-  it('ancre dans un coin : la bulle passe de l’autre côté plutôt que de cacher sa pointe', () => {
-    const pose = poserBulle([5, 5], DECALAGE_BULLE.drapeau, BULLE, ECRANS.telephone);
-    expect(pose.pointe).toEqual([5, 5]);
-    const [cx, cy] = pose.centre;
-    expect(Math.abs(cy - 5) >= BULLE.height / 2 + MARGE_BULLE || Math.abs(cx - 5) >= BULLE.width / 2 + MARGE_BULLE).toBe(true);
-    dedans(pose.centre, ECRANS.telephone);
-  });
-
-  it('les ancres livrées (public/intro/ancres.json), sur chaque écran du Review Focus : bulles dans l’écran', () => {
-    const a = JSON.parse(readFileSync(new URL('../../public/intro/ancres.json', import.meta.url), 'utf8')) as Ancres;
-    expect(a.version).toBe(1);
-    for (const ecran of Object.values(ECRANS)) {
-      const cadrage = choisirCadrage(ecran.width, ecran.height), video = a.cadrages[cadrage];
-      for (const b of Object.keys(BULLES) as Bulle[]) {
-        for (let t = BULLES[b].apparait; t < BULLES_RANGE; t += 0.1) {
-          const p = ancreA(a, cadrage, b, t);
-          expect(p, `${b} à ${t.toFixed(1)} s`).not.toBeNull();
-          const s = versEcran(p!, video, ecran, cadrage), pose = poserBulle(s, DECALAGE_BULLE[b], BULLE, ecran);
-          dedans(pose.centre, ecran);
-          expect(pose.pointe.every(Number.isFinite)).toBe(true);
-        }
-      }
-    }
-  });
-
-  it('queue : triangle de la base (au centre de la bulle) à la pointe', () => {
-    expect(cheminQueue([100, 100], [100, 200], 9)).toBe('M91.0 100.0L100.0 200.0L109.0 100.0Z');
-  });
-});
-
-describe('ancres des bulles', () => {
-  const n = Math.round((BULLES_RANGE - 10.8) * 60) + 1;
-  const piste = Array.from({ length: n }, (_, i) => [i * 10, 1000 + i] as [number, number]);
-  const A: Ancres = { version: 1, fps: 60, t0: 10.8, cadrages: {
-    portrait: { width: 1080, height: 2340, capitale: piste, pays: piste, drapeau: piste },
-    paysage: { width: 1920, height: 1080, capitale: [], pays: [], drapeau: [] },
-  } };
-
-  it('interpolation linéaire entre deux échantillons', () => {
-    expect(ancreA(A, 'portrait', 'capitale', 10.8)).toEqual([0, 1000]);
-    const p = ancreA(A, 'portrait', 'pays', 10.8 + 1.5 / 60)!;
-    expect(p[0]).toBeCloseTo(15, 9);
-    expect(p[1]).toBeCloseTo(1001.5, 9);
-  });
-
-  it('hors de la fenêtre des bulles : null ; la dernière image tient malgré l’arrondi', () => {
-    expect(ancreA(A, 'portrait', 'capitale', 10.79)).toBeNull();
-    expect(ancreA(A, 'portrait', 'capitale', BULLES_RANGE + 0.02)).toBeNull();
-    const fin = ancreA(A, 'portrait', 'drapeau', BULLES_RANGE)!;
-    expect(fin[0]).toBeCloseTo((n - 1) * 10, 9);
-    expect(fin[1]).toBeCloseTo(1000 + n - 1, 9);
-    expect(ancreA(A, 'paysage', 'capitale', 12)).toBeNull();
-  });
-});
-
-describe('état des bulles (horloge de la vidéo)', () => {
-  it('apparition dans l’ordre Capitale, Pays, Drapeau ; retournement dans le même ordre ; toutes rangées à BULLES_RANGE', () => {
-    const quand = (b: Bulle, cle: 'visible' | 'retournee') => {
-      for (let i = 0; i <= 2000; i++) if (etatBulle(b, i / 100)[cle]) return i / 100;
-      return Infinity;
-    };
-    expect([quand('capitale', 'visible'), quand('pays', 'visible'), quand('drapeau', 'visible')]).toEqual([BULLES.capitale.apparait, BULLES.pays.apparait, BULLES.drapeau.apparait]);
-    expect(quand('capitale', 'visible')).toBeLessThan(quand('pays', 'visible'));
-    expect(quand('pays', 'visible')).toBeLessThan(quand('drapeau', 'visible'));
-    expect(quand('capitale', 'retournee')).toBeLessThan(quand('pays', 'retournee'));
-    expect(quand('pays', 'retournee')).toBeLessThan(quand('drapeau', 'retournee'));
-    expect(quand('drapeau', 'visible')).toBeLessThan(quand('capitale', 'retournee'));   // les trois questions avant la première réponse
-    for (const b of Object.keys(BULLES) as Bulle[]) {
-      expect(etatBulle(b, BULLES[b].apparait - 0.01).visible).toBe(false);
-      expect(etatBulle(b, BULLES_RANGE).visible).toBe(false);
-      expect(etatBulle(b, BULLES_RANGE - 0.01).visible).toBe(true);
-    }
-  });
-
-  it('entrée de 0 à 1 en 0,35 s, sortie vers 0 juste avant BULLES_RANGE', () => {
-    const { apparait } = BULLES.pays;
-    expect(etatBulle('pays', apparait).entree).toBe(0);
-    expect(etatBulle('pays', apparait + 0.175).entree).toBeCloseTo(0.5, 9);
-    expect(etatBulle('pays', apparait + 0.4).entree).toBe(1);
-    expect(etatBulle('pays', 15).entree).toBe(1);
-    expect(etatBulle('pays', BULLES_RANGE - 0.15).entree).toBeCloseTo(0.5, 9);
-    expect(etatBulle('pays', apparait - 1).entree).toBe(0);
   });
 });
 
@@ -6068,24 +5992,23 @@ describe('abandons (8 s sans image, 8 s sans progrès ; onglet caché : rien ne 
 });
 ```
 
-- [ ] **Step 2 : vérifier l'échec.** Run : `cd web && npx vitest run --project unit src/intro/lecteur.test.ts`. Expected : FAIL — `Error: Cannot find module './lecteur' imported from …/web/src/intro/lecteur.test.ts`.
+- [ ] **Step 2 : vérifier l'échec.** Run : `cd web && npx vitest run --project unit src/intro/lecteur.test.ts`. Expected : FAIL — `Error: Cannot find module './lecteur' imported from …/web/src/intro/lecteur.test.ts` ; `Test Files  1 failed (1)`, `Tests  no tests`.
 
-- [ ] **Step 3 : implémenter.** Créer `web/src/intro/lecteur.ts` :
+- [ ] **Step 3 : implémenter le lecteur.** Créer `web/src/intro/lecteur.ts` :
 
 ```ts
-import { BULLES, BULLES_RANGE, INTRO, INTRO_GIVE_UP_MS, LOGO_ANGLE_FIN, LOGO_TOUR_S, type Bulle, type Cadrage } from './temps';
+import { INTRO, INTRO_GIVE_UP_MS, LOGO_ANGLE_FIN, LOGO_TOUR_S, type Cadrage } from './temps';
 import type { Manifeste, Variante } from './videos';
 
 /**
- * Décisions du lecteur vidéo de l'intro (spec `2026-10-11-countrizz-intro-video-blender-design.md` §4-5), en fonctions
- * pures : cadrage, cadence, variante, passage du repère de la vidéo à l'écran (`object-fit: cover`), bulles, abandons.
- * `Intro.tsx` les branche sur la page ; tout ce qui décide se teste ici, sans navigateur.
+ * Décisions du lecteur vidéo de l'intro (spec `2026-10-11-countrizz-intro-video-blender-design.md` §4), en fonctions
+ * pures : cadrage, cadence, variante, passage du repère de la vidéo à l'écran (`object-fit: cover`), abandons. Les
+ * questions qui naissent des objets de la vidéo sont dans `questions.ts` (§5). `Intro.tsx` les branche sur la page ;
+ * tout ce qui décide se teste ici, sans navigateur.
  */
 
 /** Le manifeste `/video/videos.json` et ses variantes (videos.ts, partagés avec la fabrique), repris pour Intro.tsx et les tests. */
 export { idVariante, type Manifeste, type Variante } from './videos';
-/** Ancres des bulles (`/intro/ancres.json`, écrit par `scripts/intro/export-keys.ts`) : px vidéo, de `t0` au pas 1/`fps`. */
-export interface Ancres { version: 1; fps: number; t0: number; cadrages: Record<Cadrage, { width: number; height: number } & Record<Bulle, [number, number][]>> }
 /** Pourquoi l'intro mène à l'accueil direct (spec §4). */
 export type Echec = 'lecture-refusee' | 'pas-d-image' | 'erreur' | 'aucun-codec' | 'bloquee';
 
@@ -6173,62 +6096,21 @@ export async function choisirVariantes(m: Manifeste, cadrage: Cadrage, intervall
 
 // ---------- de la vidéo à l'écran ----------
 /**
- * Un point de la vidéo (px vidéo) à l'écran (px CSS) sous `object-fit: cover` : la vidéo couvre l'écran, centrée en
- * largeur ; le portrait est calé en haut (`object-position: 50% 0`, D8), le paysage centré.
+ * Rognage `object-fit: cover` : la vidéo couvre l'écran, centrée en largeur ; le portrait est calé en haut
+ * (`object-position: 50% 0`, D8), le paysage centré. Un point p de la vidéo (px vidéo) est à l'écran (px CSS) en
+ * `(x + p₀·echelle, y + p₁·echelle)` : le calque des questions, dans le repère de la vidéo, se pose donc par un seul
+ * `translate(x, y) scale(echelle)` (origine en haut à gauche), recalculé quand l'écran change.
  */
+export interface Couverture { echelle: number; x: number; y: number }
+export function couverture(video: { width: number; height: number }, ecran: { width: number; height: number }, cadrage: Cadrage): Couverture {
+  const echelle = Math.max(ecran.width / video.width, ecran.height / video.height);
+  return { echelle, x: (ecran.width - video.width * echelle) / 2, y: cadrage === 'portrait' ? 0 : (ecran.height - video.height * echelle) / 2 };
+}
+
+/** Un point de la vidéo (px vidéo) à l'écran (px CSS), sous ce rognage. */
 export function versEcran(p: [number, number], video: { width: number; height: number }, ecran: { width: number; height: number }, cadrage: Cadrage): [number, number] {
-  const s = Math.max(ecran.width / video.width, ecran.height / video.height);
-  const x0 = (ecran.width - video.width * s) / 2, y0 = cadrage === 'portrait' ? 0 : (ecran.height - video.height * s) / 2;
-  return [x0 + p[0] * s, y0 + p[1] * s];
-}
-
-/** Ancre d'une bulle à l'instant `t` de la vidéo (px vidéo), interpolée ; null hors de la fenêtre des bulles. */
-export function ancreA(a: Ancres, cadrage: Cadrage, b: Bulle, t: number): [number, number] | null {
-  const pts = a.cadrages[cadrage][b], n = pts.length, u = (t - a.t0) * a.fps;
-  if (n === 0 || !(u >= -1e-6) || u > n - 1 + 1e-6) return null;
-  if (n === 1) return [pts[0][0], pts[0][1]];
-  const v = Math.min(n - 1, Math.max(0, u)), i = Math.min(n - 2, Math.floor(v)), k = v - i;
-  return [pts[i][0] + (pts[i + 1][0] - pts[i][0]) * k, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * k];
-}
-
-// ---------- bulles ----------
-/** Entrée d'une bulle (s, elle surgit avec élan) ; sortie (s, elle se range juste avant BULLES_RANGE). */
-export const BULLE_ENTREE_S = 0.35, BULLE_SORTIE_S = 0.3;
-/** Marge entre une bulle et le bord de l'écran (px CSS). */
-export const MARGE_BULLE = 8;
-/** Centre de chaque bulle par rapport à son ancre (px CSS) : la capitale à gauche du point, le pays sous la frontière, le drapeau à droite du mât. */
-export const DECALAGE_BULLE: Record<Bulle, [number, number]> = { capitale: [-96, -12], pays: [64, 64], drapeau: [80, -56] };
-
-/** État d'une bulle à l'instant `t` de la vidéo : visible, retournée sur sa réponse, entrée (0 → 1, et 1 → 0 à la sortie). */
-export function etatBulle(b: Bulle, t: number): { visible: boolean; retournee: boolean; entree: number } {
-  const { apparait, retourne } = BULLES[b];
-  const visible = t >= apparait && t < BULLES_RANGE;
-  return { visible, retournee: t >= retourne, entree: visible ? Math.min(1, (t - apparait) / BULLE_ENTREE_S, (BULLES_RANGE - t) / BULLE_SORTIE_S) : 0 };
-}
-
-export interface PoseBulle { centre: [number, number]; pointe: [number, number] }
-/**
- * Où poser une bulle (px CSS) : à `decalage` de son ancre, bornée à l'écran (à `marge` près) ; si elle couvrait alors sa
- * propre pointe, de l'autre côté. La pointe de la queue est l'ancre, ramenée au bord quand l'objet sort du cadre rogné.
- */
-export function poserBulle(ancre: [number, number], decalage: [number, number], taille: { width: number; height: number }, ecran: { width: number; height: number }, marge = MARGE_BULLE): PoseBulle {
-  const borne = (c: number, demi: number, max: number) => (max - 2 * marge < 2 * demi ? max / 2 : Math.min(max - marge - demi, Math.max(marge + demi, c)));
-  const placer = (d: [number, number]): [number, number] => [borne(ancre[0] + d[0], taille.width / 2, ecran.width), borne(ancre[1] + d[1], taille.height / 2, ecran.height)];
-  const pointe: [number, number] = [Math.min(ecran.width, Math.max(0, ancre[0])), Math.min(ecran.height, Math.max(0, ancre[1]))];
-  const couvre = (c: [number, number]) => Math.abs(pointe[0] - c[0]) < taille.width / 2 + marge && Math.abs(pointe[1] - c[1]) < taille.height / 2 + marge;
-  let centre = placer(decalage);
-  if (couvre(centre)) {
-    const oppose = placer([-decalage[0], -decalage[1]]);
-    if (!couvre(oppose)) centre = oppose;
-  }
-  return { centre, pointe };
-}
-
-/** Queue d'une bulle : triangle de sa base (au centre de la bulle, qui la cache) à la pointe ; chemin SVG en px CSS. */
-export function cheminQueue(centre: [number, number], pointe: [number, number], demiBase = 9): string {
-  const dx = pointe[0] - centre[0], dy = pointe[1] - centre[1], l = Math.hypot(dx, dy) || 1;
-  const nx = (-dy / l) * demiBase, ny = (dx / l) * demiBase, f = (x: number) => x.toFixed(1);
-  return `M${f(centre[0] + nx)} ${f(centre[1] + ny)}L${f(pointe[0])} ${f(pointe[1])}L${f(centre[0] - nx)} ${f(centre[1] - ny)}Z`;
+  const c = couverture(video, ecran, cadrage);
+  return [c.x + p[0] * c.echelle, c.y + p[1] * c.echelle];
 }
 
 // ---------- relais de la petite Terre du titre ----------
@@ -6275,9 +6157,499 @@ export function suivreLecture(s: Suivi, r: Releve, delaiMs = INTRO_GIVE_UP_MS): 
 }
 ```
 
-- [ ] **Step 4 : vérifier.** Run : `cd web && npx vitest run --project unit src/intro/lecteur.test.ts`. Expected : PASS — `Tests  32 passed (32)`. (Le test « relais de la petite Terre » compare `angleTerre` à `logoAngleAt` de la chronologie v2 de FONDU à FIN : s'il échoue, la Terre de la vidéo ne tourne pas à la vitesse de la petite Terre du titre pendant le fondu — c'est la chronologie (Task 1) qu'il faut regarder, pas ce test.)
+- [ ] **Step 4 : vérifier.** Run : `cd web && npx vitest run --project unit src/intro/lecteur.test.ts`. Expected : PASS — `Tests  25 passed (25)`. (Le test « relais de la petite Terre » compare `angleTerre` à `logoAngleAt` de la chronologie v2 de FONDU à FIN : s'il échoue, la Terre de la vidéo ne tourne pas à la vitesse de la petite Terre du titre pendant le fondu — c'est la chronologie (Task 1) qu'il faut regarder, pas ce test.)
 
-- [ ] **Step 5 : un seul type des ancres.** `web/scripts/intro/export-keys.ts` (Task 3) définit sa propre `interface Ancres`, identique à celle du lecteur : il prend désormais celle du lecteur et la ré-exporte (les fabriques des Tasks 6 et 7 l'importent toujours de `export-keys.ts`). `lecteur.ts` ne charge pas three. Trois remplacements dans `web/scripts/intro/export-keys.ts`.
+- [ ] **Step 5 : écrire les tests des questions.** Créer `web/src/intro/questions.test.ts` (les chasses de Chango du gabarit de test ont été mesurées dans Chromium sur `web/public/fonts/chango-latin.woff2` ; la page, elle, mesure ses propres lettres : Task 10) :
+
+```ts
+import { readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+import { versEcran } from './lecteur';
+import {
+  MARGE_QUESTION, ORDRE_QUESTIONS, POSES, QUESTIONS, RETOUR, ancreQuestion, etatLettre, etendue, partieVisible, poserMot, signes,
+  texteQuestion, type Ancres, type Gabarit, type Mot,
+} from './questions';
+import { BULLES_RANGE, CADRAGES, type Cadrage } from './temps';
+import { POINT_RP, frameAt } from './timeline';
+
+/** Les ancres livrées (Task 3) : point, milieu de la frontière, haut du mât, px de la vidéo. */
+const ANCRES = JSON.parse(readFileSync(new URL('../../public/intro/ancres.json', import.meta.url), 'utf8')) as Ancres;
+/**
+ * Chasse des signes de Chango (em), mesurée dans Chromium sur la police du site (`chango-latin.woff2`, le 12/10) ; U+202F,
+ * l'espace fine, y fait 0,2 em. Le gabarit de test range les lettres comme la page les mesure (Intro.tsx) : une boîte de
+ * leur chasse sur la hauteur de ligne (1 em).
+ */
+const CHASSE: Record<string, number> = {
+  C: 0.82, a: 0.8, p: 0.81, i: 0.44, t: 0.66, l: 0.44, e: 0.74, '?': 0.68, P: 0.89, y: 0.77, s: 0.65, D: 0.9, r: 0.66, u: 0.86,
+  o: 0.83, n: 0.86, F: 0.81, g: 0.83, '\u202F': 0.2,
+};
+function gabarit(texte: string, taille: number): Gabarit {
+  let x = 0;
+  const lettres: Gabarit['lettres'] = [];
+  for (const s of signes(texte)) {
+    if (!(s.c in CHASSE)) throw new Error(`chasse de « ${s.c} » inconnue`);
+    const w = CHASSE[s.c] * taille;
+    if (!s.blanc) lettres.push({ x: x + w / 2, y: taille / 2, w, h: taille });
+    x += w;
+  }
+  return { largeur: x, hauteur: taille, lettres };
+}
+
+const LANGUES = ['fr', 'en'] as const;
+/** Les écrans du Review Focus (1), le téléphone de référence et un bureau 16:10 ; l'écran tourné du Review Focus (4). */
+const ECRANS = { telephone: { width: 390, height: 844 }, ipad: { width: 768, height: 1024 }, bureau219: { width: 2560, height: 1080 }, court: { width: 390, height: 664 }, bureau: { width: 1280, height: 800 } };
+const TOURNE = { width: 844, height: 390 };
+const cadrageDe = (e: { width: number; height: number }): Cadrage => (e.height > e.width ? 'portrait' : 'paysage');
+/** Les trois mots d'une langue, mesurés (gabarit) puis posés pour un écran. */
+const poser = (lang: 'fr' | 'en', cadrage: Cadrage, ecran: { width: number; height: number }, marge?: number) => ORDRE_QUESTIONS.map((q) => {
+  const g = gabarit(texteQuestion(lang, q), POSES[cadrage].taille);
+  return { g, mot: poserMot(q, cadrage, g, ecran, marge) };
+});
+/** Instant où la lettre `i` se pose (fin de son vol). */
+const posee = (mot: Mot, i: number) => { const q = QUESTIONS[mot.question]; return q.naissance + i * q.ecart + q.vol; };
+
+/**
+ * Plus grand débordement de l'écran (px CSS, ≤ 0 : tout dedans) des lettres de ces mots, de leur pose au retour, au pas
+ * d'une image à 60 i/s : chaque lettre est le cercle de sa boîte (elle peut tourner), à son échelle, ramené à l'écran.
+ */
+function debordement(poses: { g: Gabarit; mot: Mot }[], ecran: { width: number; height: number }, cadrage: Cadrage) {
+  const video = CADRAGES[cadrage], s = Math.max(ecran.width / video.width, ecran.height / video.height);
+  let pire = -Infinity, ou = '';
+  for (const { g, mot } of poses) for (let t = posee(mot, 0); t < RETOUR; t += 1 / 60) mot.lettres.forEach((_, i) => {
+    if (t < posee(mot, i)) return;
+    const e = etatLettre(t, mot, i, ANCRES)!, [x, y] = versEcran([e.x, e.y], video, ecran, cadrage);
+    const r = (Math.hypot(g.lettres[i].w, g.lettres[i].h) / 2) * e.echelle * s;
+    const d = Math.max(r - x, x + r - ecran.width, r - y, y + r - ecran.height);
+    if (d > pire) { pire = d; ou = `${mot.question}, lettre ${i}, à ${t.toFixed(2)} s`; }
+  });
+  return { pire, ou };
+}
+
+describe('textes des questions', () => {
+  it('textes des catalogues à la typographie de chaque langue : espace fine insécable (U+202F) avant « ? » en français, « ? » collé en anglais', () => {
+    expect(ORDRE_QUESTIONS.map((q) => texteQuestion('fr', q))).toEqual(['Capitale\u202F?', 'Pays\u202F?', 'Drapeau\u202F?']);
+    expect(ORDRE_QUESTIONS.map((q) => texteQuestion('en', q))).toEqual(['Capital?', 'Country?', 'Flag?']);
+    expect(signes('Pays\u202F?')).toEqual([
+      { c: 'P', blanc: false }, { c: 'a', blanc: false }, { c: 'y', blanc: false }, { c: 's', blanc: false }, { c: '\u202F', blanc: true }, { c: '?', blanc: false },
+    ]);
+    // les lettres qui volent : les blancs n'en sont pas
+    const lettres = (lang: 'fr' | 'en') => ORDRE_QUESTIONS.map((q) => signes(texteQuestion(lang, q)).filter((s) => !s.blanc).length);
+    expect(lettres('fr')).toEqual([9, 5, 8]);
+    expect(lettres('en')).toEqual([8, 8, 5]);
+  });
+});
+
+describe('ancres des questions', () => {
+  const n = Math.round((BULLES_RANGE - 10.8) * 60) + 1;
+  const piste = Array.from({ length: n }, (_, i) => [i * 10, 1000 + i] as [number, number]);
+  const A: Ancres = { version: 1, fps: 60, t0: 10.8, cadrages: {
+    portrait: { width: 1080, height: 2340, capitale: piste, pays: piste, drapeau: piste },
+    paysage: { width: 1920, height: 1080, capitale: [[5, 6]], pays: [], drapeau: [] },
+  } };
+
+  it('interpolation linéaire entre deux échantillons', () => {
+    expect(ancreQuestion(A, 'portrait', 'capitale', 10.8)).toEqual([0, 1000]);
+    const p = ancreQuestion(A, 'portrait', 'pays', 10.8 + 1.5 / 60);
+    expect(p[0]).toBeCloseTo(15, 9);
+    expect(p[1]).toBeCloseTo(1001.5, 9);
+  });
+
+  it('hors de la fenêtre : tenue à la première et à la dernière valeur (les lettres rentrent là où était l’objet)', () => {
+    expect(ancreQuestion(A, 'portrait', 'capitale', 10.2)).toEqual([0, 1000]);
+    const fin = ancreQuestion(A, 'portrait', 'drapeau', BULLES_RANGE);
+    expect(fin[0]).toBeCloseTo((n - 1) * 10, 9);
+    expect(fin[1]).toBeCloseTo(1000 + n - 1, 9);
+    expect(ancreQuestion(A, 'portrait', 'drapeau', BULLES_RANGE + 0.3)).toEqual(ancreQuestion(A, 'portrait', 'drapeau', BULLES_RANGE + 0.02));
+    expect(ancreQuestion(A, 'portrait', 'drapeau', BULLES_RANGE + 0.3)[0]).toBeCloseTo((n - 1) * 10, 9);
+    expect(ancreQuestion(A, 'paysage', 'capitale', 12)).toEqual([5, 6]);
+    expect(() => ancreQuestion(A, 'paysage', 'pays', 12)).toThrow('aucune ancre « pays » en paysage');
+  });
+
+  it('les ancres livrées couvrent la vie des questions : de la première naissance au retour (60 par seconde, jusqu’à BULLES_RANGE)', () => {
+    expect(ANCRES.version).toBe(1);
+    expect(ANCRES.fps).toBe(60);
+    for (const c of ['portrait', 'paysage'] as const) for (const q of ORDRE_QUESTIONS) {
+      const pts = ANCRES.cadrages[c][q], fin = ANCRES.t0 + (pts.length - 1) / ANCRES.fps;
+      expect(ANCRES.t0).toBeLessThanOrEqual(QUESTIONS.capitale.naissance);
+      expect(fin).toBeCloseTo(BULLES_RANGE, 9);
+      expect(fin).toBeGreaterThan(RETOUR);
+      expect(pts.flat().every(Number.isFinite)).toBe(true);
+    }
+  });
+});
+
+describe('naissance, vol et retour (horloge de la vidéo)', () => {
+  it('ordre et instants de naissance : Capitale, Pays, Drapeau, lettre après lettre ; rien avant', () => {
+    expect(ORDRE_QUESTIONS.map((q) => QUESTIONS[q].naissance)).toEqual([11.22, 11.6, 13.15]);
+    for (const lang of LANGUES) for (const { mot } of poser(lang, 'portrait', ECRANS.telephone)) {
+      const q = QUESTIONS[mot.question];
+      mot.lettres.forEach((_, i) => {
+        const t0 = q.naissance + i * q.ecart;
+        expect(etatLettre(t0 - 0.3, mot, i, ANCRES), `${mot.question} ${i} avant`).toBeNull();
+        expect(etatLettre(t0, mot, i, ANCRES), `${mot.question} ${i} à sa naissance`).toBeNull();
+        expect(etatLettre(t0 + 0.01, mot, i, ANCRES), `${mot.question} ${i} juste après`).not.toBeNull();
+      });
+    }
+    // avant la naissance de « Capitale ? », aucune lettre de la vidéo
+    const tous = LANGUES.flatMap((l) => poser(l, 'paysage', ECRANS.bureau)).map((p) => p.mot);
+    let vues = 0;
+    for (let t = 0; t <= QUESTIONS.capitale.naissance; t += 1 / 120) for (const mot of tous) mot.lettres.forEach((_, i) => { if (etatLettre(t, mot, i, ANCRES)) vues++; });
+    expect(vues).toBe(0);
+  });
+
+  it('chaque mot naît de son objet : le point vient de toucher Paris, la frontière se déroule, le drapeau sort du point (frameAt)', () => {
+    const f = (t: number) => frameAt(t, 'portrait');
+    const { capitale, pays, drapeau } = QUESTIONS;
+    // le point tombe encore 0,02 s avant « Capitale ? » ; à sa naissance, il est posé sur Paris (plus de hauteur de chute)
+    expect(f(capitale.naissance - 0.02).point.y).toBeGreaterThan(POINT_RP * 1.25 * 0.8 + 0.01);
+    expect(f(capitale.naissance).point.y).toBeLessThanOrEqual(POINT_RP * 1.25 * 0.8 + 1e-9);
+    // la frontière a commencé de se dérouler à la naissance de « Pays ? », pas 0,11 s avant ; pas finie quand la
+    // dernière lettre de « Country? » (8 lettres) s'envole
+    expect(f(pays.naissance - 0.11).border).toBe(0);
+    expect(f(pays.naissance).border).toBeGreaterThan(0);
+    expect(f(pays.naissance + 7 * pays.ecart).border).toBeLessThan(1);
+    // le drapeau sort du point : visible à la naissance de « Drapeau ? », pas 0,16 s avant
+    expect(f(drapeau.naissance - 0.16).flag.visible).toBe(false);
+    expect(f(drapeau.naissance).flag.visible).toBe(true);
+  });
+
+  it('chaque lettre part de l’ancre courante de son objet et se pose à sa place (le drapeau monte : l’ancre suit)', () => {
+    for (const lang of LANGUES) for (const cadrage of ['portrait', 'paysage'] as const) {
+      for (const { mot } of poser(lang, cadrage, cadrage === 'portrait' ? ECRANS.telephone : ECRANS.bureau)) {
+        const q = QUESTIONS[mot.question], [cx, cy] = mot.centre, a = (mot.inclinaison * Math.PI) / 180;
+        mot.lettres.forEach(([nx, ny], i) => {
+          const t0 = q.naissance + i * q.ecart;
+          const d = etatLettre(t0 + 2e-4, mot, i, ANCRES)!, o = ancreQuestion(ANCRES, cadrage, mot.question, t0 + 2e-4);
+          expect(Math.hypot(d.x - o[0], d.y - o[1]), `${mot.question} ${i} part de l’objet`).toBeLessThan(1);
+          const p = etatLettre(t0 + q.vol, mot, i, ANCRES)!;
+          expect(p.x).toBeCloseTo(cx + (nx - cx) * Math.cos(a) - (ny - cy) * Math.sin(a), 6);
+          expect(p.y).toBeCloseTo(cy + (nx - cx) * Math.sin(a) + (ny - cy) * Math.cos(a), 6);
+          expect([p.rot, p.echelle, p.opacite]).toEqual([expect.closeTo(mot.inclinaison, 9), 1, 1]);
+        });
+      }
+    }
+    // le haut du mât monte pendant que « Drapeau ? » s'envole : la dernière lettre ne part pas d'où partait la première
+    const { naissance, ecart } = QUESTIONS.drapeau, n = signes(texteQuestion('fr', 'drapeau')).filter((s) => !s.blanc).length;
+    const [a0, a1] = [naissance, naissance + (n - 1) * ecart].map((t) => ancreQuestion(ANCRES, 'portrait', 'drapeau', t));
+    expect(Math.hypot(a1[0] - a0[0], a1[1] - a0[1])).toBeGreaterThan(10);
+  });
+
+  it('au rangement, retour dans l’objet : la dernière lettre d’abord dès RETOUR (15,6 s), toutes rentrées vers 16,2 s, avant le second dézoom (16,4 s)', () => {
+    for (const lang of LANGUES) for (const cadrage of ['portrait', 'paysage'] as const) {
+      for (const { mot } of poser(lang, cadrage, cadrage === 'portrait' ? ECRANS.telephone : ECRANS.bureau)) {
+        const n = mot.lettres.length, fins: number[] = [];
+        mot.lettres.forEach((_, i) => {
+          expect(etatLettre(RETOUR, mot, i, ANCRES)!.echelle, `${mot.question} ${i} encore posée`).toBe(1);
+          let t = RETOUR;
+          while (etatLettre(t, mot, i, ANCRES) !== null) t += 0.001;
+          fins.push(t);
+          // juste avant de disparaître, elle est dans son objet, minuscule
+          const e = etatLettre(t - 0.001, mot, i, ANCRES)!, b = ancreQuestion(ANCRES, cadrage, mot.question, t - 0.001);
+          const r = etatLettre(RETOUR, mot, i, ANCRES)!, depart = Math.hypot(r.x - b[0], r.y - b[1]);
+          expect(Math.hypot(e.x - b[0], e.y - b[1]), `${mot.question} ${i} dans son objet`).toBeLessThan(0.01 * depart);
+          expect(e.echelle).toBeLessThan(0.02);
+        });
+        expect(etatLettre(RETOUR + 0.02, mot, n - 1, ANCRES)!.echelle, 'la dernière lettre part la première').not.toBe(1);
+        expect(etatLettre(RETOUR + 0.02, mot, 0, ANCRES)!.echelle).toBe(1);
+        for (let i = 1; i < n; i++) expect(fins[i]).toBeLessThan(fins[i - 1]);
+        expect(Math.max(...fins)).toBeGreaterThanOrEqual(BULLES_RANGE);   // la première lettre rentre la dernière : vers 16,2 s
+        expect(Math.max(...fins)).toBeLessThan(16.4);
+        mot.lettres.forEach((_, i) => expect(etatLettre(16.4, mot, i, ANCRES)).toBeNull());
+      }
+    }
+  });
+
+  it('fonction pure du temps de la vidéo : le même instant donne la même image, quel que soit l’ordre des appels (?introT, réseau qui cale)', () => {
+    const mots = poser('fr', 'portrait', ECRANS.telephone).map((p) => p.mot);
+    const image = (t: number) => mots.map((mot) => mot.lettres.map((_, i) => etatLettre(t, mot, i, ANCRES)));
+    const vues = [13.6, 11.5, 15.9, 13.6, 12.0, 16.1, 13.6].map(image);
+    expect(vues[3]).toEqual(vues[0]);
+    expect(vues[6]).toEqual(vues[0]);
+    expect(vues[0].flat().filter((e) => e !== null)).toHaveLength(22);   // à 13,6 s : 9 + 5 + 8 lettres à l'image
+  });
+});
+
+describe('places de repos dans la partie visible (Review Focus 1 et 4)', () => {
+  it('partie visible : ce que l’écran montre de la vidéo, à la marge près', () => {
+    for (const ecran of [...Object.values(ECRANS), TOURNE]) for (const cadrage of ['portrait', 'paysage'] as const) {
+      const v = partieVisible(cadrage, ecran, MARGE_QUESTION), video = CADRAGES[cadrage];
+      const [a, b] = [versEcran([v.x0, v.y0], video, ecran, cadrage), versEcran([v.x1, v.y1], video, ecran, cadrage)];
+      for (const [x, y] of [[a[0], MARGE_QUESTION], [a[1], MARGE_QUESTION], [b[0], ecran.width - MARGE_QUESTION], [b[1], ecran.height - MARGE_QUESTION]]) expect(x).toBeCloseTo(y, 9);
+    }
+    // iPad portrait : toute la largeur, les 1440 premiers px ; bureau 21:9 : toute la largeur, de 135 à 945 px
+    const ipad = partieVisible('portrait', ECRANS.ipad), large = partieVisible('paysage', ECRANS.bureau219);
+    expect([ipad.x0, ipad.y0, ipad.x1, ipad.y1].map((x) => Math.round(x * 1e6) / 1e6)).toEqual([0, 0, 1080, 1440]);
+    expect([large.x0, large.y0, large.x1, large.y1].map((x) => Math.round(x * 1e6) / 1e6)).toEqual([0, 135, 1920, 945]);
+  });
+
+  it('l’étendue d’un mot contient chacune de ses lettres, de la pose au retour (inclinaison qui oscille, onde, saut du « ? »)', () => {
+    for (const lang of LANGUES) for (const cadrage of ['portrait', 'paysage'] as const) {
+      for (const { g, mot } of poser(lang, cadrage, cadrage === 'portrait' ? ECRANS.telephone : ECRANS.bureau)) {
+        const e = etendue(g, mot.inclinaison, mot.taille), [cx, cy] = mot.centre;
+        let pire = -Infinity;
+        for (let t = posee(mot, 0); t < RETOUR; t += 1 / 240) mot.lettres.forEach((_, i) => {
+          if (t < posee(mot, i)) return;
+          const l = etatLettre(t, mot, i, ANCRES)!, r = Math.hypot(g.lettres[i].w, g.lettres[i].h) / 2;
+          pire = Math.max(pire, cx + e.gauche - (l.x - r), l.x + r - (cx + e.droite), cy + e.haut - (l.y - r), l.y + r - (cy + e.bas));
+        });
+        expect(pire, `${lang} ${cadrage} ${mot.question}`).toBeLessThanOrEqual(0.01);
+      }
+    }
+  });
+
+  it('mot dont la place de repos sort de la partie visible : ramené dedans (iPad portrait : « Pays ? » remonte ; 900 × 900 : « Capitale ? » rentre à gauche) ; gardé s’il y tient ; centré s’il est plus grand qu’elle', () => {
+    // bureau 16:10 : les trois places de la maquette tiennent
+    for (const lang of LANGUES) for (const { mot } of poser(lang, 'paysage', ECRANS.bureau)) {
+      const [x, y] = POSES.paysage[mot.question];
+      expect(mot.centre).toEqual([x, y]);
+    }
+    // iPad portrait : la vidéo n'y montre que ses 1440 premiers px ; « Pays ? » (y = 1470) remonte contre la marge
+    const ipad = poser('fr', 'portrait', ECRANS.ipad)[1], vi = partieVisible('portrait', ECRANS.ipad, MARGE_QUESTION);
+    const ei = etendue(ipad.g, ipad.mot.inclinaison, ipad.mot.taille);
+    expect(ipad.mot.centre[0]).toBe(POSES.portrait.pays[0]);
+    expect(ipad.mot.centre[1]).toBeLessThan(POSES.portrait.pays[1] - 50);
+    expect(ipad.mot.centre[1] + ei.bas).toBeCloseTo(vi.y1, 9);
+    // écran carré : le paysage n'y montre que 1080 px de large, de 420 à 1500 ; « Capitale ? » (x = 1300) rentre à gauche
+    const carre = { width: 900, height: 900 }, cap = poser('fr', 'paysage', carre)[0], vc = partieVisible('paysage', carre, MARGE_QUESTION);
+    const ec = etendue(cap.g, cap.mot.inclinaison, cap.mot.taille);
+    expect(cap.mot.centre[0]).toBeLessThan(POSES.paysage.capitale[0]);
+    expect(cap.mot.centre[0] + ec.droite).toBeCloseTo(vc.x1, 9);
+    expect(cap.mot.centre[1]).toBe(POSES.paysage.capitale[1]);
+    // marge démesurée : la partie visible est plus étroite que le mot, il est centré dessus
+    const etroit = poser('fr', 'paysage', ECRANS.bureau, 500)[0], ve = partieVisible('paysage', ECRANS.bureau, 500);
+    const ee = etendue(etroit.g, etroit.mot.inclinaison, etroit.mot.taille);
+    expect(ve.x1 - ve.x0).toBeLessThan(ee.droite - ee.gauche);
+    expect(etroit.mot.centre[0] + (ee.gauche + ee.droite) / 2).toBeCloseTo((ve.x0 + ve.x1) / 2, 9);
+  });
+
+  it('les ancres livrées (public/intro/ancres.json), sur chaque écran du Review Focus : chaque mot entier dans l’écran, de sa pose à son retour', () => {
+    for (const [nom, ecran] of Object.entries(ECRANS)) for (const lang of LANGUES) {
+      const cadrage = cadrageDe(ecran), d = debordement(poser(lang, cadrage, ecran), ecran, cadrage);
+      expect(d.pire, `${nom} (${lang}) : ${d.ou}`).toBeLessThanOrEqual(-MARGE_QUESTION + 0.01);
+    }
+  });
+
+  it('rotation pendant l’intro (portrait gardé sur l’écran tourné 844 × 390) : chaque mot ramené dans le haut visible, entier', () => {
+    for (const lang of LANGUES) {
+      const poses = poser(lang, 'portrait', TOURNE), v = partieVisible('portrait', TOURNE, MARGE_QUESTION);
+      for (const { mot } of poses) {
+        expect(mot.centre[1], mot.question).toBeLessThan(POSES.portrait[mot.question][1]);
+        expect(mot.centre[1]).toBeLessThan(v.y1);
+      }
+      const d = debordement(poses, TOURNE, 'portrait');
+      expect(d.pire, `${lang} : ${d.ou}`).toBeLessThanOrEqual(-MARGE_QUESTION + 0.01);
+    }
+  });
+});
+```
+
+- [ ] **Step 6 : vérifier l'échec.** Run : `cd web && npx vitest run --project unit src/intro/questions.test.ts`. Expected : FAIL — `Error: Cannot find module './questions' imported from …/web/src/intro/questions.test.ts` ; `Test Files  1 failed (1)`, `Tests  no tests`.
+
+- [ ] **Step 7 : implémenter les questions.** Créer `web/src/intro/questions.ts` :
+
+```ts
+import type { Lang, Mode } from '../game/types';
+import { messages } from '../i18n';
+import { couverture } from './lecteur';
+import { CADRAGES, type Cadrage } from './temps';
+
+/**
+ * Les questions de l'intro (spec `2026-10-11-countrizz-intro-video-blender-design.md` §5), en fonctions pures du temps
+ * de la vidéo : « Capitale ? », « Pays ? », « Drapeau ? » en Chango, sans bulle ni réponse. Chaque mot naît de son objet
+ * au moment où il apparaît (le point qui touche Paris, la frontière qui se déroule, le drapeau qui sort du point) : ses
+ * lettres jaillissent l'une après l'autre de l'ancre courante de l'objet (`ancres.json`), volent avec un saut et une
+ * vrille, se posent avec élan près de lui, ondulent, puis rentrent dans l'objet au rangement. Tout est en px de la
+ * vidéo : `Intro.tsx` pose le calque sur l'écran par un seul transform (`couverture`) et mesure les lettres dans la page
+ * (`Gabarit`). Implémentation de référence : la maquette validée le 12/10 (« ok go »), retour avancé à 15,6 s.
+ */
+
+export type Question = 'capitale' | 'pays' | 'drapeau';
+/** Ancres des questions (`/intro/ancres.json`, écrit par `scripts/intro/export-keys.ts`) : px vidéo, de `t0` au pas 1/`fps`. */
+export interface Ancres { version: 1; fps: number; t0: number; cadrages: Record<Cadrage, { width: number; height: number } & Record<Question, [number, number][]>> }
+
+/** Les questions dans l'ordre de leur naissance (celui de leurs lettres dans la page). */
+export const ORDRE_QUESTIONS: readonly Question[] = ['capitale', 'pays', 'drapeau'];
+/** Le mode du jeu de chaque question : son texte est `modes.*` du catalogue. */
+export const MODE_QUESTION: Record<Question, Mode> = { capitale: 'capital', pays: 'country', drapeau: 'flag' };
+
+/**
+ * Envol des lettres de chaque mot : naissance de la première lettre (s), écart entre deux lettres (s), durée du vol (s),
+ * hauteur du saut (px vidéo) ; `phase` décale l'oscillation d'un mot à l'autre. « Capitale ? » naît quand le point touche
+ * Paris (T_POINT + D_POINT de timeline.ts), « Pays ? » pendant que la frontière se déroule (T_FRONTIERE + 0,1 s, une
+ * lettre toutes les 0,16 s), « Drapeau ? » avec le drapeau qui sort du point (T_DRAPEAU + 0,15 s) ; testé sur `frameAt`.
+ */
+export const QUESTIONS: Record<Question, { naissance: number; ecart: number; vol: number; saut: number; phase: number }> = {
+  capitale: { naissance: 11.22, ecart: 0.06, vol: 0.55, saut: 170, phase: 0 },
+  pays: { naissance: 11.6, ecart: 0.16, vol: 0.6, saut: 120, phase: 1 },
+  drapeau: { naissance: 13.15, ecart: 0.06, vol: 0.55, saut: 110, phase: 2 },
+};
+/**
+ * Les lettres rentrent dans leur objet à partir de RETOUR, la dernière d'abord ; elles ont fini entre 16,2 et 16,4 s
+ * (16,21 s pour 5 lettres, 16,37 s pour 9 ; au-delà de 16,2 s, fin de la fenêtre d'`ancres.json`, BULLES_RANGE, l'ancre
+ * est tenue pendant que les objets se rangent, de 16,2 à 16,9 s), avant le second dézoom (16,4 s).
+ */
+export const RETOUR = 15.6;
+
+/**
+ * Taille des lettres (px vidéo) et place de repos de chaque mot, près de son objet : centre (px vidéo) et inclinaison (°).
+ * Ce sont celles de la maquette validée ; un écran loin des références peut rogner une place : `poserMot` la ramène.
+ */
+export const POSES: Record<Cadrage, { taille: number } & Record<Question, [x: number, y: number, inclinaison: number]>> = {
+  portrait: { taille: 62, capitale: [860, 1262, -4], pays: [330, 1470, 4], drapeau: [560, 900, -3] },
+  paysage: { taille: 64, capitale: [1300, 600, -4], pays: [680, 730, 4], drapeau: [990, 330, -3] },
+};
+/** Marge entre un mot et le bord de l'écran (px CSS). */
+export const MARGE_QUESTION = 8;
+
+// ---------- le mouvement (constantes de la maquette) ----------
+const RAD = Math.PI / 180;
+/** Une fois posé, le mot s'anime peu à peu (s) : son inclinaison oscille (± °, Hz). */
+const VIE_S = 0.8, OSC_DEG = 2.2, OSC_HZ = 0.55;
+/** Onde à travers les lettres : amplitude (× taille), fréquence (Hz), déphasage d'une lettre à la suivante (rad). */
+const ONDE = 0.08, ONDE_HZ = 1.1, ONDE_DEPHASAGE = 0.6;
+/** Vrille pendant le vol (°, sens alterné d'une lettre à l'autre). */
+const VRILLE_DEG = 220;
+/** Le « ? » sautille : 0,4 s après sa pose, un saut (× taille, et un balancement en °) de 0,45 s toutes les 1,6 s. */
+const SAUTILLE = 0.35, SAUTILLE_DEG = 18, SAUTILLE_DELAI_S = 0.4, SAUTILLE_PERIODE_S = 1.6, SAUTILLE_S = 0.45;
+/** Retour dans l'objet : écart entre deux lettres (s), durée (s), tour sur elle-même (°). */
+const RETOUR_ECART = 0.04, RETOUR_S = 0.45, RETOUR_DEG = 160;
+
+const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+/** Arrivée qui ralentit. */
+const sortie = (x: number) => 1 - (1 - clamp01(x)) ** 3;
+/** Élan : dépassement puis retour (easeOutBack). */
+const elan = (x: number, k = 2.2) => { const u = clamp01(x) - 1; return 1 + (k + 1) * u ** 3 + k * u ** 2; };
+/** Recul : un peu en arrière avant de partir (easeInBack). */
+const recul = (x: number, k = 1.8) => { const u = clamp01(x); return (k + 1) * u ** 3 - k * u ** 2; };
+
+// ---------- textes ----------
+/** Ce qui suit le mot : en français une espace fine insécable (U+202F) puis « ? », en anglais « ? » collé. */
+const POINT: Record<Lang, string> = { fr: '\u202F?', en: '?' };
+/** Le texte d'une question dans la langue : `modes.*` du catalogue, suivi de « ? » à la typographie de la langue. */
+export function texteQuestion(lang: Lang, q: Question): string {
+  return messages[lang].modes[MODE_QUESTION[q]] + POINT[lang];
+}
+/** Les signes d'un texte, dans l'ordre : les lettres (qui volent) et les blancs (qui ne font que l'espace). */
+export function signes(texte: string): { c: string; blanc: boolean }[] {
+  return Array.from(texte, (c) => ({ c, blanc: /\s/u.test(c) }));
+}
+
+// ---------- ancres ----------
+/**
+ * Ancre d'une question à l'instant `t` (px vidéo), interpolée entre deux échantillons ; tenue à sa première et à sa
+ * dernière valeur hors de la fenêtre d'`ancres.json` (après 16,2 s, les lettres finissent de rentrer là où était l'objet).
+ */
+export function ancreQuestion(a: Ancres, cadrage: Cadrage, q: Question, t: number): [number, number] {
+  const pts = a.cadrages[cadrage][q], n = pts.length;
+  if (n === 0) throw new Error(`ancres.json : aucune ancre « ${q} » en ${cadrage}`);
+  if (n === 1) return [pts[0][0], pts[0][1]];
+  const u = Math.min(n - 1, Math.max(0, (t - a.t0) * a.fps)), i = Math.min(n - 2, Math.floor(u)), k = u - i;
+  return [pts[i][0] + (pts[i + 1][0] - pts[i][0]) * k, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * k];
+}
+
+// ---------- places de repos, dans la partie visible ----------
+/** Un rectangle en px de la vidéo. */
+export interface Cadre { x0: number; y0: number; x1: number; y1: number }
+/** La partie de la vidéo que l'écran montre sous le rognage `cover` (px vidéo), rentrée de `marge` px CSS de chaque bord. */
+export function partieVisible(cadrage: Cadrage, ecran: { width: number; height: number }, marge = 0): Cadre {
+  const c = couverture(CADRAGES[cadrage], ecran, cadrage);
+  return { x0: (marge - c.x) / c.echelle, y0: (marge - c.y) / c.echelle, x1: (ecran.width - marge - c.x) / c.echelle, y1: (ecran.height - marge - c.y) / c.echelle };
+}
+
+/**
+ * Un mot tel que la page l'a mesuré, à la taille `POSES[cadrage].taille` dans le calque (px vidéo) : sa boîte, et pour
+ * chaque lettre (blancs exclus, dans l'ordre) son centre dans la boîte et sa taille.
+ */
+export interface Gabarit { largeur: number; hauteur: number; lettres: { x: number; y: number; w: number; h: number }[] }
+
+/**
+ * Ce qu'un mot posé occupe autour du centre de sa place de repos tant qu'il y vit (px vidéo) : chaque lettre — le cercle
+ * de sa boîte, qu'elle peut tourner — à sa place tournée de l'inclinaison ± OSC_DEG (9 angles : moins de 0,01 px
+ * d'erreur), plus l'onde, plus le saut du « ? ».
+ */
+export function etendue(g: Gabarit, inclinaison: number, taille: number): { gauche: number; droite: number; haut: number; bas: number } {
+  let gauche = 0, droite = 0, haut = 0, bas = 0;
+  g.lettres.forEach((l, i) => {
+    const dx = l.x - g.largeur / 2, dy = l.y - g.hauteur / 2, r = Math.hypot(l.w, l.h) / 2;
+    const monte = ONDE * taille + (i === g.lettres.length - 1 ? SAUTILLE * taille : 0), descend = ONDE * taille;
+    for (let k = 0; k <= 8; k++) {
+      const a = (inclinaison + OSC_DEG * (k / 4 - 1)) * RAD;
+      const x = dx * Math.cos(a) - dy * Math.sin(a), y = dx * Math.sin(a) + dy * Math.cos(a);
+      gauche = Math.min(gauche, x - r);
+      droite = Math.max(droite, x + r);
+      haut = Math.min(haut, y - r - monte);
+      bas = Math.max(bas, y + r + descend);
+    }
+  });
+  return { gauche, droite, haut, bas };
+}
+
+/** Un mot posé pour un écran : centre et inclinaison (°) de sa place de repos, centres des lettres au repos sans inclinaison (px vidéo). */
+export interface Mot { question: Question; cadrage: Cadrage; taille: number; centre: [number, number]; inclinaison: number; lettres: [number, number][] }
+
+/**
+ * Pose un mot mesuré : à sa place de repos (`POSES`) si elle tient dans la partie visible de l'écran (à `marge` px CSS
+ * des bords, son mouvement compris : `etendue`), sinon ramené dedans au plus près ; centré s'il est plus grand qu'elle.
+ * À refaire quand l'écran change (redimensionnement, rotation) ou la langue.
+ */
+export function poserMot(q: Question, cadrage: Cadrage, g: Gabarit, ecran: { width: number; height: number }, marge = MARGE_QUESTION): Mot {
+  const { taille } = POSES[cadrage], [x, y, inclinaison] = POSES[cadrage][q];
+  const v = partieVisible(cadrage, ecran, marge), e = etendue(g, inclinaison, taille);
+  const ramener = (c: number, moins: number, plus: number, min: number, max: number) =>
+    max - min < plus - moins ? (min + max - moins - plus) / 2 : Math.min(max - plus, Math.max(min - moins, c));
+  const cx = ramener(x, e.gauche, e.droite, v.x0, v.x1), cy = ramener(y, e.haut, e.bas, v.y0, v.y1);
+  const x0 = cx - g.largeur / 2, y0 = cy - g.hauteur / 2;
+  return { question: q, cadrage, taille, centre: [cx, cy], inclinaison, lettres: g.lettres.map((l): [number, number] => [x0 + l.x, y0 + l.y]) };
+}
+
+// ---------- chaque lettre, en fonction du temps ----------
+/** Une lettre à l'image : centre (px vidéo), rotation (°, sens horaire comme `rotate` en CSS), échelle, opacité. */
+export interface EtatLettre { x: number; y: number; rot: number; echelle: number; opacite: number }
+
+/**
+ * La lettre `i` d'un mot posé à l'instant `t` de la vidéo ; null quand elle ne se voit pas (pas encore née, ou rentrée
+ * dans son objet). Fonction pure de t : `?introT` fige les questions avec la vidéo, le réseau qui cale aussi.
+ */
+export function etatLettre(t: number, mot: Mot, i: number, a: Ancres): EtatLettre | null {
+  const q = QUESTIONS[mot.question], n = mot.lettres.length, taille = mot.taille;
+  const t0 = q.naissance + i * q.ecart, p = (t - t0) / q.vol;
+  if (p <= 0) return null;
+  const pe = sortie(p);
+  // place de repos : la mise en page du mot, tournée de son inclinaison (qui oscille un peu une fois le mot posé)
+  const vie = clamp01((t - t0 - q.vol) / VIE_S);
+  const incl = (mot.inclinaison + OSC_DEG * vie * Math.sin(2 * Math.PI * OSC_HZ * (t - q.naissance) + q.phase)) * RAD;
+  const [nx, ny] = mot.lettres[i], [cx, cy] = mot.centre;
+  const rx = cx + (nx - cx) * Math.cos(incl) - (ny - cy) * Math.sin(incl);
+  const ry = cy + (nx - cx) * Math.sin(incl) + (ny - cy) * Math.cos(incl);
+  // envol depuis l'objet, qui peut encore bouger (le drapeau monte) : l'ancre suit jusqu'à la pose
+  const [ax, ay] = ancreQuestion(a, mot.cadrage, mot.question, Math.min(t, t0 + q.vol));
+  let x = ax + (rx - ax) * pe;
+  let y = ay + (ry - ay) * pe - q.saut * Math.sin(Math.PI * clamp01(p));
+  let echelle = elan(p), rot = incl / RAD + (1 - pe) * (i % 2 ? VRILLE_DEG : -VRILLE_DEG);
+  const opacite = clamp01(p * 4);
+  // l'onde à travers les lettres, et le « ? » qui sautille
+  y -= ONDE * taille * vie * Math.sin(2 * Math.PI * ONDE_HZ * (t - q.naissance) - i * ONDE_DEPHASAGE);
+  const u = t - (t0 + q.vol) - SAUTILLE_DELAI_S;
+  if (i === n - 1 && u > 0) {
+    const h = (u % SAUTILLE_PERIODE_S) / SAUTILLE_S;
+    if (h < 1) { y -= SAUTILLE * taille * Math.sin(Math.PI * h); rot += SAUTILLE_DEG * Math.sin(2 * Math.PI * h); }
+  }
+  // au rangement : retour dans l'objet, la dernière lettre d'abord, en rétrécissant
+  const e = clamp01((t - RETOUR - (n - 1 - i) * RETOUR_ECART) / RETOUR_S);
+  if (e > 0) {
+    const [bx, by] = ancreQuestion(a, mot.cadrage, mot.question, t), k = e * e;
+    x += (bx - x) * k;
+    y += (by - y) * k;
+    echelle *= 1 - recul(e);
+    rot += RETOUR_DEG * k * (i % 2 ? 1 : -1);
+  }
+  return echelle > 0.001 ? { x, y, rot, echelle, opacite } : null;
+}
+```
+
+- [ ] **Step 8 : vérifier.** Run : `cd web && npx vitest run --project unit src/intro/lecteur.test.ts src/intro/questions.test.ts`. Expected : PASS — `Test Files  2 passed (2)`, `Tests  39 passed (39)` (25 pour le lecteur, 14 pour les questions). (Si « chaque mot naît de son objet » échoue, c'est que la chronologie (Task 1) a déplacé le point, la frontière ou le drapeau : recaler `QUESTIONS` sur elle, pas le test.)
+
+- [ ] **Step 9 : un seul type des ancres.** **Garde :** `blender.ts` date `export-keys.ts` pour la fraîcheur des clés de `.cache/` ; après ce Step, toute commande Blender (rendu, reprise, sprite, témoins, aperçu) refuse tant que `npm run intro:keys` n'a pas tourné. Ne faire ce Step que si la Task 8 n'a plus aucune commande Blender à lancer ; sinon, faire le reste de la tâche sans lui (les deux `Ancres` sont structurellement identiques : `tsc` et la suite passent, les comptes du Step 10 ne changent pas) et le signaler : il sera fait après la Task 8, en vérifiant que `intro:keys` redonne les mêmes octets (sha256 des deux clés et d'`ancres.json`, avant et après). `web/scripts/intro/export-keys.ts` (Task 3) définit sa propre `interface Ancres`, identique à celle des questions : il prend désormais celle de `questions.ts` et la ré-exporte (les fabriques des Tasks 6 et 7 l'importent toujours de `export-keys.ts` ; `Question` et `Bulle` sont la même union, leurs `Record` s'indexent l'un par l'autre). `questions.ts` ne charge pas three. Trois remplacements dans `web/scripts/intro/export-keys.ts`.
 
 1. Remplacer :
    
@@ -6300,7 +6672,7 @@ export function suivreLecture(s: Suivi, r: Releve, delaiMs = INTRO_GIVE_UP_MS): 
    
    ```ts
    import { surFrontiere, type Reperes } from './lib/terre';
-   import type { Ancres } from '../../src/intro/lecteur';
+   import type { Ancres } from '../../src/intro/questions';
    ```
 3. Remplacer :
    
@@ -6314,24 +6686,24 @@ export function suivreLecture(s: Suivi, r: Releve, delaiMs = INTRO_GIVE_UP_MS): 
    par :
    
    ```ts
-   /** Ancres des bulles (`public/intro/ancres.json`) : le type du lecteur (`src/intro/lecteur.ts`, Task 9), un seul pour la fabrique et le site. */
+   /** Ancres des questions (`public/intro/ancres.json`) : le type du site (`src/intro/questions.ts`, Task 9), un seul pour la fabrique et le lecteur. */
    export type { Ancres };
    ```
 
-Run : `cd web && npx tsc --noEmit && npx vitest run --project unit scripts/intro/__tests__/unit/axes.test.ts scripts/intro/__tests__/unit/export-keys.test.ts && npm run intro:keys && git status --short public/intro`. Expected : `tsc` sans sortie ; `Test Files  2 passed (2)`, `Tests  14 passed (14)` ; puis l'export inchangé (au plan : `keys-portrait.json : 2377 images, 220 pistes, 12508923 octets`, `keys-paysage.json : 2377 images, 220 pistes, 12390977 octets`, `ancres.json : t0 10.8 s, 325 instants par bulle, 26074 octets`) ; `git status` ne montre rien : `ancres.json` a les mêmes octets.
+Run : `cd web && npx tsc --noEmit && npx vitest run --project unit scripts/intro/__tests__/unit/axes.test.ts scripts/intro/__tests__/unit/export-keys.test.ts && npm run intro:keys && git status --short public/intro` (une fois le rendu final de la Task 8 fini : `intro:keys` réécrit les clés de `.cache/`, aux mêmes octets). Expected : `tsc` sans sortie ; `Test Files  2 passed (2)`, `Tests  14 passed (14)` ; puis l'export inchangé (`keys-portrait.json : 2377 images, 220 pistes, 12508923 octets`, `keys-paysage.json : 2377 images, 220 pistes, 12390977 octets`, `ancres.json : t0 10.8 s, 325 instants par bulle, 26074 octets`) ; `git status` ne montre rien : `ancres.json` a les mêmes octets.
 
-- [ ] **Step 6 : suite complète.** Run : `cd web && npm run check`. Expected : `tsc` sans erreur, toutes les suites unitaires vertes (dont `src/intro/lecteur.test.ts`, 32 tests ; au plan, sur une copie qui porte les Tasks 1 à 9 : `Test Files  70 passed (70)`, `Tests  431 passed (431)`).
+- [ ] **Step 10 : suite complète.** Run : `cd web && npm run check`. Expected : `tsc` sans erreur, toutes les suites unitaires vertes (dont `src/intro/lecteur.test.ts`, 25 tests, et `src/intro/questions.test.ts`, 14 tests ; au plan, sur un worktree à 06fe6e4 (Tasks 1 à 7 ; la Task 8 n'ajoute aucun test) qui porte cette tâche : `Test Files  71 passed (71)`, `Tests  438 passed (438)`).
 
-- [ ] **Step 7 : commit.**
+- [ ] **Step 11 : commit.**
 
 ```bash
-git add web/src/intro/lecteur.ts web/src/intro/lecteur.test.ts web/scripts/intro/export-keys.ts
-git commit -m "intro : décisions pures du lecteur vidéo (cadrage, cadence, variante, cover, bulles bornées, abandons), type des ancres unique — spec intro vidéo §4-5"
+git add web/src/intro/lecteur.ts web/src/intro/lecteur.test.ts web/src/intro/questions.ts web/src/intro/questions.test.ts web/scripts/intro/export-keys.ts
+git commit -m "intro : décisions pures du lecteur vidéo (cadrage, cadence, variante, cover, abandons) et questions nées de leur objet, type des ancres unique — spec intro vidéo §4-5"
 ```
 
 ---
 
-### Task 10 : Lecteur : Intro.tsx, bulles, CSS, i18n, App/Home/LogoTitle, suppressions, PWA, nginx, image
+### Task 10 : Lecteur : Intro.tsx, questions, CSS, i18n, App/Home/LogoTitle, suppressions, PWA, nginx, image
 
 **Files:**
 - Modify: `web/src/i18n/types.ts`, `web/src/i18n/fr.ts`, `web/src/i18n/en.ts` ; Test: `web/src/i18n/i18n.test.ts`
@@ -6345,29 +6717,29 @@ git commit -m "intro : décisions pures du lecteur vidéo (cadrage, cadence, var
 - Modify: `deploy/web/nginx.conf`, `deploy/web/Dockerfile`, `deploy/scripts/stage-image.mjs`
 
 **Interfaces:**
-- Consumes : tout `web/src/intro/lecteur.ts` (Task 9) ; `web/src/intro/temps.ts` (Task 1) : `INTRO`, `BULLES`, `LOGO_ANGLE_FIN`, `LOGO_LETTRES`, `LOGO_TOUR_S`, `type Cadrage`, `type Bulle` ; `GlobeView` (`web/src/globe/GlobeView.tsx`, export nommé, `ref` en prop sous React 19) et sa carte d'erreur ; fichiers servis : `/video/videos.json` et ses vidéos (Tasks 7-8), `/intro/ancres.json` (Task 3), `/intro/affiche-<cadrage>.webp` (Tasks 7-8), `/intro/logo-terre.webp` (Task 7), `/data/flags/fra.svg` (existe).
+- Consumes : tout `web/src/intro/lecteur.ts` et tout `web/src/intro/questions.ts` (Task 9) ; `web/src/intro/temps.ts` (Task 1) : `CADRAGES`, `INTRO`, `LOGO_ANGLE_FIN`, `LOGO_LETTRES`, `LOGO_TOUR_S`, `type Cadrage` ; `type Lang` de `web/src/game/types.ts` (existant) ; `GlobeView` (`web/src/globe/GlobeView.tsx`, export nommé, `ref` en prop sous React 19) et sa carte d'erreur ; la police Chango de `web/src/ui/theme.css` (existante) ; fichiers servis : `/video/videos.json` et ses vidéos (Tasks 7-8), `/intro/ancres.json` (Task 3), `/intro/affiche-<cadrage>.webp` (Tasks 7-8), `/intro/logo-terre.webp` (Task 7).
 - Produces :
-  - `Intro({ m, globeReady, onHome, onFade, onDone })` avec `onHome(): void` (à `INTRO.ACCUEIL`), **`onFade(angle: number | null): void`** (le fondu part : angle de la Terre de la vidéo à cet instant, `angleTerre(t)` ; null : accueil direct), `onDone(angle: number | null): void` (fin du fondu : `LOGO_ANGLE_FIN` ; null : intro abandonnée) ;
-  - crochets (dev ou `countrizz:e2e`) : `window.__intro = { t, ready, skipped, variante: { cadrage, taille, ips, codec } | null, echec: Echec | null, premiereImageMs: number | null }` (`ready` : première image affichée ; `premiereImageMs` : `performance.now()` à cet instant) ; `?introT=13` (vidéo à 13 s, en pause, bulles de 13 s) ; `?introVariante=portrait-plein-60-av1` (`idVariante`) ;
-  - DOM pour les e2e (Task 11) : `.intro` (+ `.intro--image` après la première image, `.intro--fondu` pendant le fondu), `video.intro-video[data-cadrage]` (`aria-label` = `intro.videoLabel`), `img.intro-affiche`, `.intro-bulle.intro-bulle--capitale|--pays|--drapeau` (+ `.intro-bulle--retournee`), `.intro-bulle-face` / `.intro-bulle-dos` (le dos du drapeau : `img[src="/data/flags/fra.svg"]`), `svg.intro-queues path` (queues ; pointe = ancre bornée à l'écran), bouton « Passer › » `.intro-passer` ;
+  - `Intro({ lang, m, globeReady, onHome, onFade, onDone })` avec `lang: Lang` (langue des questions), `onHome(): void` (à `INTRO.ACCUEIL`), **`onFade(angle: number | null): void`** (le fondu part : angle de la Terre de la vidéo à cet instant, `angleTerre(t)` ; null : accueil direct), `onDone(angle: number | null): void` (fin du fondu : `LOGO_ANGLE_FIN` ; null : intro abandonnée) ;
+  - crochets (dev ou `countrizz:e2e`) : `window.__intro = { t, ready, skipped, variante: { cadrage, taille, ips, codec } | null, echec: Echec | null, premiereImageMs: number | null }` (`ready` : première image affichée ; `premiereImageMs` : `performance.now()` à cet instant) ; `?introT=13` (vidéo à 13 s, en pause, questions de 13 s) ; `?introVariante=portrait-plein-60-av1` (`idVariante`) ;
+  - DOM pour les e2e (Task 11) : `.intro` (+ `.intro--image` après la première image, `.intro--fondu` pendant le fondu), `video.intro-video[data-cadrage]` (`aria-label` = `intro.videoLabel`), `img.intro-affiche`, bouton « Passer › » `.intro-passer` ; le calque des questions `.intro-questions[data-cadrage][aria-hidden="true"]`, dans le repère de la vidéo (style : `width` et `height` du cadrage en px, `font-size` `POSES[cadrage].taille` px, `transform: translate(<x>px, <y>px) scale(<echelle>)` de `couverture(CADRAGES[cadrage], écran, cadrage)`, écrit par la boucle dès que la mesure existe, puis à chaque changement de taille de l'écran ou de mesure) ; un mot par question, `.intro-question.intro-question--capitale|--pays|--drapeau[data-question]`, dont le texte est `texteQuestion(lang, q)` ; dans chaque mot, un `span` par signe de `signes(texte)` : `.intro-lettre` (style écrit à partir de la première image de la vidéo, à chaque image où t ou la pose change : `opacity`, et `transform: translate(<dx>px, <dy>px) rotate(<r>deg) scale(<s>)` autour de son centre, qui amène ce centre en `etatLettre(t, …)` ; `opacity: 0` quand `etatLettre` rend null ; `opacity: 0` par la CSS avant toute écriture) ou `.intro-blanc` (U+202F, immobile) ;
   - `export type EntreeTitre = 'pop' | 'fondu'` et `LogoTitle({ angle, visible, entree })` (`web/src/ui/LogoTitle.tsx`) ; `Home` : `logo: { angle: number | null; visible: boolean; entree: EntreeTitre }` ; classes `.logo-titre--pop` / `.logo-titre--fondu` (+ `.logo-titre--visible`) ;
   - D15 : `App` charge `GlobeView` par `React.lazy(() => import('../globe/GlobeView').then((m) => ({ default: m.GlobeView })))` sous `<Suspense fallback={null}>`, dans une frontière d'erreur (`CodeDuGlobe`) : morceau introuvable → `onError` (le fondu part) et la carte « Réessayer », qui recharge la page ; `LoadErrorCard({ texts, detail, onRetry })` (`web/src/globe/LoadErrorCard.tsx`) ; `dist/index.html` ne charge plus ni `GlobeView-*.js` ni `textures-*.js` ;
   - `MOTIF_LOURD`, `MOTIF_PAYS`, `MOTIF_DONNEES` (`web/src/pwa/motifs.ts`) ; `INTRO_URLS = ['/intro/affiche-portrait.webp', '/intro/affiche-paysage.webp', '/intro/ancres.json']` ;
-  - i18n `intro.ask` (`'{mode} ?'` / `'{mode}?'`), `intro.videoLabel` ;
+  - i18n `intro.videoLabel` (les questions prennent `modes.*`, leur typographie est dans `questions.ts`) ;
   - nginx : `/video/` dans la location des noms fixes ; image : calque `.image-staging/video/` (refus au-delà de 150 000 000 octets).
 
-Déroulé du lecteur (pour le relecteur) : le code du globe arrive à part (D15) — l'intro se monte avec le premier JavaScript de la page (au plan, Resource Timing sous « bonne connexion » : l'affiche part à 207 ms et la première image vient à 590 ms) ; l'affiche du cadrage de la fenêtre s'affiche tout de suite ; en parallèle, `videos.json`, `ancres.json` et la mesure rAF (≈ 0,15 s) ; puis `choisirVariantes` (ou la variante forcée) ; `src` posé en JS, `play()` sans attribut `autoplay`. Refus `NotAllowedError` → accueil direct ; `error` avant la première image → variante suivante (l'autre codec), sinon accueil direct ; 8 s sans image ou sans progrès (onglet visible seulement, `suivreLecture`) → accueil direct. Retour sur l'onglet : la vidéo suspendue repart (`play()`). Tout suit l'image affichée (`requestVideoFrameCallback`, `currentTime` en repli ; `ended` → FIN). « Passer › » avant la première image : accueil direct ; après : la vidéo saute à sa dernière image (titre en pâte), l'accueil se monte, le fondu part dès que le globe est prêt. Globe pas prêt : la vidéo finit et reste sur sa dernière image, l'accueil par-dessus. Fondu : CSS sur la vidéo de `FONDU_S = FIN − FONDU` ; le titre HTML apparaît en fondu au même rythme (animation, pas transition : elle joue aussi quand « Passer » monte l'accueil et lance le fondu dans la même image) ; la petite Terre est remontée (`key`) à l'angle `onFade` (corrige le bogue de `animation-delay` relevé à la reconnaissance) ; fin sur `transitionend` de l'opacité de la vidéo, au plus tard `FONDU_S + 1 s`. Rotation : la vidéo n'est jamais rechargée, les bulles sont recalculées à chaque image depuis la taille du calque.
+Déroulé du lecteur (pour le relecteur) : le code du globe arrive à part (D15) — l'intro se monte avec le premier JavaScript de la page (au plan, Resource Timing sous « bonne connexion » : l'affiche part à 207 ms et la première image vient à 590 ms) ; l'affiche du cadrage de la fenêtre s'affiche tout de suite ; en parallèle, `videos.json`, `ancres.json` et la mesure rAF (≈ 0,15 s) ; puis `choisirVariantes` (ou la variante forcée) ; `src` posé en JS, `play()` sans attribut `autoplay`. Refus `NotAllowedError` → accueil direct ; `error` avant la première image → variante suivante (l'autre codec), sinon accueil direct ; 8 s sans image ou sans progrès (onglet visible seulement, `suivreLecture`) → accueil direct. Retour sur l'onglet : la vidéo suspendue repart (`play()`). Tout suit l'image affichée (`requestVideoFrameCallback`, `currentTime` en repli ; `ended` → FIN). « Passer › » avant la première image : accueil direct ; après : la vidéo saute à sa dernière image (titre en pâte), l'accueil se monte, le fondu part dès que le globe est prêt. Globe pas prêt : la vidéo finit et reste sur sa dernière image, l'accueil par-dessus. Fondu : CSS sur la vidéo de `FONDU_S = FIN − FONDU` ; le titre HTML apparaît en fondu au même rythme (animation, pas transition : elle joue aussi quand « Passer » monte l'accueil et lance le fondu dans la même image) ; la petite Terre est remontée (`key`) à l'angle `onFade` (corrige le bogue de `animation-delay` relevé à la reconnaissance) ; fin sur `transitionend` de l'opacité de la vidéo, au plus tard `FONDU_S + 1 s`. Questions (spec §5) : un `span` par signe, mesuré dans le calque (repère de la vidéo, à la taille `POSES[cadrage].taille`) à la langue, au cadrage de la vidéo chargée, puis de nouveau quand Chango est chargée (`document.fonts.load`) ; à chaque image, la taille de l'écran est relevée : si elle ou la mesure a changé, le calque est reposé (`couverture`, un seul transform) et les mots ramenés dans la partie visible (`poserMot`) ; puis chaque lettre est écrite depuis `etatLettre(t)`, sans lecture de mise en page, et rien n'est réécrit tant que t et la pose ne changent pas. Rien avant la première image, ni sans ancres. Rotation : la vidéo n'est jamais rechargée, les questions sont reposées.
 
 - [ ] **Step 1 : test des catalogues (échec attendu).** Dans `web/src/i18n/i18n.test.ts`, bloc `describe('catalogues', …)`, juste après le test « textes des maquettes validées » (qui finit par `expect(messages.fr.errors.unsupportedHint)…` puis `});`), ajouter :
 
 ```ts
-  it('bulles de l’intro : le mode du jeu suivi de « ? », à la typographie de chaque langue', () => {
-    expect(fill(messages.fr.intro.ask, { mode: messages.fr.modes.capital })).toBe('Capitale ?');
-    expect(fill(messages.en.intro.ask, { mode: messages.en.modes.flag })).toBe('Flag?');
+  it('intro : la vidéo porte son étiquette pour les lecteurs d’écran (les questions, décoratives, prennent modes.*)', () => {
+    expect(messages.fr.intro.videoLabel).toBe('Countrizz : une Terre en pâte à modeler tombe du ciel et montre la France');
+    expect(messages.en.intro.videoLabel).toBe('Countrizz: a modelling-clay Earth falls from the sky and shows France');
   });
 ```
 
-Run : `cd web && npx vitest run --project unit src/i18n/i18n.test.ts`. Expected : FAIL — `TypeError: Cannot read properties of undefined (reading 'replace')` sur « bulles de l’intro … » ; `Tests  1 failed | 9 passed (10)`.
+Run : `cd web && npx vitest run --project unit src/i18n/i18n.test.ts`. Expected : FAIL — `AssertionError: expected undefined to be 'Countrizz : une Terre en pâte à model…' // Object.is equality` sur « intro : la vidéo porte son étiquette … » ; `Tests  1 failed | 9 passed (10)`.
 
 - [ ] **Step 2 : textes de l'intro.** `web/src/i18n/types.ts` : Remplacer :
 
@@ -6378,8 +6750,8 @@ Run : `cd web && npx vitest run --project unit src/i18n/i18n.test.ts`. Expected 
 par :
 
 ```ts
-  /** `ask` : bulle de question de l'intro (`{mode}` : `modes.*`) ; `videoLabel` : la vidéo pour les lecteurs d'écran. */
-  intro: { skip: string; ask: string; videoLabel: string };
+  /** `videoLabel` : la vidéo pour les lecteurs d'écran (les questions, décoratives, prennent `modes.*` : intro/questions.ts). */
+  intro: { skip: string; videoLabel: string };
 ```
 
 `web/src/i18n/fr.ts` : Remplacer :
@@ -6391,7 +6763,7 @@ par :
 par :
 
 ```ts
-  intro: { skip: 'Passer ›', ask: '{mode} ?', videoLabel: 'Countrizz : une Terre en pâte à modeler tombe du ciel et montre la France' },
+  intro: { skip: 'Passer ›', videoLabel: 'Countrizz : une Terre en pâte à modeler tombe du ciel et montre la France' },
 ```
 
 `web/src/i18n/en.ts` : Remplacer :
@@ -6403,10 +6775,10 @@ par :
 par :
 
 ```ts
-  intro: { skip: 'Skip ›', ask: '{mode}?', videoLabel: 'Countrizz: a modelling-clay Earth falls from the sky and shows France' },
+  intro: { skip: 'Skip ›', videoLabel: 'Countrizz: a modelling-clay Earth falls from the sky and shows France' },
 ```
 
-Run : `cd web && npx vitest run --project unit src/i18n/i18n.test.ts`. Expected : PASS — `Tests  10 passed (10)` (mêmes clés, mêmes emplacements `{mode}` dans les deux langues).
+Run : `cd web && npx vitest run --project unit src/i18n/i18n.test.ts`. Expected : PASS — `Tests  10 passed (10)` (mêmes clés, mêmes emplacements `{…}` dans les deux langues ; plus de `intro.ask` : la typographie des questions est dans `questions.ts`, testée à la Task 9).
 
 - [ ] **Step 3 : tests du service worker et de l'intro mise en cache (échec attendu).** Remplacer tout le contenu de `web/src/pwa/pwa.test.ts` par :
 
@@ -6600,7 +6972,7 @@ par :
 
 ```ts
 /**
- * Les fichiers de l'intro que le service worker garde (affiches, ancres des bulles) : à la première visite, elle les charge
+ * Les fichiers de l'intro que le service worker garde (affiches, ancres des questions) : à la première visite, elle les charge
  * avant qu'il ne contrôle la page. Ni les vidéos ni leur manifeste : ils ne passent jamais par lui (hors ligne : accueil direct).
  */
 export const INTRO_URLS = ['/intro/affiche-portrait.webp', '/intro/affiche-paysage.webp', '/intro/ancres.json'] as const;
@@ -6846,7 +7218,7 @@ export function App() {
         </Suspense>
       </CodeDuGlobe>
       {phase !== 'accueil' && (
-        <Intro m={m} globeReady={globeReady} onHome={() => setHomeShown(true)}
+        <Intro lang={lang} m={m} globeReady={globeReady} onHome={() => setHomeShown(true)}
           onFade={(angle) => { setLogoAngle(angle); setPhase((p) => (p === 'intro' ? 'fondu' : p)); }}
           onDone={(angle) => { if (angle === null) setEntree('pop'); setPhase('accueil'); }} />
       )}
@@ -6864,12 +7236,14 @@ export function App() {
 
 ```tsx
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { fill, type Messages } from '../i18n';
+import type { Lang } from '../game/types';
+import type { Messages } from '../i18n';
 import {
-  DECALAGE_BULLE, SUIVI_DEPART, ancreA, angleTerre, cheminQueue, choisirCadrage, choisirVariantes, etatBulle, idVariante, mesurerIntervalle,
-  poserBulle, suivreLecture, versEcran, type Ancres, type Capacites, type Echec, type Manifeste, type Releve, type Variante,
+  SUIVI_DEPART, angleTerre, choisirCadrage, choisirVariantes, couverture, idVariante, mesurerIntervalle, suivreLecture,
+  type Capacites, type Echec, type Manifeste, type Releve, type Variante,
 } from './lecteur';
-import { BULLES, INTRO, LOGO_ANGLE_FIN, type Bulle, type Cadrage } from './temps';
+import { ORDRE_QUESTIONS, POSES, etatLettre, poserMot, signes, texteQuestion, type Ancres, type Gabarit, type Mot, type Question } from './questions';
+import { CADRAGES, INTRO, LOGO_ANGLE_FIN, type Cadrage } from './temps';
 import './intro.css';
 
 /**
@@ -6881,7 +7255,7 @@ const hooks = (): boolean => { try { return import.meta.env.DEV || localStorage.
 declare global {
   interface Window {
     __intro?: {
-      /** Instant de la vidéo (s) qui règle les bulles, l'accueil et le fondu. */
+      /** Instant de la vidéo (s) qui règle les questions, l'accueil et le fondu. */
       t: number;
       /** La première image de la vidéo est affichée. */
       ready: boolean;
@@ -6894,16 +7268,18 @@ declare global {
   }
 }
 
-const BULLES_ORDRE = Object.keys(BULLES) as Bulle[];
-/** Le mode du jeu de chaque bulle, et sa réponse (la même en français et en anglais ; le drapeau est une image, D4). */
-const MODE = { capitale: 'capital', pays: 'country', drapeau: 'flag' } as const;
-const REPONSE = { capitale: 'Paris', pays: 'France' } as const;
 /** Fondu de la vidéo vers le globe (s), de FONDU à FIN ; le titre de l'accueil apparaît au même rythme (LogoTitle). */
 const FONDU_S = INTRO.FIN - INTRO.FONDU;
-/** Élan à l'entrée d'une bulle : dépassement puis retour, comme les éléments de l'accueil. */
-const elan = (x: number) => { const u = Math.min(1, Math.max(0, x)) - 1; return 1 + 3.2 * u * u * u + 2.2 * u * u; };
+
+/**
+ * Les questions telles que la page les a mesurées dans le calque (un `span` par signe, à la taille `POSES[cadrage].taille`,
+ * px de la vidéo) : pour chaque mot, son gabarit et ses lettres dans l'ordre (blancs exclus), celui d'`etatLettre`.
+ */
+interface Mesure { cadrage: Cadrage; mots: { q: Question; g: Gabarit; lettres: HTMLElement[] }[] }
 
 interface Props {
+  /** Langue des questions (la vidéo est la même en français et en anglais). */
+  lang: Lang;
   m: Messages;
   /** Le vrai globe est prêt : le fondu peut partir. */
   globeReady: boolean;
@@ -6920,14 +7296,15 @@ interface Props {
 
 /**
  * Intro en vidéo précalculée (spec `2026-10-11-countrizz-intro-video-blender-design.md` §4-5) : un calque par-dessus le
- * globe ; l'affiche du cadrage tout de suite, puis la vidéo choisie (cadrage, cadence, codec : lecteur.ts), les bulles de
- * questions en HTML posées sur leurs ancres, « Passer › ». Tout suit l'image affichée (`requestVideoFrameCallback`,
- * `currentTime` en repli) ; la vidéo ne se recharge jamais (rotation : seules les bulles se recalculent). Globe pas prêt :
- * la vidéo reste sur sa dernière image, l'accueil par-dessus. Tout échec mène à l'accueil direct.
+ * globe ; l'affiche du cadrage tout de suite, puis la vidéo choisie (cadrage, cadence, codec : lecteur.ts), les questions
+ * en HTML qui naissent de leurs objets (questions.ts), « Passer › ». Tout suit l'image affichée
+ * (`requestVideoFrameCallback`, `currentTime` en repli) ; la vidéo ne se recharge jamais (rotation : seules les questions
+ * se reposent). Globe pas prêt : la vidéo reste sur sa dernière image, l'accueil par-dessus. Tout échec mène à l'accueil
+ * direct.
  */
-export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
-  const racine = useRef<HTMLDivElement>(null), video = useRef<HTMLVideoElement>(null);
-  const bulles = useRef<Partial<Record<Bulle, HTMLDivElement | null>>>({}), queues = useRef<Partial<Record<Bulle, SVGPathElement | null>>>({});
+export function Intro({ lang, m, globeReady, onHome, onFade, onDone }: Props) {
+  const racine = useRef<HTMLDivElement>(null), video = useRef<HTMLVideoElement>(null), calque = useRef<HTMLDivElement>(null);
+  const mesure = useRef<Mesure | null>(null);
   const ready = useRef(globeReady);
   ready.current = globeReady;
   const skip = useRef(false);
@@ -6935,15 +7312,42 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
   cb.current = { onHome, onFade, onDone };
   // le cadrage de la fenêtre au montage : celui de l'affiche, et de la vidéo choisie au même instant (elle n'en change plus)
   const [cadrage] = useState<Cadrage>(() => choisirCadrage(innerWidth, innerHeight));
+  // le repère des questions : celui de la vidéo chargée (le cadrage du montage, sauf variante forcée par ?introVariante)
+  const [cadrageVideo, setCadrageVideo] = useState<Cadrage>(cadrage);
+
+  // Les questions sont mesurées dans la page (les chasses de Chango) à la langue et au cadrage de la vidéo, puis de
+  // nouveau quand la police est chargée (celle de repli n'a pas les mêmes) ; la boucle les pose pour l'écran et les anime.
+  useEffect(() => {
+    const couche = calque.current!;
+    let vivant = true;
+    const mesurer = () => {
+      mesure.current = {
+        cadrage: cadrageVideo,
+        mots: ORDRE_QUESTIONS.map((q) => {
+          const mot = couche.querySelector<HTMLElement>(`[data-question="${q}"]`)!, lettres = [...mot.querySelectorAll<HTMLElement>('.intro-lettre')];
+          const g: Gabarit = { largeur: mot.offsetWidth, hauteur: mot.offsetHeight,
+            lettres: lettres.map((l) => ({ x: l.offsetLeft + l.offsetWidth / 2, y: l.offsetTop + l.offsetHeight / 2, w: l.offsetWidth, h: l.offsetHeight })) };
+          return { q, g, lettres };
+        }),
+      };
+    };
+    mesurer();
+    const textes = ORDRE_QUESTIONS.map((q) => texteQuestion(lang, q)).join('');
+    document.fonts.load(`${POSES[cadrageVideo].taille}px Chango`, textes).then(() => { if (vivant) mesurer(); }, () => {});
+    return () => { vivant = false; };
+  }, [lang, cadrageVideo]);
 
   useEffect(() => {
-    const v = video.current!, el = racine.current!;
+    const v = video.current!, el = racine.current!, couche = calque.current!;
     const q = hooks() ? new URLSearchParams(location.search) : null;
     const gele = q?.has('introT') ? Number(q.get('introT')) : null, forcee = q?.get('introVariante') ?? null;
     if (q) window.__intro = { t: 0, ready: false, skipped: false, variante: null, echec: null, premiereImageMs: null };
     const rvfc = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
     let alive = true, raf = 0, finFondu = 0, image = false, tImage = 0, saute = false, home = false, fondu = false, done = false;
     let variantes: Variante[] = [], courante: Variante | null = null, ancres: Ancres | null = null, suivi = SUIVI_DEPART;
+    // les questions posées pour l'écran (taille relevée à chaque image), et la dernière image écrite
+    let poses: { mot: Mot; g: Gabarit; lettres: HTMLElement[] }[] = [], posees: Mesure | null = null, ecranPose = '';
+    let ecrit: { t: number; poses: typeof poses } | null = null;
 
     /** Accueil direct (spec §4) : l'intro disparaît d'un coup, les lettres du titre surgissent. */
     const abandonner = (echec: Echec | null) => {
@@ -6977,6 +7381,7 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
       courante = x;
       if (window.__intro) window.__intro.variante = { cadrage: x.cadrage, taille: x.taille, ips: x.ips, codec: x.codec };
       v.dataset.cadrage = x.cadrage;
+      setCadrageVideo(x.cadrage);   // le repère des questions suit la vidéo
       v.src = x.src;
       if (gele !== null) v.addEventListener('loadedmetadata', () => { v.currentTime = gele; }, { once: true });
       else lancer();
@@ -7001,23 +7406,32 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
       if (!document.hidden && courante && gele === null && !skip.current && !fondu && !done && v.paused && !v.ended) lancer();
     };
 
-    const dessinerBulles = (t: number) => {
-      const ecran = { width: el.clientWidth, height: el.clientHeight };
-      const c = courante?.cadrage ?? cadrage, cadre = ancres?.cadrages[c];
-      // les tailles d'abord, les écritures ensuite : une seule mise en page par image
-      const tailles = BULLES_ORDRE.map((b) => { const e = bulles.current[b]; return e ? { width: e.offsetWidth, height: e.offsetHeight } : null; });
-      BULLES_ORDRE.forEach((b, i) => {
-        const e = bulles.current[b], queue = queues.current[b], taille = tailles[i];
-        if (!e || !queue || !taille) return;
-        const etat = etatBulle(b, t), p = ancres && cadre && image ? ancreA(ancres, c, b, t) : null;
-        if (!etat.visible || !p || !cadre) { e.style.opacity = '0'; queue.setAttribute('d', ''); return; }
-        const pose = poserBulle(versEcran(p, cadre, ecran, c), DECALAGE_BULLE[b], taille, ecran), o = String(Math.min(1, etat.entree * 3));
-        e.style.opacity = o;
-        e.style.transform = `translate(${pose.centre[0]}px, ${pose.centre[1]}px) translate(-50%, -50%) scale(${Math.max(0.01, elan(etat.entree))})`;
-        e.classList.toggle('intro-bulle--retournee', etat.retournee);
-        queue.setAttribute('d', cheminQueue(pose.centre, pose.pointe));
-        queue.style.opacity = o;
-      });
+    /**
+     * Les questions à l'instant t (questions.ts). Écran ou mesure changés : le calque, dans le repère de la vidéo, est
+     * reposé par un seul transform (`couverture`) et les mots ramenés dans la partie visible (`poserMot`). Puis chaque
+     * lettre, depuis `etatLettre`, sans lecture de mise en page ; rien avant la première image, ni sans ancres.
+     */
+    const dessinerQuestions = (t: number) => {
+      const me = mesure.current, ecran = { width: el.clientWidth, height: el.clientHeight }, cle = `${ecran.width}×${ecran.height}`;
+      if (!me || ecran.width === 0 || ecran.height === 0) return;
+      if (me !== posees || cle !== ecranPose) {
+        posees = me;
+        ecranPose = cle;
+        const k = couverture(CADRAGES[me.cadrage], ecran, me.cadrage);
+        couche.style.transform = `translate(${k.x}px, ${k.y}px) scale(${k.echelle})`;
+        poses = me.mots.map((x) => ({ ...x, mot: poserMot(x.q, me.cadrage, x.g, ecran) }));
+      }
+      const a = ancres;
+      if (!a || !image || (ecrit && ecrit.t === t && ecrit.poses === poses)) return;
+      ecrit = { t, poses };
+      for (const { mot, g, lettres } of poses) {
+        lettres.forEach((l, i) => {
+          const e = etatLettre(t, mot, i, a);
+          if (!e) { l.style.opacity = '0'; return; }
+          l.style.opacity = String(e.opacite);
+          l.style.transform = `translate(${e.x - g.lettres[i].x}px, ${e.y - g.lettres[i].y}px) rotate(${e.rot}deg) scale(${e.echelle})`;
+        });
+      }
     };
 
     const boucle = () => {
@@ -7041,7 +7455,7 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
         cb.current.onFade(angleTerre(t));
         finFondu = window.setTimeout(finir, FONDU_S * 1000 + 1000);
       }
-      dessinerBulles(t);
+      dessinerQuestions(t);
       if (window.__intro) { window.__intro.t = t; window.__intro.skipped = skip.current; }
     };
 
@@ -7049,7 +7463,7 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
       const json = <T,>(u: string) => fetch(u).then((r) => (r.ok ? (r.json() as Promise<T>) : null)).catch(() => null);
       const [manifeste, a, intervalle] = await Promise.all([json<Manifeste>('/video/videos.json'), json<Ancres>('/intro/ancres.json'), mesurerIntervalle((f) => requestAnimationFrame(f))]);
       if (!alive || done) return;
-      ancres = a;   // sans ancres, la vidéo se lit sans bulles
+      ancres = a;   // sans ancres, la vidéo se lit sans questions
       if (!manifeste) { abandonner('erreur'); return; }
       const caps: Capacites = { canPlayType: (t) => v.canPlayType(t), decodingInfo: navigator.mediaCapabilities ? (c) => navigator.mediaCapabilities.decodingInfo(c) : undefined };
       variantes = forcee !== null ? manifeste.variantes.filter((x) => idVariante(x) === forcee) : await choisirVariantes(manifeste, cadrage, intervalle, caps);
@@ -7087,17 +7501,14 @@ export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
     <div className="intro" ref={racine} style={{ '--fondu': `${FONDU_S.toFixed(2)}s` } as CSSProperties}>
       <video ref={video} className="intro-video" muted playsInline preload="auto" disablePictureInPicture disableRemotePlayback aria-label={m.intro.videoLabel} />
       <img className="intro-affiche" data-cadrage={cadrage} src={`/intro/affiche-${cadrage}.webp`} alt="" aria-hidden="true" />
-      <svg className="intro-queues" aria-hidden="true">
-        {BULLES_ORDRE.map((b) => <path key={b} ref={(e) => { queues.current[b] = e; }} />)}
-      </svg>
-      {BULLES_ORDRE.map((b) => (
-        <div key={b} className={`intro-bulle intro-bulle--${b}`} ref={(e) => { bulles.current[b] = e; }} aria-hidden="true">
-          <div className="intro-bulle-carte">
-            <span className="intro-bulle-face">{fill(m.intro.ask, { mode: m.modes[MODE[b]] })}</span>
-            <span className="intro-bulle-dos">{b === 'drapeau' ? <img src="/data/flags/fra.svg" alt="" /> : REPONSE[b]}</span>
+      <div className="intro-questions" ref={calque} data-cadrage={cadrageVideo} aria-hidden="true"
+        style={{ width: CADRAGES[cadrageVideo].width, height: CADRAGES[cadrageVideo].height, fontSize: POSES[cadrageVideo].taille }}>
+        {ORDRE_QUESTIONS.map((q) => (
+          <div key={q} className={`intro-question intro-question--${q}`} data-question={q}>
+            {signes(texteQuestion(lang, q)).map((s, i) => <span key={i} className={s.blanc ? 'intro-blanc' : 'intro-lettre'}>{s.c}</span>)}
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
       <button type="button" className="intro-passer" onClick={() => { skip.current = true; if (window.__intro) window.__intro.skipped = true; }}>{m.intro.skip}</button>
     </div>
   );
@@ -7119,21 +7530,14 @@ Remplacer tout le contenu de `web/src/intro/intro.css` par :
 .intro-video, .intro-affiche, .intro-passer { transition: opacity var(--fondu) ease-in-out; }
 .intro--fondu .intro-video, .intro--fondu .intro-affiche, .intro--fondu .intro-passer { opacity: 0; pointer-events: none; }
 
-/* Bulles de questions (spec §5) : cartes crème de l'accueil (Chango, bord noir, ombre franche, légère inclinaison), posées
-   et animées par Intro.tsx sur l'horloge de la vidéo ; retournées en 3D sur leur réponse. Leur queue (SVG, sous les cartes)
-   pointe vers l'objet : le point, la frontière, le haut du mât. */
-.intro-queues { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-.intro-queues path { fill: var(--creme); stroke: #000; stroke-width: 2; stroke-linejoin: round; }
-.intro-bulle { position: absolute; left: 0; top: 0; opacity: 0; perspective: 600px; pointer-events: none; will-change: transform, opacity; }
-.intro-bulle--capitale { --incline: -4deg; }
-.intro-bulle--pays { --incline: 3deg; }
-.intro-bulle--drapeau { --incline: -2deg; }
-.intro-bulle-carte { display: grid; transform: rotate(var(--incline)) rotateY(0deg); transform-style: preserve-3d; transition: transform .5s cubic-bezier(.25, .46, .45, 1.54); }
-.intro-bulle--retournee .intro-bulle-carte { transform: rotate(var(--incline)) rotateY(180deg); }
-.intro-bulle-face, .intro-bulle-dos { grid-area: 1 / 1; display: flex; align-items: center; justify-content: center; padding: 6px 14px 7px; white-space: nowrap; font-size: 20px; line-height: 1.1;
-  color: var(--nuit); background: var(--creme); border: 2px solid #000; border-radius: 12px; box-shadow: 4px 4px 0 #000; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.intro-bulle-dos { transform: rotateY(180deg); background: var(--jaune); }
-.intro-bulle-dos img { display: block; height: 1.3em; width: auto; border: 2px solid #000; border-radius: 3px; }
+/* Questions (spec §5) : trois mots en Chango jaune, avec l'ombre du titre de l'accueil (--ombre-titre, -6px 4px 2px sur
+   54 px, ici en em : à l'échelle des lettres). Le calque est dans le repère de la vidéo (taille et police posées par
+   Intro.tsx), posé sur l'écran par un seul transform (couverture, D8) ; chaque lettre y est posée à chaque image autour
+   de son centre (questions.ts : etatLettre). Le blanc (U+202F) ne fait que l'espace. */
+.intro-questions { position: absolute; left: 0; top: 0; transform-origin: 0 0; color: var(--jaune); line-height: 1; pointer-events: none; }
+.intro-question { position: absolute; left: 0; top: 0; white-space: nowrap; }
+.intro-lettre, .intro-blanc { display: inline-block; }
+.intro-lettre { opacity: 0; transform-origin: 50% 50%; text-shadow: -0.11em 0.075em 0.035em rgb(11, 13, 15); }
 .intro-passer { position: absolute; right: 16px; bottom: calc(34px + env(safe-area-inset-bottom, 0px)); background: rgba(22, 23, 58, .7); color: var(--jaune); border: 2px solid #000; box-shadow: 3px 3px 0 #000; padding: 6px 12px; font: 14px var(--cartoon); cursor: pointer; transform: skewX(-15deg); }
 .intro-passer:focus-visible { outline: 3px solid var(--jaune); outline-offset: 3px; }
 ```
@@ -7172,9 +7576,9 @@ console.log("fin du relevé");'
 
 Expected : la seule ligne `fin du relevé`.
 
-- [ ] **Step 9 : vérifier types, tests et build.** Run : `cd web && npm run check`. Expected : `tsc` sans erreur ; toutes les suites unitaires vertes (dont `i18n.test.ts` 10, `pwa.test.ts` 11, `lecteur.test.ts` 32 ; au plan, sur une copie qui porte les Tasks 1 à 10 : `Test Files  70 passed (70)`, `Tests  435 passed (435)`).
+- [ ] **Step 9 : vérifier types, tests et build.** Run : `cd web && npm run check`. Expected : `tsc` sans erreur ; toutes les suites unitaires vertes (dont `i18n.test.ts` 10, `pwa.test.ts` 11, `lecteur.test.ts` 25, `questions.test.ts` 14 ; au plan, sur une copie qui porte les Tasks 1 à 10 : `Test Files  71 passed (71)`, `Tests  442 passed (442)`).
 
-Run : `cd web && npm run build`. Expected : build réussi, sans l'avertissement « without a file extension » ; la ligne `precache  N entries` ne compte aucune vidéo (29 entrées dans la copie de vérification, avec comme sans `public/video/` ; 26 avant le Step 6 : le chargement à part du globe sépare les morceaux communs à App et à GlobeView).
+Run : `cd web && npm run build`. Expected : build réussi, sans l'avertissement « without a file extension » ; la ligne `precache  N entries` ne compte aucune vidéo (au plan, sur la copie des Tasks 1 à 10 : `precache  29 entries (2595.39 KiB)`, avec comme sans `public/video/` ; `precache  26 entries` avant le Step 6 : le chargement à part du globe sépare les morceaux communs à App et à GlobeView).
 
 Run (D15 : la page ne charge d'emblée ni le globe ni ses textures ; noms des morceaux sans leur empreinte) :
 
@@ -7184,12 +7588,12 @@ cd web && node -e 'const s=require("fs").readFileSync("dist/index.html","utf8");
 
 Expected : `main LoadErrorCard modulepreload-polyfill client` (noms donnés par le bundler aux morceaux communs ; au plan, le même build avant le Step 6 donnait `main rolldown-runtime textures GlobeView`).
 
-Run (spec §1 : l'intro ne charge plus aucun moteur 3D ; aucun de ces fichiers n'importe `timeline.ts` — `angleTerre` est dans `lecteur.ts`, sur `LOGO_ANGLE_FIN` —, le contrôle porte donc sur three, R3F et la chronologie) :
+Run (spec §1 : l'intro ne charge plus aucun moteur 3D ; aucun de ces fichiers n'importe `timeline.ts` — `angleTerre` est dans `lecteur.ts`, sur `LOGO_ANGLE_FIN` ; les instants des questions sont recopiés dans `questions.ts` et confrontés à `frameAt` par ses tests seulement —, le contrôle porte donc sur three, R3F et la chronologie) :
 
 ```bash
 cd web && node -e '
 const fs = require("fs");
-for (const f of ["src/intro/Intro.tsx", "src/intro/lecteur.ts", "src/intro/temps.ts", "src/intro/videos.ts", "src/ui/LogoTitle.tsx"])
+for (const f of ["src/intro/Intro.tsx", "src/intro/lecteur.ts", "src/intro/questions.ts", "src/intro/temps.ts", "src/intro/videos.ts", "src/ui/LogoTitle.tsx"])
   fs.readFileSync(f, "utf8").split("\n").forEach((l, i) => { if (/from ["\x27](three(\/[\w/]+)?|@react-three\/[\w-]+|\.\/timeline|\.\.\/intro\/timeline)["\x27]/.test(l)) console.log(`${f}:${i + 1}: ${l.trim()}`); });
 console.log("intro sans moteur 3D");'
 ```
@@ -7326,7 +7730,7 @@ Expected : `video : 11 fichiers, <N> octets` (les 10 vidéos et `videos.json` ; 
 
 ```bash
 git add web/src/i18n/types.ts web/src/i18n/fr.ts web/src/i18n/en.ts web/src/i18n/i18n.test.ts web/src/pwa/motifs.ts web/src/pwa/cache.ts web/src/pwa/pwa.test.ts web/vite.config.ts web/tsconfig.json web/src/ui/LogoTitle.tsx web/src/ui/Home.tsx web/src/ui/home.css web/src/app/App.tsx web/src/globe/LoadErrorCard.tsx web/src/globe/GlobeView.tsx web/src/intro/Intro.tsx web/src/intro/intro.css web/e2e/intro.spec.ts deploy/web/nginx.conf deploy/web/Dockerfile deploy/scripts/stage-image.mjs
-git commit -m "intro : lecteur vidéo (bulles, fondu, relais de la petite Terre), code du globe chargé à part (D15), scène three.js et textures servies retirées, vidéos hors du service worker, calque d'image — spec intro vidéo §4-6"
+git commit -m "intro : lecteur vidéo (questions nées de leurs objets, fondu, relais de la petite Terre), code du globe chargé à part (D15), scène three.js et textures servies retirées, vidéos hors du service worker, calque d'image — spec intro vidéo §4-6"
 ```
 
 ---
@@ -7338,23 +7742,29 @@ git commit -m "intro : lecteur vidéo (bulles, fondu, relais de la petite Terre)
 
 **Interfaces:**
 - Consumes :
-  - `web/src/intro/temps.ts` (Task 1) : `BULLES`, `BULLES_RANGE`, `INTRO`, `INTRO_GIVE_UP_MS`, `LOGO_ANGLE_FIN`, `LOGO_TOUR_S`, `type Bulle`, `type Cadrage` ;
+  - `web/src/intro/temps.ts` (Task 1) : `CADRAGES`, `INTRO`, `INTRO_GIVE_UP_MS`, `LOGO_ANGLE_FIN`, `LOGO_TOUR_S`, `type Cadrage` ;
   - `web/src/intro/videos.ts` (Task 7) : `type Manifeste`, `idVariante` ;
-  - `web/src/intro/lecteur.ts` (Task 9) : `ancreA`, `etatBulle`, `versEcran`, `DECALAGE_BULLE`, `type Ancres` ;
-  - `web/src/i18n` (Task 10) : `fill`, `messages[lang].intro.ask`, `messages[lang].modes` ;
-  - crochets et DOM de la Task 10 : `window.__intro = { t, ready, skipped, variante, echec, premiereImageMs }` (`ready` : première image affichée ; `premiereImageMs` : `performance.now()` à cet instant), `?introT=`, `?introVariante=<idVariante>` ; `.intro`, `.intro video` (`object-fit: cover`, portrait calé en haut par `data-cadrage`), `.intro img[src$="/intro/affiche-<cadrage>.webp"]`, `.intro-bulle--capitale|--pays|--drapeau` (+ `.intro-bulle--retournee`), `.intro-bulle-face`, `.intro-bulle-dos` (drapeau : `img[src$="/data/flags/fra.svg"]`), `.intro-queues path` dans l'ordre de `BULLES`, au format de `cheminQueue` (`M base L pointe L base Z`) ; bouton « Passer › » / « Skip › » ; `aria-label` de la vidéo (`intro.videoLabel`), `aria-hidden="true"` sur l'affiche, les bulles et `svg.intro-queues` ; titre de l'accueil `.accueil-titre.logo-titre--fondu|--pop` (+ `.logo-titre--visible`), animation `logo-fondu` de durée `FIN − FONDU`, lettres `.logo-l` (animation `logo-lettre` en « pop », aucune en fondu), petite Terre `.logo-terre` (`animation-delay` = −angle / 2π × `LOGO_TOUR_S`) ; code du globe chargé à part (D15) : `/src/globe/GlobeView.tsx` en dev, `/assets/GlobeView-<empreinte>.js` en production, carte « Réessayer » s'il manque ; vidéos hors des motifs du service worker (`web/src/pwa/motifs.ts`, D1) ;
+  - `web/src/intro/lecteur.ts` (Task 9) : `couverture`, `versEcran` ;
+  - `web/src/intro/questions.ts` (Task 9) : `ORDRE_QUESTIONS`, `QUESTIONS`, `RETOUR`, `MARGE_QUESTION`, `ancreQuestion`, `etatLettre`, `poserMot`, `type Ancres`, `type Question` ;
+  - `web/src/i18n` (Task 10) : `messages[lang].modes`, `messages.fr.intro.videoLabel` ;
+  - crochets et DOM de la Task 10 : `window.__intro = { t, ready, skipped, variante, echec, premiereImageMs }` (`ready` : première image affichée ; `premiereImageMs` : `performance.now()` à cet instant), `?introT=`, `?introVariante=<idVariante>` ; `.intro`, `.intro video` (`object-fit: cover`, portrait calé en haut par `data-cadrage`), `.intro img[src$="/intro/affiche-<cadrage>.webp"]`, le calque `.intro .intro-questions[data-cadrage]` (cadrage de la vidéo chargée ; style `transform: translate(<x>px, <y>px) scale(<échelle>)`, celui de `couverture`), ses mots `.intro-question--capitale|--pays|--drapeau[data-question]` dans l'ordre `ORDRE_QUESTIONS`, un `span` par signe (`.intro-lettre`, ou `.intro-blanc` pour U+202F), l'opacité et le transform de chaque lettre écrits d'après `etatLettre` (opacité 0 quand il rend null) ; bouton « Passer › » / « Skip › » ; `aria-label` de la vidéo (`intro.videoLabel`), `aria-hidden="true"` sur l'affiche et sur le calque des questions ; titre de l'accueil `.accueil-titre.logo-titre--fondu|--pop` (+ `.logo-titre--visible`), animation `logo-fondu` de durée `FIN − FONDU`, lettres `.logo-l` (animation `logo-lettre` en « pop », aucune en fondu), petite Terre `.logo-terre` (`animation-delay` = −angle / 2π × `LOGO_TOUR_S`) ; code du globe chargé à part (D15) : `/src/globe/GlobeView.tsx` en dev, `/assets/GlobeView-<empreinte>.js` en production, carte « Réessayer » s'il manque ; vidéos hors des motifs du service worker (`web/src/pwa/motifs.ts`, D1) ;
   - fichiers versionnés : `web/public/video/videos.json` (Task 8), `web/public/intro/ancres.json` (Task 3), `web/e2e-budget/plafonds-video.json` (Task 8 : `{ "version": 1, "regle": …, "plafonds": { "<src>": <octets max> } }`) ; `deploy/web/nginx.conf` (Task 10 : `/video/` dans la location des noms fixes).
 - Produces :
   - `web/e2e-budget/first-load.spec.ts` : `FIRST_LOAD_BUDGET = { standard: 8_000_000, demarrage: 1_000, affiche: 100_000, accueil: 12_000_000 }` (`intro: 3_000_000` disparaît) et `RESEAUX` (`'bonne connexion'`, bornée ; `'Fast 4G'`, mesurée) ;
-  - `web/e2e/deployed.ts` : `checkVideos(baseURL: string, root = 'public'): Promise<void>`, appelée par `checkDeployed` ; `SHARED` compte aussi `video/videos.json` et `intro/ancres.json` (les specs placent les bulles d'après eux).
+  - `web/e2e/deployed.ts` : `checkVideos(baseURL: string, root = 'public'): Promise<void>`, appelée par `checkDeployed` ; `SHARED` compte aussi `video/videos.json` et `intro/ancres.json` (intro.spec.ts contrôle les questions d'après eux).
 
 Choix de cette tâche (pour le relecteur) :
 - Chromium headless mesure toujours 60 Hz et lit l'AV1 : les parcours forcent `portrait-plein-60-av1` (ou `paysage-plein-60-av1`), sauf deux qui contrôlent le choix lui-même (cadrage selon la fenêtre, 60 i/s). La vidéo se lit en temps réel sous SwiftShader (décodée hors du GPU) : deux parcours vont au bout sans « Passer ».
-- Bulles : à chaque instant figé, l'état attendu vient d'`etatBulle` à l'instant affiché (`__intro.t`) ; la pointe de la queue doit être l'ancre convertie (`ancreA`, `versEcran`) ramenée à l'écran, à 0,1 px (l'arrondi de `cheminQueue`) ; la carte dans l'écran, et à son décalage (`DECALAGE_BULLE`) au plus de l'objet. Une contre-épreuve (Step 3) montre que ces contrôles mordent.
+- Questions, figées par `?introT=` aux instants nés des objets (`QUESTIONS`, `RETOUR`) : avant « Capitale ? » (11,12 s), chaque mot en plein envol (11,5, 11,9 et 13,43 s), les trois posés (14,5 s), le retour en cours (15,95 s), après le second dézoom (16,4 s) ; en FR et en EN.
+  - L'état attendu de chaque lettre vient d'`etatLettre` à l'instant affiché (`__intro.t`), sur le mot que `poserMot` pose d'après le gabarit relu dans la page (`offset*`, px de la vidéo, comme `Intro.tsx` le mesure). Le centre de la lettre à l'écran doit être `versEcran` de cet état, à 1,5 px vidéo près (les `offset*` sont entiers). Relevé le 12/10 sur le worktree d'essai, par une copie de ce fichier qui note les écarts (hors plan) : 0,92 px CSS d'écart au plus, pour 2,25 px admis à cette échelle (41 % de la tolérance au plus).
+  - En vol, la lettre est entre l'ancre convertie de son objet (`ancreQuestion`, `versEcran`) et sa place de repos, saut compris ; à mi-vol, la première lettre est à plus de 10 px CSS de l'un et de l'autre (au plan, sur les fonctions pures et le gabarit de Chango du test unitaire : 35 px au moins sur le téléphone).
+  - Le calque : son `data-cadrage`, et son transform comparé à `couverture` (Chromium le relit à 6 chiffres significatifs ; écarts relevés de la même façon le 12/10 : 2,5e-6 en relatif sur l'échelle pour 1e-5 admis, 2,3e-8 px sur la translation pour 0,01). Quand l'écran grandit, des mots qui n'ont pas été reposés restent dans l'écran, et seul le transform le montre (mesuré le 12/10 sur la Task 10 : à 768 × 1024, le calque resté à `scale(0.361111)` garde les mots dedans).
+  - Deux contrôles ne doivent rien à `questions.ts`, pour qu'une erreur de ce module ne se cache pas dans l'oracle : le texte (le catalogue `modes.*`, plus la typographie écrite dans la spec) et « entier dans l'écran » (les boîtes des lettres d'un mot posé, à 8 px des bords, 1 px admis ; au plan, sur les fonctions pures, 12,1 px au moins sur les écrans du Review Focus ; relevé à l'e2e le 12/10 : 11,98 px au moins, sur les 40 mots posés que voient les tests des questions, des trois écrans et de la rotation).
+  - Une contre-épreuve (Step 3) montre que ces contrôles mordent.
 - Onglet caché : Chromium headless ne cache jamais une page (sondé le 11/10 : `visibilityState` reste `visible` derrière un autre onglet, en shell comme en `channel: 'chromium'`) ; un script d'init fait ce que fait le navigateur (`document.hidden`, l'évènement, rAF suspendu, vidéo suspendue puis relancée), les minuteurs continuent comme dans un vrai onglet caché. Dans « onglet caché pendant la lecture », le script ne relance pas la vidéo (`__onglet(false, false)`) : la reprise doit venir d'`Intro.tsx` (contre-épreuve e).
 - Titre de l'accueil (D5) : l'opacité calculée et l'animation sont lues (`toBeVisible` tient pour visible un élément à `opacity: 0`) ; le globe retenu (textures en attente) garde l'accueil sous la vidéo, titre à 0, puis le fondu ; « Passer » met la vidéo sur sa dernière image, la petite Terre part donc de `LOGO_ANGLE_FIN`. Accueil direct : lettres en « pop ».
 - Échecs : chacun de ceux du §4 mène à l'accueil direct, « aucun codec » compris (MediaCapabilities et `canPlayType` remplacés par un script d'init) ; le code du globe introuvable (D15) prend le chemin du globe en échec, jamais la page blanche (contre-épreuve f).
-- Réseau qui cale : le serveur (route) ne sert que les octets jusqu'au milieu de la fenêtre des bulles (débit supposé régulier : au plan, calage à 13,33 s), la suite jamais ; le test vérifie les bulles à l'image arrêtée quel que soit l'instant (il est noté en annotation).
+- Réseau qui cale : le serveur (route) ne sert que les octets jusqu'au milieu de la vie des questions, de la naissance de « Capitale ? » au retour (11,22 et 15,6 s : calage vers 13,4 s si le débit était régulier), la suite jamais. Le test vérifie les questions à l'image arrêtée, quel que soit l'instant (il est noté en annotation), puis que ni le calque ni aucune lettre ne bougent pendant 2 s. Relevé le 12/10 sur les vidéos de l'aperçu de la Task 7 (annotation lue par le rapporteur JSON) : `vidéo calée à 11.983333 s`, soit, d'après les fonctions pures, les 9 lettres de « Capitale ? » et 3 de « Pays ? » ; les vidéos de la Task 8 déplaceront cet instant.
 - Démarrage (spec §7 « première image en < 1 s sur une bonne connexion ») : « bonne connexion » = 40 ms de latence par requête et 10 Mbit/s (les chiffres de `desktopDense4G` de Lighthouse, réseau fixe), bornée à 1 000 ms ; « Fast 4G » des DevTools (165 ms, 8,1 Mbit/s) mesurée, pas bornée. Une visite d'échauffement puis la médiane de trois : la première visite d'un navigateur neuf coûte 1,3 à 2 s de plus (au plan, avant D15 : 2971 et 2558 ms au lieu de ~960 sous « bonne connexion », 1592 au lieu de ~270 sans émulation). Affiche : 100 000 octets (moins d'un dixième de seconde de bonne connexion).
 - Plafonds par vidéo : ceux de la Task 8 (`plafonds-video.json`), comparés à la taille servie (HEAD) et à `octets` du manifeste servi. Total de l'accueil : les `.mp4` de `/video/` hors budget (spec §7), `videos.json` compté.
 
@@ -7363,17 +7773,19 @@ Choix de cette tâche (pour le relecteur) :
 ```ts
 import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
-import { fill, messages } from '../src/i18n';
-import { DECALAGE_BULLE, ancreA, etatBulle, versEcran, type Ancres } from '../src/intro/lecteur';
-import { BULLES, BULLES_RANGE, INTRO, INTRO_GIVE_UP_MS, LOGO_ANGLE_FIN, LOGO_TOUR_S, type Bulle, type Cadrage } from '../src/intro/temps';
+import { messages } from '../src/i18n';
+import { couverture, versEcran } from '../src/intro/lecteur';
+import { MARGE_QUESTION, ORDRE_QUESTIONS, QUESTIONS, RETOUR, ancreQuestion, etatLettre, poserMot, type Ancres, type Question } from '../src/intro/questions';
+import { CADRAGES, INTRO, INTRO_GIVE_UP_MS, LOGO_ANGLE_FIN, LOGO_TOUR_S, type Cadrage } from '../src/intro/temps';
 import { idVariante, type Manifeste } from '../src/intro/videos';
 
 /**
  * Intro en vidéo précalculée (spec `2026-10-11-countrizz-intro-video-blender-design.md` §4, §5, §8). La vidéo est décodée
  * hors du GPU logiciel : elle se lit en temps réel, deux parcours la laissent aller au bout. Chromium headless mesure
  * toujours ~60 Hz et lit l'AV1 : les parcours forcent leur variante (`?introVariante=`, crochets e2e), sauf ceux qui
- * contrôlent le choix lui-même. Les bulles se contrôlent à des instants figés (`?introT=`) contre `public/intro/ancres.json`,
- * converties par les fonctions du lecteur (`ancreA`, `versEcran`) : le site doit servir les fichiers de ce dépôt (e2e/deployed.ts).
+ * contrôlent le choix lui-même. Les questions se contrôlent à des instants figés (`?introT=`) contre
+ * `public/intro/ancres.json` et les fonctions pures des questions (`poserMot`, `etatLettre`, `versEcran`) : le site doit
+ * servir les fichiers de ce dépôt (e2e/deployed.ts).
  */
 test.slow(true, 'SwiftShader : le globe se charge lentement sous la vidéo');
 test.use({ viewport: { width: 390, height: 844 }, locale: 'fr-FR' });
@@ -7382,11 +7794,22 @@ const manifeste = JSON.parse(readFileSync('public/video/videos.json', 'utf8')) a
 const ancres = JSON.parse(readFileSync('public/intro/ancres.json', 'utf8')) as Ancres;
 /** Variantes forcées : AV1 à 60 i/s, celle que Chromium headless reçoit (D3, D6), sans dépendre de sa mesure. */
 const VARIANTE: Record<Cadrage, string> = { portrait: 'portrait-plein-60-av1', paysage: 'paysage-plein-60-av1' };
-/** Les bulles dans l'ordre de `BULLES` : celui de leurs cartes et de leurs queues dans la page (Intro.tsx). */
-const NOMS = Object.keys(BULLES) as Bulle[];
+/**
+ * Texte attendu de chaque question : `modes.*` du catalogue, suivi de la typographie de la langue. Elle est écrite ici,
+ * et non prise à `questions.ts`, puisque c'est elle qu'on contrôle : en français une espace fine insécable (U+202F)
+ * avant « ? », en anglais « ? » collé.
+ */
 const MODE = { capitale: 'capital', pays: 'country', drapeau: 'flag' } as const;
-/** La pointe de la queue est écrite au dixième de px (`cheminQueue`). */
-const POINTE_PX = 0.1;
+const POINT = { fr: ' ?', en: '?' } as const;
+/** Lettres de chaque mot (blancs exclus), dans l'ordre des questions. */
+const LETTRES = { fr: [9, 5, 8], en: [8, 8, 5] } as const;
+/**
+ * La page mesure le centre au repos de chaque lettre en `offset*`, qui sont entiers : il est donc connu à 0,75 px vidéo
+ * près. On l'admet à 1,5 px vidéo, plus un quart de px CSS.
+ */
+const ECART_VIDEO = 1.5;
+/** Un mot posé reste à 8 px CSS des bords (spec §5) ; on admet 1 px pour la mesure entière des lettres. */
+const BORD = MARGE_QUESTION - 1;
 
 const accueil = (page: Page) => page.locator('.accueil .accueil-titre');
 const credit = (page: Page) => page.getByRole('contentinfo', { name: 'Crédits de l’imagerie' });
@@ -7394,15 +7817,18 @@ const passer = (page: Page) => page.getByRole('button', { name: /Passer|Skip/ })
 const intro = (page: Page) => page.evaluate(() => window.__intro!);
 const uneImage = (page: Page) => page.evaluate(() => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r()))));
 
-/** Instants figés sur la grille de 1/60 s : chaque bulle entrée (question), puis retournée (réponse). */
+/** Instants figés sur la grille de 1/60 s (la vidéo à 60 i/s). */
 const grille = (t: number) => Math.round(t * 60) / 60;
-const entree = (b: Bulle) => {
-  let t = BULLES[b].apparait;
-  while (t < BULLES_RANGE && etatBulle(b, t).entree < 1) t += 1 / 60;
-  return grille(t + 0.1);
-};
-const retournee = (b: Bulle) => grille(BULLES[b].retourne + 0.5);
-const INSTANTS = NOMS.flatMap((b) => [entree(b), retournee(b)]);
+/** Avant la naissance de « Capitale ? » (le point touche Paris à 11,22 s) : aucune lettre. */
+const AVANT = grille(QUESTIONS.capitale.naissance - 0.1);
+/** Chaque mot en plein envol : sa première lettre à mi-vol, entre son objet et sa place. */
+const ENVOL = Object.fromEntries(ORDRE_QUESTIONS.map((q) => [q, grille(QUESTIONS[q].naissance + QUESTIONS[q].vol / 2)])) as Record<Question, number>;
+/** Les trois mots posés (la dernière lettre de « Drapeau ? » se pose à 14,12 s), avant le retour (RETOUR, 15,6 s). */
+const TOUS_POSES = grille(14.5);
+/** Le retour dans les objets, en cours. */
+const RENTRENT = grille(RETOUR + 0.35);
+/** Second dézoom (16,4 s) : toutes les lettres sont rentrées. */
+const APRES = grille(16.4);
 
 /**
  * Une passe de scène par trame de three (skill threejs-r186-webgpu-tsl, règle 3) : un second rendu dans la même trame montre
@@ -7413,7 +7839,10 @@ async function expectNoStaleFrame(page: Page) {
   expect(await page.evaluate(() => window.__globe?.staleFrames)).toBe(0);
 }
 
-/** `?introT=` : la vidéo posée à t, en pause, son image affichée ; police chargée et une image de plus pour la pose des bulles. */
+/**
+ * `?introT=` : la vidéo posée à t, en pause, son image affichée ; police chargée (Intro.tsx mesure de nouveau les
+ * questions quand Chango arrive) et une image de plus pour leur pose.
+ */
 async function figee(page: Page, t: number) {
   await page.waitForFunction((t) => window.__intro?.ready === true && Math.abs(window.__intro.t - t) < 0.05, t, { timeout: 60_000 });
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
@@ -7435,60 +7864,91 @@ async function couvre(page: Page, cadrage: Cadrage) {
   expect(v.pos).toMatch(cadrage === 'portrait' ? /^50% 0(%|px)?$/ : /^50% 50%$/); // valeur calculée : « 50% 0px » pour « 50% 0 »
 }
 
-/** Distance d'un point à une boîte (0 dedans). */
-const distance = (b: { x: number; y: number; width: number; height: number }, [x, y]: [number, number]) =>
-  Math.hypot(Math.max(b.x - x, 0, x - (b.x + b.width)), Math.max(b.y - y, 0, y - (b.y + b.height)));
-
-const carte = (page: Page, b: Bulle) => page.locator(`.intro .intro-bulle--${b}`);
-/** Pointe de la queue d'une bulle : le 2ᵉ sommet de son chemin SVG (`M base L pointe L base Z`). */
-async function pointe(page: Page, b: Bulle): Promise<[number, number] | null> {
-  const d = (await page.locator('.intro .intro-queues path').nth(NOMS.indexOf(b)).getAttribute('d')) ?? '';
-  const m = /L(-?[\d.]+) (-?[\d.]+)/.exec(d);
-  return m ? [Number(m[1]), Number(m[2])] : null;
-}
+/**
+ * Ce que la page montre des questions, lu d'un coup. Le calque d'abord. Puis, pour chaque mot, son texte, son gabarit
+ * mesuré comme Intro.tsx le mesure (`offset*` : px de la vidéo, le transform du calque n'y entre pas) et chaque lettre
+ * à l'écran.
+ */
+const lire = (page: Page) => page.locator('.intro .intro-questions').evaluate((c: HTMLElement) => ({
+  cadrage: c.dataset.cadrage,
+  transform: c.style.transform,
+  mots: [...c.querySelectorAll<HTMLElement>('.intro-question')].map((m) => {
+    const ls = [...m.querySelectorAll<HTMLElement>('.intro-lettre')];
+    return {
+      q: m.dataset.question,
+      texte: m.textContent,
+      g: { largeur: m.offsetWidth, hauteur: m.offsetHeight, lettres: ls.map((l) => ({ x: l.offsetLeft + l.offsetWidth / 2, y: l.offsetTop + l.offsetHeight / 2, w: l.offsetWidth, h: l.offsetHeight })) },
+      lettres: ls.map((l) => {
+        const r = l.getBoundingClientRect();
+        return { opacite: Number(getComputedStyle(l).opacity), x: (r.left + r.right) / 2, y: (r.top + r.bottom) / 2, gauche: r.left, droite: r.right, haut: r.top, bas: r.bottom };
+      }),
+    };
+  }),
+}));
 
 /**
- * Ce que montre chaque bulle à l'image affichée (`__intro.t`) : visible ou non ; question au recto dans la langue, réponse
- * au verso, retournée à son instant ; carte dans l'écran ; queue pointée sur l'ancre convertie pour cet écran (ramenée au
- * bord quand l'objet est rogné) ; carte près de son objet (à son décalage au plus).
+ * Les questions à l'image affichée (`__intro.t`), dans la langue :
+ * - le calque est dans le repère de la vidéo de ce cadrage, posé sur l'écran par le transform de `couverture` (D8) ;
+ * - chaque mot a son texte ;
+ * - chaque lettre est visible si et seulement si `etatLettre` la montre, et là où il la met, sur le mot que `poserMot`
+ *   pose pour cet écran ; aucune lettre avant la naissance de son mot ;
+ * - en vol, une lettre est entre l'ancre de son objet (convertie à l'écran) et sa place de repos, saut compris ;
+ * - un mot posé (toutes ses lettres arrivées, avant le retour) est entier dans l'écran, à 8 px des bords. Ce contrôle
+ *   ne prend que les boîtes des lettres, rien de `questions.ts`.
+ * Rend le nombre de lettres visibles de chaque mot. Pour la première lettre en vol de chaque mot, rend aussi ses
+ * distances à son objet et à sa place (px CSS).
  */
-async function verifierBulles(page: Page, cadrage: Cadrage, lang: 'fr' | 'en') {
+async function verifierQuestions(page: Page, cadrage: Cadrage, lang: 'fr' | 'en') {
   const { t } = await intro(page);
-  const ecran = page.viewportSize()!;
-  for (const b of NOMS) {
-    const e = etatBulle(b, t), el = carte(page, b);
-    const vue = await el.evaluate((x) => {
-      const s = getComputedStyle(x), r = x.getBoundingClientRect();
-      return s.display !== 'none' && s.visibility !== 'hidden' && Number(s.opacity) > 0.01 && r.width > 0;
+  const ecran = page.viewportSize()!, video = CADRAGES[cadrage], k = couverture(video, ecran, cadrage);
+  const ici = `${ecran.width}×${ecran.height}, ${t} s`, lu = await lire(page);
+  expect(lu.cadrage, `repère du calque des questions (${ici})`).toBe(cadrage);
+  // Chromium relit le style à 6 chiffres significatifs : 0,01 px pour la translation, 1e-5 en relatif pour l'échelle
+  const [tx, ty, s] = (/^translate\((\S+)px, (\S+)px\) scale\((\S+)\)$/.exec(lu.transform) ?? []).slice(1).map(Number);
+  expect(Math.abs(s / k.echelle - 1) < 1e-5 && Math.abs(tx - k.x) < 0.01 && Math.abs(ty - k.y) < 0.01,
+    `calque des questions posé par couverture (${ici}) : « ${lu.transform} », attendu translate(${k.x}px, ${k.y}px) scale(${k.echelle})`).toBe(true);
+  expect(lu.mots.map((m) => m.q)).toEqual([...ORDRE_QUESTIONS]);
+  const tol = ECART_VIDEO * k.echelle + 0.25;
+  const vues: Record<Question, number> = { capitale: 0, pays: 0, drapeau: 0 };
+  const envol: Partial<Record<Question, { objet: number; place: number }>> = {};
+  ORDRE_QUESTIONS.forEach((q, j) => {
+    const m = lu.mots[j], Q = QUESTIONS[q], n = m.lettres.length;
+    expect(m.texte, `texte de ${q} (${lang})`).toBe(messages[lang].modes[MODE[q]] + POINT[lang]);
+    const mot = poserMot(q, cadrage, m.g, ecran), a = (mot.inclinaison * Math.PI) / 180, [cx, cy] = mot.centre;
+    m.lettres.forEach((l, i) => {
+      const e = etatLettre(t, mot, i, ancres), vue = l.opacite > 0.01;
+      expect(vue, `${q}, lettre ${i}, visible à ${t} s`).toBe(e !== null && e.opacite > 0.01);
+      if (!vue || !e) return;
+      vues[q]++;
+      const [ex, ey] = versEcran([e.x, e.y], video, ecran, cadrage);
+      expect(Math.hypot(l.x - ex, l.y - ey), `${q}, lettre ${i}, à sa place (${ici})`).toBeLessThanOrEqual(tol);
+      if (t >= Q.naissance + i * Q.ecart + Q.vol) return;
+      // en vol : partie de l'ancre de son objet (qui bouge : le drapeau monte), vers sa place de repos (inclinée)
+      const A = versEcran(ancreQuestion(ancres, cadrage, q, t), video, ecran, cadrage), [nx, ny] = mot.lettres[i];
+      const R = versEcran([cx + (nx - cx) * Math.cos(a) - (ny - cy) * Math.sin(a), cy + (nx - cx) * Math.sin(a) + (ny - cy) * Math.cos(a)], video, ecran, cadrage);
+      const entre = l.x >= Math.min(A[0], R[0]) - tol && l.x <= Math.max(A[0], R[0]) + tol
+        && l.y >= Math.min(A[1], R[1]) - Q.saut * k.echelle - tol && l.y <= Math.max(A[1], R[1]) + tol;
+      expect(entre, `${q}, lettre ${i}, en vol entre son objet (${A.map(Math.round).join(', ')}) et sa place (${R.map(Math.round).join(', ')}) : (${Math.round(l.x)}, ${Math.round(l.y)}) à ${t} s`).toBe(true);
+      envol[q] ??= { objet: Math.hypot(l.x - A[0], l.y - A[1]), place: Math.hypot(l.x - R[0], l.y - R[1]) };
     });
-    expect(vue, `${b} visible à ${t} s`).toBe(e.visible);
-    if (!e.visible || e.entree < 1) continue;
-    await expect(el.locator('.intro-bulle-face')).toHaveText(fill(messages[lang].intro.ask, { mode: messages[lang].modes[MODE[b]] }));
-    if (b === 'drapeau') await expect(el.locator('.intro-bulle-dos img[src$="/data/flags/fra.svg"]')).toHaveCount(1);
-    else await expect(el.locator('.intro-bulle-dos')).toHaveText(b === 'capitale' ? 'Paris' : 'France');
-    if (e.retournee) await expect(el).toHaveClass(/\bintro-bulle--retournee\b/);
-    else await expect(el).not.toHaveClass(/\bintro-bulle--retournee\b/);
-    const boite = (await el.boundingBox())!;
-    expect(boite.x, `${b} dans l'écran`).toBeGreaterThanOrEqual(-0.5);
-    expect(boite.y, `${b} dans l'écran`).toBeGreaterThanOrEqual(-0.5);
-    expect(boite.x + boite.width, `${b} dans l'écran`).toBeLessThanOrEqual(ecran.width + 0.5);
-    expect(boite.y + boite.height, `${b} dans l'écran`).toBeLessThanOrEqual(ecran.height + 0.5);
-    const p = versEcran(ancreA(ancres, cadrage, b, t)!, ancres.cadrages[cadrage], ecran, cadrage);
-    const cible: [number, number] = [Math.min(Math.max(p[0], 0), ecran.width), Math.min(Math.max(p[1], 0), ecran.height)];
-    const q = (await pointe(page, b))!;
-    expect(Math.hypot(q[0] - cible[0], q[1] - cible[1]), `queue de ${b} vers (${p.map(Math.round).join(', ')}) à ${t} s`).toBeLessThanOrEqual(POINTE_PX);
-    expect(distance(boite, cible), `${b} près de son objet`).toBeLessThanOrEqual(Math.hypot(...DECALAGE_BULLE[b]));
-  }
+    if (t <= Q.naissance) expect(vues[q], `${q} : aucune lettre avant sa naissance (${Q.naissance} s)`).toBe(0);
+    if (t >= Q.naissance + (n - 1) * Q.ecart + Q.vol && t < RETOUR) {
+      const dit = `${q} (${lang}) entière dans l'écran (${ici})`;
+      expect(vues[q], dit).toBe(n);
+      expect(Math.min(...m.lettres.map((l) => l.gauche)), dit).toBeGreaterThanOrEqual(BORD);
+      expect(Math.min(...m.lettres.map((l) => l.haut)), dit).toBeGreaterThanOrEqual(BORD);
+      expect(Math.max(...m.lettres.map((l) => l.droite)), dit).toBeLessThanOrEqual(ecran.width - BORD);
+      expect(Math.max(...m.lettres.map((l) => l.bas)), dit).toBeLessThanOrEqual(ecran.height - BORD);
+    }
+  });
+  return { vues, envol };
 }
+/** Lettres visibles de chaque mot, dans l'ordre des questions. */
+const compte = (v: { vues: Record<Question, number> }) => ORDRE_QUESTIONS.map((q) => v.vues[q]);
 
-/** Cartes et queues des bulles (pour voir qu'elles ne bougent plus). */
-const boites = async (page: Page) => [
-  ...await page.locator('.intro .intro-bulle').evaluateAll((els) => els.map((x) => {
-    const r = x.getBoundingClientRect();
-    return [x.className, getComputedStyle(x).opacity, Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height)].join(' ');
-  })),
-  ...await page.locator('.intro .intro-queues path').evaluateAll((els) => els.map((x) => x.getAttribute('d') ?? '')),
-];
+/** Le calque et chaque lettre tels que la page les a écrits (pour voir qu'ils ne bougent plus). */
+const ecrites = (page: Page) => page.locator('.intro .intro-questions').evaluate((c: HTMLElement) =>
+  [c.style.transform, ...[...c.querySelectorAll<HTMLElement>('.intro-lettre')].map((l) => `${l.style.opacity} ${l.style.transform}`)]);
 
 /**
  * Onglet caché, simulé : Chromium headless ne cache jamais une page (sondé le 11/10 : `visibilityState` reste « visible »
@@ -7520,10 +7980,10 @@ test('la vidéo se lit jusqu’au bout et mène à l’accueil, sans « Passer �
   await page.goto(`/?webgl&introVariante=${VARIANTE.portrait}`);
   await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 60_000 });
   expect((await intro(page)).variante).toEqual({ cadrage: 'portrait', taille: 'plein', ips: 60, codec: 'av1' });
-  // accessibilité (spec §5) : la vidéo a un nom ; l'affiche, les bulles et leurs queues sont décoratives
+  // accessibilité (spec §5) : la vidéo a un nom ; l'affiche et le calque des questions sont décoratifs
   await expect(page.locator('.intro video')).toHaveAttribute('aria-label', messages.fr.intro.videoLabel);
-  const decor = page.locator('.intro .intro-affiche, .intro .intro-bulle, .intro .intro-queues');
-  await expect(decor).toHaveCount(5);
+  const decor = page.locator('.intro .intro-affiche, .intro .intro-questions');
+  await expect(decor).toHaveCount(2);
   for (const el of await decor.all()) await expect(el).toHaveAttribute('aria-hidden', 'true');
   // temps réel : le temps de la vidéo avance avec l'horloge ; pas d'accueil avant ACCUEIL
   const t0 = (await intro(page)).t;
@@ -7679,14 +8139,24 @@ test('titre de l’accueil (D5) : invisible sous la vidéo jusqu’au fondu, pui
 });
 
 for (const lang of ['fr', 'en'] as const) {
-  test.describe(`bulles (${lang})`, () => {
+  test.describe(`questions (${lang})`, () => {
     test.use({ locale: lang === 'fr' ? 'fr-FR' : 'en-US' });
-    test('question puis réponse aux instants figés, chacune contre son ancre', async ({ page }) => {
-      for (const t of INSTANTS) {
+    test('aux instants figés : rien avant la naissance, chaque mot né de son objet, les trois posés entiers dans l’écran, plus rien après le retour', async ({ page }) => {
+      const voir = async (t: number) => {
         await page.goto(`/?webgl&introVariante=${VARIANTE.portrait}&introT=${t}`);
         await figee(page, t);
-        await verifierBulles(page, 'portrait', lang);
+        return verifierQuestions(page, 'portrait', lang);
+      };
+      expect(compte(await voir(AVANT)), `lettres visibles à ${AVANT} s`).toEqual([0, 0, 0]);
+      for (const q of ORDRE_QUESTIONS) {
+        // en plein envol : la première lettre a quitté son objet et n'est pas encore à sa place
+        const { envol } = await voir(ENVOL[q]);
+        expect(envol[q]?.objet, `${q} a quitté son objet à ${ENVOL[q]} s`).toBeGreaterThan(10);
+        expect(envol[q]?.place, `${q} pas encore à sa place à ${ENVOL[q]} s`).toBeGreaterThan(10);
       }
+      expect(compte(await voir(TOUS_POSES)), `lettres visibles à ${TOUS_POSES} s`).toEqual([...LETTRES[lang]]);
+      await voir(RENTRENT);
+      expect(compte(await voir(APRES)), `lettres visibles à ${APRES} s`).toEqual([0, 0, 0]);
     });
   });
 }
@@ -7698,20 +8168,20 @@ const ECRANS = [
   { nom: 'téléphone court', width: 390, height: 664, cadrage: 'portrait' },
 ] as const;
 for (const e of ECRANS) {
-  test(`${e.nom} ${e.width}×${e.height} : la vidéo couvre l’écran, les bulles restent dedans, contre leur objet`, async ({ page }) => {
+  test(`${e.nom} ${e.width}×${e.height} : la vidéo couvre l’écran, chaque question reste entière dedans`, async ({ page }) => {
     await page.setViewportSize({ width: e.width, height: e.height });
-    for (const t of [entree('drapeau'), retournee('drapeau')]) { // les trois bulles : questions, puis réponses
+    for (const t of [TOUS_POSES, grille(RETOUR - 0.1)]) { // les trois mots posés, à deux instants de leur vie (onde, oscillation)
       await page.goto(`/?webgl&introT=${t}`);
       await figee(page, t);
       expect((await intro(page)).variante?.cadrage).toBe(e.cadrage);
       await couvre(page, e.cadrage);
-      await verifierBulles(page, e.cadrage, 'fr');
+      expect(compte(await verifierQuestions(page, e.cadrage, 'fr'))).toEqual([...LETTRES.fr]);
     }
   });
 }
 
-test('rotation et redimensionnement pendant l’intro : la vidéo n’est pas rechargée, les bulles sont recalculées', async ({ page }) => {
-  const t = entree('drapeau');
+test('rotation et redimensionnement pendant l’intro : la vidéo n’est pas rechargée, les questions sont reposées et restent entières dans l’écran', async ({ page }) => {
+  const t = TOUS_POSES;
   await page.goto(`/?webgl&introVariante=${VARIANTE.portrait}&introT=${t}`);
   await figee(page, t);
   const src = await page.locator('.intro video').evaluate((v: HTMLVideoElement) => {
@@ -7721,21 +8191,22 @@ test('rotation et redimensionnement pendant l’intro : la vidéo n’est pas re
   });
   const autres: string[] = [];
   page.on('request', (r) => { const u = new URL(r.url()).pathname; if (/^\/video\/.+\.mp4$/.test(u) && !src.endsWith(u)) autres.push(u); });
-  for (const ecran of [{ width: 430, height: 932 }, { width: 844, height: 390 }, { width: 390, height: 844 }]) {
+  // 768 × 1024 : l'écran grandit, les mots y tiendraient même sans être reposés ; seul le transform du calque le voit
+  for (const ecran of [{ width: 430, height: 932 }, { width: 844, height: 390 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(ecran);
     await uneImage(page);
     await couvre(page, 'portrait'); // le cadrage choisi au départ reste (même vidéo, calée en haut)
-    await verifierBulles(page, 'portrait', 'fr');
+    expect(compte(await verifierQuestions(page, 'portrait', 'fr'))).toEqual([...LETTRES.fr]);
   }
   // même élément (marqué), même source, aucun nouveau chargement
   expect(await page.locator('.intro video').evaluate((v: HTMLVideoElement) => [v.dataset.chargements, v.currentSrc])).toEqual(['0', src]);
   expect(autres).toEqual([]);
 });
 
-test('le réseau cale en pleine lecture : les bulles attendent avec la vidéo, puis accueil après 8 s sans progrès', async ({ page }) => {
-  // le serveur n'a que les octets jusqu'au milieu de la fenêtre des bulles (débit supposé régulier) ; la suite ne vient jamais
+test('le réseau cale en pleine lecture : les questions attendent avec la vidéo, puis accueil après 8 s sans progrès', async ({ page }) => {
+  // le serveur n'a que les octets jusqu'au milieu de la vie des questions (débit supposé régulier) ; la suite ne vient jamais
   const v = manifeste.variantes.find((x) => idVariante(x) === VARIANTE.portrait)!;
-  const coupe = Math.floor((v.octets * (BULLES.capitale.apparait + BULLES_RANGE)) / 2 / manifeste.duree);
+  const coupe = Math.floor((v.octets * (QUESTIONS.capitale.naissance + RETOUR)) / 2 / manifeste.duree);
   await page.route(/\/video\/[^/]+\.mp4$/, async (route) => {
     const debut = Number(/bytes=(\d+)-/.exec(route.request().headers()['range'] ?? '')?.[1] ?? 0);
     if (debut >= coupe) return; // jamais servie : la lecture cale
@@ -7753,10 +8224,11 @@ test('le réseau cale en pleine lecture : les bulles attendent avec la vidéo, p
   }, null, { timeout: 40_000, polling: 100 })).jsonValue();
   const cale = Date.now();
   test.info().annotations.push({ type: 'calage', description: `vidéo calée à ${tCale} s` });
-  await verifierBulles(page, 'portrait', 'fr');
-  const avant = await boites(page);
+  // la coupe doit tomber pendant la vie des questions : sans lettre visible, « elles attendent » ne vérifierait rien
+  expect(compte(await verifierQuestions(page, 'portrait', 'fr')).some((n) => n > 0), `lettres visibles à ${tCale} s`).toBe(true);
+  const avant = await ecrites(page);
   await page.waitForTimeout(2000);
-  expect(await boites(page)).toEqual(avant); // elles attendent avec la vidéo
+  expect(await ecrites(page)).toEqual(avant); // elles attendent avec la vidéo
   expect((await intro(page)).echec).toBeNull();
   await expect(accueil(page)).toBeVisible({ timeout: INTRO_GIVE_UP_MS + 15_000 });
   expect(Date.now() - cale).toBeGreaterThanOrEqual(INTRO_GIVE_UP_MS - 2000); // 8 s sans progrès, dont ~1 s pour voir le calage
@@ -7801,28 +8273,28 @@ test('onglet caché avant la première image : l’absence ne compte pas dans le
 });
 ```
 
-- [ ] **Step 2 : les lancer sur le serveur de dev.** Run : `cd web && npm run e2e:local -- e2e/intro.spec.ts`. Expected : PASS, `21 passed` (≈ 2,5 min ; au plan : `21 passed (2.6m)` sur une copie de travail avec le code des Tasks 1 et 9-10, des vidéos factices aux noms et formats du manifeste et des ancres factices dont certaines tombent dans les zones rognées). Le lecteur existe déjà (Task 10) : ces tests passent d'emblée ; la preuve qu'ils mordent est au Step 3.
+- [ ] **Step 2 : les lancer sur le serveur de dev.** Run : `cd web && npm run e2e:local -- e2e/intro.spec.ts`. Expected : PASS, `Running 21 tests using 1 worker`, puis `21 passed` (≈ 2,6 min). Le fichier déclare 21 tests, autant qu'avant l'amendement du 12/10 : les deux « questions (fr|en) », les trois écrans, la rotation et le calage remplacent les tests des bulles. Relevé au plan le 12/10, sur le worktree d'essai qui porte les Tasks 9 à 11 telles qu'écrites ici, avec les vidéos et les affiches de l'aperçu de la Task 7 (pas celles de la Task 8) : `21 passed (2.6m)`, au premier passage. Avant l'amendement, sur la version à bulles (copie de travail, vidéos et ancres factices) : `21 passed (2.6m)` aussi. Le lecteur existe déjà (Task 10) : ces tests passent d'emblée ; la preuve qu'ils mordent est au Step 3.
 
 - [ ] **Step 3 : contre-épreuves (chaque test doit échouer quand son comportement casse).** Depuis `web/`, sept mutations, chacune suivie de son test puis de sa remise en état :
 
 ```bash
 cd web
-# a) bulles non bornées à l'écran (poserBulle)
-node -e 'const f="src/intro/lecteur.ts",fs=require("fs"),a="const borne = (c: number, demi: number, max: number) => (max - 2 * marge < 2 * demi ? max / 2 : Math.min(max - marge - demi, Math.max(marge + demi, c)));",s=fs.readFileSync(f,"utf8");if(!s.includes(a))throw new Error("motif absent");fs.writeFileSync(f,s.replace(a,"const borne = (c: number, _d: number, _m: number) => c;"))'
-npm run e2e:local -- e2e/intro.spec.ts -g 'rotation'
-git checkout -- src/intro/lecteur.ts
+# a) mots non ramenés dans la partie visible (questions.ts, poserMot)
+node -e 'const f="src/intro/questions.ts",fs=require("fs"),a="Math.min(max - plus, Math.max(min - moins, c));",s=fs.readFileSync(f,"utf8");if(!s.includes(a))throw new Error("motif absent");fs.writeFileSync(f,s.replace(a,"c;"))'
+npm run e2e:local -- e2e/intro.spec.ts -g 'iPad portrait'
+git checkout -- src/intro/questions.ts
 ```
 
-Expected : FAIL — `Error: capitale dans l'écran` (au plan, ancres factices : `Expected: <= 390.5`, `Received: 928.241455078125` ; à 844 × 390, la vidéo portrait ne montre que son haut, l'objet est rogné).
+Expected : FAIL — `Error: pays (fr) entière dans l'écran (768×1024, 14.5 s)`, `Expected: <= 1017`, `Received:    1073.434326171875`, puis `1 failed`. L'oracle des places (`poserMot`) est muté avec la page : seul le contrôle des boîtes, qui ne doit rien à `questions.ts`, peut mordre. Relevé au plan le 12/10 sur le worktree d'essai (remis en état par copie, les Tasks 9 et 10 n'y étant pas commitées) : ces quatre lignes. La mutation laisse « Pays ? » à sa place de la maquette, y = 1470 px vidéo, sous les 1440 que l'iPad montre : son bas sort de l'écran de 49,4 px CSS, comme les fonctions pures le prévoyaient.
 
 ```bash
-# b) queue qui ne revient pas au bord quand l'objet est rogné (poserBulle)
-node -e 'const f="src/intro/lecteur.ts",fs=require("fs"),a="const pointe: [number, number] = [Math.min(ecran.width, Math.max(0, ancre[0])), Math.min(ecran.height, Math.max(0, ancre[1]))];",s=fs.readFileSync(f,"utf8");if(!s.includes(a))throw new Error("motif absent");fs.writeFileSync(f,s.replace(a,"const pointe: [number, number] = [ancre[0], ancre[1]];"))'
+# b) calque des questions non reposé quand l'écran change (Intro.tsx, dessinerQuestions)
+node -e 'const f="src/intro/Intro.tsx",fs=require("fs"),a="if (me !== posees || cle !== ecranPose) {",s=fs.readFileSync(f,"utf8");if(!s.includes(a))throw new Error("motif absent");fs.writeFileSync(f,s.replace(a,"if (me !== posees) {"))'
 npm run e2e:local -- e2e/intro.spec.ts -g 'rotation'
-git checkout -- src/intro/lecteur.ts
+git checkout -- src/intro/Intro.tsx
 ```
 
-Expected : FAIL — `Error: queue de capitale vers (<x>, <y>) à 13.75 s` (au plan : `(436, 921)`, `Expected: <= 0.1`, `Received: 530.7000009782096`).
+Expected : FAIL — `Error: calque des questions posé par couverture (430×932, 14.5 s) : « translate(0px, 0px) scale(0.361111) », attendu translate(-0.07692307692306599px, 0px) scale(0.39829059829059826)`, `Expected: true`, `Received: false`, puis `1 failed`. Les valeurs attendues sont celles de `couverture` pour 430 × 932 ; le calque a gardé celui de 390 × 844. Relevé au plan le 12/10 sur le worktree d'essai : ces lignes, mot pour mot ; le test tombe dès le premier écran. Une sonde Chromium hors e2e (Task 10) avait aussi montré qu'avec cette mutation « Capitale ? » et « Pays ? » sortent de l'écran à 844 × 390, mais restent dedans à 768 × 1024 : seul le transform le voit alors.
 
 ```bash
 # c) l'absence de l'onglet comptée dans les 8 s (suivreLecture)
@@ -7834,13 +8306,13 @@ git checkout -- src/intro/lecteur.ts
 Expected : FAIL — `Expected: >= 7500`, `Received: <ms>` (au plan : `302`, `392` puis `207` sur trois passes : l'accueil tombe dès le retour sur l'onglet).
 
 ```bash
-# d) typographie anglaise ignorée (bulle « Capital ? » au lieu de « Capital? »)
-node -e 'const f="src/intro/Intro.tsx",fs=require("fs"),a="{fill(m.intro.ask, { mode: m.modes[MODE[b]] })}",s=fs.readFileSync(f,"utf8");if(!s.includes(a))throw new Error("motif absent");fs.writeFileSync(f,s.replace(a,"{fill(\x27{mode} ?\x27, { mode: m.modes[MODE[b]] })}"))'
-npm run e2e:local -- e2e/intro.spec.ts -g 'bulles \(en\)'
-git checkout -- src/intro/Intro.tsx
+# d) typographie anglaise ignorée (« Capital ? » au lieu de « Capital? », questions.ts)
+node -e 'const f="src/intro/questions.ts",fs=require("fs"),a="en: \x27?\x27 };",s=fs.readFileSync(f,"utf8");if(!s.includes(a))throw new Error("motif absent");fs.writeFileSync(f,s.replace(a,"en: \x27 ?\x27 };"))'
+npm run e2e:local -- e2e/intro.spec.ts -g 'questions \(en\)'
+git checkout -- src/intro/questions.ts
 ```
 
-Expected : FAIL — `Expected: "Capital?"`, `Received: "Capital ?"`.
+Expected : FAIL — `Error: texte de capitale (en)`, `Expected: "Capital?"`, `Received: "Capital ?"`, puis `1 failed`. La spec écrit la typographie elle-même : la mutation de `questions.ts` ne touche pas l'attendu. Relevé au plan le 12/10 sur le worktree d'essai : ces lignes.
 
 ```bash
 # e) au retour sur l'onglet, la page ne relance pas la vidéo suspendue (Intro.tsx, surVisibilite)
@@ -7953,7 +8425,7 @@ import type { Manifeste } from '../src/intro/videos';
 
 /**
  * Fichiers que les specs lisent sur le disque (public/) et que le site sert : ils doivent être les mêmes. Le manifeste
- * des vidéos et les ancres des bulles en sont : intro.spec.ts place les bulles d'après eux.
+ * des vidéos et les ancres des questions en sont : intro.spec.ts contrôle les questions d'après eux.
  */
 const SHARED = ['data/countries.json', 'data/imagery.json', 'data/borders.json', 'video/videos.json', 'intro/ancres.json'] as const;
 const sha = (b: Uint8Array) => createHash('sha256').update(b).digest('hex');
@@ -8163,7 +8635,7 @@ for (const tier of ['standard', 'haute'] as const) {
 }
 ```
 
-- [ ] **Step 7 : types, et la PWA sautée en dev.** Run : `cd web && npx tsc --noEmit && npm run e2e:local -- e2e/pwa.spec.ts`. Expected : `tsc` sans sortie ; puis `3 skipped` (pas de service worker sur le serveur de dev).
+- [ ] **Step 7 : types, et la PWA sautée en dev.** Run : `cd web && npx tsc --noEmit && npm run e2e:local -- e2e/pwa.spec.ts`. Expected : `tsc` sans sortie ; puis `3 skipped` (pas de service worker sur le serveur de dev). Au plan, à l'amendement du 12/10 (Tasks 9 à 11 sur le worktree d'essai) : `tsc` sans sortie, puis `Running 3 tests using 1 worker` et `3 skipped`, code 0.
 
 - [ ] **Step 8 : le build de production servi par le nginx de l'image.** Le service worker, les en-têtes de nginx (plages d'octets des vidéos) et le budget ne se voient qu'en production. Depuis la racine du dépôt, le port 5176 libre (`lsof -iTCP:5176 -sTCP:LISTEN` ne rend rien) :
 
@@ -8175,7 +8647,7 @@ E2E_BASE_URL=http://127.0.0.1:5176 npx playwright test e2e/intro.spec.ts e2e/pwa
 BUDGET_BASE_URL=http://127.0.0.1:5176 npm run budget
 ```
 
-(`127.0.0.1` et non `localhost` : la config ne lance pas le serveur de dev, et la préparation `e2e/deployed.ts` tourne comme sur le site — pages de test, mêmes `videos.json` et `ancres.json`, HEAD et plage `bytes=0-1` de chaque vidéo.) Expected : `24 passed` (≈ 3 min ; au plan : `24 passed (3.2m)`) ; puis le budget, `6 passed`, avec ces lignes (au plan, sur les vidéos factices) :
+(`127.0.0.1` et non `localhost` : la config ne lance pas le serveur de dev, et la préparation `e2e/deployed.ts` tourne comme sur le site — pages de test, mêmes `videos.json` et `ancres.json`, HEAD et plage `bytes=0-1` de chaque vidéo.) Expected : `Running 24 tests using 1 worker`, puis `24 passed` (≈ 3 min : les 21 tests de l'intro et les 3 de la PWA ; relevé au plan le 12/10 sur le worktree d'essai, son build servi par ce nginx, avec les vidéos et les affiches de l'aperçu de la Task 7 : `24 passed (3.1m)`, la préparation `e2e/deployed.ts` passée, HEAD et plages des dix vidéos compris ; avant l'amendement, sur la version à bulles : `24 passed (3.2m)`) ; puis le budget, `6 passed`, avec ces lignes (au plan, avant l'amendement, sur les vidéos factices ; le budget n'a pas tourné à l'amendement : il lit `e2e-budget/plafonds-video.json`, que la Task 8 écrit et que le worktree d'essai n'a pas, et l'amendement ne change aucune de ses lignes) :
 
 ```text
 total 6891338 octets (budget 8000000)                                ← premier chargement de la démo
@@ -8204,7 +8676,7 @@ Expected : FAIL — le tableau des réponses vidéo n'est pas vide : `"sw": true
 
 ```bash
 git add web/e2e/intro.spec.ts web/e2e/pwa.spec.ts web/e2e/deployed.ts web/e2e-budget/first-load.spec.ts
-git commit -m "e2e : intro vidéo (fin sans « Passer », échecs dont aucun codec, titre en fondu et petite Terre relayée, code du globe introuvable, bulles FR/EN sur leurs ancres, écrans éloignés, rotation, calage, onglet caché, accessibilité, service worker) ; budget du démarrage et des vidéos — spec intro vidéo §5, §7-8"
+git commit -m "e2e : intro vidéo (fin sans « Passer », échecs dont aucun codec, titre en fondu et petite Terre relayée, code du globe introuvable, questions FR/EN nées de leurs objets, écrans éloignés, rotation, calage, onglet caché, accessibilité, service worker) ; budget du démarrage et des vidéos — spec intro vidéo §5, §7-8"
 ```
 
 ---
@@ -8220,7 +8692,7 @@ git commit -m "e2e : intro vidéo (fin sans « Passer », échecs dont aucun cod
 
 État relevé en écrivant le plan (11/10, ≈ 20 h, lectures seules) : le cluster sert `pablohassan/countrizz-web:1.5` (deux pods prêts) ; `1.6` et `1.7` n'existent pas sur Docker Hub — la 1.6 (API du globe, 2A-4) a été étiquetée dans `countrizz.yaml` (commit `9dde8a6`) mais jamais construite. Si c'est encore vrai au Step 6, la 1.7 met en ligne **la 2A-4 et l'intro vidéo** ensemble, et la 1.6 ne sera jamais publiée.
 
-- [ ] **Step 1 : suite du Mac, en local.** Run : `cd web && npm run check && npm run test:data && npm run e2e:local`. Expected : `tsc` sans erreur ; Vitest `Tests  <U> passed (<U>)` (au plan, sur une copie qui porte les Tasks 1 à 11 : `Test Files  70 passed (70)`, `Tests  435 passed (435)`) ; `test:data` `<D> passed` ; Playwright `<E> passed` et `3 skipped` (les trois de `pwa.spec.ts`, seuls tests sautés en dev : pas de service worker), aucun échec (au plan, sur une copie de travail avec le code des Tasks 1 et 9 à 11 et les vidéos factices : `526 passed (17.5m)`, `3 skipped`) ; `e2e/visual.spec.ts` sans nouvelle référence (l'intro n'en a pas, le globe ne change pas) ; `staleFrames` à 0. Garder `<U>`, `<D>`, `<E>` pour le Step 5.
+- [ ] **Step 1 : suite du Mac, en local.** Run : `cd web && npm run check && npm run test:data && npm run e2e:local`. Expected : `tsc` sans erreur ; Vitest `Tests  <U> passed (<U>)` (au plan, à l'amendement du 12/10, sur le worktree d'essai à 06fe6e4 qui porte les Tasks 9 à 11 : `Test Files  71 passed (71)`, `Tests  442 passed (442)` ; la Task 11 n'ajoute aucun test unitaire) ; `test:data` `<D> passed` (au plan, même worktree, avec les patchs image et le cache geodata du Mac, qui sont hors dépôt : `Test Files  10 passed (10)`, `Tests  68 passed (68)`) ; Playwright `<E> passed` et `3 skipped` (les trois de `pwa.spec.ts`, seuls tests sautés en dev : pas de service worker), aucun échec (au plan, à l'amendement du 12/10, par cette commande sur le même worktree, avec les vidéos et les affiches de l'aperçu de la Task 7 : `Running 529 tests using 1 worker`, puis `3 skipped` et `526 passed (18.0m)`, code 0 ; avant l'amendement, sur une copie de travail avec la version à bulles et les vidéos factices : `526 passed (17.5m)`, `3 skipped`) ; `e2e/visual.spec.ts` sans nouvelle référence (l'intro n'en a pas, le globe ne change pas) ; `staleFrames` à 0. Garder `<U>`, `<D>`, `<E>` pour le Step 5.
 
 - [ ] **Step 2 : le build de production sous le nginx de l'image.** Run, depuis la racine du dépôt, le port 5176 libre (`lsof -iTCP:5176 -sTCP:LISTEN` ne rend rien) :
 
@@ -8232,7 +8704,7 @@ docker run -d --rm --name countrizz-e2e -p 127.0.0.1:5176:8080 -v "$PWD/deploy/w
 docker stop countrizz-e2e
 ```
 
-Expected : `24 passed` ; puis `6 passed` et les lignes `démarrage (bonne connexion) : première image à …, médiane <MB> (budget 1000) ; affiche <AFF> octets (budget 100000) ; …`, `démarrage (Fast 4G) : … médiane <MF> …`, `total <TS> octets (budget 12000000)` (accueil standard) et `total <TH> octets (budget 12000000)` (accueil haute). Garder `<MB>`, `<MF>`, `<AFF>`, `<TS>`, `<TH>`. (Au plan, sur une copie de travail avec les vidéos factices, après D15 : `24 passed (3.2m)` ; médianes 584 ms et 1142 ms, affiche 4622 octets, accueil 6102945 et 9678878 octets — les vraies vidéos changeront ces chiffres.) Une médiane « bonne connexion » au-dessus de 1000 : arrêt, avec le chiffre, devant l'utilisateur (spec §7 ; ne pas relever le plafond).
+Expected : `24 passed` ; puis `6 passed` et les lignes `démarrage (bonne connexion) : première image à …, médiane <MB> (budget 1000) ; affiche <AFF> octets (budget 100000) ; …`, `démarrage (Fast 4G) : … médiane <MF> …`, `total <TS> octets (budget 12000000)` (accueil standard) et `total <TH> octets (budget 12000000)` (accueil haute). Garder `<MB>`, `<MF>`, `<AFF>`, `<TS>`, `<TH>`. (Au plan, à l'amendement du 12/10, sur le worktree d'essai (Tasks 9 à 11, vidéos et affiches de l'aperçu de la Task 7) : `24 passed (3.1m)`, par la même commande qu'à la Task 11, Step 8 ; le budget n'y a pas tourné, faute de `plafonds-video.json` (Task 8). Avant l'amendement, sur une copie de travail avec les vidéos factices et la version à bulles, après D15 : `24 passed (3.2m)` ; médianes 584 ms et 1142 ms, affiche 4622 octets, accueil 6102945 et 9678878 octets — les vraies vidéos changeront ces chiffres.) Une médiane « bonne connexion » au-dessus de 1000 : arrêt, avec le chiffre, devant l'utilisateur (spec §7 ; ne pas relever le plafond).
 
 - [ ] **Step 3 : revue finale** par un relecteur neuf sur toute la branche depuis le commit qui précède la Task 1 (skill du mode d'exécution choisi) ; corrections test d'abord ; si une correction touche le code ou les vidéos, refaire les Steps 1 et 2. Garder son issue en une phrase, `<REVUE>` : le nombre de remarques par gravité, ce qui a été corrigé, les mineurs différés, nommés.
 
@@ -8244,7 +8716,7 @@ Expected : `24 passed` ; puis `6 passed` et les lignes `démarrage (bonne connex
 date +%d/%m
 ```
 
-Expected : `portrait : <NP>/<NP> images, <SP> s/image`, `paysage : <NL>/<NL> images, <SL> s/image`, `reste ≈ 0.0 h` (2377 images, ou 2497 si la seconde de plus a été prise à la Task 7) — si les PNG du rendu ont été effacés (Task 8, Step 13), la commande compte 0 image et un reste de plusieurs heures : prendre alors les deux lignes `portrait : …` et `paysage : …` recopiées à la Task 8, Step 4 ; dix lignes `<octets> /video/<fichier>`, de la plus lourde à la plus légère, puis `<TOTAL> octets en tout` (au plan, sur les vidéos factices : première ligne `  3954627 /video/intro-portrait-120.av1.mp4`, dixième `   809349 /video/intro-portrait-leger-60.hevc.mp4`, puis ` 19065992 octets en tout`) ; la date du jour. Valeurs pour le Step 5 :
+Expected : `portrait : <NP>/<NP> images, <SP> s/image`, `paysage : <NL>/<NL> images, <SL> s/image`, `reste ≈ 0.0 h` (2377 images) — si les PNG du rendu ont été effacés (Task 8, Step 13), la commande compte 0 image et un reste de plusieurs heures : prendre alors les deux lignes `portrait : …` et `paysage : …` recopiées à la Task 8, Step 4 ; dix lignes `<octets> /video/<fichier>`, de la plus lourde à la plus légère, puis `<TOTAL> octets en tout` (au plan, sur les vidéos factices : première ligne `  3954627 /video/intro-portrait-120.av1.mp4`, dixième `   809349 /video/intro-portrait-leger-60.hevc.mp4`, puis ` 19065992 octets en tout`) ; la date du jour. Valeurs pour le Step 5 :
 
 | Gabarit | Valeur |
 |---|---|
@@ -8260,7 +8732,7 @@ Expected : `portrait : <NP>/<NP> images, <SP> s/image`, `paysage : <NL>/<NL> ima
 - [ ] **Step 5 : passation.** Dans `docs/HANDOFF.md`, juste après la ligne qui commence par `> **Récupérer le travail.**` (donc avant `> **11/10, après-midi — plan 2A-4 fait`), insérer la ligne suivante, chaque `<…>` remplacé par sa valeur du Step 4 :
 
 ```markdown
-> **<JJ/MM> — plan de l'intro vidéo fait : intro précalculée dans Blender** (`docs/superpowers/plans/2026-10-11-countrizz-intro-video-blender.md`, spec `docs/superpowers/specs/2026-10-11-countrizz-intro-video-blender-design.md`). Chronologie v2 (`web/src/intro/temps.ts`, `cadrages.ts`, `timeline.ts` : chute de 2,4 s en v³, bulles Capitale / Pays / Drapeau) ; fabrique dans `web/scripts/intro/` (`npm run intro:sources`, `intro:keys`, `intro:temoins`, `intro:apercu`, `intro:rendu`, `intro:sprite`, `intro:encode`, `intro:planche`, `intro:avancement`) ; rendu Cycles sur le Mac : <HP> h en portrait (<NP> images à <SP> s/image), <HL> h en paysage (<NL> images à <SL> s/image) ; 10 vidéos versionnées dans `web/public/video/`, <TOTAL> octets en tout (la plus lourde `<SRC_MAX>` <OCT_MAX> o, la plus légère `<SRC_MIN>` <OCT_MIN> o ; plafonds dans `web/e2e-budget/plafonds-video.json`) ; lecteur (`web/src/intro/lecteur.ts`, `Intro.tsx` : affiche, variante par cadrage / cadence / codec, bulles HTML sur leurs ancres, accueil direct à chaque échec, rien de compté onglet caché ; code du globe chargé à part, D15). Suite du Mac en local : `check` <U> passed, `test:data` <D> passed, `e2e:local` <E> passed ; build de production sous le nginx de l'image : e2e de l'intro et de la PWA 24 passed, budget 6 passed (démarrage, médiane de trois : <MB> ms sur une bonne connexion, <MF> ms en Fast 4G, non borné ; affiche <AFF> o ; accueil standard <TS> / 12 000 000 octets, haute <TH>). Revue finale (agent neuf) : <REVUE>. Décisions du plan validées à la relecture (spec §12) ; **reste à fixer par l'utilisateur** : un plafond pour le démarrage en Fast 4G et pour l'accueil « haute » (D14 n'en fixe pas ; mesurés, non bornés). Image `countrizz-web:1.7` à construire et déployer sur GO. **Suite : plan 2A-5 (écrans).**
+> **<JJ/MM> — plan de l'intro vidéo fait : intro précalculée dans Blender** (`docs/superpowers/plans/2026-10-11-countrizz-intro-video-blender.md`, spec `docs/superpowers/specs/2026-10-11-countrizz-intro-video-blender-design.md`). Chronologie v2 (`web/src/intro/temps.ts`, `cadrages.ts`, `timeline.ts` : chute de 2,4 s en v³, point, frontière et drapeau) ; fabrique dans `web/scripts/intro/` (`npm run intro:sources`, `intro:keys`, `intro:temoins`, `intro:apercu`, `intro:rendu`, `intro:sprite`, `intro:encode`, `intro:planche`, `intro:avancement`) ; rendu Cycles sur le Mac : <HP> h en portrait (<NP> images à <SP> s/image), <HL> h en paysage (<NL> images à <SL> s/image) ; 10 vidéos versionnées dans `web/public/video/`, <TOTAL> octets en tout (la plus lourde `<SRC_MAX>` <OCT_MAX> o, la plus légère `<SRC_MIN>` <OCT_MIN> o ; plafonds dans `web/e2e-budget/plafonds-video.json`) ; lecteur (`web/src/intro/lecteur.ts`, `questions.ts`, `Intro.tsx` : affiche, variante par cadrage / cadence / codec, questions HTML « Capitale ? », « Pays ? », « Drapeau ? » en FR et en EN, nées du point, de la frontière et du drapeau, accueil direct à chaque échec, rien de compté onglet caché ; code du globe chargé à part, D15). Suite du Mac en local : `check` <U> passed, `test:data` <D> passed, `e2e:local` <E> passed ; build de production sous le nginx de l'image : e2e de l'intro et de la PWA 24 passed, budget 6 passed (démarrage, médiane de trois : <MB> ms sur une bonne connexion, <MF> ms en Fast 4G, non borné ; affiche <AFF> o ; accueil standard <TS> / 12 000 000 octets, haute <TH>). Revue finale (agent neuf) : <REVUE>. Décisions du plan validées à la relecture (spec §12) ; **reste à fixer par l'utilisateur** : un plafond pour le démarrage en Fast 4G et pour l'accueil « haute » (D14 n'en fixe pas ; mesurés, non bornés). Image `countrizz-web:1.7` à construire et déployer sur GO. **Suite : plan 2A-5 (écrans).**
 ```
 
 Run : `node -e 'require("fs").readFileSync("docs/HANDOFF.md","utf8").split("\n").slice(4,10).forEach((l,i)=>console.log(i+5,l.slice(0,100)))'`. Expected : ligne 7 `> **Récupérer le travail.** …`, ligne 8 `> **<JJ/MM> — plan de l'intro vidéo fait : intro précalculée dans Blender** …` (la date réelle), ligne 9 `> **11/10, après-midi — plan 2A-4 fait : API du globe** …` ; la ligne 8 entière ne contient plus aucun gabarit `<…>`.
@@ -8311,6 +8783,6 @@ git add docs/HANDOFF.md
 git commit -m "passation : countrizz-web 1.7 en ligne, e2e et budget sur countrizz.fr — spec intro vidéo §7-8"
 ```
 
-- [ ] **Step 10 : à la main (spec §8).** Proposer à l'utilisateur le contrôle sur un vrai téléphone, sur countrizz.fr (60 et 120 Hz s'il en a un) : l'intro se lit d'elle-même (iPhone en économie d'énergie : accueil direct, c'est attendu), les bulles posées sur le point, la frontière et le mât, le fondu vers le globe, « Passer › ». S'il répond, ajouter à la fin de la ligne du Step 5 `Vérifié à la main par l'utilisateur le <JJ/MM> : <sa réponse, telle qu'il la donne>.`, puis `git add docs/HANDOFF.md && git commit -m "passation : intro vidéo vérifiée à la main sur téléphone"`. Sans réponse : rien à écrire.
+- [ ] **Step 10 : à la main (spec §8).** Proposer à l'utilisateur le contrôle sur un vrai téléphone, sur countrizz.fr (60 et 120 Hz s'il en a un) : l'intro se lit d'elle-même (iPhone en économie d'énergie : accueil direct, c'est attendu), les questions qui naissent du point, de la frontière et du mât (en français et en anglais), le fondu vers le globe, « Passer › ». S'il répond, ajouter à la fin de la ligne du Step 5 `Vérifié à la main par l'utilisateur le <JJ/MM> : <sa réponse, telle qu'il la donne>.`, puis `git add docs/HANDOFF.md && git commit -m "passation : intro vidéo vérifiée à la main sur téléphone"`. Sans réponse : rien à écrire.
 
 ---

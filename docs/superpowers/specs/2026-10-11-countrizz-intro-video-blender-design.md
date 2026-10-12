@@ -38,6 +38,7 @@ Hors de ce plan : la PWA (plan B du spec de l'intro) ; les écrans du jeu (2A-5)
 | 11/10 | Le **jeu et son globe restent en WebGPU** (WebGL 2 en repli) ; l'intro n'utilise plus aucun moteur 3D |
 | 10/10 (inchangé) | Jouée à chaque visite ; toujours la France, Paris ; mouvement réduit : rien de particulier ; « Jouer » ouvre la démo jusqu'au 2A-5 |
 | 11/10 | Planche des témoins validée : « oui ça me paraît plutôt ok » (planche des mêmes témoins montrée à l'utilisateur ; celle du dépôt est identique à l'œil) ; rendu final à 128 échantillons (≈ 4,4 h, ≈ 5,9 Go de PNG) |
+| 12/10 | Aperçu validé : « tout me paraît ok » ; seconde de plus pour les bulles : non (les bulles elles-mêmes sont refusées le même jour, ligne suivante) |
 
 ## 2. Chaîne de fabrication
 

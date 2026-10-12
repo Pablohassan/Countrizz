@@ -33,6 +33,7 @@
     "intro:sprite": "tsx scripts/intro/blender.ts sprite",
     "intro:planche": "tsx scripts/intro/planche.ts",
     "intro:avancement": "tsx scripts/intro/avancement.ts",
+    "intro:encode": "tsx scripts/intro/encode.ts",
     "intro:keys": "tsx scripts/intro/export-keys.ts"
   },
   "dependencies": {

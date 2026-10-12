@@ -12,8 +12,11 @@ export function outdatedCaches(names: readonly string[], current: readonly strin
   return names.filter((n) => n.startsWith(CACHE_PREFIX) && !current.includes(n));
 }
 
-/** Les fichiers de l'intro : à la première visite, elle les charge avant que le service worker ne contrôle la page. */
-export const INTRO_URLS = ['/intro/monde.jpg', '/intro/europe.jpg', '/intro/relief-fin.jpg', '/intro/relief.jpg', '/intro/france.json'] as const;
+/**
+ * Les fichiers de l'intro que le service worker garde (affiches, ancres des questions) : à la première visite, elle les charge
+ * avant qu'il ne contrôle la page. Ni les vidéos ni leur manifeste : ils ne passent jamais par lui (hors ligne : accueil direct).
+ */
+export const INTRO_URLS = ['/intro/affiche-portrait.webp', '/intro/affiche-paysage.webp', '/intro/ancres.json'] as const;
 
 /** Ce qu'un téléphone télécharge d'avance à l'installation, selon son niveau de rendu. */
 export function heavyUrls(tier: QualityTier): string[] {

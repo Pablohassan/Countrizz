@@ -1,17 +1,26 @@
 import type { CSSProperties } from 'react';
-import { LOGO_LETTRES, LOGO_TOUR_S } from '../intro/temps';
+import { INTRO, LOGO_LETTRES, LOGO_TOUR_S } from '../intro/temps';
+
+/**
+ * Entrée du titre : `pop`, ses lettres surgissent une à une (accueil direct) ; `fondu`, il vient de la vidéo de l'intro,
+ * qui le montre en pâte : invisible jusqu'au fondu, il apparaît pendant qu'elle s'efface, au même rythme (D5).
+ */
+export type EntreeTitre = 'pop' | 'fondu';
 
 /**
  * Le titre C🌍untrizz (déroulé du 10/10) : une petite Terre en pâte tient la place du « o ». Elle tourne en stop motion
- * (24 images, un tour en 4 s) ; `angle` (rad) : celui où l'intro l'a laissée, pour que la relève ne saute pas.
- * Le glyphe « o » reste dans le texte, invisible : il donne l'espacement exact de la police.
+ * (24 images, un tour en 4 s) ; `angle` (rad) : celui de la Terre de la vidéo quand elle devient visible, pour que la
+ * relève ne saute pas. Elle est remontée (`key`) à ce moment : un nouvel `animation-delay` sur un élément déjà animé ne
+ * relance pas l'animation (constaté dans Chromium le 11/10). Le glyphe « o » reste dans le texte, invisible : il donne
+ * l'espacement exact de la police.
  */
-export function LogoTitle({ angle, visible }: { angle: number | null; visible: boolean }) {
+export function LogoTitle({ angle, visible, entree }: { angle: number | null; visible: boolean; entree: EntreeTitre }) {
   const delay = angle === null ? 0 : -(angle / (2 * Math.PI)) * LOGO_TOUR_S;
   return (
-    <h1 className="accueil-titre logo-titre" aria-label="Countrizz">
+    <h1 className={`accueil-titre logo-titre logo-titre--${entree}${visible ? ' logo-titre--visible' : ''}`} aria-label="Countrizz"
+      style={{ '--fondu': `${(INTRO.FIN - INTRO.FONDU).toFixed(2)}s` } as CSSProperties}>
       <span className="logo-l" aria-hidden="true" style={{ '--i': 0 } as CSSProperties}>{LOGO_LETTRES[0]}</span>
-      <span className="logo-o" aria-hidden="true">o<i className="logo-terre" style={{ opacity: visible ? 1 : 0, animationDelay: `${delay}s` }} /></span>
+      <span className="logo-o" aria-hidden="true">o<i key={visible ? `terre${delay}` : 'cachee'} className="logo-terre" style={{ opacity: visible ? 1 : 0, animationDelay: `${delay}s` }} /></span>
       {LOGO_LETTRES.slice(1).map((l, i) => <span key={i} className="logo-l" aria-hidden="true" style={{ '--i': i + 1 } as CSSProperties}>{l}</span>)}
     </h1>
   );

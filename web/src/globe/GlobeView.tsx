@@ -15,6 +15,7 @@ import { Globe } from './globe';
 import { CLOUD_DRIFT_TURNS_PER_S } from './clouds';
 import { createAccessoryHost, type Accessory } from './accessories';
 import { ImageryCredit, type CreditPlacement } from './credits';
+import { LoadErrorCard } from './LoadErrorCard';
 import { OffsetCamera } from './offsetCamera';
 import type { ScreenPoint } from './project';
 import { createDprGovernor, dprOptions } from './dynamicResolution';
@@ -113,17 +114,6 @@ interface Props {
 /** `unsupported` : ni WebGPU ni WebGL 2 ; `load` : textures ou frontières introuvables ; `lost` : recréation après une perte du GPU en échec. */
 export type GlobeErrorReason = 'unsupported' | 'load' | 'lost';
 export interface GlobeError { reason: GlobeErrorReason; detail: string }
-
-/** Carte d'erreur « le globe n'a pas pu se charger » avec « Réessayer » (spec §10) : chargement en échec, ou recréation après une perte du GPU. */
-function LoadErrorCard({ texts, detail, onRetry }: { texts: Messages['errors']; detail: string; onRetry(): void }) {
-  return (
-    <div role="alert" title={detail} style={{ position: 'absolute', inset: 0, display: 'grid', placeContent: 'center', gap: 12, color: '#f7dc6f', background: '#16173a', textAlign: 'center', fontFamily: 'sans-serif' }}>
-      <p>{texts.loadTitle}</p>
-      <p>{texts.loadText}</p>
-      <button onClick={onRetry}>{texts.retry}</button>
-    </div>
-  );
-}
 
 /**
  * Frontière d'erreur du renderer : à la première création, navigateur incompatible ; après une perte du GPU (`lost()`),

@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { Component, Suspense, lazy, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Lang } from '../game/types';
 import { PREF_KEYS, readPref, writePref, type KeyValueStorage } from '../game/prefs';
-import { detectLang, messages } from '../i18n';
-import { GlobeView, type GlobeHandle } from '../globe/GlobeView';
+import { detectLang, messages, type Messages } from '../i18n';
+import type { GlobeHandle } from '../globe/GlobeView';
+import { LoadErrorCard } from '../globe/LoadErrorCard';
 import { Intro } from '../intro/Intro';
 import { Home } from '../ui/Home';
+import type { EntreeTitre } from '../ui/LogoTitle';
 import type { QualityTier } from '../globe/renderer';
 import { INTRO_URLS, heavyUrls, persist, purgeOutdated, warm } from '../pwa/cache';
 import { useInstall } from '../pwa/install';
@@ -14,8 +16,30 @@ const storage = ((): KeyValueStorage | null => { try { return localStorage; } ca
 export const HOME_SPIN_DEG_PER_S = 1.5;
 
 /**
- * Page d'accueil de countrizz.fr (spec intro §0) : le globe, posé dès le départ sur la vue d'accueil, se charge sous
- * l'intro en pâte ; l'accueil se monte à 16,8 s, le fondu part à 19,6 s (globe prêt), puis le globe tourne doucement.
+ * Le globe (three, R3F : l'essentiel du code de la page) arrive à part, par import() (D15 du plan de l'intro vidéo) :
+ * l'intro démarre sans l'attendre, le globe se monte caché sous elle dès que son code est là.
+ */
+const GlobeView = lazy(() => import('../globe/GlobeView').then((m) => ({ default: m.GlobeView })));
+
+/**
+ * Code du globe introuvable (réseau coupé, version du site remplacée pendant la visite…) : comme un globe en échec,
+ * `onError` (le fondu part), puis la carte « Réessayer », qui recharge la page — Chromium ne refait pas un import()
+ * raté (constaté au plan : le second appel échoue sans nouvelle requête).
+ */
+class CodeDuGlobe extends Component<{ children: ReactNode; texts: Messages['errors']; onError(): void }, { detail: string | null }> {
+  state: { detail: string | null } = { detail: null };
+  static getDerivedStateFromError(e: unknown) { return { detail: String(e) }; }
+  componentDidCatch() { this.props.onError(); }
+  render() {
+    if (this.state.detail === null) return this.props.children;
+    return <LoadErrorCard texts={this.props.texts} detail={this.state.detail} onRetry={() => location.reload()} />;
+  }
+}
+
+/**
+ * Page d'accueil de countrizz.fr (spec intro §0, spec intro vidéo §4) : le globe, posé dès le départ sur la vue d'accueil,
+ * se charge sous la vidéo de l'intro (son code arrive à part, D15) ; l'accueil se monte à `INTRO.ACCUEIL` (son titre
+ * attend le fondu), le fondu part à `INTRO.FONDU` quand le globe est prêt, puis le globe tourne doucement.
  */
 export function App() {
   const [lang, setLang] = useState<Lang>(() => detectLang(readPref(storage, PREF_KEYS.lang), navigator.languages ?? [navigator.language]));
@@ -24,6 +48,8 @@ export function App() {
   const [phase, setPhase] = useState<'intro' | 'fondu' | 'accueil'>('intro');
   const [homeShown, setHomeShown] = useState(false);
   const [logoAngle, setLogoAngle] = useState<number | null>(null);
+  // le titre vient de la vidéo (il apparaît en fondu) ; intro abandonnée (accueil direct) : ses lettres surgissent
+  const [entree, setEntree] = useState<EntreeTitre>('fondu');
   const globe = useRef<GlobeHandle>(null);
   const [tier, setTier] = useState<QualityTier | null>(null);
   const install = useInstall();
@@ -57,19 +83,26 @@ export function App() {
   }, [tier, controlled, installed]);
 
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
-  useEffect(() => { if (phase === 'accueil') globe.current?.setIdleSpin(HOME_SPIN_DEG_PER_S); }, [phase]);
+  // à l'accueil, le globe tourne doucement ; accueil direct : son code peut arriver après, on attend qu'il soit prêt
+  useEffect(() => { if (phase === 'accueil' && globeReady) globe.current?.setIdleSpin(HOME_SPIN_DEG_PER_S); }, [phase, globeReady]);
 
   return (
     <>
-      <GlobeView ref={globe} startAtHome active={phase !== 'intro'} warmUp={homeShown}
-        onReady={(info) => { setGlobeReady(true); setTier(info.tier); }}
-        // globe en échec : le fondu part quand même, et l'écran d'erreur (« Réessayer ») apparaît sous l'accueil
-        onError={() => setGlobeReady(true)} texts={m.errors} />
+      <CodeDuGlobe texts={m.errors} onError={() => setGlobeReady(true)}>
+        <Suspense fallback={null}>
+          <GlobeView ref={globe} startAtHome active={phase !== 'intro'} warmUp={homeShown}
+            onReady={(info) => { setGlobeReady(true); setTier(info.tier); }}
+            // globe en échec : le fondu part quand même, et l'écran d'erreur (« Réessayer ») apparaît sous l'accueil
+            onError={() => setGlobeReady(true)} texts={m.errors} />
+        </Suspense>
+      </CodeDuGlobe>
       {phase !== 'accueil' && (
-        <Intro m={m} globeReady={globeReady} onHome={() => setHomeShown(true)} onFade={() => setPhase((p) => (p === 'intro' ? 'fondu' : p))} onDone={(angle) => { setLogoAngle(angle); setPhase('accueil'); }} />
+        <Intro lang={lang} m={m} globeReady={globeReady} onHome={() => setHomeShown(true)}
+          onFade={(angle) => { setLogoAngle(angle); setPhase((p) => (p === 'intro' ? 'fondu' : p)); }}
+          onDone={(angle) => { if (angle === null) setEntree('pop'); setPhase('accueil'); }} />
       )}
       {homeShown && (
-        <Home lang={lang} m={m} name={name} logo={{ angle: logoAngle, visible: phase === 'accueil' }}
+        <Home lang={lang} m={m} name={name} logo={{ angle: logoAngle, visible: phase !== 'intro', entree }}
           onLang={(l) => { setLang(l); writePref(storage, PREF_KEYS.lang, l); }}
           onName={(n) => { setName(n); writePref(storage, PREF_KEYS.name, n); }} />
       )}

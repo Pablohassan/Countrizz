@@ -1,162 +1,278 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import type { Lang } from '../game/types';
 import type { Messages } from '../i18n';
-import { createIntroScene, type IntroScene } from './scene';
-import { INTRO, LOGO_LETTRES, defaultTargets, frameAt, logoAngleAt, rebond, spriteFrame, type Target, type Targets, type Viewport } from './timeline-v1';
-import { INTRO_GIVE_UP_MS } from './temps';
-import { LogoTitle } from '../ui/LogoTitle';
+import {
+  SUIVI_DEPART, angleTerre, choisirCadrage, choisirVariantes, couverture, idVariante, mesurerIntervalle, suivreLecture,
+  type Capacites, type Echec, type Manifeste, type Releve, type Variante,
+} from './lecteur';
+import { ORDRE_QUESTIONS, POSES, etatLettre, poserMot, signes, texteQuestion, type Ancres, type Gabarit, type Mot, type Question } from './questions';
+import { CADRAGES, INTRO, LOGO_ANGLE_FIN, type Cadrage } from './temps';
 import './intro.css';
 
-/** Crochets de test (dev, ou drapeau des e2e posé par Playwright) : `?introT=13` fige l'intro à 13 s. */
+/**
+ * Crochets de test (dev, ou drapeau des e2e posé par Playwright) : `?introT=13` place la vidéo à 13 s, en pause ;
+ * `?introVariante=portrait-plein-60-av1` force la variante (Chromium headless mesure toujours 60 Hz et lit l'AV1).
+ */
 const E2E_FLAG = 'countrizz:e2e';
 const hooks = (): boolean => { try { return import.meta.env.DEV || localStorage.getItem(E2E_FLAG) === '1'; } catch { return import.meta.env.DEV; } };
-declare global { interface Window { __intro?: { t: number; frames: number; ready: boolean; skipped: boolean } } }
+declare global {
+  interface Window {
+    __intro?: {
+      /** Instant de la vidéo (s) qui règle les questions, l'accueil et le fondu. */
+      t: number;
+      /** La première image de la vidéo est affichée. */
+      ready: boolean;
+      skipped: boolean;
+      variante: Pick<Variante, 'cadrage' | 'taille' | 'ips' | 'codec'> | null;
+      echec: Echec | null;
+      /** `performance.now()` à la première image (ms depuis le début de la navigation). */
+      premiereImageMs: number | null;
+    };
+  }
+}
+
+/** Fondu de la vidéo vers le globe (s), de FONDU à FIN ; le titre de l'accueil apparaît au même rythme (LogoTitle). */
+const FONDU_S = INTRO.FIN - INTRO.FONDU;
+
+/**
+ * Les questions telles que la page les a mesurées dans le calque (un `span` par signe, à la taille `POSES[cadrage].taille`,
+ * px de la vidéo) : pour chaque mot, son gabarit et ses lettres dans l'ordre (blancs exclus), celui d'`etatLettre`.
+ */
+interface Mesure { cadrage: Cadrage; mots: { q: Question; g: Gabarit; lettres: HTMLElement[] }[] }
 
 interface Props {
+  /** Langue des questions (la vidéo est la même en français et en anglais). */
+  lang: Lang;
   m: Messages;
   /** Le vrai globe est prêt : le fondu peut partir. */
   globeReady: boolean;
-  /** 16,2 s : l'accueil se monte. */
+  /** `INTRO.ACCUEIL` : l'accueil se monte, son titre invisible (la vidéo le montre en pâte). */
   onHome(): void;
-  /** 17,4 s : le globe reprend son rendu, le fond de nuit s'efface. */
-  onFade(): void;
-  /** Fin (ou abandon) : l'intro peut être démontée ; `angle` : celui de la Terre, pour la petite Terre du titre. */
+  /**
+   * Le fondu part (`INTRO.FONDU`, globe prêt) : le globe reprend son rendu ; `angle` : celui de la Terre de la vidéo à cet
+   * instant, d'où part la petite Terre du titre (null : accueil direct).
+   */
+  onFade(angle: number | null): void;
+  /** Fin du fondu : l'intro peut être démontée ; `angle` : LOGO_ANGLE_FIN, ou null si elle a été abandonnée (accueil direct). */
   onDone(angle: number | null): void;
 }
 
 /**
- * Intro en pâte à modeler (spec `2026-10-10-countrizz-intro-pate-accueil-design.md`, déroulé du 10/10 : double dézoom) :
- * un calque par-dessus le globe, son fond de nuit, son canvas, le logo C🌍untrizz du milieu. Tout passe par une horloge
- * en stop motion (12 i/s) ; elle attend ses textures avant la chute et le globe avant le fondu. Les deux « o » où se
- * loge la Terre sont mesurés dans la page : le logo du milieu, et un double invisible du titre de l'accueil.
+ * Intro en vidéo précalculée (spec `2026-10-11-countrizz-intro-video-blender-design.md` §4-5) : un calque par-dessus le
+ * globe ; l'affiche du cadrage tout de suite, puis la vidéo choisie (cadrage, cadence, codec : lecteur.ts), les questions
+ * en HTML qui naissent de leurs objets (questions.ts), « Passer › ». Tout suit l'image affichée
+ * (`requestVideoFrameCallback`, `currentTime` en repli) ; la vidéo ne se recharge jamais (rotation : seules les questions
+ * se reposent). Globe pas prêt : la vidéo reste sur sa dernière image, l'accueil par-dessus. Tout échec mène à l'accueil
+ * direct.
  */
-export function Intro({ m, globeReady, onHome, onFade, onDone }: Props) {
-  const fond = useRef<HTMLDivElement>(null), logo = useRef<HTMLDivElement>(null), fantome = useRef<HTMLDivElement>(null);
-  const label = useRef<HTMLDivElement>(null), stars = useRef<HTMLDivElement>(null);
+export function Intro({ lang, m, globeReady, onHome, onFade, onDone }: Props) {
+  const racine = useRef<HTMLDivElement>(null), video = useRef<HTMLVideoElement>(null), calque = useRef<HTMLDivElement>(null);
+  const mesure = useRef<Mesure | null>(null);
   const ready = useRef(globeReady);
   ready.current = globeReady;
   const skip = useRef(false);
   const cb = useRef({ onHome, onFade, onDone });
   cb.current = { onHome, onFade, onDone };
+  // le cadrage de la fenêtre au montage : celui de l'affiche, et de la vidéo choisie au même instant (elle n'en change plus)
+  const [cadrage] = useState<Cadrage>(() => choisirCadrage(innerWidth, innerHeight));
+  // le repère des questions : celui de la vidéo chargée (le cadrage du montage, sauf variante forcée par ?introVariante)
+  const [cadrageVideo, setCadrageVideo] = useState<Cadrage>(cadrage);
+
+  // Les questions sont mesurées dans la page (les chasses de Chango) à la langue et au cadrage de la vidéo, puis de
+  // nouveau quand la police est chargée (celle de repli n'a pas les mêmes) ; la boucle les pose pour l'écran et les anime.
+  useEffect(() => {
+    const couche = calque.current!;
+    let vivant = true;
+    const mesurer = () => {
+      mesure.current = {
+        cadrage: cadrageVideo,
+        mots: ORDRE_QUESTIONS.map((q) => {
+          const mot = couche.querySelector<HTMLElement>(`[data-question="${q}"]`)!, lettres = [...mot.querySelectorAll<HTMLElement>('.intro-lettre')];
+          const g: Gabarit = { largeur: mot.offsetWidth, hauteur: mot.offsetHeight,
+            lettres: lettres.map((l) => ({ x: l.offsetLeft + l.offsetWidth / 2, y: l.offsetTop + l.offsetHeight / 2, w: l.offsetWidth, h: l.offsetHeight })) };
+          return { q, g, lettres };
+        }),
+      };
+    };
+    mesurer();
+    const textes = ORDRE_QUESTIONS.map((q) => texteQuestion(lang, q)).join('');
+    document.fonts.load(`${POSES[cadrageVideo].taille}px Chango`, textes).then(() => { if (vivant) mesurer(); }, () => {});
+    return () => { vivant = false; };
+  }, [lang, cadrageVideo]);
 
   useEffect(() => {
-    let alive = true, scene: IntroScene | null = null, raf = 0, last = performance.now(), t = 0, step = -1;
-    let home = false, fade = false, done = false;
-    const sprite = hooks() ? new URLSearchParams(location.search).get('introSprite') : null;   // fabrication de la petite Terre du titre
-    const frozen = hooks() ? new URLSearchParams(location.search).get('introT') ?? (sprite !== null ? '7' : null) : null;
-    if (hooks()) window.__intro = { t: 0, frames: 0, ready: false, skipped: false };
-    const vp = (): Viewport => ({ width: innerWidth, height: innerHeight });
-    // un canvas à chaque montage : en StrictMode (dev), le premier renderer détruit le sien (perte du contexte)
-    const cv = document.createElement('canvas');
-    cv.className = 'intro-canvas';
-    cv.setAttribute('aria-label', 'Countrizz : une Terre en pâte à modeler');
-    fond.current!.after(cv);   // au-dessus du fond de nuit (qui s'efface), sous le logo
-    const canvas = { current: cv };
-    const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch { return false; } })();
-    // stop motion à 12 i/s : une densité de 2 suffit ; ombre plus légère sur téléphone (mémoire)
-    const ratio = () => Math.min(2, devicePixelRatio || 1);
-    const finish = () => { if (done) return; done = true; cb.current.onHome(); cb.current.onFade(); cb.current.onDone(null); };
-    // les deux « o » : centre et rayon de la petite Terre (px CSS), mesurés sur les marqueurs posés dans les « o »
-    const mesure = (el: Element | null | undefined): Target | null => {
-      const r = el?.getBoundingClientRect();
-      return r && r.width > 0 ? { x: r.left + r.width / 2, y: r.top + r.height / 2, r: r.width / 2 } : null;
+    const v = video.current!, el = racine.current!, couche = calque.current!;
+    const q = hooks() ? new URLSearchParams(location.search) : null;
+    const gele = q?.has('introT') ? Number(q.get('introT')) : null, forcee = q?.get('introVariante') ?? null;
+    if (q) window.__intro = { t: 0, ready: false, skipped: false, variante: null, echec: null, premiereImageMs: null };
+    const rvfc = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
+    let alive = true, raf = 0, finFondu = 0, image = false, tImage = 0, saute = false, home = false, fondu = false, done = false;
+    let variantes: Variante[] = [], courante: Variante | null = null, ancres: Ancres | null = null, suivi = SUIVI_DEPART;
+    // les questions posées pour l'écran (taille relevée à chaque image), et la dernière image écrite
+    let poses: { mot: Mot; g: Gabarit; lettres: HTMLElement[] }[] = [], posees: Mesure | null = null, ecranPose = '';
+    let ecrit: { t: number; poses: typeof poses } | null = null;
+
+    /** Accueil direct (spec §4) : l'intro disparaît d'un coup, les lettres du titre surgissent. */
+    const abandonner = (echec: Echec | null) => {
+      if (done || fondu) return;
+      done = true;
+      if (echec) console.warn('intro abandonnée :', echec);
+      if (window.__intro) window.__intro.echec = echec;
+      v.pause();
+      if (!home) { home = true; cb.current.onHome(); }
+      cb.current.onFade(null);
+      cb.current.onDone(null);
     };
-    const cibles = (): Targets => {
-      const d = defaultTargets(vp());
-      return { logo: mesure(logo.current?.querySelector('.intro-logo-terre')) ?? d.logo, titre: mesure(fantome.current?.querySelector('.logo-terre')) ?? d.titre };
+    const premiere = () => {
+      if (image) return;
+      image = true;
+      el.classList.add('intro--image');   // l'affiche s'efface : la vidéo montre la même image
+      if (window.__intro) { window.__intro.ready = true; window.__intro.premiereImageMs = performance.now(); }
     };
-    let c = cibles();
-    void document.fonts?.ready.then(() => { c = cibles(); });
-    const giveUp = setTimeout(() => { if (!scene) finish(); }, INTRO_GIVE_UP_MS);
+    const surImage = (_: number, meta: VideoFrameCallbackMetadata) => {
+      if (!alive) return;
+      tImage = meta.mediaTime;
+      premiere();
+      v.requestVideoFrameCallback(surImage);
+    };
+    // play() rejeté parce que la page n'en a pas le droit (économie d'énergie d'iOS…) : accueil direct ; les autres refus
+    // (source illisible, chargement interrompu) : l'événement « error » ou le compte des 8 s décident
+    const lancer = () => {
+      v.play().catch((e: unknown) => { if (alive && e instanceof DOMException && e.name === 'NotAllowedError') abandonner('lecture-refusee'); });
+    };
+    const charger = (x: Variante) => {
+      courante = x;
+      if (window.__intro) window.__intro.variante = { cadrage: x.cadrage, taille: x.taille, ips: x.ips, codec: x.codec };
+      v.dataset.cadrage = x.cadrage;
+      setCadrageVideo(x.cadrage);   // le repère des questions suit la vidéo
+      v.src = x.src;
+      if (gele !== null) v.addEventListener('loadedmetadata', () => { v.currentTime = gele; }, { once: true });
+      else lancer();
+    };
+    // une variante en erreur avant sa première image : la suivante (l'autre codec) ; sinon, ou après : accueil direct
+    const surErreur = () => {
+      if (!alive || done || !courante) return;
+      const suivante = image ? undefined : variantes[variantes.indexOf(courante) + 1];
+      if (suivante) charger(suivante); else abandonner('erreur');
+    };
+    const surCalage = () => { if (gele !== null) premiere(); };   // ?introT : l'image demandée est prête
+    // fin du fondu : quand la vidéo a fini de s'effacer (une image lente retarde la transition CSS, pas un minuteur) ;
+    // sans transition (onglet caché…), au plus tard une seconde après
+    const finir = () => { if (done) return; done = true; clearTimeout(finFondu); cb.current.onDone(LOGO_ANGLE_FIN); };
+    const surTransition = (e: TransitionEvent) => { if (fondu && e.target === v && e.propertyName === 'opacity') finir(); };
 
-    // étoiles en billes, toujours les mêmes (graine fixe)
-    const billes: { el: HTMLElement; debut: number; phase: number }[] = [];
-    { let g = 12345; const a = () => (g = (g * 16807) % 2147483647) / 2147483647;
-      for (let i = 0; i < 46; i++) {
-        const el = document.createElement('i'), r = 1.5 + a() * 3.5;
-        el.style.cssText = `left:${a() * 100}%;top:${a() * 100}%;width:${r}px;height:${r}px`;
-        stars.current!.appendChild(el); billes.push({ el, debut: 0.2 + a() * 1.4, phase: a() * 6 });
-      } }
+    const releve = (): Releve => ({ ms: performance.now(), visible: !document.hidden, temps: v.currentTime, image,
+      attendue: gele === null ? !fondu && !skip.current && !v.ended : !image });
+    const surVisibilite = () => {
+      ({ suivi } = suivreLecture(suivi, releve()));   // l'absence de l'onglet ne compte pas dans les 8 s
+      // retour sur l'onglet : la vidéo que le navigateur a suspendue repart (un refus : accueil direct)
+      if (!document.hidden && courante && gele === null && !skip.current && !fondu && !done && v.paused && !v.ended) lancer();
+    };
 
-    createIntroScene(canvas.current!, '/', { shadowSize: coarse ? 2048 : 4096 }).then((s) => {
-      if (!alive) { s.dispose(); return; }
-      scene = s;
-      scene.resize(vp(), ratio());
-      if (window.__intro) window.__intro.ready = true;
-    }, (e: unknown) => { console.warn('intro abandonnée :', e); finish(); });
+    /**
+     * Les questions à l'instant t (questions.ts). Écran ou mesure changés : le calque, dans le repère de la vidéo, est
+     * reposé par un seul transform (`couverture`) et les mots ramenés dans la partie visible (`poserMot`). Puis chaque
+     * lettre, depuis `etatLettre`, sans lecture de mise en page ; rien avant la première image, ni sans ancres.
+     */
+    const dessinerQuestions = (t: number) => {
+      const me = mesure.current, ecran = { width: el.clientWidth, height: el.clientHeight }, cle = `${ecran.width}×${ecran.height}`;
+      if (!me || ecran.width === 0 || ecran.height === 0) return;
+      if (me !== posees || cle !== ecranPose) {
+        posees = me;
+        ecranPose = cle;
+        const k = couverture(CADRAGES[me.cadrage], ecran, me.cadrage);
+        couche.style.transform = `translate(${k.x}px, ${k.y}px) scale(${k.echelle})`;
+        poses = me.mots.map((x) => ({ ...x, mot: poserMot(x.q, me.cadrage, x.g, ecran) }));
+      }
+      const a = ancres;
+      if (!a || !image || (ecrit && ecrit.t === t && ecrit.poses === poses)) return;
+      ecrit = { t, poses };
+      for (const { mot, g, lettres } of poses) {
+        lettres.forEach((l, i) => {
+          const e = etatLettre(t, mot, i, a);
+          if (!e) { l.style.opacity = '0'; return; }
+          l.style.opacity = String(e.opacite);
+          l.style.transform = `translate(${e.x - g.lettres[i].x}px, ${e.y - g.lettres[i].y}px) rotate(${e.rot}deg) scale(${e.echelle})`;
+        });
+      }
+    };
 
-    const onResize = () => { scene?.resize(vp(), ratio()); c = cibles(); };
-    addEventListener('resize', onResize);
-
-    const loop = (now: number) => {
-      raf = requestAnimationFrame(loop);
-      const dt = Math.min(0.25, (now - last) / 1000);   // un téléphone lent ralentit l'intro plutôt que de sauter des phases
-      last = now;
-      if (frozen !== null) t = Number(frozen);
-      else if (skip.current && !scene) { finish(); return; }   // « Passer » pendant le chargement de la pâte : accueil direct
-      else if (skip.current) t = INTRO.FIN;
-      else t += dt;
-      // attentes : les textures de la pâte avant la chute, le globe avant le fondu
-      if (!scene) t = Math.min(t, INTRO.CHUTE - 0.05);
-      if (!ready.current) t = Math.min(t, INTRO.FONDU - 0.001);
-      // les seuils se jugent sur le temps exact : « Passer » pose t = FIN, que l'arrondi à l'image ferait retomber à 21,1667
+    const boucle = () => {
+      raf = requestAnimationFrame(boucle);
+      if (done) return;
+      if (skip.current && !image) { abandonner(null); return; }   // « Passer » avant la première image : accueil direct
+      if (skip.current && !saute) {   // « Passer » : la vidéo saute à sa dernière image (le titre en pâte), puis le fondu
+        saute = true;
+        v.pause();
+        if (Number.isFinite(v.duration)) v.currentTime = v.duration;
+      }
+      if (!image && !rvfc && gele === null && v.currentTime > 0) premiere();
+      const t = skip.current || v.ended ? INTRO.FIN : gele ?? (rvfc && image ? tImage : v.currentTime);
+      let echec: Echec | null;
+      ({ suivi, echec } = suivreLecture(suivi, releve()));
+      if (echec) { abandonner(echec); return; }
       if (!home && t >= INTRO.ACCUEIL) { home = true; cb.current.onHome(); }
-      if (!fade && t >= INTRO.FONDU) { fade = true; cb.current.onFade(); }
-      if (!done && t >= INTRO.FIN && frozen === null) { done = true; cb.current.onDone(logoAngleAt(INTRO.FIN)); return; }
-      // en attente (pâte ou globe), le temps ne bouge plus mais la pâte frémit toujours, au rythme du stop motion
-      const attente = (!scene && t >= INTRO.CHUTE - 0.05) || (!ready.current && t >= INTRO.FONDU - 0.001);
-      const n = attente ? -1 - Math.floor((now / 1000) * INTRO.IPS) : Math.floor(t * INTRO.IPS);
-      if (n === step && frozen === null) return;
-      step = n;
-      const tq = frozen !== null || attente ? t : n / INTRO.IPS, f = sprite !== null ? spriteFrame((Number(sprite) * Math.PI) / 180, vp()) : frameAt(tq, vp(), c);
-      // DOM, dans la même horloge que la pâte
-      for (const b of billes) {
-        const u = (tq - b.debut) / 0.35;
-        b.el.style.opacity = String(Math.max(0, Math.min(1, u)) * (0.55 + 0.35 * Math.sin(b.phase + tq * 2.1)));
-        b.el.style.transform = `scale(${u <= 0 ? 0 : Math.min(1.3, 1 + 0.3 * Math.sin(Math.min(1, u) * Math.PI))})`;
+      if (!fondu && (gele === null || skip.current) && t >= INTRO.FONDU && ready.current) {
+        fondu = true;
+        el.classList.add('intro--fondu');
+        cb.current.onFade(angleTerre(t));
+        finFondu = window.setTimeout(finir, FONDU_S * 1000 + 1000);
       }
-      // le logo du milieu : « C » arrive de la gauche, « untrizz » lettre après lettre ; tout s'envole au rezoom
-      logo.current!.querySelectorAll<HTMLElement>('.intro-logo-l').forEach((el, i) => {
-        const p = f.logo.letters[i] ?? 0, k = rebond(p, 2.2), out = f.logo.out;
-        const dx = i === 0 ? -80 * (1 - k) - 260 * out : (60 + 25 * i) * out, dy = i === 0 ? 0 : 30 * (1 - k);
-        el.style.opacity = String(Math.min(1, p * 3) * (1 - out));
-        el.style.transform = `translate(${dx}px, ${dy}px) scale(${i === 0 ? 1 : Math.max(0.01, k)}) rotate(${i === 0 ? 0 : (1 - k) * (i % 2 ? 12 : -12)}deg)`;
-      });
-      fond.current!.style.opacity = String(f.backdrop);
-      canvas.current!.style.filter = f.blur > 0.3 ? `blur(${f.blur.toFixed(1)}px)` : 'none';
-      canvas.current!.style.opacity = String(scene ? f.opacity : 0);
-      if (scene) {
-        const top = scene.render(f, tq, vp(), frozen === null);
-        if (top && f.label.opacity > 0) {
-          label.current!.style.opacity = String(f.label.opacity);
-          label.current!.style.transform = `translate(${top[0] - 34}px, ${top[1] - 30}px) translateY(-100%) rotate(-4deg) scale(${f.label.scale})`;
-        } else label.current!.style.opacity = '0';
-      }
-      if (window.__intro) { window.__intro.t = tq; window.__intro.frames++; window.__intro.skipped = skip.current; }
+      dessinerQuestions(t);
+      if (window.__intro) { window.__intro.t = t; window.__intro.skipped = skip.current; }
     };
-    raf = requestAnimationFrame(loop);
+
+    const demarrer = async () => {
+      const json = <T,>(u: string) => fetch(u).then((r) => (r.ok ? (r.json() as Promise<T>) : null)).catch(() => null);
+      const [manifeste, a, intervalle] = await Promise.all([json<Manifeste>('/video/videos.json'), json<Ancres>('/intro/ancres.json'), mesurerIntervalle((f) => requestAnimationFrame(f))]);
+      if (!alive || done) return;
+      ancres = a;   // sans ancres, la vidéo se lit sans questions
+      if (!manifeste) { abandonner('erreur'); return; }
+      const caps: Capacites = { canPlayType: (t) => v.canPlayType(t), decodingInfo: navigator.mediaCapabilities ? (c) => navigator.mediaCapabilities.decodingInfo(c) : undefined };
+      variantes = forcee !== null ? manifeste.variantes.filter((x) => idVariante(x) === forcee) : await choisirVariantes(manifeste, cadrage, intervalle, caps);
+      if (!alive || done) return;
+      if (variantes.length === 0) abandonner('aucun-codec');
+      else charger(variantes[0]);
+    };
+
+    v.defaultMuted = true;   // muette : lecture sans geste de l'utilisateur (iOS, Chrome)
+    v.muted = true;
+    v.dataset.cadrage = cadrage;
+    if (rvfc && gele === null) v.requestVideoFrameCallback(surImage);   // une seule chaîne, d'une source à l'autre
+    v.addEventListener('error', surErreur);
+    v.addEventListener('seeked', surCalage);
+    v.addEventListener('transitionend', surTransition);
+    document.addEventListener('visibilitychange', surVisibilite);
+    raf = requestAnimationFrame(boucle);
+    void demarrer();
     return () => {
       alive = false;
       cancelAnimationFrame(raf);
-      clearTimeout(giveUp);
-      removeEventListener('resize', onResize);
-      scene?.dispose();
-      cv.remove();
-      for (const b of billes) b.el.remove();
+      clearTimeout(finFondu);
+      document.removeEventListener('visibilitychange', surVisibilite);
+      v.removeEventListener('error', surErreur);
+      v.removeEventListener('seeked', surCalage);
+      v.removeEventListener('transitionend', surTransition);
+      v.pause();
+      v.removeAttribute('src');
+      v.load();
+      el.classList.remove('intro--image', 'intro--fondu');
     };
-  }, []);
+  }, [cadrage]);
 
   return (
-    <div className="intro">
-      <div className="intro-fond" ref={fond}><div className="intro-etoiles" ref={stars} /></div>
-      <div className="intro-logo" ref={logo} aria-label="Countrizz">
-        <span className="intro-logo-l">{LOGO_LETTRES[0]}</span>
-        <span className="intro-logo-o" aria-hidden="true">o<i className="intro-logo-terre" /></span>
-        {LOGO_LETTRES.slice(1).map((l, i) => <span key={i} className="intro-logo-l" aria-hidden="true">{l}</span>)}
+    <div className="intro" ref={racine} style={{ '--fondu': `${FONDU_S.toFixed(2)}s` } as CSSProperties}>
+      <video ref={video} className="intro-video" muted playsInline preload="auto" disablePictureInPicture disableRemotePlayback aria-label={m.intro.videoLabel} />
+      <img className="intro-affiche" data-cadrage={cadrage} src={`/intro/affiche-${cadrage}.webp`} alt="" aria-hidden="true" />
+      <div className="intro-questions" ref={calque} data-cadrage={cadrageVideo} aria-hidden="true"
+        style={{ width: CADRAGES[cadrageVideo].width, height: CADRAGES[cadrageVideo].height, fontSize: POSES[cadrageVideo].taille }}>
+        {ORDRE_QUESTIONS.map((q) => (
+          <div key={q} className={`intro-question intro-question--${q}`} data-question={q}>
+            {signes(texteQuestion(lang, q)).map((s, i) => <span key={i} className={s.blanc ? 'intro-blanc' : 'intro-lettre'}>{s.c}</span>)}
+          </div>
+        ))}
       </div>
-      {/* double invisible du titre de l'accueil : sa petite Terre donne la cible du second dézoom */}
-      <div className="intro-fantome" ref={fantome} aria-hidden="true"><LogoTitle angle={null} visible={false} /></div>
-      <div className="intro-vignette" ref={label}><b>France</b><span>Paris</span></div>
-      <button type="button" className="intro-passer" onClick={() => { skip.current = true; }}>{m.intro.skip}</button>
+      <button type="button" className="intro-passer" onClick={() => { skip.current = true; if (window.__intro) window.__intro.skipped = true; }}>{m.intro.skip}</button>
     </div>
   );
 }

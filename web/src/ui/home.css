@@ -14,6 +14,13 @@
   animation: logo-tourne 4s steps(24) infinite; transition: opacity .2s; }
 @keyframes logo-lettre { from { transform: translateY(.3em) scale(0); opacity: 0; } 40% { opacity: 1; } }
 @keyframes logo-tourne { to { background-position: -15.84em 0; } }
+/* Titre venu de la vidéo (D5) : invisible tant qu'elle le montre en pâte, il apparaît en fondu pendant qu'elle s'efface
+   (--fondu, posé par LogoTitle) ; ses lettres ne surgissent pas, elles sont déjà là. Une animation et non une transition :
+   le fondu joue même quand le titre est monté déjà visible (« Passer » : accueil et fondu dans la même image). */
+.logo-titre--fondu { opacity: 0; }
+.logo-titre--fondu.logo-titre--visible { opacity: 1; animation: logo-fondu var(--fondu) ease-in-out; }
+.logo-titre--fondu .logo-l { animation: none; }
+@keyframes logo-fondu { from { opacity: 0; } }
 .accueil-commandes { position: absolute; top: calc(215px + env(safe-area-inset-top, 0px)); left: 50%; width: min(calc(100% - 56px), 384px); transform: translateX(-50%); display: flex; flex-direction: column; gap: 18px; pointer-events: none; }
 .accueil-commandes > * { pointer-events: auto; }
 .accueil-nom { display: flex; align-items: center; gap: 8px; background: var(--nuit); border: 3px solid var(--jaune); box-shadow: 4px 4px 0 #000; color: rgba(247, 220, 111, .55); padding: 10px 14px; font-size: 16px; border-radius: 4px;

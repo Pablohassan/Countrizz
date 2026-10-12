@@ -1,5 +1,4 @@
 import { expect, test, type Page } from '@playwright/test';
-import { PNG } from 'pngjs';
 
 /**
  * Intro en pâte et accueil (spec `2026-10-10-countrizz-intro-pate-accueil-design.md` §9). Sous SwiftShader l'intro ne tient
@@ -51,16 +50,6 @@ test('globe lent : l’accueil se monte sur la pâte et le fondu attend le globe
   release();
   await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 });
   await expectNoStaleFrame(page); // l'image de préchauffage (globe inactif) compte aussi
-});
-
-test('image figée à 5 s : la Terre en pâte est dessinée au centre', async ({ page }) => {
-  await page.goto('/?webgl&introT=5');
-  await page.waitForFunction(() => window.__intro?.ready === true && window.__intro.frames > 2, null, { timeout: 120_000 });
-  const png = PNG.sync.read(await page.screenshot());
-  const i = (Math.floor((470 / 844) * png.height) * png.width + Math.floor(png.width / 2)) * 4;
-  const [r, g, b] = [png.data[i]!, png.data[i + 1]!, png.data[i + 2]!];
-  // le fond de l'intro est #16173a (22, 23, 58) : au centre du disque, il y a de la pâte
-  expect(Math.abs(r - 22) + Math.abs(g - 23) + Math.abs(b - 58)).toBeGreaterThan(60);
 });
 
 test('globe en échec : le fondu part quand même et « Réessayer » se voit (revue du 10/10)', async ({ page }) => {

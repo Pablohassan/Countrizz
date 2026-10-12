@@ -1,19 +1,22 @@
-/* Calque de l'intro, par-dessus le globe ; l'accueil se monte par-dessus lui. Le fond de nuit s'efface au fondu, la Terre en pâte reste. */
+/* Calque de l'intro, par-dessus le globe ; l'accueil se monte par-dessus lui. La vidéo (nuit comprise) s'efface au fondu. */
 .intro { position: absolute; inset: 0; overflow: hidden; font-family: var(--cartoon); pointer-events: none; }
 .intro > * { pointer-events: auto; }
-.intro-fond { position: absolute; inset: 0; background: var(--nuit); }
-.intro-etoiles { position: absolute; inset: 0; }
-/* Logo du milieu : la Terre en pâte vient dans le « o » (le glyphe reste invisible, il ne sert qu'à l'espacement). */
-.intro-logo { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; white-space: nowrap; color: var(--jaune);
-  font-size: min(13.5vw, 7vh);   /* « C🌍untrizz » tient dans un téléphone de 390 px */ letter-spacing: 1px; text-shadow: var(--ombre-titre); pointer-events: none; }
-.intro-logo-l { display: inline-block; opacity: 0; }
-.intro-logo-o { position: relative; display: inline-block; color: transparent; text-shadow: none; }
-.intro-logo-terre { position: absolute; left: 50%; top: 58%; width: 0.66em; height: 0.66em; transform: translate(-50%, -50%); }
-.intro-fantome { position: absolute; inset: 0; visibility: hidden; pointer-events: none; }
-.intro-etoiles i { position: absolute; border-radius: 50%; background: var(--jaune); box-shadow: 0 0 6px rgba(247, 220, 111, .5); opacity: 0; }
-.intro-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; }
-.intro-vignette { position: absolute; left: 0; top: 0; opacity: 0; transform-origin: 0 100%; background: var(--creme); color: var(--nuit); border: 2px solid #000; border-radius: 10px; box-shadow: 4px 4px 0 #000; padding: 4px 10px 5px; white-space: nowrap; line-height: 1.05; pointer-events: none; }
-.intro-vignette b { display: block; font-weight: normal; font-size: 19px; }
-.intro-vignette span { display: block; font-size: 12px; color: var(--violet); }
+/* Vidéo et affiche (sa première image) : plein écran, bords rognés ; portrait calé en haut, paysage centré (D8). L'affiche
+   couvre la vidéo jusqu'à sa première image. Le cadrage est posé par Intro.tsx (data-cadrage). */
+.intro-video, .intro-affiche { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; object-position: 50% 50%; background: var(--nuit); }
+.intro-video[data-cadrage="portrait"], .intro-affiche[data-cadrage="portrait"] { object-position: 50% 0; }
+.intro--image .intro-affiche { visibility: hidden; }
+/* Fondu vers le globe, de FONDU à FIN (--fondu, posé par Intro.tsx) ; le titre de l'accueil apparaît au même rythme. */
+.intro-video, .intro-affiche, .intro-passer { transition: opacity var(--fondu) ease-in-out; }
+.intro--fondu .intro-video, .intro--fondu .intro-affiche, .intro--fondu .intro-passer { opacity: 0; pointer-events: none; }
+
+/* Questions (spec §5) : trois mots en Chango jaune, avec l'ombre du titre de l'accueil (--ombre-titre, -6px 4px 2px sur
+   54 px, ici en em : à l'échelle des lettres). Le calque est dans le repère de la vidéo (taille et police posées par
+   Intro.tsx), posé sur l'écran par un seul transform (couverture, D8) ; chaque lettre y est posée à chaque image autour
+   de son centre (questions.ts : etatLettre). Le blanc (U+202F) ne fait que l'espace. */
+.intro-questions { position: absolute; left: 0; top: 0; transform-origin: 0 0; color: var(--jaune); line-height: 1; pointer-events: none; }
+.intro-question { position: absolute; left: 0; top: 0; white-space: nowrap; }
+.intro-lettre, .intro-blanc { display: inline-block; }
+.intro-lettre { opacity: 0; transform-origin: 50% 50%; text-shadow: -0.11em 0.075em 0.035em rgb(11, 13, 15); }
 .intro-passer { position: absolute; right: 16px; bottom: calc(34px + env(safe-area-inset-bottom, 0px)); background: rgba(22, 23, 58, .7); color: var(--jaune); border: 2px solid #000; box-shadow: 3px 3px 0 #000; padding: 6px 12px; font: 14px var(--cartoon); cursor: pointer; transform: skewX(-15deg); }
 .intro-passer:focus-visible { outline: 3px solid var(--jaune); outline-offset: 3px; }

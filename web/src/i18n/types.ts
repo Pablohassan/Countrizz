@@ -8,7 +8,8 @@ export interface Messages {
   modes: Record<Mode, string>;
   prompts: Record<Mode, string>;
   home: { yourName: string; defaultName: string; play: string; scores: string; about: string; language: string; soon: string; later: string };
-  intro: { skip: string };
+  /** `videoLabel` : la vidéo pour les lecteurs d'écran (les questions, décoratives, prennent `modes.*` : intro/questions.ts). */
+  intro: { skip: string; videoLabel: string };
   mode: { back: string; player: string; choose: string; record: string; new: string };
   countdown: { go: string };
   hud: { quit: string; score: string; secondsLeft: Plural; paused: string };

@@ -3,6 +3,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { MOTIF_DONNEES, MOTIF_LOURD, MOTIF_PAYS } from './src/pwa/motifs.ts';
 
 /**
  * Empreinte du contenu de dossiers (noms et octets) : elle nomme les caches du service worker. Un contenu changé = un
@@ -19,7 +20,7 @@ function empreinte(...chemins: string[]): string {
 }
 const P = 'public';
 export const CACHES = {
-  /** Textures du globe, transcodeur, intro, police, icônes. */
+  /** Textures du globe, transcodeur, intro (affiches, ancres, petite Terre ; pas les vidéos, hors de public/intro), police, icônes. */
   lourd: `countrizz-lourd-${empreinte(`${P}/textures`, `${P}/basis`, `${P}/intro`, `${P}/fonts`, `${P}/icons`)}`,
   /** Pays déjà vus : patchs (indexés par imagery.json et countries.json, qui portent leurs empreintes) et drapeaux. */
   pays: `countrizz-pays-${empreinte(`${P}/data/imagery.json`, `${P}/data/countries.json`, `${P}/data/flags`, `${P}/data/patches/sdf`)}`,
@@ -61,7 +62,7 @@ export default defineConfig({
       workbox: {
         // l'application elle-même (pages, code, police, icônes) : précache ; les fichiers lourds : à l'usage (ci-dessous)
         // ignoreVary (caches ci-dessous) : une image demandée par <img> doit retrouver celle qu'a rangée un fetch() (en-têtes
-        // différents ; sinon, hors ligne, l'intro ne trouvait pas ses textures — constaté le 10/10)
+        // différents ; sinon, hors ligne, l'intro ne trouve pas ses affiches — constaté le 10/10 sur ses textures d'alors)
         globPatterns: ['index.html', 'demo.html', 'registerSW.js', 'assets/**/*.{js,css}', 'fonts/*.woff2', 'icons/*.png'],
         // pages de test (sonde, calibration) : publiées pour les e2e, aucun visiteur n'a à télécharger leur code
         globIgnores: ['**/node_modules/**', 'probe.html', 'calibrate.html', 'assets/probe-*', 'assets/calibrate-*'],
@@ -72,19 +73,20 @@ export default defineConfig({
         navigateFallback: null,
         // nos paramètres (`?webgl`, `?demo=FRA`…) ne sont lus que dans la page : « /?webgl » est « / » pour le précache
         ignoreURLParametersMatching: [/.*/],
+        // motifs dans src/pwa/motifs.ts (testés) : les vidéos de l'intro (/video/) n'en sont pas, elles passent au réseau
         runtimeCaching: [
           {
-            urlPattern: /\/(textures|basis|intro|fonts|icons)\/[^/]+$/,
+            urlPattern: MOTIF_LOURD,
             handler: 'CacheFirst',
             options: { cacheName: CACHES.lourd, expiration: { maxEntries: 40, purgeOnQuotaError: true }, cacheableResponse: { statuses: [200] }, matchOptions: { ignoreVary: true } },
           },
           {
-            urlPattern: /\/data\/(patches|flags)\//,
+            urlPattern: MOTIF_PAYS,
             handler: 'CacheFirst',
             options: { cacheName: CACHES.pays, expiration: { maxEntries: 400, purgeOnQuotaError: true }, cacheableResponse: { statuses: [200] }, matchOptions: { ignoreVary: true } },
           },
           {
-            urlPattern: /\/data\/[a-z]+\.json$/,
+            urlPattern: MOTIF_DONNEES,
             handler: 'StaleWhileRevalidate',
             options: { cacheName: CACHES.donnees, cacheableResponse: { statuses: [200] } },
           },

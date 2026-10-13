@@ -12,11 +12,12 @@ import { readFileSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as THREE from 'three';
-import { BULLES, BULLES_RANGE, CADRAGES, INTRO, IPS_MAITRE, type Bulle, type Cadrage } from '../../src/intro/temps';
+import { BULLES, BULLES_RANGE, CADRAGES, INTRO, IPS_MAITRE, type Cadrage } from '../../src/intro/temps';
 import { TITRES } from '../../src/intro/cadrages';
 import { MAT_HM, REPERE_ECHELLE, frameAt, type IntroFrame } from '../../src/intro/timeline';
 import { matriceEcrasement, projeter, quatBlender, signesContinus, unitesParPx, versCamera, type Vec3 } from './lib/axes';
 import { surFrontiere, type Reperes } from './lib/terre';
+import type { Ancres } from '../../src/intro/questions';
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RAD = Math.PI / 180;
@@ -40,10 +41,8 @@ export const nombreImages = () => Math.round(INTRO.FIN * IPS_MAITRE) + 1;
 export interface Sources { reperes: Reperes; frontiere: Vec3[] }
 export interface Piste { id: string; chemin: string; dim: number; valeurs: number[] }
 export interface Cles { version: 1; cadrage: Cadrage; width: number; height: number; fps: number; frames: number; fovY: number; pistes: Piste[] }
-export interface Ancres {
-  version: 1; fps: number; t0: number;
-  cadrages: Record<Cadrage, { width: number; height: number } & Record<Bulle, [number, number][]>>;
-}
+/** Ancres des questions (`public/intro/ancres.json`) : le type du site (`src/intro/questions.ts`, Task 9), un seul pour la fabrique et le lecteur. */
+export type { Ancres };
 
 /** Le repère posé à Paris (scene.ts:162-166) : son axe Y sur la verticale du lieu, grossi × REPERE_ECHELLE. */
 function repere(paris: Vec3) {

@@ -4,7 +4,7 @@ import { PARIS } from '../../../src/intro/timeline';
 
 /**
  * Géométrie de la Terre en pâte, partagée par la fabrique (sources.ts, export-keys.ts) : la hauteur du relief, la
- * frontière de la France et les repères des bulles. Mêmes formules que la scène three.js de l'intro (`src/intro/scene.ts`),
+ * frontière de la France et les repères des bulles. Mêmes formules que l'ancienne scène three.js de l'intro (`src/intro/scene.ts`, retirée par ccf306d ; les lignes citées ici sont celles de `git show c9e68d6:web/src/intro/scene.ts`),
  * dans son repère : sphère unité, lng 0 → +X, lng 90 → −Z, pôle Nord → +Y. Rien n'est lu sur le disque ici.
  */
 

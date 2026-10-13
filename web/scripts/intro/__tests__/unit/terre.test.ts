@@ -4,7 +4,7 @@ import { angleBetween, toVec } from '../../../../src/geo/vec';
 import { PARIS } from '../../../../src/intro/timeline';
 import { FRONTIERE_SEGMENTS, HAUTEUR_MAX, courbeFrontiere, hauteurA, hauteurDe, pointsFrontiere, reperes, surFrontiere, type Gris16 } from '../../lib/terre';
 
-/** La formule de scene.ts:92-95, telle quelle. */
+/** La formule de l'ancienne scène three.js (`git show c9e68d6:web/src/intro/scene.ts`, l. 92-95), telle quelle. */
 const sceneTs = (terre: number, altitude: number) => THREE.MathUtils.smoothstep(terre, 0.3, 0.72) * (0.0045 + 0.09 * Math.pow(Math.sqrt(altitude), 2.4));
 const uni = (v: number, w = 360, h = 180): Gris16 => ({ w, h, d: new Uint16Array(w * h).fill(v) });
 /** Un petit anneau autour de la France, son point le plus au nord en 4ᵉ position. */

@@ -254,6 +254,16 @@ test.describe('bureau, mise en page', () => {
     }
   });
 
+  test('fin : le tampon « Nouveau record ! » ne mord pas sur la ligne du mode (nom par défaut, le plus long)', async ({ page }) => {
+    await openHome(page, '&partie=8000&graine=42');
+    await startGame(page, /Capitale/);
+    while (await answer(page, true));
+    await page.waitForFunction(() => document.querySelector('.fin-tampon')?.getAnimations().every((a) => a.playState === 'finished') ?? false, null, { timeout: 120_000 });
+    const texte = await page.locator('.fin-mode').evaluate((p) => { const r = document.createRange(); r.selectNodeContents(p); const b = r.getBoundingClientRect(); return { left: b.left, right: b.right, bottom: b.bottom }; });
+    const t = await box(page.locator('.fin-tampon'));
+    expect(t.x > texte.right || t.y >= texte.bottom, `tampon ${JSON.stringify(t)} / texte ${JSON.stringify(texte)}`).toBe(true);
+  });
+
   test('souris sur un écran étroit : la touche ne touche pas le libellé', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await openHome(page, '&graine=42');

@@ -2062,8 +2062,9 @@ test('À propos : partager (lien copié), GitHub, vibrations mémorisées, menti
   await vib.uncheck();
   expect(await page.evaluate(() => localStorage.getItem('countrizz:vibrations'))).toBe('0');
   await page.getByRole('button', { name: 'Mentions et licences' }).click();
-  await expect(page.getByText('EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH')).toBeVisible();
-  await expect(page.getByText('ODbL 1.0')).toBeVisible();
+  const panneau = page.locator('.mentions-panneau');   // le crédit permanent du globe porte le même texte
+  await expect(panneau.getByText('EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH')).toBeVisible();
+  await expect(panneau.getByText('ODbL 1.0')).toBeVisible();
   await page.getByRole('button', { name: '‹ Retour' }).click();
   await page.getByRole('button', { name: '‹ Retour' }).click();
   await expect(page.locator('.accueil .accueil-titre')).toBeVisible();

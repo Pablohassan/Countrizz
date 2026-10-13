@@ -13,7 +13,9 @@ import { useInstall } from '../pwa/install';
 import { loadCountries } from '../data/countries';
 import type { CountryRecord } from '../data/types';
 import { openScoreBook } from '../game/scores';
+import { AboutScreen } from '../ui/AboutScreen';
 import { EndScreen } from '../ui/EndScreen';
+import { LegalScreen } from '../ui/LegalScreen';
 import { GameScreen } from '../ui/GameScreen';
 import { browserEngine, createHaptics, vibrationsOn } from '../ui/haptics';
 import { bestScores, ModeScreen } from '../ui/ModeScreen';
@@ -80,6 +82,8 @@ export function App() {
   const inGame = s.screen === 'countdown' || s.screen === 'flight' || s.screen === 'question' || s.screen === 'reveal';
   const canPlay = phase === 'accueil' && globeReady && countries.length > 0;
   const seed = () => newSeed(overrides.seed);
+  // calques de l'accueil : À propos, puis mentions et licences
+  const [overlay, setOverlay] = useState<'about' | 'legal' | null>(null);
 
   // caches d'une version précédente du site : supprimés (leurs noms portent l'empreinte de leur contenu)
   useEffect(() => { void purgeOutdated(__COUNTRIZZ_CACHES__); }, []);
@@ -127,12 +131,17 @@ export function App() {
           onFade={(angle) => { setLogoAngle(angle); setPhase((p) => (p === 'intro' ? 'fondu' : p)); }}
           onDone={(angle) => { if (angle === null) setEntree('pop'); setPhase('accueil'); }} />
       )}
-      {homeShown && s.screen === 'home' && (
+      {homeShown && s.screen === 'home' && !overlay && (
         <Home lang={lang} m={m} name={name} logo={{ angle: logoAngle, visible: phase !== 'intro', entree }}
-          canPlay={canPlay} onPlay={() => game.dispatch({ type: 'PLAY' })} onScores={() => game.dispatch({ type: 'SHOW_SCORES' })} onAbout={() => {}}
+          canPlay={canPlay} onPlay={() => game.dispatch({ type: 'PLAY' })} onScores={() => game.dispatch({ type: 'SHOW_SCORES' })} onAbout={() => setOverlay('about')}
           onLang={(l) => { setLang(l); writePref(storage, PREF_KEYS.lang, l); }}
           onName={(n) => { setName(n); writePref(storage, PREF_KEYS.name, n); }} />
       )}
+      {s.screen === 'home' && overlay === 'about' && (
+        <AboutScreen m={m} haptics={haptics} onBack={() => setOverlay(null)} onLegal={() => setOverlay('legal')}
+          onVibrations={(on) => writePref(storage, PREF_KEYS.vibrations, on ? '1' : '0')} />
+      )}
+      {s.screen === 'home' && overlay === 'legal' && <LegalScreen m={m} onBack={() => setOverlay('about')} />}
       {s.screen === 'mode' && (
         <ModeScreen m={m} name={shownName} best={bestScores(book)} onBack={() => game.dispatch({ type: 'BACK' })}
           onChoose={(mode) => game.dispatch({ type: 'CHOOSE_MODE', mode, seed: seed() })} />

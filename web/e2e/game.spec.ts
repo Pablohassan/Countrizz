@@ -93,3 +93,26 @@ test('stockage bloqué : la fin le dit, les scores gardent la partie le temps de
   await page.getByRole('button', { name: 'Scores' }).click();
   await expect(page.locator('.scores-ligne--toi')).toBeVisible();
 });
+
+test('À propos : partager (lien copié), GitHub, vibrations mémorisées, mentions et licences', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await openHome(page);
+  await page.evaluate(() => { Object.defineProperty(navigator, 'share', { value: undefined, configurable: true }); });
+  await page.getByRole('button', { name: 'À propos' }).click();
+  await expect(page.getByRole('heading', { name: 'À propos' })).toBeVisible();
+  await page.getByRole('button', { name: 'Partager le jeu' }).click();
+  await expect(page.getByText('Lien copié !')).toBeVisible();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('https://countrizz.fr');
+  await expect(page.getByRole('link', { name: 'github.com/Pablohassan' })).toHaveAttribute('href', 'https://github.com/Pablohassan');
+  const vib = page.getByRole('switch', { name: 'Vibrations' });
+  await expect(vib).toBeChecked();
+  await vib.uncheck();
+  expect(await page.evaluate(() => localStorage.getItem('countrizz:vibrations'))).toBe('0');
+  await page.getByRole('button', { name: 'Mentions et licences' }).click();
+  const panneau = page.locator('.mentions-panneau');   // le crédit permanent du globe porte le même texte
+  await expect(panneau.getByText('EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH')).toBeVisible();
+  await expect(panneau.getByText('ODbL 1.0')).toBeVisible();
+  await page.getByRole('button', { name: '‹ Retour' }).click();
+  await page.getByRole('button', { name: '‹ Retour' }).click();
+  await expect(page.locator('.accueil .accueil-titre')).toBeVisible();
+});

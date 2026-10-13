@@ -60,7 +60,8 @@ export const initialState = (lang: Lang): GameState => ({
 
 const IN_GAME: readonly Screen[] = ['countdown', 'flight', 'question', 'reveal'];
 
-export function createGame(countries: DrawCountry[]): (s: GameState, e: GameEvent) => GameState {
+/** `gameMs` : durée nette d'une partie (60 s ; plus courte seulement par le crochet `?partie=` des e2e). */
+export function createGame(countries: DrawCountry[], gameMs: number = GAME_MS): (s: GameState, e: GameEvent) => GameState {
   /** Nouvelle partie : première manche tirée, son vol part pendant le 3-2-1 (chrono pas encore lancé, cause « vol »). */
   function newGame(s: GameState, mode: Mode, seed: number): GameState {
     const rng = createRng(seed);
@@ -68,7 +69,7 @@ export function createGame(countries: DrawCountry[]): (s: GameState, e: GameEven
     if (!question) throw new Error('jeu : aucun pays à demander');
     return {
       ...s, screen: 'countdown', mode, seed, rngState: rng.state, asked: [question.cca3], question, streak: 0,
-      tally: emptyTally(), clock: createClock(GAME_MS, ['flight']), countdown: COUNTDOWN_FROM, arrived: false, picked: null,
+      tally: emptyTally(), clock: createClock(gameMs, ['flight']), countdown: COUNTDOWN_FROM, arrived: false, picked: null,
       flight: s.flight + 1,
     };
   }

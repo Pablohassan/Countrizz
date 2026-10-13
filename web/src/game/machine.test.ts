@@ -145,4 +145,13 @@ describe('machine d\'états du jeu', () => {
   it('même graine et mêmes événements : même partie', () => {
     expect(run(toQuestion)).toEqual(run(toQuestion));
   });
+
+  it('durée de partie réglable (crochet des e2e) : la partie dure gameMs nettes', () => {
+    const short = createGame(countries, 8_000);
+    const s = toQuestion.reduce(short, initialState('fr'));
+    expect(s.screen).toBe('question');
+    expect(remainingMs(s.clock, 4_000)).toBe(8_000);
+    expect(short(s, { type: 'TICK', now: 11_999 }).screen).toBe('question');
+    expect(short(s, { type: 'TICK', now: 12_000 }).screen).toBe('end');
+  });
 });

@@ -8,7 +8,11 @@ const EOX_CREDIT = {
 export const eoxAttribution = (): string => `${EOX_CREDIT.before}${EOX_CREDIT.url}${EOX_CREDIT.after}`;
 
 /** Place du crédit (D2 : sur sa ligne sous la grille pendant les questions) ; défaut : en bas à droite. */
-export interface CreditPlacement { top?: string; right?: string; bottom?: string; left?: string; textAlign?: 'left' | 'center' | 'right' }
+export interface CreditPlacement {
+  top?: string; right?: string; bottom?: string; left?: string; textAlign?: 'left' | 'center' | 'right';
+  /** Au-dessus des calques de l'interface : voile et grille de la question (D2). */
+  zIndex?: number;
+}
 
 /** Crédit de l'imagerie, toujours visible dans la vue du globe (la texture de jour est Sentinel-2 partout). */
 export function ImageryCredit({ placement }: { placement?: CreditPlacement } = {}) {

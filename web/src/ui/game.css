@@ -1,0 +1,80 @@
+/* Écrans de partie (spec 2A §3 ; maquettes revelation.html et drapeaux-sans-tuile.html en px réels 390 × 844 ; hud.html et
+   compte-a-rebours.html dessinées sur 300 px : × 1,3, décision 2 du plan 2A-5). */
+.jeu { position: absolute; inset: 0; pointer-events: none; font-family: var(--cartoon); }
+.jeu > * { pointer-events: auto; }
+.jeu-voile { position: absolute; left: 0; right: 0; bottom: 0; height: 300px; pointer-events: none; background: linear-gradient(to bottom, rgba(22, 23, 58, 0), rgba(22, 23, 58, .94) 34%); }
+.jeu--drapeau .jeu-voile { height: 380px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* HUD H2 (D10) */
+.hud { position: absolute; top: calc(54px + env(safe-area-inset-top, 0px)); left: 16px; right: 16px; }
+.hud-l1 { display: flex; align-items: center; gap: 13px; }
+.hud-quitter { flex: none; width: 42px; height: 42px; padding: 0; border-radius: 50%; background: var(--nuit); color: var(--jaune); border: 2px solid #000; box-shadow: 3px 3px 0 #000; display: grid; place-items: center; font: 16px var(--cartoon); cursor: pointer; }
+.hud-sec { min-width: 57px; color: var(--jaune); font-size: 26px; text-shadow: 4px 3px 1px #000; font-variant-numeric: tabular-nums; }
+.hud-sec--pause { color: rgba(247, 220, 111, .75); font-size: 18px; }
+.hud-sec--urgent { color: #ff8a80; }
+.hud-score { position: relative; margin-left: auto; background: var(--nuit); color: var(--jaune); border: 2px solid #000; box-shadow: 4px 4px 0 #000; padding: 4px 13px; font-size: 18px; transform: skewX(-15deg); white-space: nowrap; }
+.hud-score > span:first-child { display: inline-block; transform: skewX(15deg); }
+.hud-plus { position: absolute; right: 4px; top: 36px; color: #2fbf4a; font-size: 22px; text-shadow: 3px 2px 0 #000; transform: skewX(15deg); animation: hud-plus .9s ease-out both; }
+@keyframes hud-plus { from { opacity: 0; translate: 0 8px; scale: .6; } 25% { opacity: 1; translate: 0 0; scale: 1.15; } to { opacity: 1; scale: 1; } }
+.hud-jauge { position: relative; margin-top: 13px; height: 14px; background: rgba(22, 23, 58, .85); border: 2px solid #000; border-radius: 8px; box-shadow: 3px 3px 0 #000; overflow: hidden; }
+.hud-jauge > i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--jaune); border-right: 2px solid #000; }
+.hud-jauge--pause > i { background: repeating-linear-gradient(-45deg, rgba(247, 220, 111, .55) 0 8px, rgba(247, 220, 111, .3) 8px 16px); }
+.hud-jauge--urgent > i { background: #e8413a; animation: hud-clign 1s steps(2) infinite; }
+@keyframes hud-clign { 50% { opacity: .55; } }
+
+/* 3-2-1 C1 (D11) : chaque chiffre surgit, tient, puis s'envole en grossissant ; « GO ! » dans le pavé violet. */
+.decompte { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.decompte > * { grid-area: 1 / 1; animation: decompte 1s linear both; }
+.decompte-n { font-size: 195px; line-height: 1; color: var(--jaune); text-shadow: -12px 8px 3px rgb(11, 13, 15); -webkit-text-stroke: 4px #000; }
+.decompte-go { font-size: 83px; color: #fff; background: var(--violet); border: 4px solid #000; box-shadow: 10px 10px 0 #000; padding: 8px 34px 13px; animation-name: decompte-go; }
+@keyframes decompte { 0% { opacity: 0; transform: scale(.3); } 18% { opacity: 1; transform: scale(1.18); } 35% { transform: scale(1); } 84% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.7); } }
+@keyframes decompte-go { 0% { opacity: 0; transform: scale(.3) rotate(-8deg); } 18% { opacity: 1; transform: scale(1.15) rotate(-4deg); } 35% { transform: scale(1) rotate(-4deg); } 80% { opacity: 1; transform: scale(1) rotate(-4deg); } 100% { opacity: 0; transform: scale(1.4) rotate(-4deg); } }
+
+/* Question et grille (D1, D2), sous le voile ; le crédit EOX garde sa ligne en dessous (padding bas). */
+.jeu-bas { position: absolute; left: 16px; right: 16px; bottom: 0; padding-bottom: calc(34px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 12px; }
+.jeu-bas--cache > * { visibility: hidden; }
+.jeu-question { margin: 0; text-align: center; color: var(--jaune); font: 19px var(--cartoon); text-shadow: 4px 2px 1px #000; }
+.reponses { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+.reponse { position: relative; min-height: 56px; padding: 4px 10px; background: var(--violet); color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; transform: skewX(-15deg); display: grid; place-items: center; font: 15px/1.15 var(--cartoon); text-align: center; cursor: pointer; transition: translate .06s, box-shadow .06s; }
+.reponse > span { display: block; transform: skewX(15deg); }
+.reponse--long { font-size: 12px; }
+.reponse:active:not(:disabled) { translate: 4px 4px; box-shadow: 2px 2px 0 #000; }
+.reponse:focus-visible { outline: 3px solid var(--jaune); outline-offset: 4px; }
+.reponse:disabled { cursor: default; }
+.reponse--ok { background: #2fbf4a; }
+.reponse--ko { background: #e8413a; animation: secousse .4s; }
+.reponse--estompe { opacity: .35; }
+.reponse-badge { position: absolute; right: -10px; top: -14px; width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid #000; display: grid; place-items: center; color: #fff; font: 700 17px system-ui, sans-serif; box-shadow: 2px 2px 0 #000; }
+.reponse > .reponse-badge { transform: skewX(15deg); }
+.reponse-badge--v { background: #2fbf4a; }
+.reponse-badge--x { background: #e8413a; }
+.reponse > .reponse-touche, .reponse-drapeau > .reponse-touche { display: none; }
+@keyframes secousse { 20% { translate: -6px 0; } 40% { translate: 6px 0; } 60% { translate: -4px 0; } 80% { translate: 3px 0; } }
+
+/* Drapeaux P1 (D3) : la case est un bouton invisible ; décor « autocollant » ; jamais teinté. */
+.reponses--drapeaux { gap: 10px 16px; }
+.reponse-drapeau { position: relative; height: 112px; padding: 0; background: none; border: 0; display: grid; place-items: center; cursor: pointer; }
+.reponse-drapeau img { display: block; border-radius: 4px; box-shadow: 0 0 0 3px #fff8e7, 0 0 0 5.5px #000, 6px 6px 0 5.5px #000; transition: translate .06s, box-shadow .06s; }
+.reponse-drapeau img.forme { border-radius: 0; box-shadow: none;
+  filter: drop-shadow(2px 0 0 #fff8e7) drop-shadow(-2px 0 0 #fff8e7) drop-shadow(0 2px 0 #fff8e7) drop-shadow(0 -2px 0 #fff8e7)
+    drop-shadow(1.5px 0 0 #000) drop-shadow(-1.5px 0 0 #000) drop-shadow(0 1.5px 0 #000) drop-shadow(0 -1.5px 0 #000) drop-shadow(5px 5px 0 #000); }
+.reponse-drapeau:active:not(:disabled) img { translate: 4px 4px; }
+.reponse-drapeau:active:not(:disabled) img:not(.forme) { box-shadow: 0 0 0 3px #fff8e7, 0 0 0 5.5px #000, 2px 2px 0 5.5px #000; }
+.reponse-drapeau:focus-visible { outline: none; }
+.reponse-drapeau:focus-visible img { outline: 3px solid var(--jaune); outline-offset: 8px; }
+.reponse-drapeau:disabled { cursor: default; }
+.reponse-drapeau--ok img:not(.forme) { box-shadow: 0 0 0 3px #fff8e7, 0 0 0 7px #2fbf4a, 0 0 0 9.5px #000, 6px 6px 0 9.5px #000; }
+.reponse-drapeau--ko { animation: secousse .4s; }
+.reponse-drapeau--estompe img { opacity: .35; }
+.reponse-drapeau .reponse-badge { right: auto; left: calc(50% + var(--w) / 2 - 14px); top: calc(50% - var(--h) / 2 - 16px); }
+.reponse-nom { position: absolute; bottom: -6px; left: 0; right: 0; text-align: center; font: 12px var(--cartoon); color: #fff; text-shadow: 2px 1px 1px #000; }
+
+/* Étiquette R3 (D4) : autocollant crème, pointe vers le pays. */
+.etiquette { position: absolute; left: 0; top: 0; white-space: nowrap; background: #fff8e7; color: var(--nuit); border: 3px solid #000; box-shadow: 5px 5px 0 #000; border-radius: 10px; padding: 6px 14px; font: 19px var(--cartoon); pointer-events: none; }
+.etiquette::after { content: ''; position: absolute; left: 50%; bottom: -15px; transform: translateX(-50%); border: 10px solid transparent; border-top: 12px solid #000; border-bottom: 0; }
+.etiquette small { font-size: 15px; color: var(--violet); }
+
+@media (prefers-reduced-motion: reduce) {
+  .decompte > *, .hud-plus, .hud-jauge--urgent > i, .reponse--ko, .reponse-drapeau--ko { animation: none; }
+}

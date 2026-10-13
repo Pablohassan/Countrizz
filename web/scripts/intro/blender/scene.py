@@ -498,8 +498,44 @@ LOGO_LETTRES = ('C', 'u', 'n', 't', 'r', 'i', 'z', 'z')
 # « C » haut de 0,6135 au lieu de 0,743) : taille 1,211. Calage CENTER/CENTER : l'origine est le milieu de la boîte de
 # la lettre dans la page (avance × hauteur de contenu), le centre mesuré de cadrages.ts.
 TAILLE_EM = (995 + 216) / 1000
-LETTRE_LUEUR = 0.25
+# Face avant, éclairage « B » (choisi le 13/10, lettres-lumiere-report.md) : des lettres bombées, éclairées par le même
+# soleil que la Terre (la clé), reflet satiné, ombre de marque gardée. Peu de lumière propre (0,06 au lieu de 0,25) : le
+# jaune vient du soleil, d'où une couleur de base linéaire au-delà de 1 (avec une base plafonnée à 1, la face est terne) ;
+# Cycles la prend telle quelle. Un vernis (coat) donne le satiné.
+LETTRE_BASE = (1.33, 1.11, 0.215, 1.0)   # linéaire, pas un hexa
+LETTRE_LUEUR = 0.06
+LETTRE_RUGOSITE, LETTRE_SPECULAIRE = 0.4, 0.5
+LETTRE_VERNIS, LETTRE_VERNIS_RUGOSITE = 0.5, 0.25
+# Arrondi des arêtes à l'ombrage (nœud Bevel de Cycles, sans toucher au maillage), rayon en em
+LETTRE_ARRONDI, LETTRE_ARRONDI_ECHANTILLONS = 0.05, 8
+# Bombé de la face avant : normale + LETTRE_BOMBE / LETTRE_BOMBE_RAYON · (position − centre)ₓᵧ, la même pente pour toutes
+# les lettres ; le haut-gauche se tourne vers la clé, le bas-droit s'en détourne. Centre : celui de l'emprise de la face
+# avant (attribut de sommet `centre_bombe`), le « i » compris avec son point d'origine, comme B.
+LETTRE_BOMBE, LETTRE_BOMBE_RAYON = 0.3, 0.35
 LETTRE_RELIEF, LETTRE_BISEAU = 0.09, 0.02   # en em ; un biseau de 0,03 em vide la face avant du « z »
+# Volume : la lettre est cisaillée, face avant fixe, et son dos glisse de LETTRE_BIAIS em vers le bas-gauche, dans la
+# direction de l'ombre de marque ; ses flancs (faces |normale.z| < 0,5) prennent une pâte plus sombre, plus chaude et
+# moins lumineuse : ≈ 0,62 × #f7dc6f (#998845) tiré vers l'orangé, lueur 0,08 (sans éclairage B).
+LETTRE_BIAIS = 0.06
+FLANC_COULEUR, FLANC_LUEUR = '#a07a30', 0.08
+# Ombre de marque : --ombre-titre (theme.css:24, « -6px 4px 2px rgb(11, 13, 15) » sur 54 px) en em, +y en haut ; une
+# copie plate du glyphe, nette (sans le flou de 2 px), posée OMBRE_RECUL em derrière le dos de la lettre, opaque comme en CSS.
+OMBRE_DECALAGE = (-6 / 54, -4 / 54)
+OMBRE_RECUL = 0.01
+OMBRE_COULEUR, OMBRE_OPACITE = '#0b0d0f', 1.0
+# Le point du « i » est une boule (13/10) : le « i » est fait du « ı » sans point (U+0131, dans Chango : même avance, même
+# fût, même calage CENTER/CENTER que le « i », point à point — essai) et d'une sphère de POINT_I_DIAMETRE em, centrée en x
+# sur le centre de l'emprise du point de la police, son bas posé sur le bas du point (l'écart de 0,029 em au fût de la
+# police est gardé ; au fût en relief, biseau cisaillé compris, il reste 0,032 em — essai), au milieu de l'épaisseur
+# (z = 0 : l'avant de la boule, à +0,1495 em, dépasse la face avant, à +0,11, de 0,0395 em). Ni cisaillée ni bombée :
+# elle est ronde d'elle-même. Son ombre de marque : un disque plat du même rayon.
+# Diamètre : 0,23 × 1,3 = 0,299 em. La boule de 0,23 (le point de la police fait 0,284 × 0,207 em) paraissait trop petite
+# pour le corps de la lettre (l'utilisateur, 13/10) : agrandie de 30 %, le bas posé au même endroit, elle grandit vers le
+# haut (centre +0,0345 em) et reste plus étroite que la face avant du fût (0,283 em).
+POINT_I_FUT = '\u0131'   # « ı »
+POINT_I_DIAMETRE = 0.299
+# méridiens × parallèles : le contour vu de face (l'équateur, 64 côtés) s'écarte du cercle de 0,18 px pour 300 px de haut
+POINT_I_SEGMENTS = (64, 32)
 
 
 def etoiles(cam):
@@ -515,22 +551,214 @@ def etoiles(cam):
         e.scale = (0.0, 0.0, 0.0)
 
 
-def lettres(cam, police):
-    """Les lettres en pâte du logo du milieu (logo_00…07) et du titre de fin (titre_00…07), une par objet texte (Chango) :
-    relief et biseau arrondi, contour gardé (offset = −biseau). Position, rotation, échelle (1 = 1 em) et opacité : clés."""
-    mat, nt, p = pate('pate_lettre', '#f7dc6f', rugosite=0.5, sss_echelle=0.0008)
-    # un peu de lumière propre : la face avant garde le jaune du titre HTML (#f7dc6f), qui prend le relais au fondu
+def glyphe(c, police, relief):
+    """Le glyphe `c` en maillage (Chango, 1 unité = 1 em, calé CENTER/CENTER), tiré d'une courbe FONT temporaire évaluée
+    puis supprimée. En relief : extrusion LETTRE_RELIEF des deux côtés, biseau rond LETTRE_BISEAU, contour gardé
+    (offset = −biseau), de z = −0,11 à +0,11 em. À plat : la seule face du glyphe, en z = 0."""
+    cu = bpy.data.curves.new('glyphe', 'FONT')
+    cu.body, cu.font, cu.size = c, police, TAILLE_EM
+    cu.align_x, cu.align_y = 'CENTER', 'CENTER'
+    if relief:
+        cu.extrude = LETTRE_RELIEF
+        cu.bevel_depth, cu.bevel_resolution, cu.offset = LETTRE_BISEAU, 3, -LETTRE_BISEAU
+    ob = bpy.data.objects.new('glyphe', cu)
+    bpy.context.scene.collection.objects.link(ob)
+    me = bpy.data.meshes.new_from_object(ob.evaluated_get(bpy.context.evaluated_depsgraph_get()))
+    bpy.data.objects.remove(ob)
+    bpy.data.curves.remove(cu)
+    return me
+
+
+def sommets_de(me):
+    co = np.empty(len(me.vertices) * 3, np.float32)
+    me.vertices.foreach_get('co', co)
+    return co.reshape(-1, 3)
+
+
+def centre_face_avant(co):
+    """Centre (x, y, 0) de l'emprise de la face avant (les sommets à z = zf, le haut du relief) : le centre du bombé."""
+    avant = co[co[:, 2] > co[:, 2].max() - 1e-4]
+    return ((avant[:, 0].min() + avant[:, 0].max()) / 2, (avant[:, 1].min() + avant[:, 1].max()) / 2, 0.0)
+
+
+def point_du_i(police):
+    """Le point du « i » de la police, mesuré sur les conversions de Blender : l'emprise (x0, y0, x1, y1) des sommets du
+    « i » à plat au-dessus du fût (le « ı » à plat), et le centre de la face avant du « i » entier en relief (celui de B)."""
+    i, fut, relief = (glyphe(c, police, r) for c, r in (('i', False), (POINT_I_FUT, False), ('i', True)))
+    co_i, haut, centre = sommets_de(i), sommets_de(fut)[:, 1].max(), centre_face_avant(sommets_de(relief))
+    for me in (i, fut, relief):
+        bpy.data.meshes.remove(me)
+    point = co_i[co_i[:, 1] > haut + 1e-6]
+    return (*point[:, :2].min(axis=0), *point[:, :2].max(axis=0)), centre
+
+
+def poser_boule(me, point, dos):
+    """Ajoute au maillage du « ı » la boule du point (matière 3, faces lissées) et son ombre, un disque plat (matière 2) :
+    rayon POINT_I_DIAMETRE / 2, centre (milieu du point en x, bas du point + rayon, 0) ; disque au même centre
+    + OMBRE_DECALAGE, à la profondeur du reste de l'ombre (dos − OMBRE_RECUL), tourné vers l'avant comme le glyphe plat."""
+    x0, y0, x1, _ = point
+    r = POINT_I_DIAMETRE / 2
+    cx, cy = (x0 + x1) / 2, y0 + r
+    u, v = POINT_I_SEGMENTS
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    boule = bmesh.ops.create_uvsphere(bm, u_segments=u, v_segments=v, radius=r, matrix=Matrix.Translation((cx, cy, 0.0)))
+    for f in {f for s in boule['verts'] for f in s.link_faces}:
+        f.material_index, f.smooth = 3, True
+    disque = bmesh.ops.create_circle(bm, cap_ends=True, cap_tris=True, segments=u, radius=r, matrix=Matrix.Translation(
+        (cx + OMBRE_DECALAGE[0], cy + OMBRE_DECALAGE[1], dos - OMBRE_RECUL)))
+    for f in {f for s in disque['verts'] for f in s.link_faces}:
+        f.material_index, f.smooth = 2, False
+    bm.to_mesh(me)
+    bm.free()
+
+
+def lettre_en_pate(nom, c, police, matieres):
+    """Une lettre en UN maillage à quatre emplacements de matière (pâte, flanc, ombre, boule du « i »). La lettre en
+    relief est cisaillée, x += kx·(zf − z), y += ky·(zf − z) : sa face avant (zf) ne bouge pas, elle reste calée sur le
+    titre HTML, et son dos glisse de LETTRE_BIAIS em vers le bas-gauche. Suit la copie plate du glyphe, décalée de
+    OMBRE_DECALAGE et posée OMBRE_RECUL derrière le dos : dans le même maillage, l'ombre suit les clés de la lettre
+    (position, échelle, opacité, flou de mouvement) sans objet ni piste de plus. Le « i » est fait du « ı » sans point,
+    puis reçoit sa boule et le disque de son ombre (poser_boule). Chaque sommet porte `centre_bombe`, le centre du bombé."""
+    forme = POINT_I_FUT if c == 'i' else c
+    relief, plat = glyphe(forme, police, True), glyphe(forme, police, False)
+    nv, nf = len(relief.vertices), len(relief.polygons)
+    bm = bmesh.new()
+    bm.from_mesh(relief)
+    bm.from_mesh(plat)   # à la suite : les sommets et les faces de l'ombre viennent après ceux de la lettre
+    me = bpy.data.meshes.new(nom)
+    bm.to_mesh(me)
+    bm.free()
+    bpy.data.meshes.remove(relief)
+    bpy.data.meshes.remove(plat)
+    co = np.empty(len(me.vertices) * 3, np.float32)
+    me.vertices.foreach_get('co', co)
+    co = co.reshape(-1, 3)
+    lettre, ombre = co[:nv], co[nv:]
+    zf, dos = lettre[:, 2].max(), lettre[:, 2].min()
+    u = np.array(OMBRE_DECALAGE) / np.linalg.norm(OMBRE_DECALAGE)   # bas-gauche : (−0,832 ; −0,555)
+    lettre[:, :2] += np.outer(zf - lettre[:, 2], LETTRE_BIAIS * u / (zf - dos))
+    ombre[:, :2] += OMBRE_DECALAGE
+    ombre[:, 2] = dos - OMBRE_RECUL
+    me.vertices.foreach_set('co', co.ravel())
+    me.update()
+    n = np.empty(len(me.polygons) * 3, np.float32)
+    me.polygons.foreach_get('normal', n)
+    indice = np.where(np.abs(n[2::3]) < 0.5, 1, 0).astype(np.int32)   # 1 : flanc
+    indice[nf:] = 2                                                    # 2 : ombre
+    me.polygons.foreach_set('material_index', indice)
+    if c == 'i':
+        point, centre = point_du_i(police)
+        poser_boule(me, point, dos)
+    else:
+        centre = centre_face_avant(lettre)
+    at = me.attributes.new('centre_bombe', 'FLOAT_VECTOR', 'POINT')
+    at.data.foreach_set('vector', np.tile(np.array(centre, np.float32), len(me.vertices)))
+    for m in matieres:
+        me.materials.append(m)
+    return me
+
+
+def ombre_lettre():
+    """L'ombre de marque : émission lin(OMBRE_COULEUR) de force 1 (le #0b0d0f exact en vue « Standard »), mêlée à du
+    transparent selon Object Info › Alpha × OMBRE_OPACITE, pour qu'elle s'efface avec la lettre. Hors de l'arbre de
+    lumières (emission_sampling NONE) : elle n'éclaire rien et l'échantillonnage des lumières ne change pas."""
+    mat = bpy.data.materials.new('ombre_lettre')
+    mat.cycles.emission_sampling = 'NONE'
+    nt = mat.node_tree
+    nt.nodes.clear()
+    em = nt.nodes.new('ShaderNodeEmission')
+    em.inputs['Color'].default_value = lin(OMBRE_COULEUR)
+    em.inputs['Strength'].default_value = 1.0
+    mix = nt.nodes.new('ShaderNodeMixShader')
+    nt.links.new(math_(nt, 'MULTIPLY', nt.nodes.new('ShaderNodeObjectInfo').outputs['Alpha'], OMBRE_OPACITE), mix.inputs['Fac'])
+    nt.links.new(nt.nodes.new('ShaderNodeBsdfTransparent').outputs[0], mix.inputs[1])
+    nt.links.new(em.outputs[0], mix.inputs[2])
+    nt.links.new(mix.outputs[0], nt.nodes.new('ShaderNodeOutputMaterial').inputs['Surface'])
+    return mat
+
+
+def pate_satinee(nom):
+    """La pâte jaune des lettres, éclairage B : pate() (rugosité LETTRE_RUGOSITE) + vernis, spéculaire, couleur de base
+    LETTRE_BASE et un peu de lumière propre (LETTRE_LUEUR) de la couleur du titre HTML (#f7dc6f)."""
+    mat, nt, p = pate(nom, LETTRE_BASE, rugosite=LETTRE_RUGOSITE, sss_echelle=0.0008)
     p.inputs['Emission Color'].default_value = lin('#f7dc6f')
     p.inputs['Emission Strength'].default_value = LETTRE_LUEUR
+    p.inputs['Coat Weight'].default_value = LETTRE_VERNIS
+    p.inputs['Coat Roughness'].default_value = LETTRE_VERNIS_RUGOSITE
+    p.inputs['Specular IOR Level'].default_value = LETTRE_SPECULAIRE
+    return mat, nt, p
+
+
+def arrondi_bombe(nt, p):
+    """Normale de la face des lettres, branchée sur Normal ET Coat Normal : le nœud Bevel (LETTRE_ARRONDI em × l'échelle
+    de l'objet, animée par les clés : la longueur de (1, 0, 0) objet → monde), puis le bombé, en repère objet :
+    n + w · LETTRE_BOMBE / LETTRE_BOMBE_RAYON · (position − centre_bombe)ₓᵧ, renormalisée, remise en monde ;
+    w = smoothstep(0,6 ; 0,95 ; normale_objet.z) : 1 sur la face avant, 0 sur le biseau et les parois."""
+    un = nt.nodes.new('ShaderNodeCombineXYZ')
+    un.inputs['X'].default_value = 1.0
+    echelle = nt.nodes.new('ShaderNodeVectorTransform')
+    echelle.vector_type, echelle.convert_from, echelle.convert_to = 'VECTOR', 'OBJECT', 'WORLD'
+    nt.links.new(un.outputs[0], echelle.inputs[0])
+    longueur = nt.nodes.new('ShaderNodeVectorMath')
+    longueur.operation = 'LENGTH'
+    nt.links.new(echelle.outputs[0], longueur.inputs[0])
+    bevel = nt.nodes.new('ShaderNodeBevel')
+    bevel.samples = LETTRE_ARRONDI_ECHANTILLONS
+    nt.links.new(math_(nt, 'MULTIPLY', longueur.outputs['Value'], LETTRE_ARRONDI), bevel.inputs['Radius'])
+    vers_objet = nt.nodes.new('ShaderNodeVectorTransform')
+    vers_objet.vector_type, vers_objet.convert_from, vers_objet.convert_to = 'NORMAL', 'WORLD', 'OBJECT'
+    nt.links.new(bevel.outputs['Normal'], vers_objet.inputs[0])
+    tc = nt.nodes.new('ShaderNodeTexCoord')
+    centre = nt.nodes.new('ShaderNodeAttribute')
+    centre.attribute_type, centre.attribute_name = 'GEOMETRY', 'centre_bombe'
+    rel = nt.nodes.new('ShaderNodeVectorMath')
+    rel.operation = 'SUBTRACT'
+    nt.links.new(tc.outputs['Object'], rel.inputs[0])
+    nt.links.new(centre.outputs['Vector'], rel.inputs[1])
+    plat = nt.nodes.new('ShaderNodeVectorMath')   # (x, y, 0)
+    plat.operation = 'MULTIPLY'
+    nt.links.new(rel.outputs[0], plat.inputs[0])
+    plat.inputs[1].default_value = (1.0, 1.0, 0.0)
+    nz = nt.nodes.new('ShaderNodeSeparateXYZ')
+    nt.links.new(tc.outputs['Normal'], nz.inputs[0])
+    pente = math_(nt, 'MULTIPLY', lisse(nt, nz.outputs['Z'], 0.6, 0.95), LETTRE_BOMBE / LETTRE_BOMBE_RAYON)
+    incl = nt.nodes.new('ShaderNodeVectorMath')
+    incl.operation = 'SCALE'
+    nt.links.new(plat.outputs[0], incl.inputs[0])
+    nt.links.new(pente, incl.inputs['Scale'])
+    somme = nt.nodes.new('ShaderNodeVectorMath')
+    somme.operation = 'ADD'
+    nt.links.new(vers_objet.outputs[0], somme.inputs[0])
+    nt.links.new(incl.outputs[0], somme.inputs[1])
+    unitaire = nt.nodes.new('ShaderNodeVectorMath')
+    unitaire.operation = 'NORMALIZE'
+    nt.links.new(somme.outputs[0], unitaire.inputs[0])
+    vers_monde = nt.nodes.new('ShaderNodeVectorTransform')
+    vers_monde.vector_type, vers_monde.convert_from, vers_monde.convert_to = 'NORMAL', 'OBJECT', 'WORLD'
+    nt.links.new(unitaire.outputs[0], vers_monde.inputs[0])
+    nt.links.new(vers_monde.outputs[0], p.inputs['Normal'])
+    nt.links.new(vers_monde.outputs[0], p.inputs['Coat Normal'])
+
+
+def lettres(cam, police):
+    """Les lettres en pâte du logo du milieu (logo_00…07) et du titre de fin (titre_00…07), une par objet (Chango), chacune
+    un maillage à quatre emplacements de matière (lettre_en_pate) : face avant jaune satinée et bombée, flancs plus
+    sombres, ombre de marque, boule du « i » (la même pâte, ronde d'elle-même). Position, rotation, échelle (1 = 1 em) et
+    opacité : clés ; l'opacité (Object Info › Alpha) agit sur les quatre matières."""
+    mat, nt, p = pate_satinee('pate_lettre')
+    arrondi_bombe(nt, p)
+    flanc, _, pf = pate('pate_lettre_flanc', FLANC_COULEUR, rugosite=0.5, sss_echelle=0.0008)
+    pf.inputs['Emission Color'].default_value = lin(FLANC_COULEUR)
+    pf.inputs['Emission Strength'].default_value = FLANC_LUEUR
+    flanc.cycles.emission_sampling = 'NONE'   # comme l'ombre : l'arbre de lumières ne gagne aucun émetteur
+    point = pate_satinee('pate_lettre_point')[0]
+    point.cycles.emission_sampling = 'NONE'
+    matieres = (mat, flanc, ombre_lettre(), point)
     for titre in ('logo', 'titre'):
         for i, c in enumerate(LOGO_LETTRES):
-            cu = bpy.data.curves.new(f'{titre}_{i:02d}', 'FONT')
-            cu.body, cu.font, cu.size = c, police, TAILLE_EM
-            cu.align_x, cu.align_y = 'CENTER', 'CENTER'
-            cu.extrude = LETTRE_RELIEF
-            cu.bevel_depth, cu.bevel_resolution, cu.offset = LETTRE_BISEAU, 3, -LETTRE_BISEAU
-            cu.materials.append(mat)
-            ob = objet(f'{titre}_{i:02d}', cu, cam)
+            nom = f'{titre}_{i:02d}'
+            ob = objet(nom, lettre_en_pate(nom, c, police, matieres), cam)
             ob.visible_shadow = False
             ob.scale = (0.0, 0.0, 0.0)
 

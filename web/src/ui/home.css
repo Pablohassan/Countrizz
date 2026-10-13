@@ -6,9 +6,41 @@
 .accueil-lang button { font: 14px var(--cartoon); padding: 5px 10px; border: 0; background: var(--nuit); color: var(--jaune); cursor: pointer; }
 .accueil-lang button[aria-pressed="true"] { background: var(--jaune); color: var(--nuit); }
 .accueil-titre { position: absolute; top: calc(110px + env(safe-area-inset-top, 0px)); left: 0; right: 0; margin: 0; text-align: center; font: 54px/1.1 var(--cartoon); font-weight: normal; letter-spacing: 1px;
-  color: var(--jaune); text-shadow: var(--ombre-titre); white-space: nowrap; }
+  color: var(--jaune); text-shadow: var(--relief-titre); white-space: nowrap; }
 /* C🌍untrizz : les lettres surgissent une à une ; la petite Terre (24 images, un tour en 4 s) tient la place du « o ». */
-.logo-l { display: inline-block; animation: logo-lettre .45s cubic-bezier(.25, .46, .45, 1.54) calc(.5s + var(--i) * .09s) both; }
+.logo-l { position: relative; display: inline-block; animation: logo-lettre .45s cubic-bezier(.25, .46, .45, 1.54) calc(.5s + var(--i) * .09s) both; }
+/* Face des lettres B de la vidéo (scene.py : bombé autour du centre de chaque lettre, soleil en haut à gauche) : claire en
+   haut à gauche, dorée en bas à droite. Un calque du même glyphe (data-l, LogoTitle) peint le dégradé par-dessus la lettre,
+   qui garde sa couleur et son relief (un text-shadow se peindrait par-dessus un fond découpé au texte). Couleurs relevées
+   sur la dernière image de la vidéo (portrait et paysage, moyennes par tranche de 0,05 em), le long de 145° (la pente qui
+   aligne le mieux les huit lettres), autour du centre de la boîte du glyphe : --c = sa position le long du dégradé depuis
+   le coin haut-gauche du span (em ; boîtes de Chango, ligne de base comptée à 0,9395 em du haut, la convention du relevé).
+   Le « i » : centre du « i » avec son point, comme la vidéo. */
+.logo-l::after { content: attr(data-l); position: absolute; left: 0; top: 0; color: transparent; -webkit-text-fill-color: transparent; text-shadow: none;
+  background: linear-gradient(145deg, #fbf497 calc(var(--c) - .35em), #fcf38a calc(var(--c) - .3em), #fce577 calc(var(--c) - .2em), #fbdf72 calc(var(--c) - .1em),
+    #f3d56b var(--c), #e9cd66 calc(var(--c) + .1em), #e2c663 calc(var(--c) + .2em), #d6bd5f calc(var(--c) + .3em), #c7af59 calc(var(--c) + .4em));
+  -webkit-background-clip: text; background-clip: text; }
+.logo-l { --c: .76em; }
+.logo-l[data-l="C"] { --c: .7145em; }
+.logo-l[data-l="u"] { --c: .8082em; }
+.logo-l[data-l="n"] { --c: .8054em; }
+.logo-l[data-l="t"] { --c: .6903em; }
+.logo-l[data-l="r"] { --c: .7622em; }
+.logo-l[data-l="\131"] { --c: .5944em; }   /* « ı » */
+.logo-l[data-l="z"] { --c: .7604em; }
+/* La boule du « i » (scene.py : POINT_I_DIAMETRE 0,299 em, le point agrandi de 30 % le 13/10) : centrée en x sur le point d'origine (x 81…365 / 1000 em), son
+   bas sur le bas du point (535 / 1000 em au-dessus de la ligne de base). .logo-point est une ancre de largeur nulle en
+   début de ligne (LogoTitle), relevée de 0,535 em au-dessus de la ligne de base : la boule ne dépend pas de l'arrondi de la
+   ligne de base (Chromium la met à 50 px du haut, 0,9395 em × 54 = 50,73 en théorie) ; left 0,223 − 0,1495 em. Derrière le
+   fût (z-index −1 dans la lettre isolée) : son ombre de marque passe sous le relief du fût, comme dans la vidéo. Reflet,
+   milieu et bord sombre relevés sur la boule de 0,23 em de la dernière image (profil depuis le reflet, par 0,2 rayon), plus
+   le liseré clair du contre-jour sur son bord droit ; longueurs × 1,3 pour la boule de 0,299 em. */
+.logo-i { isolation: isolate; }
+.logo-point { position: relative; z-index: -1; display: inline-block; width: 0; height: 0; vertical-align: .535em; }
+.logo-point::before { content: ''; position: absolute; left: .0735em; bottom: 0; width: .299em; height: .299em; border-radius: 50%;
+  background: radial-gradient(.026em .0585em at 94% 37%, rgb(252 253 255), rgb(230 240 255 / .6) 50%, transparent),
+    radial-gradient(circle at 36.4% 28.9%, #ffffd8 0, #ffffb0 .0091em, #ffff92 .0182em, #fff987 .0299em, #feea79 .0598em, #f4d970 .0897em, #dec467 .1196em, #bea555 .1495em, #a08642 .1794em, #9c8447 .2093em);
+  box-shadow: var(--ombre-titre); }
 .logo-o { position: relative; display: inline-block; color: transparent; text-shadow: none; }
 .logo-terre { position: absolute; left: 50%; top: 58%; width: .66em; height: .66em; transform: translate(-50%, -50%); background: url('/intro/logo-terre.webp') 0 0 / 15.84em .66em no-repeat;
   animation: logo-tourne 4s steps(24) infinite; transition: opacity .2s; }

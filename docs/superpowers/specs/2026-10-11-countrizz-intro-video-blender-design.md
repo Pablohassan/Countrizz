@@ -41,6 +41,9 @@ Hors de ce plan : la PWA (plan B du spec de l'intro) ; les écrans du jeu (2A-5)
 | 12/10 | Aperçu validé : « tout me paraît ok » ; seconde de plus pour les bulles : non (les bulles elles-mêmes sont refusées le même jour, ligne suivante) |
 | 12/10 | Les questions sans bulles : « l'apparition des bulles questions pointant directement sur le pays ou la ville n'est pas ok il faudrait quelque chose de plus fun, on n'a pas besoin de concentrer les questions sur le pays, les pin et l'affichage existant sur la carte suffit, ici d'ailleurs même le concept de bulle me paraît superflu ça pourrait être juste une question dans la police Countrizz » ; puis : « il faut que les mots apparaissent de manière logique avec l'affichage des différents points noms sur la carte, il faut pas juste mettre les 3 questions fixes, on doit garder la même dynamique que pour le reste » |
 | 12/10 | Maquette des questions validée : « ok go » — trois mots en Chango jaune, sans bulle ni réponse, dont les lettres jaillissent de leur objet quand il apparaît (le point sur Paris, la frontière qui se déroule, le drapeau qui monte), volent jusqu'à leur place près de lui, y ondulent, puis y rentrent quand la carte se range |
+| 12/10 | Vidéos finales : « c'est pas mal » ; puis « donner un peu de volume aux lettres de Countrizz dans la vidéo de manière à avoir un effet 3D avec une légère ombre projetée » : tranche cisaillée vers le bas-gauche et ombre de marque (`--ombre-titre`) |
+| 13/10 | « je vois pas l'effet 3D, peut-être ajouter une légère réflexion satinée ? ou alors imaginer comme une lumière globale projetée qui caresse les lettres » ; cinq variantes montrées, **B** choisie (« ok pour le B ») : face bombée éclairée par le soleil de la Terre, reflet satiné, tranche et ombre gardées |
+| 13/10 | « le point sur le i devrait être une sphère » ; puis « augmenter la taille du point de 30 % » : une bille de 0,299 em (0,23 × 1,3), le bas posé sur le bas du point de la police ; « oui parfait ». Seules les images où les lettres se voient (769–1117 et 2101–2377) sont refaites ; les autres viennent du rendu du 12/10 (mêmes réglages ; images de bord mesurées au plancher du bruit) |
 
 ## 2. Chaîne de fabrication
 
@@ -65,7 +68,9 @@ timeline.ts ──(Node)──► intro-keys.json ──(Blender -b -P)──►
    - nuages en boules de pâte, point rouge, frontière en boudin jaune avec sa perle, drapeau tricolore ondulant ;
    - étoiles en billes de pâte jaunes ;
    - les lettres « Countrizz » en pâte (police Chango, OFL — le fichier du site `web/public/fonts/chango-latin.woff2`, que Blender 5.0.1 lit tel quel : D6) : le logo
-     C🌍untrizz du milieu et le titre de fin où la Terre se loge.
+     C🌍untrizz du milieu et le titre de fin où la Terre se loge. Elles ont du volume (12-13/10, §1) : tranche cisaillée vers
+     le bas-gauche, ombre de marque plate, face bombée et vernie éclairée par le soleil de la Terre ; le point du « i » est
+     une bille de 0,299 em.
 4. **Rendu Cycles (Metal) sur le Mac** : vrai flou de mouvement, débruitage, sans profondeur de champ (D10). Fond rendu
    **transparent**, la nuit `#16173a` est posée à l'encodage (couleur exacte, même que l'accueil). Le rendu **reprend où
    il s'est arrêté** (images déjà faites gardées). Trois niveaux :
@@ -251,7 +256,7 @@ elle), sans `IPS`.
 | D2 | Variante portrait légère 720 × 1560 à 60 i/s (AV1 et HEVC), servie quand la 1080 n'est ni fluide ni économe : 10 vidéos |
 | D3 | 120 i/s seulement si l'intervalle mesuré est ≤ 10 ms et que le décodage à 120 est économe ; Safari (≈ 60 Hz par défaut) reçoit 60 |
 | D4 | **Abandonnée le 12/10** (§1, §5 : plus de bulles ni de réponses, le drapeau de la vidéo suffit). Elle disait : drapeau des bulles, l'image `/data/flags/fra.svg` (l'émoji n'est pas rendu sous Windows) |
-| D5 | Titre de fin en pâte dans la vidéo ; le titre HTML de l'accueil reste invisible jusqu'au fondu puis entre en fondu ; la petite Terre repart de l'angle de la vidéo |
+| D5 | Titre de fin en pâte dans la vidéo ; le titre HTML de l'accueil reste invisible jusqu'au fondu puis entre en fondu ; la petite Terre repart de l'angle de la vidéo. Depuis le 13/10, le titre HTML porte le même volume que les lettres de la vidéo (`--relief-titre`, dégradé de la face, bille du « i » : `LogoTitle.tsx`, `home.css`) pour que le fondu ne saute pas |
 | D6 | Blender lit la police WOFF2 du site ; les e2e (Chromium) lisent l'AV1 et ne dépendent pas de HEVC |
 | D7 | Images rendues en PNG RGBA 8 bits ; AV1 en 10 bits |
 | D8 | Vidéo portrait calée en haut (`object-position: 50% 0`), paysage centrée ; les questions suivent la même règle de rognage (calque dans le repère de la vidéo, un seul transform) |

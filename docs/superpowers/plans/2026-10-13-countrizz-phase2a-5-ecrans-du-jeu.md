@@ -1678,7 +1678,7 @@ test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, locale: 'fr-FR
 test('partie complète en mode Pays, téléphone, français : 3-2-1, questions, révélation, fin, scores', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(String(e)));
-  await openHome(page, '&partie=8000&graine=42');   // 8 s nettes : deux réponses scriptées, puis la boucle
+  await openHome(page, '&partie=20000&graine=42');   // 20 s nettes : sous SwiftShader, un clic attend plusieurs images du globe
   await startGame(page, /Pays/);
   await expect(page.locator('.decompte-n')).toHaveText('3');
   await expect(page.locator('.hud-sec--pause')).toContainText('❚❚');
@@ -2311,12 +2311,15 @@ test.describe('téléphone en paysage', () => {
 Dans `web/e2e/unsupported.spec.ts`, ajouter (même `test.use` que le fichier) :
 
 ```ts
-test('accueil sans WebGL ni WebGPU : « Oh non ! », sans bouton', async ({ page }) => {
-  await page.route('**/video/videos.json', (r) => r.abort());
-  await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Oh non !' })).toBeVisible({ timeout: 60_000 });
-  await expect(page.getByText('Ton navigateur ne peut pas afficher le globe')).toBeVisible();
-  await expect(page.locator('.erreur button')).toHaveCount(0);
+test.describe('accueil en français', () => {
+  test.use({ locale: 'fr-FR' });   // l'accueil suit la langue du navigateur (la démo, elle, parle toujours français)
+  test('accueil sans WebGL ni WebGPU : « Oh non ! », sans bouton', async ({ page }) => {
+    await page.route('**/video/videos.json', (r) => r.abort());
+    await page.goto('/');
+    await expect(page.getByRole('heading', { name: 'Oh non !' })).toBeVisible({ timeout: 60_000 });
+    await expect(page.getByText('Ton navigateur ne peut pas afficher le globe')).toBeVisible();
+    await expect(page.locator('.erreur button')).toHaveCount(0);
+  });
 });
 ```
 

@@ -11,7 +11,7 @@ test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, locale: 'fr-FR
 test('partie complète en mode Pays, téléphone, français : 3-2-1, questions, révélation, fin, scores', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(String(e)));
-  await openHome(page, '&partie=8000&graine=42');   // 8 s nettes : deux réponses scriptées, puis la boucle
+  await openHome(page, '&partie=20000&graine=42');   // 20 s nettes : sous SwiftShader, un clic attend plusieurs images du globe
   await startGame(page, /Pays/);
   await expect(page.locator('.decompte-n')).toHaveText('3');
   await expect(page.locator('.hud-sec--pause')).toContainText('❚❚');
@@ -115,4 +115,47 @@ test('À propos : partager (lien copié), GitHub, vibrations mémorisées, menti
   await page.getByRole('button', { name: '‹ Retour' }).click();
   await page.getByRole('button', { name: '‹ Retour' }).click();
   await expect(page.locator('.accueil .accueil-titre')).toBeVisible();
+});
+
+test('globe en échec : « Oups ! », Réessayer remonte le globe ; une partie en cours est quittée', async ({ page }) => {
+  let block = true;
+  await page.route('**/data/borders.json', (r) => (block ? r.abort() : r.continue()));
+  await page.route('**/video/videos.json', (r) => r.abort());
+  await page.goto('/?webgl');
+  await expect(page.getByRole('heading', { name: 'Oups !' })).toBeVisible({ timeout: 180_000 });
+  await expect(page.getByText('Le globe n’a pas pu se charger')).toBeVisible();
+  await expect(page.getByRole('button', { name: /^(Jouer|Play)/ })).toBeDisabled();
+  block = false;
+  await page.getByRole('button', { name: 'Réessayer' }).click();
+  await expect(page.getByRole('heading', { name: 'Oups !' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /^(Jouer|Play)/ })).toBeEnabled({ timeout: 180_000 });
+});
+
+test('perte du GPU recréée : la partie continue ; recréation ratée : partie quittée et « Oups ! »', async ({ page }) => {
+  await openHome(page, '&graine=9');
+  await startGame(page, /Pays/);
+  await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
+  await page.evaluate(() => window.__globe!.simulateDeviceLost());
+  await page.waitForFunction(() => (window.__globe?.generation ?? 0) > 0, null, { timeout: 60_000 });
+  expect((await gameState(page)).screen).not.toBe('home');
+  await page.evaluate(() => { window.__globe!.failNextRenderer = true; window.__globe!.simulateDeviceLost(); });
+  await expect(page.getByRole('heading', { name: 'Oups !' })).toBeVisible({ timeout: 60_000 });
+  expect((await gameState(page)).screen).toBe('home');
+});
+
+test.describe('téléphone en paysage', () => {
+  test.use({ viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true });
+  test('« Tourne ton téléphone » ; en partie, le chrono s’arrête et repart en portrait', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openHome(page, '&graine=4');
+    await startGame(page, /Pays/);
+    await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
+    await page.setViewportSize({ width: 844, height: 390 });
+    await expect(page.getByRole('heading', { name: 'Tourne ton téléphone' })).toBeVisible();
+    await expect(page.getByText('❚❚ Partie en pause')).toBeVisible();
+    expect((await gameState(page)).clock.reasons).toContain('rotate');
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.getByRole('heading', { name: 'Tourne ton téléphone' })).toHaveCount(0);
+    expect((await gameState(page)).clock.reasons).not.toContain('rotate');
+  });
 });

@@ -17,9 +17,12 @@ import { AboutScreen } from '../ui/AboutScreen';
 import { EndScreen } from '../ui/EndScreen';
 import { LegalScreen } from '../ui/LegalScreen';
 import { GameScreen } from '../ui/GameScreen';
+import { GlobeErrorScreen } from '../ui/GlobeError';
 import { browserEngine, createHaptics, vibrationsOn } from '../ui/haptics';
 import { bestScores, ModeScreen } from '../ui/ModeScreen';
+import { RotateScreen } from '../ui/RotateScreen';
 import { ScoresScreen } from '../ui/ScoresScreen';
+import { useRotated } from '../ui/rotate';
 import { playerName } from './finish';
 import { e2eOverrides, hooksEnabled, newSeed } from './hooks';
 import { useGame } from './useGame';
@@ -71,16 +74,22 @@ export function App() {
   const m = messages[lang];
   // les pays (noms, capitales, drapeaux, balises) : la machine tire ses manches dedans
   const [countries, setCountries] = useState<CountryRecord[]>([]);
-  useEffect(() => { void loadCountries('/').then(setCountries, () => {}); }, []);
+  // globe en échec (D16) : chargement raté ou recréation ratée → « Oups ! » ; navigateur sans WebGPU ni WebGL 2 → « Oh non ! »
+  const [globeError, setGlobeError] = useState<'load' | 'unsupported' | null>(null);
+  const loadAll = () => { void loadCountries('/').then(setCountries, () => setGlobeError('load')); };
+  useEffect(loadAll, []);
+  const rotated = useRotated();
   const hooks = useMemo(() => hooksEnabled(import.meta.env.DEV, storage), []);
   const overrides = useMemo(() => (hooks ? e2eOverrides(location.search) : {}), [hooks]);
   const [haptics] = useState(() => createHaptics(browserEngine(), vibrationsOn(readPref(storage, PREF_KEYS.vibrations))));
   const [book] = useState(() => openScoreBook(storage));
   const shownName = playerName(name, m.home.defaultName);
-  const game = useGame({ countries, lang, globe, haptics, book, name, rotated: false, gameMs: overrides.gameMs, homeSpin: HOME_SPIN_DEG_PER_S, hooks });
+  const game = useGame({ countries, lang, globe, haptics, book, name, rotated, gameMs: overrides.gameMs, homeSpin: HOME_SPIN_DEG_PER_S, hooks });
   const s = game.state;
   const inGame = s.screen === 'countdown' || s.screen === 'flight' || s.screen === 'question' || s.screen === 'reveal';
-  const canPlay = phase === 'accueil' && globeReady && countries.length > 0;
+  const canPlay = phase === 'accueil' && globeReady && countries.length > 0 && !globeError;
+  // une erreur du globe pendant une partie la quitte (décision 6 du plan 2A-5) ; une perte du GPU recréée ne la touche pas
+  useEffect(() => { if (globeError && inGame) game.dispatch({ type: 'QUIT' }); }, [globeError, inGame]); // eslint-disable-line react-hooks/exhaustive-deps
   const seed = () => newSeed(overrides.seed);
   // calques de l'accueil : À propos, puis mentions et licences
   const [overlay, setOverlay] = useState<'about' | 'legal' | null>(null);
@@ -121,9 +130,9 @@ export function App() {
       <CodeDuGlobe texts={m.errors} onError={() => setGlobeReady(true)}>
         <Suspense fallback={null}>
           <GlobeView ref={globe} startAtHome active={phase !== 'intro'} warmUp={homeShown}
-            onReady={(info) => { setGlobeReady(true); setTier(info.tier); }}
+            onReady={(info) => { setGlobeReady(true); setTier(info.tier); setGlobeError(null); }}
             // globe en échec : le fondu part quand même, et l'écran d'erreur (« Réessayer ») apparaît sous l'accueil
-            onError={() => setGlobeReady(true)} texts={m.errors} credit={{ zIndex: 20 }} />
+            onError={(e) => { setGlobeReady(true); setGlobeError(e.reason === 'unsupported' ? 'unsupported' : 'load'); }} texts={m.errors} errorUi={false} credit={{ zIndex: 20 }} />
         </Suspense>
       </CodeDuGlobe>
       {phase !== 'accueil' && (
@@ -159,6 +168,10 @@ export function App() {
         <ScoresScreen m={m} initialMode={s.mode ?? 'flag'} book={book} me={game.result} onBack={() => game.dispatch({ type: 'BACK' })}
           onReplay={(mode) => game.dispatch({ type: 'REPLAY', seed: seed(), mode })} />
       )}
+      {globeError && phase === 'accueil' && (
+        <GlobeErrorScreen m={m} kind={globeError} onRetry={() => { setGlobeError(null); if (!countries.length) loadAll(); globe.current?.retry(); }} />
+      )}
+      {rotated && <RotateScreen m={m} inGame={inGame} />}
     </>
   );
 }

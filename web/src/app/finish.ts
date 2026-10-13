@@ -26,5 +26,8 @@ export function finishGame(book: ScoreBook, mode: Mode, tally: Tally, name: stri
   return { mode, score: tally.score, correct: tally.correct, total: tally.rounds.length, record: r.record, previousBest: r.previousBest, rank: r.rank, saved, entry };
 }
 
-/** Nom affiché et enregistré : celui du joueur, recoupé, sinon le nom par défaut de la langue (« Globetrotteur »). */
+/**
+ * Nom affiché : celui du joueur, recoupé, sinon le nom par défaut de la langue (« Globetrotteur »). On enregistre le nom
+ * saisi seul (vide sans nom) : le nom par défaut peut dépasser les 12 caractères qu'un top 10 relu garde.
+ */
 export const playerName = (name: string, fallback: string): string => normalizeName(name, fallback);

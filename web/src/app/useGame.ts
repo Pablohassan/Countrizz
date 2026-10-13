@@ -5,6 +5,7 @@ import type { ScoreBook } from '../game/scores';
 import type { Lang } from '../game/types';
 import type { GlobeHandle } from '../globe/GlobeView';
 import type { Haptics } from '../ui/haptics';
+import { answerIndexFromKey } from '../ui/keys';
 import { finishGame, type GameResult } from './finish';
 import { globeCommands } from './globeCommands';
 
@@ -80,6 +81,19 @@ export function useGame(o: GameOptions) {
     if (state.screen !== 'question') return;
     const t = setInterval(() => dispatch({ type: 'TICK', now: now() }), 200);
     return () => clearInterval(t);
+  }, [state.screen]);
+
+  // L1 : au clavier, une réponse par touche 1 à 4 (une touche tenue ne répond qu'une fois)
+  useEffect(() => {
+    if (state.screen !== 'question') return;
+    const on = (e: KeyboardEvent) => {
+      const i = answerIndexFromKey(e);
+      if (i === null || e.repeat) return;
+      e.preventDefault();
+      dispatch({ type: 'ANSWER', index: i, now: now() });
+    };
+    addEventListener('keydown', on);
+    return () => removeEventListener('keydown', on);
   }, [state.screen]);
 
   // révélation : 1,5 s, puis la manche suivante

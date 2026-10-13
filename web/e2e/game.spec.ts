@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { answer, credit, gameState, openHome, startGame } from './game-helpers';
 
 /**
@@ -157,5 +157,119 @@ test.describe('téléphone en paysage', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(page.getByRole('heading', { name: 'Tourne ton téléphone' })).toHaveCount(0);
     expect((await gameState(page)).clock.reasons).not.toContain('rotate');
+  });
+});
+
+/** Le crédit EOX n'est recouvert par rien (spec §11) : trois points de sa ligne rendent le crédit lui-même. */
+async function creditFree(page: Page, where: string) {
+  const b = (await credit(page).boundingBox())!;
+  const free = await page.evaluate(({ x, y, w, h }) => [[x + 3, y + h / 2], [x + w / 2, y + h / 2], [x + w - 3, y + h / 2]]
+    .every(([px, py]) => !!document.elementFromPoint(px!, py!)?.closest('footer[role="contentinfo"]')), { x: b.x, y: b.y, w: b.width, h: b.height });
+  expect(free, where).toBe(true);
+}
+
+test('crédit EOX jamais recouvert : accueil, mode, 3-2-1, question, révélation, fin, scores, À propos', async ({ page }) => {
+  await openHome(page, '&partie=20000&graine=8');   // le temps de relever chaque écran ; la 2e question, sans réponse, finit la partie
+  await creditFree(page, 'accueil');
+  await page.getByRole('button', { name: /^(Jouer|Play)/ }).click();
+  await creditFree(page, 'mode');
+  await page.locator('.mode-bouton', { hasText: /Pays/ }).click();
+  await expect(page.locator('.decompte-n')).toBeVisible();
+  await creditFree(page, '3-2-1');
+  await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
+  await creditFree(page, 'question');
+  await answer(page, true);
+  await creditFree(page, 'révélation');
+  await expect(page.getByRole('heading', { name: 'Temps écoulé !' })).toBeVisible({ timeout: 120_000 });
+  await creditFree(page, 'fin');
+  await page.getByRole('button', { name: 'Scores' }).click();
+  await creditFree(page, 'scores');
+  await page.getByRole('button', { name: '‹ Retour' }).click();
+  await page.getByRole('button', { name: 'Changer de mode' }).click();
+  await page.getByRole('button', { name: '‹ Retour' }).click();
+  await page.getByRole('button', { name: 'À propos' }).click();
+  await creditFree(page, 'À propos');
+});
+
+test('360 × 640 : rien ne déborde, la grille reste au-dessus du crédit', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await openHome(page, '&graine=21');
+  await startGame(page, /Pays/);
+  await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360);
+  const grille = (await page.locator('.reponses').boundingBox())!;
+  const c = (await credit(page).boundingBox())!;
+  expect(grille.y + grille.height).toBeLessThanOrEqual(c.y);
+});
+
+test.describe('bureau, anglais, clavier', () => {
+  test.use({ viewport: { width: 1440, height: 900 }, hasTouch: false });
+  test('touches 1-4 rappelées sur les boutons ; on répond au clavier', async ({ page }) => {
+    await openHome(page, '&graine=13');
+    await page.getByRole('button', { name: 'EN' }).click();
+    await startGame(page, /Country/);
+    await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
+    await expect(page.getByRole('heading', { name: 'Which country is this?' })).toBeVisible();
+    await expect(page.locator('.reponse-touche').first()).toBeVisible();
+    const s = await gameState(page);
+    await page.keyboard.press(`Digit${s.question!.answer + 1}`);
+    await page.waitForFunction(() => window.__game?.state.screen === 'reveal');
+    await expect(page.locator('.reponse--ok')).toHaveCount(1);
+    await expect(page.locator('p.sr')).toContainText('Right:');
+  });
+
+  test('partie complète en anglais, au clavier, mode Capital', async ({ page }) => {
+    await openHome(page, '&partie=1500&graine=17');
+    await page.getByRole('button', { name: 'EN' }).click();
+    await startGame(page, /Capital/);
+    for (;;) {
+      await page.waitForFunction(() => ['question', 'end'].includes(window.__game?.state.screen ?? ''), null, { timeout: 120_000 });
+      const s = await gameState(page);
+      if (s.screen === 'end') break;
+      await page.keyboard.press(`Digit${s.question!.answer + 1}`);
+      await page.waitForFunction(() => window.__game?.state.screen !== 'question', null, { timeout: 30_000 });
+    }
+    await expect(page.getByRole('heading', { name: 'Time’s up!' })).toBeVisible();
+    expect((await gameState(page)).tally.rounds.length).toBeGreaterThan(0);   // le clavier a bien répondu
+  });
+});
+
+for (const [mode, label] of [['drapeau', /Drapeau/], ['capitale', /Capitale/]] as const) {
+  test(`partie complète en mode ${mode} (téléphone, français)`, async ({ page }) => {
+    await openHome(page, `&partie=1500&graine=${mode.length}`);
+    await startGame(page, label);
+    while (await answer(page, true));
+    await expect(page.getByRole('heading', { name: 'Temps écoulé !' })).toBeVisible({ timeout: 120_000 });
+  });
+}
+
+test.describe('haptique, par espion', () => {
+  test.use({ isMobile: true, hasTouch: true });
+  test('3-2-1, appui, mauvaise réponse : les motifs du prototype', async ({ page }) => {
+    await page.addInitScript(() => {
+      const seen: number[][] = [];
+      (window as unknown as { __vib: number[][] }).__vib = seen;
+      Object.defineProperty(navigator, 'vibrate', { value: (p: number[]) => { seen.push([...p]); return true; }, configurable: true });
+    });
+    await openHome(page, '&graine=6');
+    await startGame(page, /Pays/);
+    await answer(page, false);
+    const vib = await page.evaluate(() => (window as unknown as { __vib: number[][] }).__vib);
+    expect(vib.slice(0, 4)).toEqual([[18], [18], [18], [45]]);
+    expect(vib).toContainEqual([9]);
+    expect(vib).toContainEqual([70, 25, 8, 2, 8, 2, 8, 2, 8, 25, 140]);
+  });
+});
+
+test.describe('mouvement réduit', () => {
+  test.use({ reducedMotion: 'reduce' });
+  test('3-2-1 et tampon « Nouveau record ! » immobiles', async ({ page }) => {
+    await openHome(page, '&partie=20000&graine=2');   // une bonne réponse le temps de cliquer, puis la question suivante finit la partie
+    await startGame(page, /Pays/);
+    await expect(page.locator('.decompte-n')).toBeVisible();
+    expect(await page.locator('.decompte-n').evaluate((e) => getComputedStyle(e).animationName)).toBe('none');
+    expect(await answer(page, true)).toBe(true);
+    await expect(page.locator('.fin-tampon')).toBeVisible({ timeout: 120_000 });
+    expect(await page.locator('.fin-tampon').evaluate((e) => getComputedStyle(e).animationName)).toBe('none');
   });
 });

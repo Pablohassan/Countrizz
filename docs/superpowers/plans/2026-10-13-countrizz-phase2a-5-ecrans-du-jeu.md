@@ -2505,7 +2505,7 @@ async function creditFree(page: Page, where: string) {
 }
 
 test('crédit EOX jamais recouvert : accueil, mode, 3-2-1, question, révélation, fin, scores, À propos', async ({ page }) => {
-  await openHome(page, '&partie=1500&graine=8');
+  await openHome(page, '&partie=20000&graine=8');   // le temps de relever chaque écran ; la 2e question, sans réponse, finit la partie
   await creditFree(page, 'accueil');
   await page.getByRole('button', { name: /^(Jouer|Play)/ }).click();
   await creditFree(page, 'mode');
@@ -2566,6 +2566,7 @@ test.describe('bureau, anglais, clavier', () => {
       await page.waitForFunction(() => window.__game?.state.screen !== 'question', null, { timeout: 30_000 });
     }
     await expect(page.getByRole('heading', { name: 'Time’s up!' })).toBeVisible();
+    expect((await gameState(page)).tally.rounds.length).toBeGreaterThan(0);   // le clavier a bien répondu
   });
 });
 
@@ -2599,11 +2600,11 @@ test.describe('haptique, par espion', () => {
 test.describe('mouvement réduit', () => {
   test.use({ reducedMotion: 'reduce' });
   test('3-2-1 et tampon « Nouveau record ! » immobiles', async ({ page }) => {
-    await openHome(page, '&partie=1500&graine=2');
+    await openHome(page, '&partie=20000&graine=2');   // une bonne réponse le temps de cliquer, puis la question suivante finit la partie
     await startGame(page, /Pays/);
     await expect(page.locator('.decompte-n')).toBeVisible();
     expect(await page.locator('.decompte-n').evaluate((e) => getComputedStyle(e).animationName)).toBe('none');
-    await answer(page, true);
+    expect(await answer(page, true)).toBe(true);
     await expect(page.locator('.fin-tampon')).toBeVisible({ timeout: 120_000 });
     expect(await page.locator('.fin-tampon').evaluate((e) => getComputedStyle(e).animationName)).toBe('none');
   });

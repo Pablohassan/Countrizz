@@ -24,6 +24,7 @@
     "e2e:countries": "playwright test e2e/countries.spec.ts",
     "imagery": "tsx scripts/imagery/build-patches.ts",
     "imagery:fetch": "tsx scripts/imagery/fetch-patches.ts",
+    "flags:ratios": "tsx scripts/flags/ratios.ts",
     "budget": "playwright test -c playwright.budget.config.ts",
     "budget:local": "BUDGET_BASE_URL=http://localhost:5175 playwright test -c playwright.budget.config.ts",
     "intro:sources": "tsx scripts/intro/sources.ts",

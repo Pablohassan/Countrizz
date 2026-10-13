@@ -1,4 +1,4 @@
-import { Component, Suspense, lazy, useEffect, useRef, useState, type ReactNode } from 'react';
+import { Component, Suspense, lazy, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { Lang } from '../game/types';
 import { PREF_KEYS, readPref, writePref, type KeyValueStorage } from '../game/prefs';
 import { detectLang, messages, type Messages } from '../i18n';
@@ -10,6 +10,17 @@ import type { EntreeTitre } from '../ui/LogoTitle';
 import type { QualityTier } from '../globe/renderer';
 import { INTRO_URLS, heavyUrls, persist, purgeOutdated, warm } from '../pwa/cache';
 import { useInstall } from '../pwa/install';
+import { loadCountries } from '../data/countries';
+import type { CountryRecord } from '../data/types';
+import { openScoreBook } from '../game/scores';
+import { EndScreen } from '../ui/EndScreen';
+import { GameScreen } from '../ui/GameScreen';
+import { browserEngine, createHaptics, vibrationsOn } from '../ui/haptics';
+import { bestScores, ModeScreen } from '../ui/ModeScreen';
+import { ScoresScreen } from '../ui/ScoresScreen';
+import { playerName } from './finish';
+import { e2eOverrides, hooksEnabled, newSeed } from './hooks';
+import { useGame } from './useGame';
 
 const storage = ((): KeyValueStorage | null => { try { return localStorage; } catch { return null; } })();
 /** Rotation légère du globe à l'accueil (degrés de longitude par seconde), après le fondu. */
@@ -39,7 +50,9 @@ class CodeDuGlobe extends Component<{ children: ReactNode; texts: Messages['erro
 /**
  * Page d'accueil de countrizz.fr (spec intro §0, spec intro vidéo §4) : le globe, posé dès le départ sur la vue d'accueil,
  * se charge sous la vidéo de l'intro (son code arrive à part, D15) ; l'accueil se monte à `INTRO.ACCUEIL` (son titre
- * attend le fondu), le fondu part à `INTRO.FONDU` quand le globe est prêt, puis le globe tourne doucement.
+ * attend le fondu), le fondu part à `INTRO.FONDU` quand le globe est prêt, puis le globe tourne doucement. « Jouer » mène au
+ * jeu : `useGame` relie la machine (2A-3) au globe (2A-4) et l'écran suit `state.screen`. La partie enregistre le nom saisi
+ * (vide sans nom) ; les écrans montrent `shownName` (le nom par défaut de la langue sans nom).
  */
 export function App() {
   const [lang, setLang] = useState<Lang>(() => detectLang(readPref(storage, PREF_KEYS.lang), navigator.languages ?? [navigator.language]));
@@ -54,6 +67,19 @@ export function App() {
   const [tier, setTier] = useState<QualityTier | null>(null);
   const install = useInstall();
   const m = messages[lang];
+  // les pays (noms, capitales, drapeaux, balises) : la machine tire ses manches dedans
+  const [countries, setCountries] = useState<CountryRecord[]>([]);
+  useEffect(() => { void loadCountries('/').then(setCountries, () => {}); }, []);
+  const hooks = useMemo(() => hooksEnabled(import.meta.env.DEV, storage), []);
+  const overrides = useMemo(() => (hooks ? e2eOverrides(location.search) : {}), [hooks]);
+  const [haptics] = useState(() => createHaptics(browserEngine(), vibrationsOn(readPref(storage, PREF_KEYS.vibrations))));
+  const [book] = useState(() => openScoreBook(storage));
+  const shownName = playerName(name, m.home.defaultName);
+  const game = useGame({ countries, lang, globe, haptics, book, name, rotated: false, gameMs: overrides.gameMs, homeSpin: HOME_SPIN_DEG_PER_S, hooks });
+  const s = game.state;
+  const inGame = s.screen === 'countdown' || s.screen === 'flight' || s.screen === 'question' || s.screen === 'reveal';
+  const canPlay = phase === 'accueil' && globeReady && countries.length > 0;
+  const seed = () => newSeed(overrides.seed);
 
   // caches d'une version précédente du site : supprimés (leurs noms portent l'empreinte de leur contenu)
   useEffect(() => { void purgeOutdated(__COUNTRIZZ_CACHES__); }, []);
@@ -93,7 +119,7 @@ export function App() {
           <GlobeView ref={globe} startAtHome active={phase !== 'intro'} warmUp={homeShown}
             onReady={(info) => { setGlobeReady(true); setTier(info.tier); }}
             // globe en échec : le fondu part quand même, et l'écran d'erreur (« Réessayer ») apparaît sous l'accueil
-            onError={() => setGlobeReady(true)} texts={m.errors} />
+            onError={() => setGlobeReady(true)} texts={m.errors} credit={{ zIndex: 20 }} />
         </Suspense>
       </CodeDuGlobe>
       {phase !== 'accueil' && (
@@ -101,10 +127,28 @@ export function App() {
           onFade={(angle) => { setLogoAngle(angle); setPhase((p) => (p === 'intro' ? 'fondu' : p)); }}
           onDone={(angle) => { if (angle === null) setEntree('pop'); setPhase('accueil'); }} />
       )}
-      {homeShown && (
+      {homeShown && s.screen === 'home' && (
         <Home lang={lang} m={m} name={name} logo={{ angle: logoAngle, visible: phase !== 'intro', entree }}
+          canPlay={canPlay} onPlay={() => game.dispatch({ type: 'PLAY' })} onScores={() => game.dispatch({ type: 'SHOW_SCORES' })} onAbout={() => {}}
           onLang={(l) => { setLang(l); writePref(storage, PREF_KEYS.lang, l); }}
           onName={(n) => { setName(n); writePref(storage, PREF_KEYS.name, n); }} />
+      )}
+      {s.screen === 'mode' && (
+        <ModeScreen m={m} name={shownName} best={bestScores(book)} onBack={() => game.dispatch({ type: 'BACK' })}
+          onChoose={(mode) => game.dispatch({ type: 'CHOOSE_MODE', mode, seed: seed() })} />
+      )}
+      {inGame && (
+        <GameScreen m={m} lang={lang} state={s} records={game.records} globe={globe.current} haptics={haptics}
+          onAnswer={game.answer} onQuit={() => game.dispatch({ type: 'QUIT' })} />
+      )}
+      {s.screen === 'end' && game.result && (
+        <EndScreen m={m} lang={lang} name={shownName} result={game.result} rounds={s.tally.rounds} records={game.records}
+          onReplay={() => game.dispatch({ type: 'REPLAY', seed: seed() })} onChangeMode={() => game.dispatch({ type: 'CHANGE_MODE' })}
+          onScores={() => game.dispatch({ type: 'SHOW_SCORES' })} />
+      )}
+      {s.screen === 'scores' && (
+        <ScoresScreen m={m} initialMode={s.mode ?? 'flag'} book={book} me={game.result} onBack={() => game.dispatch({ type: 'BACK' })}
+          onReplay={(mode) => game.dispatch({ type: 'REPLAY', seed: seed(), mode })} />
       )}
     </>
   );

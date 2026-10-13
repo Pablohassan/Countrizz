@@ -60,15 +60,15 @@
 .accueil-nom input { flex: 1; min-width: 0; font: 16px var(--cartoon); color: var(--jaune); background: transparent; border: 0; outline: none; padding: 2px 0; }
 .accueil-nom input::placeholder { color: var(--jaune); opacity: 1; }
 .accueil-nom:focus-within { outline: 3px solid #fff; outline-offset: 3px; }
-.accueil-jouer { align-self: center; display: flex; align-items: center; gap: 18px; background: var(--violet); color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; padding: 12px 30px; font-size: 30px; text-decoration: none;
+.accueil-jouer { align-self: center; display: flex; align-items: center; gap: 18px; background: var(--violet); color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; padding: 12px 30px; font-size: 30px; font-family: var(--cartoon); cursor: pointer;
   transform: skewX(-15deg); animation: accueil-droite .6s cubic-bezier(.25, .46, .45, 1.54) 1.4s both; }
 .accueil-jouer > * { display: inline-block; transform: skewX(15deg); }
+.accueil-jouer:disabled { cursor: progress; opacity: .7; }
 .accueil-jouer svg { width: 40px; height: 26px; }
 .accueil-jouer:focus-visible, .accueil-lang button:focus-visible, .accueil-sec:focus-visible { outline: 3px solid var(--jaune); outline-offset: 3px; }
 .accueil-rang2 { display: flex; justify-content: center; gap: 18px; animation: accueil-bas .6s cubic-bezier(.25, .46, .45, 1.54) 1.7s both; }
-.accueil-sec { position: relative; background: var(--nuit); color: var(--jaune); border: 2px solid #000; box-shadow: 4px 4px 0 #000; transform: skewX(-15deg); padding: 9px 18px; font: 15px var(--cartoon); white-space: nowrap; cursor: default; opacity: .8; }
+.accueil-sec { position: relative; background: var(--nuit); color: var(--jaune); border: 2px solid #000; box-shadow: 4px 4px 0 #000; transform: skewX(-15deg); padding: 9px 18px; font: 15px var(--cartoon); white-space: nowrap; cursor: pointer; }
 .accueil-sec > span { display: inline-block; transform: skewX(15deg); }
-.accueil-sec small { position: absolute; right: -8px; top: -11px; transform: skewX(15deg) rotate(6deg); background: var(--jaune); color: var(--nuit); border: 2px solid #000; border-radius: 999px; padding: 0 7px 1px; font: 600 10px/1.4 system-ui, sans-serif; text-transform: uppercase; letter-spacing: .04em; }
 /* Le crédit EOX du globe reste au-dessus de tout (jamais recouvert). */
 @keyframes accueil-gauche { from { transform: translateX(-420px); opacity: 0; } 30% { opacity: 1; } }
 @keyframes accueil-haut { from { transform: translateY(-90px); opacity: 0; } 30% { opacity: 1; } }

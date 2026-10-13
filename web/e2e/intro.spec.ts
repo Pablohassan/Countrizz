@@ -221,7 +221,7 @@ test('la vidéo se lit jusqu’au bout et mène à l’accueil, sans « Passer �
   await expect(accueil(page)).toBeVisible({ timeout: 30_000 });
   await expect(page.locator('.intro')).toHaveCount(0, { timeout: 120_000 }); // globe prêt, fondu fini
   expect(await intro(page)).toMatchObject({ skipped: false, echec: null });
-  await expect(page.getByRole('link', { name: /Jouer|Play/ })).toHaveAttribute('href', '/demo.html');
+  await expect(page.getByRole('button', { name: /^(Jouer|Play)/ })).toBeVisible();   // « Jouer » ouvre le choix du mode (2A-5)
   await expect(credit(page)).toBeVisible();
   // rotation légère de l'accueil (HOME_SPIN_DEG_PER_S) : la longitude visée bouge d'une image à l'autre (SwiftShader rend
   // une image en quelques secondes : on compte les images, pas le temps)

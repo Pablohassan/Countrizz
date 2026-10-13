@@ -1652,7 +1652,11 @@ export async function answer(page: Page, ok: boolean): Promise<boolean> {
   const s = await gameState(page);
   if (s.screen !== 'question') return false;
   const i = ok ? s.question!.answer : (s.question!.answer + 1) % 4;
-  await page.locator('.reponse, .reponse-drapeau').nth(i).click();
+  // le chrono peut atteindre zéro entre la lecture de l'état et le clic : la grille disparaît, la partie est finie
+  try { await page.locator('.reponse, .reponse-drapeau').nth(i).click({ timeout: 10_000 }); } catch (e) {
+    if ((await gameState(page)).screen === 'question') throw e;
+    return false;
+  }
   await page.waitForFunction(() => window.__game?.state.screen !== 'question', null, { timeout: 30_000 });
   return true;
 }
@@ -1669,12 +1673,12 @@ import { answer, credit, gameState, openHome, startGame } from './game-helpers';
  * courtes et rejouables par les crochets des e2e (`?partie=`, `?graine=`, `window.__game` ; plan 2A-5, décision 5).
  */
 test.slow(true, 'SwiftShader : vols et globe lents');
-test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, locale: 'fr-FR' });
 
 test('partie complète en mode Pays, téléphone, français : 3-2-1, questions, révélation, fin, scores', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(String(e)));
-  await openHome(page, '&partie=4000&graine=42');
+  await openHome(page, '&partie=8000&graine=42');   // 8 s nettes : deux réponses scriptées, puis la boucle
   await startGame(page, /Pays/);
   await expect(page.locator('.decompte-n')).toHaveText('3');
   await expect(page.locator('.hud-sec--pause')).toContainText('❚❚');
@@ -1737,12 +1741,13 @@ test('onglet caché pendant un vol : chrono figé, puis la manche suivante arriv
     document.dispatchEvent(new Event('visibilitychange'));
   }, h);
   await hide(true);
+  // l'état passe par un rendu de React avant d'arriver dans window.__game
+  await page.waitForFunction(() => window.__game?.state.clock.reasons.includes('hidden') === true);
   const before = await gameState(page);
-  expect(before.clock.reasons).toContain('hidden');
   await page.waitForTimeout(2_000);
   expect((await gameState(page)).clock.usedMs).toBe(before.clock.usedMs);
   await hide(false);
-  expect((await gameState(page)).clock.reasons).not.toContain('hidden');
+  await page.waitForFunction(() => window.__game?.state.clock.reasons.includes('hidden') === false);
   await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
 });
 
@@ -2699,6 +2704,7 @@ import { answer, openHome } from './game-helpers';
  * propres références), les secondes et la jauge du chrono masquées (elles bougent). Tirages fixés par `?graine=`.
  */
 test.slow(true, 'SwiftShader : vols et globe lents');
+test.use({ locale: 'fr-FR' });
 
 const hideGlobe = (page: Page) => page.addStyleTag({ content: 'canvas { visibility: hidden !important; }' });
 const shot = (page: Page, name: string) => expect(page).toHaveScreenshot(`jeu-${name}.png`,

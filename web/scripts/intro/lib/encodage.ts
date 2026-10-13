@@ -43,16 +43,16 @@ export interface Reglage { crf: number; maxKbps: number }
  * `encode.ts` affiche ce verdict pour chaque vidéo (`verdictDebit`).
  */
 export const REGLAGES: Record<string, Reglage> = {
-  'portrait-plein-120-av1': { crf: 30, maxKbps: 4000 },
-  'portrait-plein-120-hevc': { crf: 22, maxKbps: 4000 },
-  'portrait-plein-60-av1': { crf: 30, maxKbps: 4000 },
-  'portrait-plein-60-hevc': { crf: 22, maxKbps: 4000 },
-  'portrait-leger-60-av1': { crf: 30, maxKbps: 4000 },
-  'portrait-leger-60-hevc': { crf: 22, maxKbps: 4000 },
-  'paysage-plein-120-av1': { crf: 30, maxKbps: 4000 },
-  'paysage-plein-120-hevc': { crf: 22, maxKbps: 4000 },
-  'paysage-plein-60-av1': { crf: 30, maxKbps: 4000 },
-  'paysage-plein-60-hevc': { crf: 22, maxKbps: 4000 },
+  'portrait-plein-120-av1': { crf: 28, maxKbps: 4000 },
+  'portrait-plein-120-hevc': { crf: 20, maxKbps: 4000 },
+  'portrait-plein-60-av1': { crf: 28, maxKbps: 4000 },
+  'portrait-plein-60-hevc': { crf: 20, maxKbps: 4000 },
+  'portrait-leger-60-av1': { crf: 28, maxKbps: 4000 },
+  'portrait-leger-60-hevc': { crf: 20, maxKbps: 4000 },
+  'paysage-plein-120-av1': { crf: 28, maxKbps: 4000 },
+  'paysage-plein-120-hevc': { crf: 20, maxKbps: 4000 },
+  'paysage-plein-60-av1': { crf: 28, maxKbps: 4000 },
+  'paysage-plein-60-hevc': { crf: 20, maxKbps: 4000 },
 };
 
 export function verdictDebit(kbps: number, r: Reglage): 'plafond' | 'marge' | 'ok' {

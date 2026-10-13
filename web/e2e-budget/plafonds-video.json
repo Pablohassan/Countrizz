@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "regle": "octets du 2026-10-12 arrondis au Mo supérieur (10^6), + 10 %",
+  "plafonds": {
+    "/video/intro-portrait-120.av1.mp4": 4400000,
+    "/video/intro-portrait-120.hevc.mp4": 5500000,
+    "/video/intro-portrait-60.av1.mp4": 3300000,
+    "/video/intro-portrait-60.hevc.mp4": 5500000,
+    "/video/intro-portrait-leger-60.av1.mp4": 2200000,
+    "/video/intro-portrait-leger-60.hevc.mp4": 3300000,
+    "/video/intro-paysage-120.av1.mp4": 3300000,
+    "/video/intro-paysage-120.hevc.mp4": 4400000,
+    "/video/intro-paysage-60.av1.mp4": 2200000,
+    "/video/intro-paysage-60.hevc.mp4": 3300000
+  }
+}

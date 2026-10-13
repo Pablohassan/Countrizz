@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "duree": 19.8,
+  "affiches": {
+    "portrait": "/intro/affiche-portrait.webp",
+    "paysage": "/intro/affiche-paysage.webp"
+  },
+  "variantes": [
+    {
+      "cadrage": "portrait",
+      "taille": "plein",
+      "ips": 120,
+      "codec": "av1",
+      "src": "/video/intro-portrait-120.av1.mp4",
+      "type": "video/mp4; codecs=\"av01.0.13M.10\"",
+      "width": 1080,
+      "height": 2340,
+      "octets": 3597762
+    },
+    {
+      "cadrage": "portrait",
+      "taille": "plein",
+      "ips": 120,
+      "codec": "hevc",
+      "src": "/video/intro-portrait-120.hevc.mp4",
+      "type": "video/mp4; codecs=\"hvc1.1.6.L153.90\"",
+      "width": 1080,
+      "height": 2340,
+      "octets": 4646969
+    },
+    {
+      "cadrage": "portrait",
+      "taille": "plein",
+      "ips": 60,
+      "codec": "av1",
+      "src": "/video/intro-portrait-60.av1.mp4",
+      "type": "video/mp4; codecs=\"av01.0.12M.10\"",
+      "width": 1080,
+      "height": 2340,
+      "octets": 2739132
+    },
+    {
+      "cadrage": "portrait",
+      "taille": "plein",
+      "ips": 60,
+      "codec": "hevc",
+      "src": "/video/intro-portrait-60.hevc.mp4",
+      "type": "video/mp4; codecs=\"hvc1.1.6.L150.90\"",
+      "width": 1080,
+      "height": 2340,
+      "octets": 4013531
+    },
+    {
+      "cadrage": "portrait",
+      "taille": "leger",
+      "ips": 60,
+      "codec": "av1",
+      "src": "/video/intro-portrait-leger-60.av1.mp4",
+      "type": "video/mp4; codecs=\"av01.0.08M.10\"",
+      "width": 720,
+      "height": 1560,
+      "octets": 1788986
+    },
+    {
+      "cadrage": "portrait",
+      "taille": "leger",
+      "ips": 60,
+      "codec": "hevc",
+      "src": "/video/intro-portrait-leger-60.hevc.mp4",
+      "type": "video/mp4; codecs=\"hvc1.1.6.L123.90\"",
+      "width": 720,
+      "height": 1560,
+      "octets": 2483940
+    },
+    {
+      "cadrage": "paysage",
+      "taille": "plein",
+      "ips": 120,
+      "codec": "av1",
+      "src": "/video/intro-paysage-120.av1.mp4",
+      "type": "video/mp4; codecs=\"av01.0.12M.10\"",
+      "width": 1920,
+      "height": 1080,
+      "octets": 2254114
+    },
+    {
+      "cadrage": "paysage",
+      "taille": "plein",
+      "ips": 120,
+      "codec": "hevc",
+      "src": "/video/intro-paysage-120.hevc.mp4",
+      "type": "video/mp4; codecs=\"hvc1.1.6.L150.90\"",
+      "width": 1920,
+      "height": 1080,
+      "octets": 3012176
+    },
+    {
+      "cadrage": "paysage",
+      "taille": "plein",
+      "ips": 60,
+      "codec": "av1",
+      "src": "/video/intro-paysage-60.av1.mp4",
+      "type": "video/mp4; codecs=\"av01.0.09M.10\"",
+      "width": 1920,
+      "height": 1080,
+      "octets": 1641199
+    },
+    {
+      "cadrage": "paysage",
+      "taille": "plein",
+      "ips": 60,
+      "codec": "hevc",
+      "src": "/video/intro-paysage-60.hevc.mp4",
+      "type": "video/mp4; codecs=\"hvc1.1.6.L123.90\"",
+      "width": 1920,
+      "height": 1080,
+      "octets": 2592922
+    }
+  ]
+}

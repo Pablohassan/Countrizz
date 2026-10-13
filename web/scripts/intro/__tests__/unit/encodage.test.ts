@@ -39,7 +39,7 @@ describe('arguments ffmpeg', () => {
       '-hide_banner', '-y', '-framerate', '120', '-start_number', '1', '-i', '/f/portrait/f_%04d.png',
       '-f', 'lavfi', '-i', 'color=c=0x16173a:s=1080x2340:r=120,format=gbrp',
       '-filter_complex', '[1][0]overlay=format=gbrp:shortest=1,scale=w=1080:h=2340:flags=lanczos+accurate_rnd+full_chroma_int:out_color_matrix=bt709:out_range=tv,format=yuv420p10le,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv',
-      '-c:v', 'libsvtav1', '-preset', '5', '-crf', '30', '-g', '240', '-svtav1-params', 'mbr=4000',
+      '-c:v', 'libsvtav1', '-preset', '5', '-crf', '28', '-g', '240', '-svtav1-params', 'mbr=4000',
       '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
       '-movflags', '+faststart', '-an', '/o/a.mp4',
     ]);
@@ -49,7 +49,7 @@ describe('arguments ffmpeg', () => {
     const a = argsFfmpeg(sortie('portrait-leger-60-hevc'), entree, '/o/b.mp4');
     expect(a[a.indexOf('-filter_complex') + 1]).toBe('[1][0]overlay=format=gbrp:shortest=1,fps=60,scale=w=720:h=1560:flags=lanczos+accurate_rnd+full_chroma_int:out_color_matrix=bt709:out_range=tv,format=yuv420p,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv');
     expect(a.slice(a.indexOf('-c:v'), a.indexOf('-colorspace'))).toEqual([
-      '-c:v', 'libx265', '-preset', 'slow', '-crf', '22', '-g', '120', '-tag:v', 'hvc1',
+      '-c:v', 'libx265', '-preset', 'slow', '-crf', '20', '-g', '120', '-tag:v', 'hvc1',
       '-x265-params', 'log-level=error:vbv-maxrate=4000:vbv-bufsize=8000',
     ]);
     expect(a).not.toContain('select');

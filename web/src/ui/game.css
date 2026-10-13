@@ -78,9 +78,11 @@
 /* Touches 1 à 4 rappelées sur les boutons (L1), là où il y a un clavier et une souris. */
 .reponse-touche { position: absolute; left: 10px; top: 50%; width: 24px; height: 24px; border-radius: 6px; background: var(--jaune); color: var(--nuit); border: 2px solid #000; place-items: center; font: 13px var(--cartoon); }
 .reponse > .reponse-touche { transform: translateY(-50%) skewX(15deg); }
-.reponse-drapeau > .reponse-touche { top: 6px; left: 6px; }
+/* au coin du drapeau, quelle que soit la largeur de sa case (en face du ✓ / ✗ de la révélation) */
+.reponse-drapeau > .reponse-touche { top: calc(50% - var(--h) / 2 - 14px); left: calc(50% - var(--w) / 2 - 14px); }
 @media (hover: hover) and (pointer: fine) {
   .reponse > .reponse-touche, .reponse-drapeau > .reponse-touche { display: grid; }
+  .reponse { padding-left: 42px; }   /* le libellé se centre à droite de la touche */
 }
 /* L1 (D5) : au bureau, la même grille en bas, plus large et plus grande (maquette paysage.html, 1440 × 900). */
 @media (min-width: 700px) and (min-height: 500px) {

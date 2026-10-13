@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import { answer, credit, gameState, openHome, startGame } from './game-helpers';
 
 /**
@@ -124,7 +124,7 @@ test('globe en échec : « Oups ! », Réessayer remonte le globe ; une partie e
   await page.goto('/?webgl');
   await expect(page.getByRole('heading', { name: 'Oups !' })).toBeVisible({ timeout: 180_000 });
   await expect(page.getByText('Le globe n’a pas pu se charger')).toBeVisible();
-  await expect(page.getByRole('button', { name: /^(Jouer|Play)/ })).toBeDisabled();
+  await expect(page.locator('.accueil')).toHaveCount(0);   // maquette D16 : le globe grisé, la bulle, « Réessayer », rien d'autre
   block = false;
   await page.getByRole('button', { name: 'Réessayer' }).click();
   await expect(page.getByRole('heading', { name: 'Oups !' })).toHaveCount(0);
@@ -231,6 +231,38 @@ test.describe('bureau, anglais, clavier', () => {
     }
     await expect(page.getByRole('heading', { name: 'Time’s up!' })).toBeVisible();
     expect((await gameState(page)).tally.rounds.length).toBeGreaterThan(0);   // le clavier a bien répondu
+  });
+});
+
+test.describe('bureau, mise en page', () => {
+  test.use({ viewport: { width: 1440, height: 900 }, hasTouch: false });
+  const box = async (l: Locator) => (await l.boundingBox())!;
+
+  test('écrans hors partie dans une colonne centrée ; touches 1-4 au coin de leur drapeau', async ({ page }) => {
+    await openHome(page, '&graine=42');
+    await page.getByRole('button', { name: 'À propos' }).click();
+    expect((await box(page.locator('.apropos-bloc'))).width).toBeLessThanOrEqual(480);
+    await page.getByRole('button', { name: '‹ Retour' }).click();
+    await page.getByRole('button', { name: /^(Jouer|Play)/ }).click();
+    expect((await box(page.locator('.mode-liste'))).width).toBeLessThanOrEqual(480);
+    await page.locator('.mode-bouton', { hasText: /Drapeau/ }).click();
+    await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
+    for (const b of await page.locator('.reponse-drapeau').all()) {
+      const t = await box(b.locator('.reponse-touche')), img = await box(b.locator('img'));
+      expect(Math.abs(t.x + t.width / 2 - img.x)).toBeLessThanOrEqual(16);
+      expect(Math.abs(t.y + t.height / 2 - img.y)).toBeLessThanOrEqual(16);
+    }
+  });
+
+  test('souris sur un écran étroit : la touche ne touche pas le libellé', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openHome(page, '&graine=42');
+    await startGame(page, /Pays/);
+    await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
+    for (const b of await page.locator('.reponse').all()) {
+      const t = await box(b.locator('.reponse-touche')), label = await box(b.locator('> span').nth(1));
+      expect(t.x + t.width, await b.innerText()).toBeLessThanOrEqual(label.x);
+    }
   });
 });
 

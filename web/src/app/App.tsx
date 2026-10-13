@@ -91,6 +91,8 @@ export function App() {
   // une erreur du globe pendant une partie la quitte (décision 6 du plan 2A-5) ; une perte du GPU recréée ne la touche pas
   useEffect(() => { if (globeError && inGame) game.dispatch({ type: 'QUIT' }); }, [globeError, inGame]); // eslint-disable-line react-hooks/exhaustive-deps
   const seed = () => newSeed(overrides.seed);
+  // l'écran d'erreur est seul sur le globe grisé (maquette D16) : les autres écrans reviennent avec « Réessayer »
+  const errorShown = globeError !== null && phase === 'accueil';
   // calques de l'accueil : À propos, puis mentions et licences
   const [overlay, setOverlay] = useState<'about' | 'legal' | null>(null);
 
@@ -140,6 +142,7 @@ export function App() {
           onFade={(angle) => { setLogoAngle(angle); setPhase((p) => (p === 'intro' ? 'fondu' : p)); }}
           onDone={(angle) => { if (angle === null) setEntree('pop'); setPhase('accueil'); }} />
       )}
+      {!errorShown && (<>
       {homeShown && s.screen === 'home' && !overlay && (
         <Home lang={lang} m={m} name={name} logo={{ angle: logoAngle, visible: phase !== 'intro', entree }}
           canPlay={canPlay} onPlay={() => game.dispatch({ type: 'PLAY' })} onScores={() => game.dispatch({ type: 'SHOW_SCORES' })} onAbout={() => setOverlay('about')}
@@ -168,8 +171,9 @@ export function App() {
         <ScoresScreen m={m} initialMode={s.mode ?? 'flag'} book={book} me={game.result} onBack={() => game.dispatch({ type: 'BACK' })}
           onReplay={(mode) => game.dispatch({ type: 'REPLAY', seed: seed(), mode })} />
       )}
-      {globeError && phase === 'accueil' && (
-        <GlobeErrorScreen m={m} kind={globeError} onRetry={() => { setGlobeError(null); if (!countries.length) loadAll(); globe.current?.retry(); }} />
+      </>)}
+      {errorShown && (
+        <GlobeErrorScreen m={m} kind={globeError!} onRetry={() => { setGlobeError(null); if (!countries.length) loadAll(); globe.current?.retry(); }} />
       )}
       {rotated && <RotateScreen m={m} inGame={inGame} />}
     </>

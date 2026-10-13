@@ -2690,6 +2690,8 @@ git commit -m "jeu : bureau et clavier (L1), petit écran, crédit jamais recouv
 
 ### Task 11 : références visuelles des nouveaux écrans, et regard de l'utilisateur
 
+> **Exécution (13/10, ruling au registre)** : `toHaveScreenshot` n'aboutit pas sous SwiftShader (deux passes : 4 tests sur 6 au délai de 60 s, même le canvas retiré de la mise en page ; une capture simple prend 5,2 s). `game-visual.spec.ts` devient une série de **captures à la demande** (`CAPTURES=1`, globe visible, téléphone en `isMobile`, révélation comprise, dans `web/test-results/captures-jeu/`), sans références `-darwin` (différées). Les captures ont montré quatre défauts, corrigés test d'abord dans `game.spec.ts` : l'accueil visible sous « Oups ! » (D16 : rien d'autre que le globe grisé, la bulle et « Réessayer »), les écrans hors partie en pleine largeur au bureau (colonne de 460 px), les touches 1-4 loin de leur drapeau, la touche sur le libellé à la souris sur écran étroit.
+
 **Files:**
 - Create: `web/e2e/game-visual.spec.ts`, `web/e2e/game-visual.spec.ts-snapshots/*-darwin.png` (générées)
 
@@ -2711,9 +2713,10 @@ import { answer, openHome } from './game-helpers';
 test.slow(true, 'SwiftShader : vols et globe lents');
 test.use({ locale: 'fr-FR' });
 
-const hideGlobe = (page: Page) => page.addStyleTag({ content: 'canvas { visibility: hidden !important; }' });
+/** Le canvas retiré de la mise en page : à 0 × 0, SwiftShader ne le dessine plus et les captures se stabilisent. */
+const hideGlobe = (page: Page) => page.addStyleTag({ content: 'canvas { display: none !important; }' });
 const shot = (page: Page, name: string) => expect(page).toHaveScreenshot(`jeu-${name}.png`,
-  { mask: [page.locator('.hud-sec, .hud-jauge > i')], animations: 'disabled', maxDiffPixelRatio: 0.002 });
+  { mask: [page.locator('.hud-sec, .hud-jauge > i')], animations: 'disabled', maxDiffPixelRatio: 0.002, timeout: 60_000 });   // SwiftShader : une capture dépasse les 5 s par défaut
 
 const CADRAGES = [['telephone', { width: 390, height: 844 }], ['bureau', { width: 1440, height: 900 }]] as const;
 

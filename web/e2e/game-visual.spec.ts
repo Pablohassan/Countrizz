@@ -2,16 +2,17 @@ import { expect, test, type Page } from '@playwright/test';
 import { answer, openHome } from './game-helpers';
 
 /**
- * Captures des écrans du jeu pour le regard de l'utilisateur (`CAPTURES=1 npm run e2e:local -- e2e/game-visual.spec.ts`,
- * dans `test-results/captures-jeu/`), globe compris, tirages fixés par `?graine=`. Les références `-darwin` prévues
+ * Captures des écrans du jeu pour le regard de l'utilisateur (`CAPTURES=<dossier> npm run e2e:local -- e2e/game-visual.spec.ts`,
+ * dans ce dossier : Playwright vide `test-results/` à chaque passe), globe compris, tirages fixés par `?graine=`. Les références `-darwin` prévues
  * (spec 2A §11) sont différées : sous SwiftShader, deux captures identiques de suite ne viennent pas sur le globe.
  */
 test.slow(true, 'SwiftShader : vols et globe lents');
 test.use({ locale: 'fr-FR' });
 
-test.skip(!process.env.CAPTURES, 'captures pour l’utilisateur, à la demande : CAPTURES=1');
+const DIR = process.env.CAPTURES;
+test.skip(!DIR, 'captures pour l’utilisateur, à la demande : CAPTURES=<dossier>');
 
-const shot = (page: Page, name: string) => page.screenshot({ path: `test-results/captures-jeu/jeu-${name}.png`, animations: 'disabled', timeout: 60_000 });
+const shot = (page: Page, name: string) => page.screenshot({ path: `${DIR}/jeu-${name}.png`, animations: 'disabled', timeout: 60_000 });
 
 /** La révélation dure 1,5 s, une capture sous SwiftShader en prend 5 : son minuteur est retenu (la partie s'y arrête). */
 const holdReveal = (page: Page) => page.evaluate((ms) => {
@@ -50,6 +51,8 @@ for (const [cadrage, options] of CADRAGES) {
       await page.locator('.mode-bouton', { hasText: /Capitale/ }).click();
       for (let i = 0; await answer(page, i % 3 !== 2); i++);   // une erreur toutes les trois manches, jusqu'à la fin du chrono
       await expect(page.getByRole('heading', { name: 'Temps écoulé !' })).toBeVisible({ timeout: 120_000 });
+      // le tampon « Nouveau record ! » entre après 0,3 s, d'abord invisible : la capture attend la fin de son entrée
+      await page.waitForFunction(() => document.querySelector('.fin-tampon')?.getAnimations().every((a) => a.playState === 'finished') ?? true);
       await shot(page, `fin-${cadrage}`);
       await page.getByRole('button', { name: 'Scores' }).click();
       await shot(page, `scores-${cadrage}`);

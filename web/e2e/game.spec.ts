@@ -266,6 +266,43 @@ test.describe('bureau, mise en page', () => {
   });
 });
 
+/** Atteignable et non recouvert : après défilement de son conteneur, le point central du contrôle le rend lui-même. */
+async function reachable(page: Page, l: Locator, what: string) {
+  await l.scrollIntoViewIfNeeded();
+  const b = (await l.boundingBox())!;
+  const [x, y] = [b.x + b.width / 2, b.y + b.height / 2];
+  expect(y, `${what} dans l'écran`).toBeLessThan(page.viewportSize()!.height);
+  expect(await l.evaluate((el, [px, py]) => { const h = document.elementFromPoint(px!, py!); return !!h && el.contains(h); }, [x, y]), `${what} non recouvert`).toBe(true);
+}
+
+test.describe('petit Android, barres du navigateur ouvertes (360 × 560)', () => {
+  test.use({ viewport: { width: 360, height: 560 } });
+  test('scores : un top 10 plein reste lisible au-dessus de « Rejouer »', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('countrizz:scores:flag',
+      JSON.stringify(Array.from({ length: 10 }, (_, i) => ({ name: `Joueur ${i + 1}`, score: 200 - i * 10, at: 1_700_000_000_000 + i })))));
+    await openHome(page);
+    await page.getByRole('button', { name: 'Scores' }).click();
+    await expect(page.locator('.scores-ligne')).toHaveCount(10);
+    for (const [i, l] of (await page.locator('.scores-ligne').all()).entries()) await reachable(page, l, `ligne ${i + 1}`);
+    await reachable(page, page.getByRole('button', { name: 'Rejouer' }), 'Rejouer');
+  });
+});
+
+test.describe('iPhone SE dans Safari, barres ouvertes (375 × 548)', () => {
+  test.use({
+    viewport: { width: 375, height: 548 }, isMobile: true, hasTouch: true,
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+  });
+  test('À propos : installer (astuce iPhone), partager, GitHub, vibrations, mentions, tout est atteignable', async ({ page }) => {
+    await openHome(page);
+    await page.getByRole('button', { name: 'À propos' }).click();
+    await expect(page.locator('.apropos-ios')).toBeVisible();
+    for (const [l, what] of [[page.locator('.apropos-ios'), 'astuce iPhone'], [page.getByRole('button', { name: 'Partager le jeu' }), 'Partager'],
+      [page.getByRole('link', { name: 'github.com/Pablohassan' }), 'GitHub'], [page.locator('.apropos-vibrations'), 'Vibrations'],
+      [page.getByRole('button', { name: 'Mentions et licences' }), 'Mentions']] as const) await reachable(page, l, what);
+  });
+});
+
 for (const [mode, label] of [['drapeau', /Drapeau/], ['capitale', /Capitale/]] as const) {
   test(`partie complète en mode ${mode} (téléphone, français)`, async ({ page }) => {
     await openHome(page, `&partie=1500&graine=${mode.length}`);

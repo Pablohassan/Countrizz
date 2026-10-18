@@ -75,10 +75,12 @@ Valeurs sur téléphone 390 × 844 (calcul du 15/10 sur `countries.json`) :
 **Réglages.** `FRAMING` reçoit `share: { min: 0.10, max: 0.80 }` et `sizeFactor: { large: 1.1, small: 3 }` ;
 `calibrate.html` les expose en curseurs, comme les réglages actuels.
 
-**Balise.** Au plancher de 10 %, un pays fait au moins ≈ 39 px de large sur un téléphone : `needsBeacon` (qui passe à
-`arrivalAltitude`) devrait être faux partout. Le code de la balise reste, en filet ; un test vérifie qu'aucun pays ne
-la déclenche sur les deux cadrages de référence. Un pays qui la déclencherait encore est montré à l'utilisateur, pas
-corrigé en silence.
+**Balise.** `needsBeacon` passe à `arrivalAltitude` et garde sa règle (moins de 400 px² de terre à l'écran). Corrigé le
+19/10 en écrivant le plan : elle ne disparaît pas. Les archipels gardent peu de terre dans une grande calotte, et
+quelques petits États restent sous le seuil même à 10 % de largeur. Calcul du 19/10 sur `countries.json` : sur téléphone
+390 × 844, **19 pays** gardent la balise au lieu de 38 (ATG BHR COM FSM GRD KIR KNA LIE MCO MDV MHL MLT PLW SGP STP SYC
+TON TUV VCT) ; au bureau 1440 × 900, **5** au lieu de 27 (FSM MDV MHL SYC TUV). Le Vatican, Andorre, le Luxembourg et
+Saint-Marin ne l'ont plus. Un test fige ces deux listes.
 
 ## 3. Vols
 
@@ -99,9 +101,11 @@ vol plus long ne coûte aucun temps de jeu ; le 3-2-1 se cale déjà sur `durati
 
 Pour chaque pays, une chaîne de photos carrées centrées sur le centre de la calotte, du plus large (niveau 0) au plus fin :
 
-- **emprise la plus fine** (demi-côté) E = 2,2 × r / part visée, en degrés — la vue d'arrivée sur le petit côté,
-  étendue au grand côté par `viewFactor` = 2,2 comme aujourd'hui ; on retient la plus petite des deux valeurs données
-  par les cadrages de référence (portrait 390 × 844 et paysage 1440 × 900), plafonnée à 30° (`maxExtentDeg`) ;
+- **emprise la plus fine** (demi-côté) E = 2,2 × γ, où γ = `visibleHalfAngle(arrivalAltitude, v)` est le demi-angle au
+  sol vu sur le petit côté à l'arrivée (≈ r / part visée) — la vue d'arrivée, étendue au grand côté par `viewFactor` = 2,2
+  comme aujourd'hui ; on retient la plus petite des deux valeurs données par les cadrages de référence (portrait
+  390 × 844 et paysage 1440 × 900), plafonnée à 30° (`maxExtentDeg`). La forme exacte γ (au lieu de r / part) garantit
+  qu'à l'arrivée, `pickLevels` (§4.3) retombe exactement sur le niveau le plus fin ;
 - **niveaux plus larges** : E × 4, E × 16, … tant que l'emprise reste ≤ 30° ;
 - nombre de niveaux = 1 + ⌊log4(30 / E)⌋.
 
@@ -131,8 +135,10 @@ partir des données, ces chiffres n'y sont pas figés.
   fondent dans la texture globale comme aujourd'hui.
 - Fonction pure `pickLevels(altitude, v, levels)` : D = 2,2 × γ, où γ est le demi-angle au sol visible sur le petit côté
   à cette altitude (l'horizon s'il est en deçà) ; courant = le niveau le plus fin dont l'emprise est ≥ D (le niveau 0 si
-  aucun) ; suivant = le niveau d'après, d'opacité clamp(log4(E_courant / D), 0, 1). Quand D atteint l'emprise du suivant,
-  son opacité vaut 1 et il devient le courant : le relais n'a pas de saut. À l'arrivée, D = E du plus fin : il est seul.
+  aucun) ; suivant = le niveau d'après, d'opacité clamp(2 × log4(E_courant / D), 0, 1) : il est entièrement posé dès que
+  D ≤ 2 × son emprise, donc avant de devenir le courant, et le relais n'a pas de saut. À l'arrivée, D = E du plus fin sur
+  le cadrage qui l'a fixé, et au plus 1,079 × E sur l'autre (calcul du 19/10) : le plus fin est entièrement posé dans les
+  deux cas (pente doublée le 19/10 : avec la pente 1 du premier jet, il ne l'aurait été qu'à 94 % sur l'autre cadrage).
 - Le contrôleur (`web/src/globe/controller.ts`) appelle `pickLevels` à chaque image pendant le vol et à l'arrivée, et
   met à jour les deux emplacements ; le fondu d'entrée de 0,4 s (`IMAGE_FADE_S`) ne joue qu'à la première photo du pays.
 
@@ -185,18 +191,22 @@ sous SwiftShader et ne disent rien de la fluidité réelle : la mesure sur appar
   (219 niveaux + 197 SDF + 197 drapeaux = 613 pour un tour complet dans une taille). Un test e2e vérifie qu'un niveau
   vu est servi par le service worker à la partie suivante.
 - `heavyUrls('haute')` précharge déjà la 8K : un téléphone en WebGPU la reçoit désormais à l'installation.
+- Image Docker : un calque ne peut dépasser 150 000 000 octets (`CALQUE_MAX`, `deploy/scripts/stage-image.mjs`) ; les
+  photos 2048 estimées à 156 120 067 octets ne tiennent plus dans un seul calque : `stage-image.mjs` répartit chaque
+  taille sur autant de calques qu'il faut, et le Dockerfile les copie tous.
 - nginx (`deploy/web/nginx.conf`) : inchangé ; les noms de fichiers changent, aucun ancien fichier ne peut être servi
   à la place d'un nouveau.
 - Budget (`npm run budget`) : le plafond de **12 000 000 octets** s'applique aux deux niveaux de qualité, mesurés sur un
   téléphone simulé ; ce qui se charge pendant le 3-2-1 (photos du premier pays) est compté sur sa propre ligne.
 
-## 7. XUASTC (première tâche du plan)
+## 7. XUASTC : tranché le 19/10, ETC1S reste
 
 Basis Universal v2.5 propose XUASTC LDR (≈ 2,25 bits par texel en 4 × 4, transcodé vers ASTC, BC7 ou ETC2), en cours
-de normalisation dans KTX2 en mars 2026 ; son support par three 0.186.1 n'est pas connu. La première tâche vérifie si
-`KTX2Loader` et le transcodeur livré lisent un fichier XUASTC. Si oui, elle compare poids et finesse avec ETC1S
-(qlevel 192) sur trois pays (Russie, France, Vatican au niveau le plus fin) ; XUASTC n'est adopté que s'il gagne **sur
-les deux**. Sinon, ETC1S reste, et la tâche le note dans la passation.
+de normalisation dans KTX2 en mars 2026. Lu le 19/10 dans `three/examples/jsm/loaders/KTX2Loader.js` (three 0.186.1,
+lignes 526-530) : `BasisFormat` ne connaît que ETC1S, UASTC et UASTC_HDR, et tout fichier qui n'est ni UASTC ni ETC1S y
+est lu comme UASTC HDR. three 0.186.1 ne lit donc pas XUASTC : **ETC1S reste** (qlevel 192), la passation le note. Même
+lecture : pour un fichier ETC1S, le chargeur choisit dans l'ordre ETC2, ETC1, BC7, BC1/BC3, PVRTC, et RGBA non compressé
+en dernier (ASTC n'est jamais retenu pour ETC1S) ; ETC2 avec alpha pèse 1 octet par texel, l'estimation du §4.4 tient.
 
 ## 8. Tests
 
@@ -209,7 +219,7 @@ les deux**. Sinon, ETC1S reste, et la tâche le note dans la passation.
   de 30°, total recompté sur les données ; `imagery.json` conforme aux fichiers (`checkPatches`) ;
 - `pickLevels` : à l'arrivée, le plus fin seul ; en vue d'ensemble, le niveau 0 ; opacité continue à chaque relais ;
 - `qualityTier` : téléphone en WebGPU avec 8192 → haute ; WebGL 2 → standard ; WebGPU avec 4096 → standard ;
-- `needsBeacon` faux pour les 197 pays sur les deux cadrages ;
+- `needsBeacon` : les listes du §2 (19 pays sur téléphone, 5 au bureau), le Vatican absent des deux ;
 - `MOTIF_PAYS` couvre `data/patches/img/<cca3>-<niveau>-<taille>.ktx2` ;
 - repli (§5 bis) : trois fenêtres au plancher → TRAA coupé, trois de plus → standard ; jamais de retour en arrière ;
   format non compressé → standard d'emblée.
@@ -217,7 +227,7 @@ les deux**. Sinon, ETC1S reste, et la tâche le note dans la passation.
 **E2e (Playwright, SwiftShader) :**
 - à l'arrivée sur le Vatican, Monaco, la France et la Russie (téléphone 390 × 844) : la part de la calotte projetée par
   la caméra de la page est dans [10 % ; 80 %] (à 1 point près) et le cadre de la frontière projetée ne dépasse pas 80 %
-  du petit côté ; pas de balise ;
+  du petit côté ; pas de balise sur le Vatican ni la France (Monaco garde la sienne, §2) ;
 - la plongée vers le Vatican demande ses 5 niveaux et montre le plus fin à l'arrivée ;
 - un niveau en 404 (route simulée) : la manche continue, le niveau plus large reste affiché ;
 - le service worker sert à la partie suivante un niveau déjà vu (sous le nginx de l'image) ;

@@ -156,6 +156,28 @@ partir des données, ces chiffres n'y sont pas figés.
 - La **résolution dynamique** (`createDprGovernor`) tourne dans les deux niveaux, plus seulement en standard : c'est elle
   qui protège un téléphone en qualité haute.
 
+## 5 bis. Tenue sur les téléphones de 2020 et après (iPhone 13 et équivalents)
+
+Ajout du 19/10, à la question de l'utilisateur : « est que le site internet […] peut être optimisé afin de tourner sur
+du matéeil type iphone 13 et autres smarthones post 2020? » ; puis : « je ferai les test moi même ». Les e2e tournent
+sous SwiftShader et ne disent rien de la fluidité réelle : la mesure sur appareil est faite par l'utilisateur.
+
+- **Repli automatique en cours de partie**, sans liste de modèles : si la résolution dynamique reste au plancher
+  (`min` de `dprOptions`) pendant trois fenêtres de suite, le TRAA est coupé (MSAA 4, comme en standard) ; si elle y
+  reste encore trois fenêtres, le globe passe en qualité **standard** (textures 4K, photos 1024), sans recharger la page
+  et sans interrompre la manche. Le repli tient jusqu'à la fin de la visite ; il n'est jamais annulé en cours de partie.
+- **Mémoire bornée** : seuls les niveaux du pays courant et du suivant restent en mémoire graphique ; tout autre est
+  libéré dès que `patchCache` le quitte. Si le transcodeur choisit un format non compressé (RGBA) au lieu d'ASTC, BC7 ou
+  ETC2, la qualité standard est retenue d'emblée (quatre fois moins de mémoire en jeu).
+- **Mesure à l'écran** pour les essais de l'utilisateur : `?mesure` sur countrizz.fr affiche un petit encart (coin bas
+  gauche, au-dessus du jeu, sans gêner les réponses) : moteur (WebGPU ou WebGL 2), niveau de qualité, `maxTexture2D`,
+  format de texture transcodé, densité de rendu courante, temps médian par image, état du TRAA, replis survenus et leur
+  moment. Rien n'est envoyé nulle part ; sans `?mesure`, rien n'est affiché.
+- **Ce que l'utilisateur regarde** (§9, étape 5) : sur un iPhone 13 (Safari) et un Android de 2020 ou après (Chrome),
+  une partie complète avec un passage par le Vatican ou Monaco : fluidité de la plongée, netteté à l'arrivée, chaleur,
+  onglet jamais rechargé par Safari, replis affichés par l'encart. Il rapporte ce qu'il voit ; les seuils de repli se
+  règlent alors dans `web/src/globe/dynamicResolution.ts`.
+
 ## 6. Cache et budget
 
 - Le motif `MOTIF_PAYS` (`/data/(patches|flags)/`) couvre déjà `data/patches/img/` : les niveaux d'un pays déjà vu
@@ -188,7 +210,9 @@ les deux**. Sinon, ETC1S reste, et la tâche le note dans la passation.
 - `pickLevels` : à l'arrivée, le plus fin seul ; en vue d'ensemble, le niveau 0 ; opacité continue à chaque relais ;
 - `qualityTier` : téléphone en WebGPU avec 8192 → haute ; WebGL 2 → standard ; WebGPU avec 4096 → standard ;
 - `needsBeacon` faux pour les 197 pays sur les deux cadrages ;
-- `MOTIF_PAYS` couvre `data/patches/img/<cca3>-<niveau>-<taille>.ktx2`.
+- `MOTIF_PAYS` couvre `data/patches/img/<cca3>-<niveau>-<taille>.ktx2` ;
+- repli (§5 bis) : trois fenêtres au plancher → TRAA coupé, trois de plus → standard ; jamais de retour en arrière ;
+  format non compressé → standard d'emblée.
 
 **E2e (Playwright, SwiftShader) :**
 - à l'arrivée sur le Vatican, Monaco, la France et la Russie (téléphone 390 × 844) : la part de la calotte projetée par
@@ -208,8 +232,8 @@ les deux**. Sinon, ETC1S reste, et la tâche le note dans la passation.
 2. construction et poussée de l'image `pablohassan/countrizz-web:1.9` (`deploy/scripts/build-image.sh`) ;
 3. `kubectl apply` de `deploy/k8s/countrizz.yaml` depuis rpi1 ; retour arrière : 1.8 ;
 4. e2e et budget sur countrizz.fr ;
-5. essai de l'utilisateur sur de vrais téléphones (iPhone sous Safari, Android sous Chrome) : netteté du Vatican et de
-   Monaco, fluidité de la plongée, chaleur et autonomie en qualité haute.
+5. essai de l'utilisateur sur de vrais téléphones (iPhone 13 sous Safari, Android de 2020 ou après sous Chrome), avec
+   `?mesure` (§5 bis) : netteté du Vatican et de Monaco, fluidité de la plongée, chaleur, replis.
 
 ## 10. Corrections de chiffres annoncés pendant le brainstorming
 

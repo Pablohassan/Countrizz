@@ -10,6 +10,7 @@ import type { EntreeTitre } from '../ui/LogoTitle';
 import type { QualityTier } from '../globe/renderer';
 import { INTRO_URLS, heavyUrls, persist, purgeOutdated, warm } from '../pwa/cache';
 import { useInstall } from '../pwa/install';
+import { browserUpdater, consumeUpdateFlag } from '../pwa/update';
 import { loadCountries } from '../data/countries';
 import type { CountryRecord } from '../data/types';
 import { openScoreBook } from '../game/scores';
@@ -28,6 +29,12 @@ import { e2eOverrides, hooksEnabled, newSeed } from './hooks';
 import { useGame } from './useGame';
 
 const storage = ((): KeyValueStorage | null => { try { return localStorage; } catch { return null; } })();
+/**
+ * Nouvelle version du site : la page se recharge d'elle-même à un moment sans gêne (src/pwa/update.ts) ; la page rechargée
+ * s'ouvre sur l'accueil, sans l'intro (lu une fois, au chargement du module).
+ */
+const updater = browserUpdater();
+const openedByUpdate = consumeUpdateFlag(((): Storage | null => { try { return sessionStorage; } catch { return null; } })());
 /** Rotation légère du globe à l'accueil (degrés de longitude par seconde), après le fondu. */
 export const HOME_SPIN_DEG_PER_S = 1.5;
 
@@ -63,11 +70,11 @@ export function App() {
   const [lang, setLang] = useState<Lang>(() => detectLang(readPref(storage, PREF_KEYS.lang), navigator.languages ?? [navigator.language]));
   const [name, setName] = useState(() => readPref(storage, PREF_KEYS.name) ?? '');
   const [globeReady, setGlobeReady] = useState(false);
-  const [phase, setPhase] = useState<'intro' | 'fondu' | 'accueil'>('intro');
-  const [homeShown, setHomeShown] = useState(false);
+  const [phase, setPhase] = useState<'intro' | 'fondu' | 'accueil'>(openedByUpdate ? 'accueil' : 'intro');
+  const [homeShown, setHomeShown] = useState(openedByUpdate);
   const [logoAngle, setLogoAngle] = useState<number | null>(null);
   // le titre vient de la vidéo (il apparaît en fondu) ; intro abandonnée (accueil direct) : ses lettres surgissent
-  const [entree, setEntree] = useState<EntreeTitre>('fondu');
+  const [entree, setEntree] = useState<EntreeTitre>(openedByUpdate ? 'pop' : 'fondu');
   const globe = useRef<GlobeHandle>(null);
   const [tier, setTier] = useState<QualityTier | null>(null);
   const install = useInstall();
@@ -95,6 +102,9 @@ export function App() {
   const errorShown = globeError !== null && phase === 'accueil';
   // calques de l'accueil : À propos, puis mentions et licences
   const [overlay, setOverlay] = useState<'about' | 'legal' | null>(null);
+
+  // à l'accueil (intro finie, aucune partie, aucun calque) : une nouvelle version peut recharger la page
+  useEffect(() => { updater?.setAtHome(phase === 'accueil' && s.screen === 'home' && overlay === null); }, [phase, s.screen, overlay]);
 
   // caches d'une version précédente du site : supprimés (leurs noms portent l'empreinte de leur contenu)
   useEffect(() => { void purgeOutdated(__COUNTRIZZ_CACHES__); }, []);

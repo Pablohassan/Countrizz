@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { openHome, startGame } from './game-helpers';
 
 /**
  * PWA (spec 2A §8, décisions du 10/10) : manifeste installable, service worker, fichiers lourds gardés sur l'appareil,
@@ -80,4 +81,52 @@ test('un niveau de photo déjà vu est servi par le service worker à la visite 
   await page.reload();
   await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 180_000 });
   expect(served).toEqual([true]);
+});
+
+/**
+ * Nouvelle version pendant la visite (src/pwa/update.ts). Le navigateur relit `sw.js` hors des routes de Playwright : on
+ * envoie donc l'événement que donne le nouveau service worker en prenant la main (`skipWaiting`, `clientsClaim`). Le
+ * vrai cycle (un `sw.js` changé d'un octet) a été essayé à la main le 19/10 sous le nginx de l'image. Marque posée dans
+ * la page : elle disparaît au rechargement ; `window.__intro` n'existe pas si l'intro n'a pas été montée.
+ */
+async function pageControlee(page: Page, query = '') {
+  await page.goto(`/?webgl${query}`);
+  test.skip((await page.locator('link[rel="manifest"]').count()) === 0, 'pas de service worker : serveur de dev');
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await openHome(page, query); // visite suivante : la page est contrôlée, accueil direct
+  expect(await page.evaluate(() => navigator.serviceWorker.controller !== null)).toBe(true);
+}
+async function nouvelleVersion(page: Page) {
+  await page.evaluate(() => {
+    (window as unknown as { __ancienne: boolean }).__ancienne = true;
+    navigator.serviceWorker.dispatchEvent(new Event('controllerchange'));
+  });
+}
+const ancienne = (page: Page) => page.evaluate(() => (window as unknown as { __ancienne?: boolean }).__ancienne === true).catch(() => null);
+const rechargeeSansIntro = async (page: Page) => {
+  await expect.poll(() => ancienne(page), { timeout: 60_000 }).toBe(false);
+  await expect(page.locator('.accueil .accueil-titre')).toBeVisible({ timeout: 30_000 });
+  expect(await page.evaluate(() => window.__intro === undefined)).toBe(true);
+  await expect(page.getByRole('button', { name: /^(Jouer|Play)/ })).toBeEnabled({ timeout: 180_000 });
+};
+
+test('nouvelle version, joueur à l’accueil : la page se recharge d’elle-même et s’ouvre sur l’accueil, sans l’intro', async ({ page }) => {
+  await pageControlee(page);
+  await nouvelleVersion(page);
+  await rechargeeSansIntro(page);
+  // le rechargement suivant est ordinaire : l'intro est de nouveau montée
+  await page.reload();
+  await page.waitForFunction(() => window.__intro !== undefined, null, { timeout: 30_000 });
+});
+
+test('nouvelle version pendant une partie : rien ne bouge, la page se recharge au retour à l’accueil', async ({ page }) => {
+  await pageControlee(page, '&graine=7');
+  await startGame(page, /Pays|Country/); // langue du navigateur de test : anglais
+  await page.waitForFunction(() => window.__game?.state.screen !== 'mode');
+  await nouvelleVersion(page);
+  await page.waitForTimeout(3_000);
+  expect(await ancienne(page)).toBe(true);
+  expect(await page.evaluate(() => window.__game!.state.screen)).not.toBe('home');
+  await page.getByRole('button', { name: /^(Quitter|Quit)$/ }).click();
+  await rechargeeSansIntro(page);
 });

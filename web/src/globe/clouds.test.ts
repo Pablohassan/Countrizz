@@ -18,7 +18,7 @@ describe('opacité des nuages (spec §4.2 : ils s’effacent à l’arrivée sur
     let now = 0;
     const fra = (JSON.parse(readFileSync('public/data/countries.json', 'utf8')) as CountryRecord[]).find((c) => c.cca3 === 'FRA')!;
     const c = new GlobeController('/', false, () => now);
-    c.attach({ setPatch() {}, setBeacon() {}, setImagePatch() {} } as unknown as Globe);
+    c.attach({ setPatch() {}, setBeacon() {}, setImageLevels() {} } as unknown as Globe);
     expect(c.cloudOpacityAt(now)).toBe(1);
     const flight = c.flyTo(fra);
     c.director.update(0);

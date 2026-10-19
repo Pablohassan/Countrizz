@@ -3,10 +3,11 @@ import { CameraDirector, type FlightTicket, type FramePose } from '../camera/dir
 import { FLIGHT, FOV_Y_DEG, FRAMING } from '../camera/config';
 import type { FramingParams, Viewport } from '../camera/framing';
 import { safeViewport, type SafeArea } from '../camera/safeArea';
-import { imagePatchUrl, type ImageryIndex } from '../data/imagery';
+import { imagePatchUrl, type ImagePatchMeta, type ImageryIndex } from '../data/imagery';
 import type { CountryRecord, LngLat } from '../data/types';
 import { needsBeacon } from './beacon';
-import type { Globe } from './globe';
+import type { Globe, ImageSlot } from './globe';
+import { availableSlots, pickLevels } from './imageLevels';
 import { createPatchCache } from './patchCache';
 import { disposePatchTexture, loadPatchTexture } from './patchTexture';
 import { cloudOpacity, type CloudFade } from './clouds';
@@ -14,7 +15,7 @@ import { screenPoint, type ScreenPoint } from './project';
 import type { Accessory } from './accessories';
 import type { RevealTimeline } from './reveal';
 
-/** Fondu d'apparition d'un patch image arrivé en cours de route. */
+/** Fondu d'apparition de la première photo du pays, arrivée en cours de route. */
 export const IMAGE_FADE_S = 0.4;
 
 /** Chargeur des patchs image, fourni par la scène quand le renderer est prêt (KTX2 → format du GPU) ; taille selon le niveau. */
@@ -42,7 +43,9 @@ export class GlobeController {
   private readonly cache = createPatchCache((sdf: string) => loadPatchTexture(`${this.baseUrl}data/${sdf}`), disposePatchTexture);
   private imagery: ImageryIndex | null = null;
   private imageSource: ImageSource | null = null;
-  private image: THREE.Texture | null = null;
+  /** Photos du pays visé par niveau (du plus large au plus fin) ; `null` : pas (encore) chargée, ou en échec. */
+  private levelTex: (THREE.Texture | null)[] = [];
+  private shownSlots: { coarse: number | null; fine: number | null; fineOpacity: number } | null = null;
   private readonly images = createPatchCache((url: string) => this.imageSource!.load(url), (t: THREE.Texture) => t.dispose());
 
   private cloudFade: CloudFade = { from: 1, to: 1, atMs: 0 };
@@ -63,12 +66,16 @@ export class GlobeController {
   /** Pose dessinée à l'image courante (boucle de rendu, avant le rendu), puis les abonnés de `onFrame`. */
   notePose(p: FramePose): void {
     this.lastPose = p;
+    this.applyImages();
     for (const f of this.frameListeners) {
       try { f(); } catch (e) { console.error(e); }   // un calque cassé n'arrête pas le globe
     }
   }
 
   get pose(): FramePose | null { return this.lastPose; }
+
+  /** Paire de niveaux posée à la dernière image (contrôles e2e) ; `null` : aucune photo. */
+  get imageSlots(): { coarse: number | null; fine: number | null; fineOpacity: number } | null { return this.shownSlots; }
 
   /** Appelé à chaque image, pose posée : les calques DOM s'y recalent. Rend la désinscription. */
   onFrame(cb: () => void): () => void {
@@ -130,12 +137,15 @@ export class GlobeController {
   }
 
   /**
-   * Index des patchs image et leur chargeur (null : pas de patch image, la texture globale suffit). Rappelé à chaque
+   * Index des photos emboîtées et leur chargeur (null : pas de photo, la texture globale suffit). Rappelé à chaque
    * recréation du renderer : les textures déjà chargées restent valables.
    */
   setImagery(index: ImageryIndex | null, source: ImageSource | null): void {
+    const resized = source?.size !== this.imageSource?.size;
     this.imagery = index;
     this.imageSource = source;
+    // autre taille (repli de qualité) : les couches sont déliées tout de suite ; `keep` ne libère qu'au tour suivant
+    if (resized) { this.levelTex = []; this.applyImages(); }
     this.requestImage();
     this.apply();
   }
@@ -161,7 +171,7 @@ export class GlobeController {
       (t) => { if (this.target === rec) { this.patch = t; this.apply(); } },
       () => { if (this.target === rec) { this.patchFailed = true; this.apply(); } },
     );
-    this.image = null;
+    this.levelTex = [];
     this.requestImage();
     this.fadeClouds(1);
     this.apply();
@@ -181,23 +191,46 @@ export class GlobeController {
   prefetch(rec: CountryRecord): void {
     this.next = rec;
     this.cache.get(rec.patch.sdf).catch(() => {});
-    const url = this.imageUrl(rec);
-    if (url) this.images.get(url).catch(() => {});
+    for (const url of this.imageUrls(rec)) this.images.get(url).catch(() => {});
   }
 
-  private imageUrl(rec: CountryRecord): string | null {
-    return this.imagery?.countries[rec.cca3] && this.imageSource ? imagePatchUrl(this.baseUrl, rec.cca3, this.imageSource.size) : null;
+  private imageMeta(rec: CountryRecord | null): ImagePatchMeta | null {
+    return (rec && this.imageSource && this.imagery?.countries[rec.cca3]) || null;
   }
 
-  /** Patch image du pays visé : un échec laisse la texture globale (spec §8 : la manche n'attend jamais un patch). */
+  /** Les niveaux du pays, du plus large au plus fin, à la taille du niveau de qualité. */
+  private imageUrls(rec: CountryRecord): string[] {
+    const meta = this.imageMeta(rec);
+    return meta ? meta.levels.map((_, i) => imagePatchUrl(this.baseUrl, rec.cca3, i, this.imageSource!.size)) : [];
+  }
+
+  /** Photos du pays visé, tous niveaux, du plus large au plus fin ; un échec laisse le niveau plus large (spec zoom §4.4). */
   private requestImage(): void {
     const rec = this.target;
     if (!rec) return;
-    const url = this.imageUrl(rec);
-    if (!url) return;
-    const nextUrl = this.next && this.next !== rec ? this.imageUrl(this.next) : null;
-    this.images.keep(nextUrl ? [url, nextUrl] : [url]);
-    this.images.get(url).then((t) => { if (this.target === rec) { this.image = t; this.apply(); } }, () => {});
+    const urls = this.imageUrls(rec);
+    const nextUrls = this.next && this.next !== rec ? this.imageUrls(this.next) : [];
+    this.images.keep([...urls, ...nextUrls]);
+    this.levelTex = urls.map(() => null);
+    urls.forEach((url, i) => this.images.get(url).then((t) => {
+      if (this.target === rec && this.imageUrls(rec)[i] === url) { this.levelTex[i] = t; this.applyImages(); }
+    }, () => {}));
+  }
+
+  /** La paire de niveaux posée pour l'altitude de la dernière image (spec zoom §4.3), d'après ce qui est chargé. */
+  private applyImages(): void {
+    const g = this.globe, rec = this.target, meta = this.imageMeta(rec);
+    if (!g) return;
+    if (!meta || !this.imagery || !this.levelTex.some((t) => t !== null)) { this.shownSlots = null; g.setImageLevels(null, null, IMAGE_FADE_S); return; }
+    const extents = meta.levels.map((l) => l.extentRad);
+    const pick = this.lastPose
+      ? pickLevels(this.lastPose.altitude, this.viewport, extents, this.imagery)
+      : { coarse: 0, fine: null, fineOpacity: 0 };
+    const s = availableSlots(pick, this.levelTex.map((t) => t !== null));
+    const slot = (i: number | null, opacity: number): ImageSlot | null =>
+      i === null ? null : { meta: { center: meta.center, extentRad: extents[i]! }, tex: this.levelTex[i]!, opacity };
+    this.shownSlots = s;
+    g.setImageLevels(slot(s.coarse, 1), slot(s.fine, s.fineOpacity), IMAGE_FADE_S);
   }
 
   showQuestion(nowMs: number): void { this.timeline = { questionAtMs: nowMs }; }
@@ -225,8 +258,7 @@ export class GlobeController {
     const g = this.globe, rec = this.target;
     if (!g) return;
     g.setPatch(rec && this.patch ? rec.patch : null, this.patch);
-    const imageMeta = rec && this.image ? this.imagery?.countries[rec.cca3] ?? null : null;
-    g.setImagePatch(imageMeta, imageMeta ? this.image : null, IMAGE_FADE_S);
+    this.applyImages();
     const beacon = rec !== null && (this.patchFailed || (this.arrived && !this.patch) || needsBeacon(rec, this.viewport, this.framing));
     g.setBeacon(beacon ? rec.beacon : null);
   }

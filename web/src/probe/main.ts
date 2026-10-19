@@ -39,7 +39,8 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `beacon=lng,lat` : balise ;
  * - `safe=top,bottom` : bandes occupées, px (zone libre de la Task 4 du plan 2A-4) ;
  * - `k`, `margin`, `ctx` (θ_min) : cadrage autre que celui du jeu (contrôles de précision à cadrage serré) ;
- * - `img` (avec `cca3`, mode jeu) : patch image du pays, à la taille du niveau (`img`) ou forcée (`img=1024`) ;
+ * - `img` (avec `cca3`, mode jeu) : photo du pays, à la taille du niveau (`img`) ou forcée (`img=1024`) ; `level` : niveau de
+ *   la chaîne, le plus fin par défaut ;
  * - `clouds=x` : opacité des nuages (0 par défaut), sans dérive ;
  * - `post` : post-traitement du niveau (`tier`), rendu sur `frames` images (16 par défaut : TRAA converge) ;
  * - `aa` : renderer antialiasé (canvas multi-échantillonné ; le jeu n'en a pas).
@@ -72,10 +73,11 @@ if (rec) {
     const meta = (await loadImageryIndex())?.countries[rec.cca3];
     const source = createImageSource(renderer, q.get('tier') === 'haute' ? 'haute' : 'standard');
     const size = q.get('img') ? Number(q.get('img')) : source.size;
-    // Patch absent (404) : on garde la texture globale, comme le jeu.
-    const tex = meta ? await source.load(imagePatchUrl('/', rec.cca3, size)).catch(() => null) : null;
+    // Photo absente (404) : on garde la texture globale, comme le jeu.
+    const level = q.has('level') ? Number(q.get('level')) : (meta?.levels.length ?? 1) - 1;
+    const tex = meta ? await source.load(imagePatchUrl('/', rec.cca3, level, size)).catch(() => null) : null;
     source.dispose();
-    globe.setImagePatch(meta ?? null, tex);
+    globe.setImageLevels(meta && tex ? { meta: { center: meta.center, extentRad: meta.levels[level]!.extentRad }, tex, opacity: 1 } : null, null);
   }
   globe.setLook({ visible: true, reveal: Number(q.get('reveal') ?? 1), state: (q.get('state') ?? 'question') as CountryState, stateTime: Number(q.get('t') ?? 0) });
   const director = new CameraDirector({

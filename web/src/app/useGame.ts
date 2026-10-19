@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useReducer, useRef, useState, type RefObject } from 'react';
 import type { CountryRecord } from '../data/types';
-import { createGame, initialState, REVEAL_MS, type GameEvent, type GameState } from '../game/machine';
+import { createGame, drawNext, initialState, REVEAL_MS, type GameEvent, type GameState } from '../game/machine';
 import type { ScoreBook } from '../game/scores';
 import type { Lang } from '../game/types';
 import type { GlobeHandle } from '../globe/GlobeView';
@@ -96,12 +96,16 @@ export function useGame(o: GameOptions) {
     return () => removeEventListener('keydown', on);
   }, [state.screen]);
 
-  // révélation : 1,5 s, puis la manche suivante
+  // révélation : 1,5 s, puis la manche suivante ; ses photos se chargent dès maintenant (19/10 : sans cela, elles ne
+  // partaient qu'au décollage, et l'arrivée sur un petit pays restait floue le temps de les charger sur téléphone)
   useEffect(() => {
     if (state.screen !== 'reveal') return;
+    const next = drawNext(opts.current.countries, state);
+    const rec = next && records.get(next.question.cca3);
+    if (rec) opts.current.globe.current?.prefetch(rec);
     const t = setTimeout(() => dispatch({ type: 'REVEAL_DONE', now: now() }), REVEAL_MS);
     return () => clearTimeout(t);
-  }, [state.screen, state.asked.length]);
+  }, [state.screen, state.asked.length]); // eslint-disable-line react-hooks/exhaustive-deps -- une fois par révélation
 
   // onglet caché : chrono en pause
   useEffect(() => {

@@ -40,6 +40,15 @@ describe('choix des niveaux selon l’altitude (spec zoom §4.3)', () => {
   });
 });
 
+describe('vue décentrée (vols entre deux pays, 19/10)', () => {
+  it('un écart entre le centre de la vue et le pays agrandit la zone à couvrir : un niveau plus large', () => {
+    const a = altitudeFor(0.99 * finest);
+    expect(pickLevels(a, phone, chain, o).coarse).toBe(4);
+    expect(pickLevels(a, phone, chain, o, 2 * finest).coarse).toBe(3);   // D + écart ≈ 3 × le plus fin : le niveau 3 (4 ×)
+    expect(pickLevels(a, phone, chain, o, 0).coarse).toBe(4);
+  });
+});
+
 describe('ce qui est chargé (la manche n’attend jamais une photo)', () => {
   const p = { coarse: 3, fine: 4, fineOpacity: 0.6 };
   it('tout chargé : la paire choisie', () => {

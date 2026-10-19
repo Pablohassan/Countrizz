@@ -60,6 +60,17 @@ export const initialState = (lang: Lang): GameState => ({
 
 const IN_GAME: readonly Screen[] = ['countdown', 'flight', 'question', 'reveal'];
 
+/**
+ * Manche suivante, telle que `REVEAL_DONE` la tirera : connue dès la révélation (la réponse a fixé la série), ce qui laisse
+ * précharger ses photos pendant la révélation et le vol (19/10). `null` hors révélation, ou s'il ne reste aucun pays.
+ */
+export function drawNext(countries: DrawCountry[], s: GameState): { question: Question; rngState: number } | null {
+  if (s.screen !== 'reveal' || !s.mode) return null;
+  const rng = createRng(s.rngState);
+  const question = drawQuestion(countries, new Set(s.asked), s.streak, s.mode, s.lang, rng);
+  return question ? { question, rngState: rng.state } : null;
+}
+
 /** `gameMs` : durée nette d'une partie (60 s ; plus courte seulement par le crochet `?partie=` des e2e). */
 export function createGame(countries: DrawCountry[], gameMs: number = GAME_MS): (s: GameState, e: GameEvent) => GameState {
   /** Nouvelle partie : première manche tirée, son vol part pendant le 3-2-1 (chrono pas encore lancé, cause « vol »). */
@@ -110,12 +121,12 @@ export function createGame(countries: DrawCountry[], gameMs: number = GAME_MS): 
       }
       case 'REVEAL_DONE': {
         if (s.screen !== 'reveal' || !s.mode) return s;
-        const rng = createRng(s.rngState);
-        const question = drawQuestion(countries, new Set(s.asked), s.streak, s.mode, s.lang, rng);
+        const next = drawNext(countries, s);
         const resumed = resumeClock(s.clock, 'reveal', e.now);
-        if (!question) return { ...s, screen: 'end', clock: resumed, picked: null, question: null };
+        if (!next) return { ...s, screen: 'end', clock: resumed, picked: null, question: null };
+        const { question, rngState } = next;
         return {
-          ...s, screen: 'flight', rngState: rng.state, asked: [...s.asked, question.cca3], question, arrived: false,
+          ...s, screen: 'flight', rngState, asked: [...s.asked, question.cca3], question, arrived: false,
           picked: null, clock: pauseClock(resumed, 'flight', e.now), flight: s.flight + 1,
         };
       }

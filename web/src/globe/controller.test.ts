@@ -5,6 +5,7 @@ import type { ImageryIndex } from '../data/imagery';
 import type { CountryRecord } from '../data/types';
 import { GlobeController, IMAGE_FADE_S } from './controller';
 import type { Globe, ImageSlot } from './globe';
+import { toVec } from '../geo/vec';
 
 const countries = JSON.parse(readFileSync('public/data/countries.json', 'utf8')) as CountryRecord[];
 const by = (cca3: string) => countries.find((c) => c.cca3 === cca3)!;
@@ -59,7 +60,7 @@ describe('photos emboîtées du pays visé (GlobeController)', () => {
     expect(calls.at(-1)!.slice(0, 4)).toEqual([0.0075, t[1], null, null]);
   });
 
-  it('précharge tous les niveaux du suivant ; ne garde que le courant et le suivant', async () => {
+  it('précharge tous les niveaux du suivant ; ne garde que le courant, le suivant et le pays quitté', async () => {
     const disposed: string[] = [];
     const { c, urls } = setup(async (url) => tex(url.split('/').pop()!, disposed));
     c.prefetch(by('VAT'));
@@ -69,7 +70,11 @@ describe('photos emboîtées du pays visé (GlobeController)', () => {
     c.prefetch(by('JPN'));
     void c.flyTo(by('VAT'));
     await flush();
-    expect(disposed).toEqual(['fra-0-2048.ktx2']);
+    expect(disposed).toEqual([]);                             // la France, quittée, reste pendant le vol (19/10)
+    void c.flyTo(by('JPN'));
+    await flush();
+    expect(disposed).toEqual(['fra-0-2048.ktx2']);            // ni visée, ni suivante, ni quittée
+
   });
 
   it('pays absent de l’index : aucune requête, emplacements vides', async () => {
@@ -91,6 +96,54 @@ describe('photos emboîtées du pays visé (GlobeController)', () => {
     await flush();
     expect(disposed).toEqual(['fra-0-2048.ktx2']);                  // libéré ensuite
     expect(urls.at(-1)).toBe('/data/patches/img/fra-0-1024.ktx2');
+  });
+});
+
+describe('départ d’un pays (19/10 : le recul depuis le Vatican sortait flou)', () => {
+  const at = (center: [number, number], altitude: number) => ({ ...pose(altitude), dir: toVec(center), up: [0, 1, 0] as [number, number, number] });
+  const vat = by('VAT').cap.center, ita = by('ITA').cap.center;
+  const idx = { viewFactor: 2.2, levelRatio: 4, countries: {
+    VAT: { center: vat, levels: [0.03, 0.0075, 0.0019].map((extentRad) => ({ extentRad, files: {} })) },
+    ITA: { center: ita, levels: [{ extentRad: 0.2, files: {} }] },
+  } } as unknown as ImageryIndex;
+  function setup2() {
+    const calls: [number | null, string | null][] = [];
+    const disposed: string[] = [];
+    const globe = { setPatch() {}, setBeacon() {}, setImageLevels(s: ImageSlot | null) { calls.push([s?.meta.extentRad ?? null, (s?.tex as unknown as { name: string } | undefined)?.name ?? null]); } };
+    const c = new GlobeController('/');
+    c.attach(globe as unknown as Globe);
+    c.setImagery(idx, { size: 2048, load: async (url) => tex(url.split('/').pop()!, disposed) });
+    return { c, calls, disposed };
+  }
+
+  it('les photos du pays quitté restent tant qu’elles sont plus fines là où regarde la caméra', async () => {
+    const { c, calls } = setup2();
+    c.director.update(0);
+    void c.flyTo(by('VAT'));
+    await flush();
+    c.notePose(at(vat, 1e-6));
+    expect(calls.at(-1)).toEqual([0.0019, 'vat-2-2048.ktx2']);
+    void c.flyTo(by('ITA'));
+    await flush();
+    c.notePose(at(vat, 1e-6));                 // départ : la caméra est encore au-dessus du Vatican
+    expect(calls.at(-1)).toEqual([0.0019, 'vat-2-2048.ktx2']);
+    c.notePose(at(ita, 2.2));                  // en haut, au-dessus de l'Italie : sa photo
+    expect(calls.at(-1)).toEqual([0.2, 'ita-0-2048.ktx2']);
+  });
+
+  it('à l’arrivée, les photos du pays quitté sont libérées', async () => {
+    const { c, disposed } = setup2();
+    c.director.update(0);
+    void c.flyTo(by('VAT'));
+    await flush();
+    c.director.update(10_000);
+    const t = c.flyTo(by('ITA'));
+    await flush();
+    expect(disposed).toEqual([]);
+    c.director.update(30_000);
+    expect(await t.arrived).toBe(true);
+    await flush();
+    expect([...disposed].sort()).toEqual(['vat-0-2048.ktx2', 'vat-1-2048.ktx2', 'vat-2-2048.ktx2']);
   });
 });
 

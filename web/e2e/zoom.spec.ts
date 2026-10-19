@@ -95,3 +95,23 @@ test.describe('sonde (sans émulation mobile : la page de sonde n’a pas de bal
     expect(right / left).toBeGreaterThan(0.9);
   });
 });
+
+test.describe('jeu (accueil, sans émulation mobile : la partie se joue au clic)', () => {
+  test.use({ isMobile: false, hasTouch: false });
+  test('les photos du pays suivant partent pendant la révélation, avant son vol (19/10)', async ({ page }) => {
+    const { openHome, startGame, answer, gameState } = await import('./game-helpers');
+    const seen: { url: string; screen: string }[] = [];
+    // l'écran du jeu lu au moment de chaque requête de photo
+    await page.route('**/data/patches/img/*.ktx2', async (r) => {
+      seen.push({ url: r.request().url().split('/').pop()!, screen: await page.evaluate(() => window.__game?.state.screen ?? '?') });
+      await r.fulfill({ body: quadrants, contentType: 'image/ktx2' });
+    });
+    await openHome(page, '&partie=120000');
+    await startGame(page, /Pays|Country/);
+    expect(await answer(page, true)).toBe(true);
+    await page.waitForFunction(() => window.__game?.state.screen === 'flight' || window.__game?.state.screen === 'question', null, { timeout: 30_000 });
+    const next = (await gameState(page)).question!.cca3;
+    const during = seen.filter((s) => s.screen === 'reveal').map((s) => s.url);
+    expect(during, JSON.stringify(seen)).toContain(imagePatchName(next, 0, 1024));
+  });
+});

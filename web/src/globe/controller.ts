@@ -5,9 +5,11 @@ import type { FramingParams, Viewport } from '../camera/framing';
 import { safeViewport, type SafeArea } from '../camera/safeArea';
 import { imagePatchUrl, type ImagePatchMeta, type ImageryIndex } from '../data/imagery';
 import type { CountryRecord, LngLat } from '../data/types';
+import { angleBetween, toVec } from '../geo/vec';
 import { needsBeacon } from './beacon';
 import type { Globe, ImageSlot } from './globe';
 import { availableSlots, pickLevels } from './imageLevels';
+import { visibleHalfAngle } from '../camera/framing';
 import { createPatchCache } from './patchCache';
 import { disposePatchTexture, loadPatchTexture } from './patchTexture';
 import { cloudOpacity, type CloudFade } from './clouds';
@@ -45,6 +47,11 @@ export class GlobeController {
   private imageSource: ImageSource | null = null;
   /** Photos du pays visé par niveau (du plus large au plus fin) ; `null` : pas (encore) chargée, ou en échec. */
   private levelTex: (THREE.Texture | null)[] = [];
+  /**
+   * Pays quitté par le vol en cours et ses photos : gardées tant qu'elles sont plus fines là où regarde la caméra (19/10 :
+   * retirées au décollage, le recul depuis un petit pays sortait flou) ; libérées à l'arrivée.
+   */
+  private departing: { rec: CountryRecord; tex: (THREE.Texture | null)[] } | null = null;
   private shownSlots: { coarse: number | null; fine: number | null; fineOpacity: number } | null = null;
   private readonly images = createPatchCache((url: string) => this.imageSource!.load(url), (t: THREE.Texture) => t.dispose());
 
@@ -145,7 +152,7 @@ export class GlobeController {
     this.imagery = index;
     this.imageSource = source;
     // autre taille (repli de qualité) : les couches sont déliées tout de suite ; `keep` ne libère qu'au tour suivant
-    if (resized) { this.levelTex = []; this.applyImages(); }
+    if (resized) { this.levelTex = []; this.departing = null; this.applyImages(); }
     this.requestImage();
     this.apply();
   }
@@ -161,6 +168,7 @@ export class GlobeController {
    * si un autre vol l'a remplacé ou si `clear()` est passé entre-temps.
    */
   flyTo(rec: CountryRecord): FlightTicket {
+    const left = this.target;
     this.target = rec;
     this.timeline = null;
     this.patch = null;
@@ -171,6 +179,7 @@ export class GlobeController {
       (t) => { if (this.target === rec) { this.patch = t; this.apply(); } },
       () => { if (this.target === rec) { this.patchFailed = true; this.apply(); } },
     );
+    this.departing = left && left !== rec && this.levelTex.some((t) => t !== null) ? { rec: left, tex: this.levelTex } : null;
     this.levelTex = [];
     this.requestImage();
     this.fadeClouds(1);
@@ -181,6 +190,8 @@ export class GlobeController {
       arrived: t.arrived.then((ok) => {
         if (!ok || this.target !== rec) return false;
         this.arrived = true;
+        this.departing = null;
+        this.keepImages();
         this.fadeClouds(0);
         this.apply();
         return true;
@@ -209,29 +220,55 @@ export class GlobeController {
     const rec = this.target;
     if (!rec) return;
     const urls = this.imageUrls(rec);
-    const nextUrls = this.next && this.next !== rec ? this.imageUrls(this.next) : [];
-    this.images.keep([...urls, ...nextUrls]);
+    this.keepImages();
     this.levelTex = urls.map(() => null);
     urls.forEach((url, i) => this.images.get(url).then((t) => {
       if (this.target === rec && this.imageUrls(rec)[i] === url) { this.levelTex[i] = t; this.applyImages(); }
     }, () => {}));
   }
 
+  /** Le cache ne garde que les photos du pays visé, du suivant et du pays quitté (le reste est libéré au tour suivant). */
+  private keepImages(): void {
+    const rec = this.target;
+    if (!rec) return;
+    const nextUrls = this.next && this.next !== rec ? this.imageUrls(this.next) : [];
+    const leftUrls = this.departing ? this.imageUrls(this.departing.rec) : [];
+    this.images.keep([...this.imageUrls(rec), ...nextUrls, ...leftUrls]);
+  }
+
   /** La paire de niveaux posée pour l'altitude de la dernière image (spec zoom §4.3), d'après ce qui est chargé. */
   private applyImages(): void {
-    const g = this.globe, rec = this.target, meta = this.imageMeta(rec);
+    const g = this.globe;
     if (!g) return;
-    if (!meta || !this.imagery || !this.levelTex.some((t) => t !== null)) { this.shownSlots = null; g.setImageLevels(null, null, IMAGE_FADE_S); return; }
-    const extents = meta.levels.map((l) => l.extentRad);
-    const pick = this.lastPose
-      ? pickLevels(this.lastPose.altitude, this.viewport, extents, this.imagery)
-      : { coarse: 0, fine: null, fineOpacity: 0 };
-    const s = availableSlots(pick, this.levelTex.map((t) => t !== null));
+    // le pays visé et le pays quitté : parmi ceux dont une photo couvre toute la vue, le plus fin ; si aucun ne la couvre,
+    // celui qui en couvre le plus (la plus large) ; à égalité, le visé
+    let best: { meta: ImagePatchMeta; tex: (THREE.Texture | null)[]; slots: ReturnType<typeof availableSlots>; covers: boolean; extent: number } | null = null;
+    const sets = [{ rec: this.target, tex: this.levelTex }, ...(this.departing ? [this.departing] : [])];
+    for (const set of sets) {
+      const meta = this.imageMeta(set.rec);
+      if (!meta || !this.imagery || !set.tex.some((t) => t !== null)) continue;
+      const extents = meta.levels.map((l) => l.extentRad);
+      const offset = this.lastPose ? angleBetween(this.lastPose.dir, toVec(meta.center)) : 0;
+      if (offset > extents[0]!) continue;   // la vue est hors de sa plus large photo
+      const pick = this.lastPose
+        ? pickLevels(this.lastPose.altitude, this.viewport, extents, this.imagery, offset)
+        : { coarse: 0, fine: null, fineOpacity: 0 };
+      const slots = availableSlots(pick, set.tex.map((t) => t !== null));
+      if (slots.coarse === null) continue;
+      const extent = slots.fine !== null && slots.fineOpacity >= 1 ? extents[slots.fine]! : extents[slots.coarse]!;
+      const need = this.lastPose ? this.imagery.viewFactor * visibleHalfAngle(this.lastPose.altitude, this.viewport) + offset : 0;
+      const covers = extents[slots.coarse]! >= need;
+      const better = !best || (covers && !best.covers) || (covers === best.covers && (covers ? extent < best.extent : extent > best.extent));
+      if (better) best = { meta, tex: set.tex, slots, covers, extent };
+    }
+    if (!best) { this.shownSlots = null; g.setImageLevels(null, null, IMAGE_FADE_S); return; }
+    const { meta, tex, slots: s } = best;
     const slot = (i: number | null, opacity: number): ImageSlot | null =>
-      i === null ? null : { meta: { center: meta.center, extentRad: extents[i]! }, tex: this.levelTex[i]!, opacity };
+      i === null ? null : { meta: { center: meta.center, extentRad: meta.levels[i]!.extentRad }, tex: tex[i]!, opacity };
     this.shownSlots = s;
     g.setImageLevels(slot(s.coarse, 1), slot(s.fine, s.fineOpacity), IMAGE_FADE_S);
   }
+
 
   showQuestion(nowMs: number): void { this.timeline = { questionAtMs: nowMs }; }
 
@@ -248,6 +285,7 @@ export class GlobeController {
   }
 
   clear(): void {
+    this.departing = null;
     this.fadeClouds(1);
     this.target = null;
     this.timeline = null;

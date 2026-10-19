@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { CountryRecord } from '../data/types';
 import { remainingMs } from './clock';
-import { createGame, initialState, type GameEvent, type GameState } from './machine';
+import { createGame, drawNext, initialState, type GameEvent, type GameState } from './machine';
 
 const countries = JSON.parse(readFileSync('public/data/countries.json', 'utf8')) as CountryRecord[];
 const reduce = createGame(countries);
@@ -153,5 +153,20 @@ describe('machine d\'états du jeu', () => {
     expect(remainingMs(s.clock, 4_000)).toBe(8_000);
     expect(short(s, { type: 'TICK', now: 11_999 }).screen).toBe('question');
     expect(short(s, { type: 'TICK', now: 12_000 }).screen).toBe('end');
+  });
+});
+
+describe('manche suivante connue dès la révélation (préchargement des photos, 19/10)', () => {
+  it('drawNext rend, pendant la révélation, le pays que REVEAL_DONE tirera — bonne ou mauvaise réponse', () => {
+    for (const index of [0, 1, 2, 3]) {
+      const reveal = run([...toQuestion, { type: 'ANSWER', index, now: 5_000 }]);
+      expect(reveal.screen).toBe('reveal');
+      const peek = drawNext(countries, reveal);
+      const next = reduce(reveal, { type: 'REVEAL_DONE', now: 6_500 });
+      expect(peek?.question.cca3, `réponse ${index}`).toBe(next.question!.cca3);
+    }
+  });
+  it('hors de la révélation : rien', () => {
+    expect(drawNext(countries, run(toQuestion))).toBeNull();
   });
 });

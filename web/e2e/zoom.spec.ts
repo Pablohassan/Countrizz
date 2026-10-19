@@ -4,6 +4,7 @@ import { FRAMING } from '../src/camera/config';
 import { arrivalShare } from '../src/camera/framing';
 import { imagePatchName, type ImageryIndex } from '../src/data/imagery';
 import type { CountryRecord, LngLat } from '../src/data/types';
+import { shoot } from './probe-page';
 
 test.slow(true, 'SwiftShader : vols de 6 s et photos');
 const PHONE = { width: 390, height: 844 };
@@ -79,4 +80,18 @@ test('en zone libre (bandes du jeu), le Vatican arrive sur son niveau le plus fi
   await goAndWait(page, 'VAT', '&safe=80,300');
   const s = (await page.evaluate(() => window.__globe!.imageSlots()))!;
   expect(s.coarse === n - 1 || (s.fine === n - 1 && s.fineOpacity === 1), JSON.stringify(s)).toBe(true);
+});
+
+test.describe('sonde (sans émulation mobile : la page de sonde n’a pas de balise viewport)', () => {
+  test.use({ isMobile: false, hasTouch: false });
+  test('de près, le relief 4K ne pose plus d’ombre en bloc (Monaco, sans photo : 19/10, un quart de la vue assombri)', async ({ page }) => {
+    // le relief se lit sur une texture 4K (≈ 10 km par texel) : à l'arrivée sur Monaco, un texel couvre une bonne part de
+    // l'écran, et sa pente exagérée assombrissait la moitié droite du haut de la vue de 26 % (38,0 contre 51,6 de luminance)
+    const s = await shoot(page, 'webgpu', 'mode=game&cca3=MCO&tier=haute', PHONE);
+    const L = (x: number, y: number) => { const i = (y * s.png.width + x) * 4; return 0.2126 * s.png.data[i]! + 0.7152 * s.png.data[i + 1]! + 0.0722 * s.png.data[i + 2]!; };
+    const band = (x0: number, x1: number) => { let t = 0, n = 0; for (let x = x0; x < x1; x++) for (let y = 20; y < 300; y++) { t += L(x, y); n++; } return t / n; };
+    const [left, right] = [band(40, 160), band(220, 340)];
+    console.log('Monaco, haut de la vue : gauche', left.toFixed(1), 'droite', right.toFixed(1));
+    expect(right / left).toBeGreaterThan(0.9);
+  });
 });

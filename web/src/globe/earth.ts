@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import { abs, cameraPosition, clamp, cross, dot, float, max, mix, normalize, output, positionWorld, pow, smoothstep, sqrt, texture, transformNormalToView, uniform, uv, vec2, vec3, vec4 } from 'three/tsl';
+import { abs, cameraPosition, clamp, cross, dot, float, fwidth, length, max, mix, normalize, output, positionWorld, pow, smoothstep, sqrt, texture, transformNormalToView, uniform, uv, vec2, vec3, vec4 } from 'three/tsl';
 import type Node from 'three/src/nodes/core/Node.js';
 import type { Vec3 } from '../geo/vec';
 import { exactSpherePoint } from './frameNodes';
@@ -14,6 +14,12 @@ import type { GlobeTextures } from './textures';
  * relief s'aplatissait (constaté sur les Alpes le 10/10).
  */
 export const RELIEF = { exaggeration: 14, size: 4096, metresFull: 6400 } as const;
+/**
+ * Grossissement (pixels par texel de relief) entre lequel le relief s'efface (19/10, zoom et images de près) : au cadrage
+ * serré d'un petit pays, un texel de 4K (≈ 10 km) couvre une bonne part de l'écran et sa pente, exagérée, assombrissait
+ * en bloc un quart de la vue de Monaco ; les photos portent déjà leur propre ombrage du relief.
+ */
+export const RELIEF_MAGNIFY = { from: 2, to: 4 } as const;
 /** Altitude apparente des nuages pour leur ombre (rayons terrestres, exagérée) : l'ombre glisse à l'opposé du soleil. */
 export const CLOUD_SHADOW_HEIGHT = 0.0035;
 const EARTH_RADIUS_M = 6_371_000;
@@ -49,7 +55,9 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const h = (o: Node<'vec2'>) => texture(t.surface, st.add(o)).r.mul(RELIEF.metresFull / EARTH_RADIUS_M);
   const gE = h(vec2(du, 0)).sub(h(vec2(-du, 0))).div(cosLat.mul(2 * Math.PI * 2 * du));
   const gN = h(vec2(0, dv)).sub(h(vec2(0, -dv))).div(Math.PI * 2 * dv);
-  const relief = normalize(P.sub(east.mul(gE).add(north.mul(gN)).mul(RELIEF.exaggeration)));
+  const reliefMagnify = float((2 * Math.PI) / RELIEF.size).div(max(length(fwidth(positionWorld)), 1e-7));
+  const reliefShown = smoothstep(float(RELIEF_MAGNIFY.from), float(RELIEF_MAGNIFY.to), reliefMagnify).oneMinus();
+  const relief = normalize(mix(P, normalize(P.sub(east.mul(gE).add(north.mul(gN)).mul(RELIEF.exaggeration))), reliefShown));
 
   // Nuages : blancs et mats par-dessus le sol ; leur ombre tombe décalée à l'opposé du soleil (plus longue au soleil
   // rasant) et assombrit le sol ; ils voilent les lumières des villes.

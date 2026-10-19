@@ -7,9 +7,11 @@ import { shoot } from './probe-page';
 import type { BackendName } from './sdf-check';
 
 const fra = (JSON.parse(readFileSync('public/data/imagery.json', 'utf8')) as ImageryIndex).countries.FRA!;
+// la France n'a qu'un niveau (spec zoom §4.1) : le plus fin est aussi le niveau 0
+const fraLevel = fra.levels.at(-1)!;
 const quadrants = readFileSync('e2e/fixtures/quadrants.ktx2');
 // Cadre de 4 × 4 « pixels » : (1,5 ; 1,5) est au cœur du quadrant nord-ouest, etc. (à ±¼ de demi-côté du centre, à l'écran)
-const proj = makeProjector({ center: fra.center, extentRad: fra.extentRad, size: 4 });
+const proj = makeProjector({ center: fra.center, extentRad: fraLevel.extentRad, size: 4 });
 const [nw, ne, sw, se] = [[1.5, 1.5], [2.5, 1.5], [1.5, 2.5], [2.5, 2.5]].map(([x, y]) => proj.toLngLat(x!, y!) as LngLat);
 
 for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {

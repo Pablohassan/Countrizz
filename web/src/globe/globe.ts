@@ -159,6 +159,9 @@ export class Globe {
     this.updateBeaconVisibility();
   }
 
+  /** La balise est-elle dessinée (contrôles e2e) ? */
+  get beaconShown(): boolean { return this.beacon.sprite.visible; }
+
   /** Derrière l'horizon (P·C ≤ 1 sur la sphère unité), la balise se dessinerait à travers la Terre : on la cache. */
   private updateBeaconVisibility(): void {
     const d = this.beaconDir, c = this.cameraPosition;

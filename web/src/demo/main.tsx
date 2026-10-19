@@ -23,7 +23,8 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /**
  * Démonstration de la phase 1A, en attendant le jeu (phase 2) : vols, question, réponse. `?demo=FRA,JPN,FJI` enchaîne
- * ces pays tout seul (contrôle Playwright) ; sinon, un bouton « pays suivant ».
+ * ces pays tout seul (contrôle Playwright) ; sinon, un bouton « pays suivant ». `safe=<haut>,<bas>` : bandes occupées comme
+ * en jeu (zone libre).
  */
 function Demo() {
   const globe = useRef<GlobeHandle>(null);
@@ -50,6 +51,9 @@ function Demo() {
     if (!list) return;
     const codes = list.split(',');
     void (async () => {
+      // zone libre posée avant le premier vol : l'arrivée se cadre déjà dedans, comme en jeu (spec zoom, Review Focus 1)
+      const safe = q.get('safe')?.split(',').map(Number);
+      if (safe) globe.current!.setSafeArea({ top: safe[0]!, bottom: safe[1]! });
       for (let i = 0; i < codes.length; i++) {
         const rec = countries.find((c) => c.cca3 === codes[i])!;
         await visit(rec, countries.find((c) => c.cca3 === codes[i + 1]));

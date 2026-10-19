@@ -80,6 +80,10 @@ export interface GlobeDebug {
   quality(): { tier: QualityTier; degradation: Degradation; traa: boolean };
   /** Plus grande texture 2D du GPU (le niveau haute en dépend). */
   maxTexture2D: number;
+  /** La balise est-elle dessinée ? */
+  beacon(): boolean;
+  /** Paire de niveaux de photos posée à la dernière image (spec zoom §4.3) ; `null` : aucune photo. */
+  imageSlots(): { coarse: number | null; fine: number | null; fineOpacity: number } | null;
 }
 declare global { interface Window { __globe?: GlobeDebug } }
 
@@ -393,9 +397,11 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
       simulateDeviceLost: () => renderer.onDeviceLost({ api: 'WebGPU', message: 'test', reason: null, originalEvent: null }),
       quality: () => qualityRef.current,
       maxTexture2D: renderer.userData.maxTexture2D,
+      beacon: () => globe?.beaconShown ?? false,
+      imageSlots: () => controller.imageSlots,
     };
     window.__globe = debug;
-  }, [renderer, camera, size.width, size.height, generation]);
+  }, [renderer, camera, size.width, size.height, generation, globe, controller]);
 
   useFrame((_, delta) => {
     const before = governor.dpr;

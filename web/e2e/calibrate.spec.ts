@@ -8,11 +8,13 @@ test('la page de calibration charge le globe et cadre un pays de référence', a
   await expect(page.getByText('export const FRAMING: FramingParams = {k: 1, margin: 3, floor: 0.0003')).toBeVisible();
 });
 
-test('les réglages passent par l’URL, contexte minimal compris', async ({ page }) => {
+test('les réglages passent par l’URL, contexte minimal et arrivée compris', async ({ page }) => {
   await page.setViewportSize({ width: 960, height: 600 });
-  await page.goto('/calibrate.html?webgl&country=LUX&k=1&margin=3&ctx=3');
+  await page.goto('/calibrate.html?webgl&country=LUX&k=1&margin=3&ctx=3&smin=0&smax=1&fl=1&fs=1');
+  // facteurs de taille à 1 et parts non bornées : l'arrivée retombe exactement sur le cadrage B (spec zoom §2)
   // Luxembourg (θ = 0,381°) cadré comme une calotte de 3° avec m = 3 : cos 3° + sin 3° / tan(25°/3) − 1
   const expected = (Math.cos((3 * Math.PI) / 180) + Math.sin((3 * Math.PI) / 180) / Math.tan((25 / 3) * (Math.PI / 180)) - 1).toFixed(4);
   await expect(page.getByText(`Luxembourg : θ = 0.381°, altitude = ${expected} rayon`)).toBeVisible({ timeout: 120_000 });
   await expect(page.getByText('minContextDeg: 3')).toBeVisible();
+  await expect(page.getByText('sizeFactor: {large: 1, small: 1}')).toBeVisible();
 });

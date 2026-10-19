@@ -1,6 +1,6 @@
 import * as THREE from 'three/webgpu';
 import { abs, float, fract, max, mix, smoothstep, step, uniform, uv, vec3 } from 'three/tsl';
-import { frameAltitude, type FramingParams, type Viewport } from '../camera/framing';
+import { arrivalAltitude, type FramingParams, type Viewport } from '../camera/framing';
 import type { LngLat } from '../data/types';
 import { toVec } from '../geo/vec';
 
@@ -16,8 +16,9 @@ export function screenAreaPx(areaKm2: number, altitude: number, v: Viewport): nu
   return areaKm2 / kmPerPx ** 2;
 }
 
+/** Balise si le pays tient sous ≈ 20 × 20 px à l'altitude d'arrivée (spec zoom §2 : 19 pays sur téléphone, 5 au bureau, listes figées dans beacon.test.ts). */
 export function needsBeacon(rec: { areaKm2: number; cap: { radiusDeg: number } }, v: Viewport, framing: FramingParams): boolean {
-  const altitude = frameAltitude(rec.cap.radiusDeg, v, framing);
+  const altitude = arrivalAltitude(rec, v, framing);
   return altitude <= framing.floor || screenAreaPx(rec.areaKm2, altitude, v) < BEACON_MAX_SCREEN_PX2;
 }
 

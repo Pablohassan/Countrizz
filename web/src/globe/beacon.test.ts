@@ -1,4 +1,7 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { FRAMING } from '../camera/config';
+import type { CountryRecord } from '../data/types';
 import { needsBeacon, screenAreaPx } from './beacon';
 
 const landscape = { width: 960, height: 600, fovYDeg: 50 };
@@ -17,5 +20,16 @@ describe('balise des micro-États et des archipels', () => {
   });
   it('un pays cadré au plancher a sa balise', () => {
     expect(needsBeacon(rec(0.49, 0.001), landscape, framing)).toBe(true);
+  });
+});
+
+describe('balise au cadrage serré (spec zoom §2, listes du 19/10)', () => {
+  const countries = JSON.parse(readFileSync('public/data/countries.json', 'utf8')) as CountryRecord[];
+  const list = (v: { width: number; height: number; fovYDeg: number }) => countries.filter((c) => needsBeacon(c, v, FRAMING)).map((c) => c.cca3).sort();
+  it('téléphone 390 × 844 : 19 pays (archipels et quelques petits États), sans le Vatican', () => {
+    expect(list({ width: 390, height: 844, fovYDeg: 50 })).toEqual(['ATG', 'BHR', 'COM', 'FSM', 'GRD', 'KIR', 'KNA', 'LIE', 'MCO', 'MDV', 'MHL', 'MLT', 'PLW', 'SGP', 'STP', 'SYC', 'TON', 'TUV', 'VCT']);
+  });
+  it('bureau 1440 × 900 : 5 archipels', () => {
+    expect(list({ width: 1440, height: 900, fovYDeg: 50 })).toEqual(['FSM', 'MDV', 'MHL', 'SYC', 'TUV']);
   });
 });

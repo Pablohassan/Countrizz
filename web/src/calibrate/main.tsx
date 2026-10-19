@@ -1,15 +1,19 @@
 import { StrictMode, useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { FOV_Y_DEG, FRAMING } from '../camera/config';
-import { frameAltitude, type FramingParams } from '../camera/framing';
+import { arrivalAltitude, arrivalShare, type FramingParams } from '../camera/framing';
 import { loadCountries } from '../data/countries';
 import type { CountryRecord } from '../data/types';
 import { GlobeView, type GlobeHandle } from '../globe/GlobeView';
 
-/** Réglages de départ : config.ts, surchargés par l'URL (`k`, `margin`, `floor`, `ctx` = θ_min) pour partager un réglage. */
+/** Réglages de départ : config.ts, surchargés par l'URL (`k`, `margin`, `floor`, `ctx` = θ_min ; arrivée : `smin`, `smax`, `fl`, `fs`) pour partager un réglage. */
 function framingFromUrl(q: URLSearchParams): FramingParams {
   const read = (name: string, fallback: number) => (q.has(name) ? Number(q.get(name)) : fallback);
-  return { ...FRAMING, k: read('k', FRAMING.k), margin: read('margin', FRAMING.margin), floor: read('floor', FRAMING.floor), minContextDeg: read('ctx', FRAMING.minContextDeg ?? 0) };
+  const a = FRAMING.arrival!;
+  return {
+    ...FRAMING, k: read('k', FRAMING.k), margin: read('margin', FRAMING.margin), floor: read('floor', FRAMING.floor), minContextDeg: read('ctx', FRAMING.minContextDeg ?? 0),
+    arrival: { ...a, share: { min: read('smin', a.share.min), max: read('smax', a.share.max) }, sizeFactor: { large: read('fl', a.sizeFactor.large), small: read('fs', a.sizeFactor.small) } },
+  };
 }
 
 /** Pays de référence du spec §8 (cadrage), plus quelques formes et tailles variées. */
@@ -45,6 +49,13 @@ function Calibrate() {
       <input type="range" min={min} max={max} step={step} value={framing[key] ?? 0} onChange={(e) => setFraming({ ...framing, [key]: Number(e.target.value) })} />
     </label>
   );
+  const arrivalSlider = (label: string, value: number, min: number, max: number, step: number, set: (x: number) => FramingParams) => (
+    <label style={{ display: 'block' }}>
+      {label} = {value}
+      <input type="range" min={min} max={max} step={step} value={value} onChange={(e) => setFraming(set(Number(e.target.value)))} />
+    </label>
+  );
+  const ar = framing.arrival!;
   const line = `export const FRAMING: FramingParams = ${JSON.stringify(framing).replace(/"(\w+)":/g, '$1: ').replace(/,/g, ', ')};`;
   return (
     <>
@@ -57,7 +68,11 @@ function Calibrate() {
         {slider('margin', 1, 3, 0.05)}
         {slider('floor', 0.0001, 0.002, 0.0001)}
         {slider('minContextDeg', 0, 10, 0.25)}
-        {current && <p>{current.name.fr} : θ = {current.cap.radiusDeg.toFixed(3)}°, altitude = {frameAltitude(current.cap.radiusDeg, { ...size, fovYDeg: FOV_Y_DEG }, framing).toFixed(4)} rayon</p>}
+        {arrivalSlider('part min', ar.share.min, 0.02, 0.4, 0.01, (x) => ({ ...framing, arrival: { ...ar, share: { ...ar.share, min: x } } }))}
+        {arrivalSlider('part max', ar.share.max, 0.4, 1, 0.01, (x) => ({ ...framing, arrival: { ...ar, share: { ...ar.share, max: x } } }))}
+        {arrivalSlider('zoom grand pays', ar.sizeFactor.large, 0.5, 3, 0.05, (x) => ({ ...framing, arrival: { ...ar, sizeFactor: { ...ar.sizeFactor, large: x } } }))}
+        {arrivalSlider('zoom petit pays', ar.sizeFactor.small, 1, 6, 0.05, (x) => ({ ...framing, arrival: { ...ar, sizeFactor: { ...ar.sizeFactor, small: x } } }))}
+        {current && <p>{current.name.fr} : θ = {current.cap.radiusDeg.toFixed(3)}°, altitude = {arrivalAltitude(current, { ...size, fovYDeg: FOV_Y_DEG }, framing).toFixed(4)} rayon, part = {(100 * arrivalShare(current, { ...size, fovYDeg: FOV_Y_DEG }, framing)).toFixed(1)} %</p>}
         <button onClick={() => void navigator.clipboard.writeText(line)}>Copier la ligne de config.ts</button>
         <code style={{ display: 'block', marginTop: 4, wordBreak: 'break-all' }}>{line}</code>
       </div>

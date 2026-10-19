@@ -67,3 +67,17 @@ test('seconde visite, service worker actif : la vidéo se lit, servie par le ré
   expect(videos.filter((v) => v.sw)).toEqual([]); // jamais servie par le service worker
   expect((await enCache(page)).filter((p) => p.startsWith('/video/'))).toEqual([]);
 });
+
+test('un niveau de photo déjà vu est servi par le service worker à la visite suivante', async ({ page }) => {
+  await page.goto(`/?webgl&introVariante=${VARIANTE}`);
+  test.skip((await page.locator('link[rel="manifest"]').count()) === 0, 'pas de service worker : serveur de dev');
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.goto('/demo.html?demo=FRA&webgl');
+  await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 180_000 });
+  await expect.poll(async () => (await enCache(page)).includes('/data/patches/img/fra-0-1024.ktx2'), { timeout: 60_000 }).toBe(true);
+  const served: boolean[] = [];
+  page.on('response', (r) => { if (new URL(r.url()).pathname === '/data/patches/img/fra-0-1024.ktx2') served.push(r.fromServiceWorker()); });
+  await page.reload();
+  await page.waitForFunction(() => window.__demo?.arrived.includes('FRA') === true, null, { timeout: 180_000 });
+  expect(served).toEqual([true]);
+});

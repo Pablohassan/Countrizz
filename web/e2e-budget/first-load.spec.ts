@@ -46,10 +46,11 @@ function collect(page: import('@playwright/test').Page) {
   const measure = async (r: import('@playwright/test').Response) => {
     if (r.url().startsWith('blob:') || r.url().startsWith('data:')) return; // workers du transcodeur : pas du réseau
     const url = new URL(r.url()).pathname;
-    if (r.status() === 404 && /\/patches\/img\/(\w+)-(\d+)\.ktx2$/.test(url)) {
-      // patchs image hors dépôt (absents en CI) : on compte la taille que donne l'index
-      const [, id, size] = url.match(/\/patches\/img\/(\w+)-(\d+)\.ktx2$/)!;
-      rows.push({ url: `${url} (index)`, bytes: imagery.countries[id!.toUpperCase()]!.files[size!]!.bytes });
+    // photos hors dépôt (absentes en CI) : on compte la taille que donne l'index
+    const m = url.match(/\/patches\/img\/(\w+)-(\d+)-(\d+)\.ktx2$/);
+    if (r.status() === 404 && m) {
+      const [, id, level, size] = m;
+      rows.push({ url: `${url} (index)`, bytes: imagery.countries[id!.toUpperCase()]!.levels[Number(level)]!.files[size!]!.bytes });
       return;
     }
     if (r.status() >= 300) return;
@@ -67,6 +68,7 @@ function collect(page: import('@playwright/test').Page) {
     rows.sort((a, b) => b.bytes - a.bytes);
     const total = rows.filter((r) => keep(r.url)).reduce((s, r) => s + r.bytes, 0);
     console.log(rows.map((r) => `${String(r.bytes).padStart(9)}  ${r.url}${keep(r.url) ? '' : '  (hors budget)'}`).join('\n'));
+    console.log(`dont photos du pays : ${rows.filter((r) => r.url.includes('/patches/img/')).reduce((s, r) => s + r.bytes, 0)} octets`);
     console.log(`total ${total} octets (budget ${budget})`);
     return total;
   };
@@ -148,7 +150,7 @@ for (const tier of ['standard', 'haute'] as const) {
     await page.waitForLoadState('networkidle');
     await m.stop();
     const total = m.report(FIRST_LOAD_BUDGET.accueil, (u) => !VIDEO.test(u));
-    // « haute » : mesuré, pas encore borné (plafond à proposer à l'utilisateur sur ce chiffre)
-    if (tier === 'standard') expect(total).toBeLessThanOrEqual(FIRST_LOAD_BUDGET.accueil);
+    // spec zoom §6 : les deux niveaux
+    expect(total).toBeLessThanOrEqual(FIRST_LOAD_BUDGET.accueil);
   });
 }

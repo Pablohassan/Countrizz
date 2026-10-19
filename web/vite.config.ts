@@ -81,9 +81,10 @@ export default defineConfig({
             options: { cacheName: CACHES.lourd, expiration: { maxEntries: 40, purgeOnQuotaError: true }, cacheableResponse: { statuses: [200] }, matchOptions: { ignoreVary: true } },
           },
           {
+            // un tour complet dans une taille : 219 niveaux de photos + 197 SDF + 197 drapeaux (spec zoom §6)
             urlPattern: MOTIF_PAYS,
             handler: 'CacheFirst',
-            options: { cacheName: CACHES.pays, expiration: { maxEntries: 400, purgeOnQuotaError: true }, cacheableResponse: { statuses: [200] }, matchOptions: { ignoreVary: true } },
+            options: { cacheName: CACHES.pays, expiration: { maxEntries: 700, purgeOnQuotaError: true }, cacheableResponse: { statuses: [200] }, matchOptions: { ignoreVary: true } },
           },
           {
             urlPattern: MOTIF_DONNEES,

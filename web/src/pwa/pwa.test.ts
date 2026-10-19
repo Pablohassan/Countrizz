@@ -56,6 +56,12 @@ describe('service worker : ce qu’il garde (vite.config.ts, runtimeCaching)', (
   it('les affiches, les ancres et la petite Terre de l’intro restent gardées', () => {
     for (const u of ['/intro/affiche-portrait.webp', '/intro/ancres.json', 'https://countrizz.fr/intro/logo-terre.webp']) expect(MOTIF_LOURD.test(u), u).toBe(true);
   });
+  it('les niveaux de photos d’un pays vu restent gardés ; le cache des pays tient un tour complet (700 entrées)', () => {
+    for (const u of ['/data/patches/img/vat-4-2048.ktx2', '/data/patches/img/fra-0-1024.ktx2', 'https://countrizz.fr/data/patches/img/mco-3-2048.ktx2']) expect(MOTIF_PAYS.test(u), u).toBe(true);
+    const conf = readFileSync(new URL('../../vite.config.ts', import.meta.url), 'utf8');
+    const pays = conf.slice(conf.indexOf('urlPattern: MOTIF_PAYS'), conf.indexOf('urlPattern: MOTIF_DONNEES'));
+    expect(pays).toContain('maxEntries: 700');
+  });
   it('ce sont bien les motifs de vite.config.ts (aucun motif écrit en dur à côté)', () => {
     const conf = readFileSync(new URL('../../vite.config.ts', import.meta.url), 'utf8');
     expect(conf.match(/urlPattern: [^,]+/g)).toEqual(['urlPattern: MOTIF_LOURD', 'urlPattern: MOTIF_PAYS', 'urlPattern: MOTIF_DONNEES']);

@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import type { ImageryIndex } from '../../src/data/imagery';
+import { imagePatchName, type ImageryIndex } from '../../src/data/imagery';
 import { readJson } from '../geodata/lib/io';
 import { IMAGE_PATCH } from './config';
 import { checkPatches } from './lib/verify';
@@ -17,8 +17,8 @@ import { IMG_CACHE_DIR, IMG_INDEX_PATH, IMG_OUT_DIR } from './paths';
  * - `npm run imagery:fetch -- --pack` : fabrique les archives à publier (scripts/imagery/.cache/release) depuis les patchs
  *   locaux, après contrôle.
  */
-export const RELEASE = { repo: 'Pablohassan/Countrizz', tag: 'imagerie-2025' } as const;
-export const assetName = (size: number) => `patchs-img-${size}.tar`;
+export const RELEASE = { repo: 'Pablohassan/Countrizz', tag: 'imagerie-2025-niveaux' } as const;
+export const assetName = (size: number) => `patchs-img-niveaux-${size}.tar`;
 const assetUrl = (size: number) => `https://github.com/${RELEASE.repo}/releases/download/${RELEASE.tag}/${assetName(size)}`;
 
 function tar(args: string[]): void {
@@ -36,9 +36,9 @@ function pack(index: ImageryIndex, sizes: number[], outDir: string): void {
   for (const size of sizes) {
     const r = checkPatches(index, size, IMG_OUT_DIR);
     if (r.missing.length || r.corrupt.length) throw new Error(`patchs locaux non conformes, rien n'est empaqueté — ${report(size, r)}`);
-    const names = Object.keys(index.countries).map((c) => `${c.toLowerCase()}-${size}.ktx2`);
+    const names = Object.entries(index.countries).flatMap(([c, m]) => m.levels.map((_, i) => imagePatchName(c, i, size)));
     tar(['-cf', path.join(outDir, assetName(size)), '-C', IMG_OUT_DIR, ...names]);
-    console.log(`${assetName(size)} : ${names.length} patchs`);
+    console.log(`${assetName(size)} : ${names.length} photos`);
   }
   writeFileSync(path.join(outDir, 'LICENCE-IMAGERIE.txt'), [
     `Patchs image de Countrizz (${index.layer}), dérivés de l'imagerie EOxCloudless.`,

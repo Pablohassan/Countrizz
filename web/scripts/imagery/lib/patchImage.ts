@@ -1,16 +1,21 @@
 import sharp from 'sharp';
+import { arrivalAltitude, visibleHalfAngle, type ArrivalTarget, type FramingParams, type Viewport } from '../../../src/camera/framing';
 import { makeProjector, type PatchFrame } from '../../geodata/lib/patch';
 import type { GeoBox, Grid } from './grid';
 
 const RAD = Math.PI / 180;
 
 /**
- * Emprise (demi-côté, rad) du patch image : la vue à l'arrivée, pas le pays. Le cadrage montre la calotte
- * max(θ, θ_min) sur 1/m du demi-champ limitant ; `viewFactor` étend au grand côté de l'écran (paysage 16:9 et portrait de
- * téléphone, ≈ 2,2). Au-delà de `maxExtentDeg`, 2048 texels ne seraient plus plus fins que la texture globale 8K.
+ * Chaîne des emprises (demi-côté, rad) d'un pays, du plus large au plus fin (spec zoom §4.1) : le plus fin couvre la vue
+ * d'arrivée (`visibleHalfAngle` à `arrivalAltitude`, la plus petite des références) × `viewFactor`, plafonné à
+ * `maxExtentDeg` ; chaque niveau plus large ×`levelRatio`, tant qu'il ne dépasse pas `maxExtentDeg` : au-delà, 2048
+ * texels ne seraient plus plus fins que la texture globale 8K.
  */
-export function imageExtentRad(capRadiusDeg: number, framing: { margin: number; minContextDeg?: number }, o: { viewFactor: number; maxExtentDeg: number }): number {
-  return Math.min(Math.max(capRadiusDeg, framing.minContextDeg ?? 0) * framing.margin * o.viewFactor, o.maxExtentDeg) * RAD;
+export function imageLevels(rec: ArrivalTarget, framing: FramingParams, o: { viewFactor: number; levelRatio: number; maxExtentDeg: number; viewports: readonly Viewport[] }): number[] {
+  const max = o.maxExtentDeg * RAD;
+  const finest = Math.min(max, ...o.viewports.map((v) => o.viewFactor * visibleHalfAngle(arrivalAltitude(rec, v, framing), v)));
+  const n = 1 + Math.floor(Math.log(max / finest) / Math.log(o.levelRatio) + 1e-9);
+  return Array.from({ length: n }, (_, i) => finest * o.levelRatio ** (n - 1 - i));
 }
 
 /** Boîte géographique d'un cadre : bord et intérieur échantillonnés (65 × 65), longitudes déroulées autour du centre ; un pôle dans le cadre ouvre toutes les longitudes. */

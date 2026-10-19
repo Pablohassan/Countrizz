@@ -1,18 +1,42 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { FRAMING } from '../../../../src/camera/config';
+import { arrivalAltitude, visibleHalfAngle } from '../../../../src/camera/framing';
+import type { CountryRecord } from '../../../../src/data/types';
+import { IMAGE_PATCH } from '../../config';
 import { makeProjector } from '../../../geodata/lib/patch';
 import { snapGrid } from '../../lib/grid';
-import { downsamplePatch, frameBox, imageExtentRad, rasterizeLandGrid, renderPatch } from '../../lib/patchImage';
+import { downsamplePatch, frameBox, imageLevels, rasterizeLandGrid, renderPatch } from '../../lib/patchImage';
 
 const RAD = Math.PI / 180;
-const B = { margin: 3, minContextDeg: 3 };
 
-describe('emprise du patch image : la vue d’arrivée, plafonnée', () => {
-  it('petit pays : contexte minimal × marge × facteur de vue (3 × 3 × 2,2 = 19,8°)', () => {
-    expect(imageExtentRad(0.38, B, { viewFactor: 2.2, maxExtentDeg: 30 })).toBeCloseTo(19.8 * RAD, 12);
+const countries = JSON.parse(readFileSync('public/data/countries.json', 'utf8')) as CountryRecord[];
+const by = (cca3: string) => countries.find((c) => c.cca3 === cca3)!;
+
+describe('chaîne de niveaux d’un pays (spec zoom §4.1)', () => {
+  it('rapport 4 entre niveaux, du plus large au plus fin, rien au-delà de 30°', () => {
+    for (const c of countries) {
+      const e = imageLevels(c, FRAMING, IMAGE_PATCH);
+      expect(e.length, c.cca3).toBeGreaterThanOrEqual(1);
+      for (let i = 1; i < e.length; i++) expect(e[i - 1]! / e[i]!, c.cca3).toBeCloseTo(4, 9);
+      expect(e[0]!, c.cca3).toBeLessThanOrEqual(30 * RAD + 1e-12);
+      // minimale : un niveau de plus (× 4) dépasserait 30°
+      expect(e[0]! * 4, c.cca3).toBeGreaterThan(30 * RAD);
+    }
   });
-  it('pays moyen : son rayon × marge × facteur (France, θ = 4,866° → 32,1°, plafonné à 30°)', () => {
-    expect(imageExtentRad(4.866456, B, { viewFactor: 2.2, maxExtentDeg: 40 })).toBeCloseTo(4.866456 * 3 * 2.2 * RAD, 12);
-    expect(imageExtentRad(4.866456, B, { viewFactor: 2.2, maxExtentDeg: 30 })).toBeCloseTo(30 * RAD, 12);
+  it('le plus fin = 2,2 × la vue d’arrivée, la plus petite des deux références, plafonnée à 30°', () => {
+    for (const c of countries) {
+      const want = Math.min(30 * RAD, ...IMAGE_PATCH.viewports.map((v) => 2.2 * visibleHalfAngle(arrivalAltitude(c, v, FRAMING), v)));
+      expect(imageLevels(c, FRAMING, IMAGE_PATCH).at(-1)!, c.cca3).toBeCloseTo(want, 12);
+    }
+  });
+  it('la Russie a un niveau (30°), le Vatican plusieurs, plus fins que 15 m par texel en 2048', () => {
+    expect(imageLevels(by('RUS'), FRAMING, IMAGE_PATCH)).toEqual([30 * RAD]);
+    const v = imageLevels(by('VAT'), FRAMING, IMAGE_PATCH);
+    expect(v.length).toBeGreaterThan(1);
+    expect((2 * v.at(-1)! * 6_371_000) / 2048).toBeLessThan(15);
+    const total = countries.reduce((s, c) => s + imageLevels(c, FRAMING, IMAGE_PATCH).length, 0);
+    console.log(`chaîne : ${total} niveaux pour ${countries.length} pays`);
   });
 });
 

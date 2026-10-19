@@ -1,6 +1,6 @@
 export interface DprOptions { min: number; max: number; step: number; slowMs: number; fastMs: number; window: number }
 
-/** Niveau « standard » : densité de 0,75 à min(devicePixelRatio, 2), par pas de 0,25 ; vise 45 images/s au moins. */
+/** Les deux niveaux (spec zoom §5) : densité de 0,75 à min(devicePixelRatio, 2), par pas de 0,25 ; vise 45 images/s au moins. */
 export const dprOptions = (devicePixelRatio: number): DprOptions =>
   ({ min: 0.75, max: Math.min(2, Math.max(1, devicePixelRatio)), step: 0.25, slowMs: 22, fastMs: 14, window: 30 });
 
@@ -21,28 +21,38 @@ export function createDprGovernor(o: DprOptions) {
   let dpr = o.max;
   let displayMs = Infinity;
   let clock = 0;
+  /** Fenêtres lentes consécutives déjà au plancher : le repli de qualité s'y règle (spec zoom §5 bis). */
+  let slowAtFloor = 0;
+  let lastMedian: number | null = null;
   const times: number[] = [];
   const backoff = new Map<number, number>(), retryAt = new Map<number, number>();
   return {
     get dpr() { return dpr; },
+    get slowWindowsAtFloor() { return slowAtFloor; },
+    get lastMedianMs() { return lastMedian; },
     update(frameMs: number, nowMs?: number): number {
       clock = nowMs ?? clock + frameMs;
       times.push(frameMs);
       if (times.length < o.window) return dpr;
       const median = [...times].sort((a, b) => a - b)[Math.floor(times.length / 2)]!;
       times.length = 0;
+      lastMedian = median;
       displayMs = Math.min(displayMs, median);
       if (median > o.slowMs) {
         const failed = dpr;
         dpr = Math.max(o.min, dpr - o.step);
+        slowAtFloor = dpr === failed ? slowAtFloor + 1 : 0;   // déjà au plancher : la densité ne peut plus rien
         if (dpr !== failed) {
           const wait = (backoff.get(failed) ?? FIRST_BACKOFF_MS / 2) * 2;
           backoff.set(failed, wait);
           retryAt.set(failed, clock + wait);
         }
-      } else if (median < o.fastMs || median <= displayMs * AT_DISPLAY_RATE) {
-        const next = Math.min(o.max, dpr + o.step);
-        if (clock >= (retryAt.get(next) ?? 0)) dpr = next;
+      } else {
+        slowAtFloor = 0;
+        if (median < o.fastMs || median <= displayMs * AT_DISPLAY_RATE) {
+          const next = Math.min(o.max, dpr + o.step);
+          if (clock >= (retryAt.get(next) ?? 0)) dpr = next;
+        }
       }
       return dpr;
     },

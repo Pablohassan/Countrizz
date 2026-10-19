@@ -48,3 +48,14 @@ export async function loadGlobeTextures(renderer: THREE.WebGPURenderer, tier: Qu
   }
   return { day, night, surface, clouds };
 }
+
+/** Jour et nuit seuls, au niveau donné (repli en cours de partie, spec zoom §5 bis : 8K → 4K sans recréer le renderer). */
+export async function loadDayNight(renderer: THREE.WebGPURenderer, tier: QualityTier, base = '/'): Promise<[THREE.Texture, THREE.Texture]> {
+  const loader = new KTX2Loader().setTranscoderPath(`${base}basis/`).detectSupport(renderer);
+  const size = tier === 'haute' ? '8k' : '4k';
+  try {
+    const [day, night] = await Promise.all([loader.loadAsync(`${base}textures/day-${size}.ktx2`), loader.loadAsync(`${base}textures/night-${size}.ktx2`)]);
+    for (const t of [day, night]) { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; }
+    return [day, night];
+  } finally { loader.dispose(); }
+}

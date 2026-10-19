@@ -5,9 +5,12 @@ export type QualityTier = 'haute' | 'standard';
 
 export interface RendererInfo { renderer: THREE.WebGPURenderer; backend: Backend; maxTexture2D: number }
 
-/** Spec §4.1 : « haute » = WebGPU sur bureau (textures 8K) ; « standard » = mobile ou WebGL 2 (textures 4K). */
-export function qualityTier(i: { backend: Backend; coarsePointer: boolean; maxTexture2D: number }): QualityTier {
-  return i.backend === 'webgpu' && !i.coarsePointer && i.maxTexture2D >= 8192 ? 'haute' : 'standard';
+/**
+ * Spec zoom §5 (15/10, amende le §4.1 de la refonte) : « haute » = WebGPU avec des textures de 8192, téléphone compris
+ * (« WebGL 2 ne doit être qu'un repli ») ; « standard » = tout le reste, dont WebGL 2.
+ */
+export function qualityTier(i: { backend: Backend; maxTexture2D: number }): QualityTier {
+  return i.backend === 'webgpu' && i.maxTexture2D >= 8192 ? 'haute' : 'standard';
 }
 
 /**

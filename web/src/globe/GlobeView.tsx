@@ -1,4 +1,4 @@
-import { Component, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode, type Ref } from 'react';
+import { Component, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode, type Ref } from 'react';
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three/webgpu';
 import { FOV_Y_DEG } from '../camera/config';
@@ -16,16 +16,18 @@ import { CLOUD_DRIFT_TURNS_PER_S } from './clouds';
 import { createAccessoryHost, type Accessory } from './accessories';
 import { ImageryCredit, type CreditPlacement } from './credits';
 import { LoadErrorCard } from './LoadErrorCard';
+import { MeasureOverlay } from './MeasureOverlay';
 import { OffsetCamera } from './offsetCamera';
 import type { ScreenPoint } from './project';
 import { createDprGovernor, dprOptions } from './dynamicResolution';
+import { effectiveTier, isUncompressed, maxDegradation, nextDegradation, type Degradation, type MeasureState } from './fallback';
 import { createImageSource, loadImageryIndex } from './imagePatch';
 import { createProgress } from './loading';
 import { createPostProcessing, postOptions } from './postprocessing';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
 import { lookAt } from './reveal';
 import { withRetry } from './retry';
-import { disposeGlobeTextures, loadGlobeTextures, type GlobeTextures } from './textures';
+import { disposeGlobeTextures, loadDayNight, loadGlobeTextures, type GlobeTextures } from './textures';
 
 extend(THREE as unknown as Parameters<typeof extend>[0]);
 
@@ -74,6 +76,10 @@ export interface GlobeDebug {
   simulateDeviceLost(): void;
   /** La prochaine création du renderer échoue (contrôle de la recréation en échec après une perte du GPU). */
   failNextRenderer?: boolean;
+  /** Niveau effectif, repli en cours de partie (spec zoom §5 bis) et TRAA actif. */
+  quality(): { tier: QualityTier; degradation: Degradation; traa: boolean };
+  /** Plus grande texture 2D du GPU (le niveau haute en dépend). */
+  maxTexture2D: number;
 }
 declare global { interface Window { __globe?: GlobeDebug } }
 
@@ -162,6 +168,19 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
   const recreating = useRef(false);
   const fail = (e: GlobeError) => signals.current.onError?.(e);
   const retry = () => { setLoadError(null); regenerate(); };
+  // Repli de qualité en cours de partie (spec zoom §5 bis) : tenu ici, il survit à la recréation du renderer (perte du
+  // GPU) et ne remonte jamais pendant la visite.
+  const [degradation, setDegradation] = useState<Degradation>('aucune');
+  const events = useRef<MeasureState['events']>([]);
+  const measure = useRef<MeasureState | null>(null);
+  const onDegrade = useCallback((d: Degradation, reason: 'lenteur' | 'format') => {
+    setDegradation((cur) => {
+      const next = maxDegradation(cur, d);
+      if (next !== cur) events.current = [...events.current, { step: next, atS: performance.now() / 1000, reason }];
+      return next;
+    });
+  }, []);
+  const readMeasure = useCallback(() => measure.current, []);
 
   useEffect(() => { if (framing) controller.setFraming(framing); }, [controller, framing]);
   useImperativeHandle(ref, () => ({
@@ -192,19 +211,21 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
           gl={async (props) => {
             if (window.__globe?.failNextRenderer) { window.__globe.failNextRenderer = false; throw new Error('test : création du renderer en échec'); }
             const info = await createRenderer(props.canvas as HTMLCanvasElement, { forceWebGL });
-            const tier = qualityTier({ backend: info.backend, coarsePointer: matchMedia('(pointer: coarse)').matches, maxTexture2D: info.maxTexture2D });
+            const tier = qualityTier({ backend: info.backend, maxTexture2D: info.maxTexture2D });
             // Perte du GPU : on recrée le renderer (nouveau Canvas) ; le contrôleur garde la partie.
             info.renderer.onDeviceLost = () => { recreating.current = true; signals.current.onLost?.(); regenerate(); };
-            Object.assign(info.renderer, { userData: { backend: info.backend, tier } });
+            Object.assign(info.renderer, { userData: { backend: info.backend, tier, maxTexture2D: info.maxTexture2D } });
             return info.renderer;
           }}
         >
           <GlobeScene controller={controller} generation={generation} active={active} warmUp={warmUp} onReady={(info) => { recreating.current = false; onReady?.(info); }}
             onLoading={(p) => signals.current.onLoading?.(p)}
-            onError={(e) => { setLoadError(String(e)); fail({ reason: 'load', detail: String(e) }); }} onCut={() => setCuts((c) => c + 1)} onDpr={setDprProp} />
+            onError={(e) => { setLoadError(String(e)); fail({ reason: 'load', detail: String(e) }); }} onCut={() => setCuts((c) => c + 1)} onDpr={setDprProp}
+            degradation={degradation} onDegrade={onDegrade} events={events} measure={measure} />
         </Canvas>
         {loadError && errorUi && <LoadErrorCard texts={texts} detail={loadError} onRetry={retry} />}
         <ImageryCredit placement={credit} />
+        {new URLSearchParams(location.search).has('mesure') && <MeasureOverlay read={readMeasure} />}
         <style>{'@keyframes countrizz-cut { from { opacity: 1 } to { opacity: 0 } }'}</style>
         <div
           key={`cut-${cuts}`}
@@ -215,8 +236,16 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
   );
 }
 
-function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading, onError, onCut, onDpr }: { controller: GlobeController; generation: number; active: boolean; warmUp: boolean; onReady?: Props['onReady']; onLoading(p: number): void; onError(e: unknown): void; onCut(): void; onDpr(dpr: number): void }) {
-  const renderer = useThree((s) => s.gl) as unknown as THREE.WebGPURenderer & { userData: { backend: Backend; tier: QualityTier } };
+interface SceneProps {
+  controller: GlobeController; generation: number; active: boolean; warmUp: boolean; onReady?: Props['onReady'];
+  onLoading(p: number): void; onError(e: unknown): void; onCut(): void; onDpr(dpr: number): void;
+  /** Repli en cours (tenu par GlobeView) ; `onDegrade` le fait avancer, `events` l'historise, `measure` nourrit l'encart. */
+  degradation: Degradation; onDegrade(d: Degradation, reason: 'lenteur' | 'format'): void;
+  events: { current: MeasureState['events'] }; measure: { current: MeasureState | null };
+}
+
+function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading, onError, onCut, onDpr, degradation, onDegrade, events, measure }: SceneProps) {
+  const renderer = useThree((s) => s.gl) as unknown as THREE.WebGPURenderer & { userData: { backend: Backend; tier: QualityTier; maxTexture2D: number } };
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const scene = useThree((s) => s.scene) as unknown as THREE.Scene;
   const size = useThree((s) => s.size);
@@ -224,8 +253,17 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
   const [post, setPost] = useState<ReturnType<typeof createPostProcessing> | null>(null);
   const setFrameloop = useThree((s) => s.setFrameloop);
   const advance = useThree((s) => s.advance);
-  // Résolution dynamique : niveau « standard » seulement (spec §4.1).
-  const governor = useMemo(() => (renderer.userData.tier === 'standard' ? createDprGovernor(dprOptions(window.devicePixelRatio)) : null), [renderer]);
+  // Niveau effectif : celui du renderer, moins le repli en cours (spec zoom §5 bis).
+  const tier = effectiveTier(renderer.userData.tier, degradation);
+  const traa = degradation === 'aucune' && renderer.userData.tier === 'haute';
+  const degradationRef = useRef(degradation);
+  degradationRef.current = degradation;
+  const qualityRef = useRef({ tier, degradation, traa });
+  qualityRef.current = { tier, degradation, traa };
+  // Résolution dynamique pour les deux niveaux (spec zoom §5) : au plancher et encore lente, elle déclenche le repli.
+  const governor = useMemo(() => createDprGovernor(dprOptions(window.devicePixelRatio)), [renderer]);
+  // Textures chargées et leur niveau : le repli 8K → 4K remplace jour et nuit sans reconstruire le globe.
+  const builtRef = useRef<{ globe: Globe; textures: GlobeTextures; tier: QualityTier } | null>(null);
 
   // Onglet caché ou globe inactif (l'intro joue par-dessus) : plus aucune frame (spec §6.6) ; la boucle reprend ensuite.
   useEffect(() => {
@@ -250,8 +288,9 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
 
   useEffect(() => {
     let alive = true;
-    let built: { globe: Globe; textures: GlobeTextures } | null = null;
-    const { backend, tier } = renderer.userData;
+    // après une recréation qui suit un repli, directement en 4K
+    const { backend } = renderer.userData;
+    const loadTier = tier;
     const loadBorders = async () => {
       const r = await fetch('/data/borders.json');
       if (!r.ok) throw new Error(`borders.json : HTTP ${r.status}`);
@@ -261,24 +300,46 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     const attempt = () => {
       const progress = createProgress(5, (p) => onLoadingRef.current(p));
       return Promise.all([
-        loadGlobeTextures(renderer, tier, '/', (i, f) => progress.update(i, f)),
+        loadGlobeTextures(renderer, loadTier, '/', (i, f) => progress.update(i, f)),
         loadBorders().finally(() => progress.update(4, 1)),
       ]);
     };
     void withRetry(attempt, { attempts: 3, delayMs: 800 }).then(([textures, borders]) => {
       if (!alive) { disposeGlobeTextures(textures); return; }
       const g = new Globe('game', { textures, borders });
-      built = { globe: g, textures };
+      builtRef.current = { globe: g, textures, tier: loadTier };
       controller.attach(g);
       setGlobe(g);
-      onReadyRef.current?.({ backend, tier });
+      onReadyRef.current?.({ backend, tier: loadTier });
+      // le transcodeur est retombé sur du RGBA : la 8K coûterait quatre fois la mémoire prévue (spec zoom §5 bis)
+      if (loadTier === 'haute' && isUncompressed(textures.day)) onDegrade('standard', 'format');
     }, (e: unknown) => { if (alive) onErrorRef.current(e); });
     return () => {
       alive = false;
       controller.attach(null);
-      if (built) { built.globe.dispose(); disposeGlobeTextures(built.textures); }
+      const b = builtRef.current;
+      builtRef.current = null;
+      if (b) { b.globe.dispose(); disposeGlobeTextures(b.textures); }
     };
-  }, [renderer, controller]);
+  }, [renderer, controller]); // eslint-disable-line react-hooks/exhaustive-deps -- le niveau ne compte qu'au chargement : un repli remplace jour et nuit plus bas
+
+  // Repli 8K → 4K en cours de partie (spec zoom §5 bis) : jour et nuit seuls, sans recréer le renderer ni le globe ; en
+  // échec, la 8K reste et la partie continue.
+  useEffect(() => {
+    const b = builtRef.current;
+    if (tier !== 'standard' || !globe || !b || b.globe !== globe || b.tier !== 'haute') return;
+    let alive = true;
+    loadDayNight(renderer, 'standard').then(([day, night]) => {
+      const cur = builtRef.current;
+      if (!alive || !cur || cur.globe !== globe) { day.dispose(); night.dispose(); return; }
+      const [oldDay, oldNight] = [cur.textures.day, cur.textures.night];
+      globe.setDayNight(day, night);
+      oldDay.dispose();
+      oldNight.dispose();
+      builtRef.current = { ...cur, textures: { ...cur.textures, day, night }, tier: 'standard' };
+    }, (e: unknown) => console.warn('repli 4K : jour et nuit non chargés, la 8K reste', e));
+    return () => { alive = false; };
+  }, [tier, globe, renderer]);
 
   // Accessoires (avion de l'accueil) : un hôte par scène, donc par renderer ; recréés après une perte du GPU.
   const host = useMemo(() => createAccessoryHost(scene), [scene]);
@@ -290,24 +351,26 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     return () => { off(); host.dispose(); };
   }, [globe, host, controller]);
 
-  // Post-traitement (spec §4.1) : un par renderer ; recréé avec lui après une perte du GPU.
+  // Post-traitement (spec §4.1) : un par renderer ; recréé avec lui après une perte du GPU, et au repli (TRAA coupé dès
+  // le premier, spec zoom §5 bis).
   useEffect(() => {
-    const p = createPostProcessing(renderer, scene, camera, postOptions(renderer.userData.tier));
+    const p = createPostProcessing(renderer, scene, camera, postOptions(degradation === 'aucune' ? renderer.userData.tier : 'standard'));
     setPost(p);
     return () => { setPost(null); p.dispose(); };
-  }, [renderer, scene, camera]);
+  }, [renderer, scene, camera, degradation]);
 
-  // Patchs image (Sentinel-2) : facultatifs — sans index ni fichier, la texture globale suffit.
+  // Photos emboîtées (Sentinel-2) : facultatives — sans index ni fichier, la texture globale suffit. Au repli en
+  // standard, les 2048 sont retirées puis remplacées par les 1024.
   useEffect(() => {
     let alive = true;
-    const source = createImageSource(renderer, renderer.userData.tier);
+    const source = createImageSource(renderer, tier);
     void loadImageryIndex().then((index) => { if (alive) controller.setImagery(index, source); });
     return () => {
       alive = false;
       controller.setImagery(null, null);
       source.dispose();
     };
-  }, [renderer, controller]);
+  }, [renderer, controller, tier]);
 
   useEffect(() => { controller.setViewport({ width: size.width, height: size.height, fovYDeg: FOV_Y_DEG }); }, [controller, size.width, size.height]);
 
@@ -328,16 +391,25 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
       },
       view: () => (controller.pose ? toLngLat(controller.pose.dir) : null),
       simulateDeviceLost: () => renderer.onDeviceLost({ api: 'WebGPU', message: 'test', reason: null, originalEvent: null }),
+      quality: () => qualityRef.current,
+      maxTexture2D: renderer.userData.maxTexture2D,
     };
     window.__globe = debug;
   }, [renderer, camera, size.width, size.height, generation]);
 
   useFrame((_, delta) => {
-    if (governor) {
-      const before = governor.dpr;
-      const dpr = governor.update(window.__globe?.frameMsOverride ?? delta * 1000, performance.now());
-      if (dpr !== before) onDpr(dpr);
+    const before = governor.dpr;
+    const dpr = governor.update(window.__globe?.frameMsOverride ?? delta * 1000, performance.now());
+    if (dpr !== before) onDpr(dpr);
+    if (renderer.userData.tier === 'haute') {
+      const next = nextDegradation(degradationRef.current, governor.slowWindowsAtFloor);
+      if (next !== degradationRef.current) { degradationRef.current = next; onDegrade(next, 'lenteur'); }
     }
+    const q = qualityRef.current;
+    measure.current = {
+      backend: renderer.userData.backend, tier: renderer.userData.tier, degradation: q.degradation, maxTexture2D: renderer.userData.maxTexture2D,
+      format: builtRef.current?.textures.day.format ?? null, dpr: renderer.getPixelRatio(), medianMs: governor.lastMedianMs, traa: q.traa, events: events.current,
+    };
     if (!globe) return;
     const now = performance.now();
     const pose = controller.director.update(now);

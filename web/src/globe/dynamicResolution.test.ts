@@ -19,6 +19,17 @@ describe('résolution dynamique (spec §4.1, niveau standard)', () => {
     expect(run(g, 40, 30)).toBe(1.75);
     expect(run(g, 40, 30 * 10)).toBe(0.75);
   });
+  it('compte les fenêtres consécutives au plancher et encore lentes, remet à zéro dès qu’une ne l’est plus', () => {
+    const g = createDprGovernor(o);
+    run(g, 40, 30 * 5);                 // 2 → 0,75 en cinq fenêtres
+    expect(g.dpr).toBe(0.75);
+    expect(g.slowWindowsAtFloor).toBe(0);
+    run(g, 40, 30 * 3);
+    expect(g.slowWindowsAtFloor).toBe(3);
+    expect(g.lastMedianMs).toBe(40);
+    run(g, 18, 30);                      // sous le seuil lent : la série s'arrête
+    expect(g.slowWindowsAtFloor).toBe(0);
+  });
   it('frames rapides : remonte jusqu’au maximum', () => {
     const g = createDprGovernor(o);
     run(g, 40, 30 * 10);

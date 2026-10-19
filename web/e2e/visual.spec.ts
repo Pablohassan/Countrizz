@@ -20,8 +20,8 @@ const SCREENS = { bureau: { width: 800, height: 450 }, telephone: { width: 360, 
 
 for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
   for (const [screen, size] of Object.entries(SCREENS)) {
-    // Niveau de qualité réel : « haute » seulement pour WebGPU sur bureau (spec §4.1).
-    const tier = backend === 'webgpu' && screen === 'bureau' ? 'haute' : 'standard';
+    // Niveau de qualité réel : « haute » pour tout WebGPU, téléphone compris (spec zoom §5, 15/10).
+    const tier = backend === 'webgpu' ? 'haute' : 'standard';
     test.describe(`${backend} ${screen}`, () => {
       test.use({ viewport: size });
       for (const [plan, query] of Object.entries(PLANS)) {

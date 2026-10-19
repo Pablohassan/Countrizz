@@ -34,12 +34,14 @@ test('standard : la densité choisie survit aux re-rendus de la page (changement
   expect(await page.evaluate(() => window.__globe!.dpr())).toBe(0.75);
 });
 
-test('haute (WebGPU) : pas de résolution dynamique', async ({ page }) => {
+test('haute (WebGPU) : la résolution dynamique tourne aussi (spec zoom §5), la qualité reste haute au premier pas', async ({ page }) => {
+  // jusqu'au 19/10, la qualité haute gardait sa densité ; depuis la spec zoom §5, le régulateur tourne dans les deux
+  // niveaux, et c'est au plancher et encore lent qu'il déclenche le repli (fallback.spec.ts)
   await ready(page, '');
+  expect(await page.evaluate(() => window.__globe!.quality().tier)).toBe('haute');
   await page.evaluate(() => { window.__globe!.frameMsOverride = 40; });
-  const before = await page.evaluate(() => window.__globe!.frames);
-  await page.waitForFunction((n) => window.__globe!.frames > n + 35, before); // plus d'une fenêtre de 30 frames
-  expect(await page.evaluate(() => window.__globe!.dpr())).toBe(1);
+  await page.waitForFunction(() => window.__globe!.dpr() === 0.75);
+  expect(await page.evaluate(() => window.__globe!.quality())).toEqual({ tier: 'haute', degradation: 'aucune', traa: true });
 });
 
 test('onglet caché : plus aucune frame ; elles reprennent au retour (spec §6.6)', async ({ page }) => {

@@ -254,6 +254,10 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
   const scene = useThree((s) => s.scene) as unknown as THREE.Scene;
   const size = useThree((s) => s.size);
   const [globe, setGlobe] = useState<Globe | null>(null);
+  // les crochets de test lisent le globe par une ref : recréer window.__globe quand il devient prêt effacerait ce qu'un
+  // test y a posé (failNextRenderer, frameMsOverride)
+  const globeRef = useRef<Globe | null>(null);
+  globeRef.current = globe;
   const [post, setPost] = useState<ReturnType<typeof createPostProcessing> | null>(null);
   const setFrameloop = useThree((s) => s.setFrameloop);
   const advance = useThree((s) => s.advance);
@@ -397,11 +401,11 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
       simulateDeviceLost: () => renderer.onDeviceLost({ api: 'WebGPU', message: 'test', reason: null, originalEvent: null }),
       quality: () => qualityRef.current,
       maxTexture2D: renderer.userData.maxTexture2D,
-      beacon: () => globe?.beaconShown ?? false,
+      beacon: () => globeRef.current?.beaconShown ?? false,
       imageSlots: () => controller.imageSlots,
     };
     window.__globe = debug;
-  }, [renderer, camera, size.width, size.height, generation, globe, controller]);
+  }, [renderer, camera, size.width, size.height, generation]); // eslint-disable-line react-hooks/exhaustive-deps -- controller est stable, le globe passe par sa ref
 
   useFrame((_, delta) => {
     const before = governor.dpr;

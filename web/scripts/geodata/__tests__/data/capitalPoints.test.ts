@@ -35,7 +35,7 @@ describe('position des capitales (spec 2A §6)', () => {
   it('capitale dans le cadre de la caméra à l\'arrivée, en portrait comme sur bureau (antiméridien compris)', () => {
     for (const c of all) {
       const offsetDeg = geoDistance(c.capitalLngLat, c.cap.center) * DEG;
-      for (const v of viewports) expect(inArrivalView(offsetDeg, c.cap.radiusDeg, v, FRAMING), `${c.cca3}, ${v.name}`).toBe(true);
+      for (const v of viewports) expect(inArrivalView(offsetDeg, c, v, FRAMING), `${c.cca3}, ${v.name}`).toBe(true);
     }
   });
 

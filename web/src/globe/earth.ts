@@ -21,7 +21,7 @@ const EARTH_RADIUS_M = 6_371_000;
 export const NIGHT_FLOOR = 0.045;
 
 /**
- * Terre en couches (spec §4.2) : jour (Sentinel-2, précisé par le patch image du pays visé), relief, océan (rugosité,
+ * Terre en couches (spec §4.2) : jour (Sentinel-2, précisé par les photos emboîtées du pays visé), relief, océan (rugosité,
  * reflet du soleil, Fresnel du ciel), nuages et leur ombre, lumières de la face nocturne.
  */
 export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof createClouds> | null = null) {
@@ -29,10 +29,13 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   /** Saturation de la texture de jour (1 = telle quelle ; planche de réglage du Sahara). */
   const saturation = uniform(1);
   const material = new THREE.MeshStandardNodeMaterial();
-  const image = createImageLayer(exactSpherePoint());
-  // Mer (1) / terre (0) : masque de la texture de surface (4K), précisé par l'alpha du patch image là où il est
+  const spherePoint = exactSpherePoint();
+  // Photos emboîtées (spec zoom §4.3) : le niveau courant (0) se pose sur la texture globale, le suivant, plus fin (1), sur lui.
+  const images = [createImageLayer(spherePoint), createImageLayer(spherePoint)] as const;
+  const [coarse, fine] = images;
+  // Mer (1) / terre (0) : masque de la texture de surface (4K), précisé par l'alpha des photos là où elles sont
   // (agrandi ×7 au cadrage d'un petit pays, le masque 4K dessinait des côtes en escalier dans le reflet du soleil).
-  const sea = mix(texture(t.surface).g, image.sea, image.weight);
+  const sea = mix(mix(texture(t.surface).g, coarse.sea, coarse.weight), fine.sea, fine.weight);
 
   // repère local : P (sphère unité, le globe n'est ni tourné ni déplacé), est, nord
   const P = normalize(positionWorld);
@@ -59,9 +62,11 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const shadowUv = st.add(vec2(dot(shift, east).div(cosLat.mul(2 * Math.PI)), dot(shift, north).div(Math.PI)));
   const shadow = clouds ? clouds.coverageAt(shadowUv) : float(0);
   // L'océan profond est très sombre : on le relève très légèrement.
-  const dayRgb = texture(t.day).rgb;
+  const dayTex = texture(t.day), nightTex = texture(t.night);
+  const dayRgb = dayTex.rgb;
   const dayColor = mix(vec3(dot(dayRgb, vec3(0.2126, 0.7152, 0.0722))), dayRgb, saturation);
-  const ground = mix(dayColor, image.color, image.weight).add(vec3(0.0, 0.012, 0.035).mul(sea)).mul(shadow.mul(0.45).oneMinus());
+  const photo = mix(mix(dayColor, coarse.color, coarse.weight), fine.color, fine.weight);
+  const ground = photo.add(vec3(0.0, 0.012, 0.035).mul(sea)).mul(shadow.mul(0.45).oneMinus());
   material.colorNode = mix(ground, vec3(0.92, 0.92, 0.92), cover);
   material.roughnessNode = mix(mix(float(0.92), float(0.55), sea), float(1), cover);
   material.metalnessNode = float(0);
@@ -69,7 +74,7 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const nightSide = smoothstep(float(0.05), float(-0.15), ndl);
   // Black Marble a un fond bleuté hors des villes : avec un bloom sans seuil, il voilait toute la face de nuit de mauve
   // (constaté le 10/10, lever de soleil derrière le limbe). On retranche ce plancher : seules les villes brillent.
-  material.emissiveNode = max(texture(t.night).rgb.sub(NIGHT_FLOOR), 0).mul(1.6 / (1 - NIGHT_FLOOR)).mul(nightSide).mul(cover.mul(0.6).oneMinus());
+  material.emissiveNode = max(nightTex.rgb.sub(NIGHT_FLOOR), 0).mul(1.6 / (1 - NIGHT_FLOOR)).mul(nightSide).mul(cover.mul(0.6).oneMinus());
 
   // Voile atmosphérique (diffusion de Rayleigh approchée) : bleu de jour, orangé au crépuscule ; épaissit vers le limbe.
   // Reflet du ciel sur l'océan (Fresnel de Schlick). Posés avant la couche pays : le jaune du pays reste exact, et hors
@@ -84,5 +89,9 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const fresnel = pow(float(1).sub(ndv), float(5)).mul(0.98).add(0.02);
   const sky = vec3(0.3, 0.52, 0.95).mul(day).mul(sea).mul(cover.oneMinus()).mul(fresnel).mul(0.55);
   const base = vec4(mix(output.rgb, veilColor.mul(day.mul(0.9).add(0.1)), veil).add(sky), output.a);
-  return { material, base: base as Node<'vec4'>, image, setSun(dir: Vec3) { sun.value.set(...dir); }, setSaturation(s: number) { saturation.value = s; } };
+  return {
+    material, base: base as Node<'vec4'>, images, setSun(dir: Vec3) { sun.value.set(...dir); }, setSaturation(s: number) { saturation.value = s; },
+    /** Repli de qualité (spec zoom §5 bis) : jour et nuit remplacés sans recompiler le matériau. */
+    setDayNight(day: THREE.Texture, night: THREE.Texture) { dayTex.value = day; nightTex.value = night; },
+  };
 }

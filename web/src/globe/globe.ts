@@ -23,6 +23,9 @@ export type CountryState = keyof typeof STATE;
 /** Habillage du mode jeu ; absent en mode masque. */
 export interface GlobeParts { textures?: GlobeTextures; borders?: LngLat[][] }
 
+/** Une photo posée dans un emplacement : son cadre, sa texture, son opacité propre (fondu du relais). */
+export interface ImageSlot { meta: { center: LngLat; extentRad: number }; tex: THREE.Texture; opacity: number }
+
 /** Apparence du pays visé à un instant donné (voir reveal.ts). */
 export interface CountryLook { visible: boolean; reveal: number; state: CountryState; stateTime: number }
 
@@ -49,18 +52,23 @@ export class Globe {
    * SwiftShader (FRA → JPN → FJI, 03/10).
    */
   private readonly placeholder = new THREE.Texture();
-  /** Patch image (mode jeu) ; `null` en mode masque. */
-  readonly image: ReturnType<typeof createImageLayer> | null = null;
+  /** Emplacements des photos emboîtées (mode jeu) : 0 le niveau courant, 1 le suivant, plus fin ; vide en mode masque. */
+  readonly images: ReturnType<typeof createImageLayer>[] = [];
   private readonly clouds: ReturnType<typeof createClouds> | null = null;
-  private imageTexture: THREE.Texture | null = null;
-  private imageFade: { seconds: number; since: number | null } = { seconds: 0, since: null };
+  private readonly slotTex: (THREE.Texture | null)[] = [null, null];
+  private readonly slotOpacity = [0, 0];
+  private imageFade: { seconds: number; since: number | null; progress: number } = { seconds: 0, since: null, progress: 1 };
+  private setDayNightTex: ((day: THREE.Texture, night: THREE.Texture) => void) | null = null;
+  private dayNightTex: [THREE.Texture, THREE.Texture] | null = null;
 
   constructor(readonly mode: GlobeMode, parts: GlobeParts = {}) {
     if (mode === 'game' && parts.textures) {
       this.clouds = parts.textures.clouds ? createClouds(parts.textures.clouds) : null;
       const earth = createEarthMaterial(parts.textures, this.clouds);
       this.earthMaterial = earth.material;
-      this.image = earth.image;
+      this.images = [...earth.images];
+      this.setDayNightTex = earth.setDayNight;
+      this.dayNightTex = [parts.textures.day, parts.textures.night];
       this.country = createCountryLayer(this.placeholder, earth.base);
       const atmosphere = createAtmosphere();
       const sunDisc = createSunDisc();
@@ -97,24 +105,41 @@ export class Globe {
   }
 
   /**
-   * Patch image du pays visé (Sentinel-2), fondu sur la texture globale ; `null` le retire (absent, en échec, autre pays).
-   * Un nouveau patch apparaît en `fadeSeconds` (horloge de `setTime`) ; le même patch redonné ne relance pas le fondu.
+   * Photos emboîtées du pays visé (spec zoom §4.3) : `coarse` couvre la vue, `fine` (plus serré) se pose dessus à son
+   * opacité ; `null` vide l'emplacement (sa couche reprend sa texture vide avant que le cache ne libère la photo). La
+   * première photo d'un pays (emplacements vides avant) entre en `fadeSeconds` ; un relais de niveau, non.
    */
-  setImagePatch(meta: { center: LngLat; extentRad: number } | null, tex: THREE.Texture | null, fadeSeconds = 0): void {
-    const img = this.image;
-    if (!img) return;
-    if (!meta || !tex) { this.imageTexture = null; img.uniforms.opacity.value = 0; img.clear(); return; }
-    if (tex === this.imageTexture) return;
-    this.imageTexture = tex;
-    const f = tangentFrame(meta.center);
-    img.uniforms.center.value.set(...f.center);
-    img.uniforms.east.value.set(...f.east);
-    img.uniforms.north.value.set(...f.north);
-    img.uniforms.extentRad.value = meta.extentRad;
-    img.setTexture(tex);
-    this.imageFade = { seconds: fadeSeconds, since: null };
-    img.uniforms.opacity.value = fadeSeconds > 0 ? 0 : 1;
+  setImageLevels(coarse: ImageSlot | null, fine: ImageSlot | null, fadeSeconds = 0): void {
+    if (!this.images.length) return;
+    const wasEmpty = this.slotTex.every((t) => t === null);
+    if (wasEmpty && (coarse || fine)) this.imageFade = { seconds: fadeSeconds, since: null, progress: fadeSeconds > 0 ? 0 : 1 };
+    [coarse, fine].forEach((s, i) => this.setSlot(i, s));
   }
+
+  private setSlot(i: number, s: ImageSlot | null): void {
+    const img = this.images[i]!;
+    if (!s) { this.slotTex[i] = null; this.slotOpacity[i] = 0; img.uniforms.opacity.value = 0; img.clear(); return; }
+    if (s.tex !== this.slotTex[i]) {
+      const f = tangentFrame(s.meta.center);
+      img.uniforms.center.value.set(...f.center);
+      img.uniforms.east.value.set(...f.east);
+      img.uniforms.north.value.set(...f.north);
+      img.uniforms.extentRad.value = s.meta.extentRad;
+      img.setTexture(s.tex);
+      this.slotTex[i] = s.tex;
+    }
+    this.slotOpacity[i] = s.opacity;
+    img.uniforms.opacity.value = s.opacity * this.imageFade.progress;
+  }
+
+  /** Textures de jour et de nuit (repli de qualité en cours de partie, spec zoom §5 bis) ; l'appelant libère les anciennes. */
+  setDayNight(day: THREE.Texture, night: THREE.Texture): void {
+    this.setDayNightTex?.(day, night);
+    this.dayNightTex = [day, night];
+  }
+
+  /** Textures de jour et de nuit liées au matériau (contrôles). */
+  get dayNight(): [THREE.Texture, THREE.Texture] | null { return this.dayNightTex; }
 
   /** Nuages : opacité (0 → effacés) et dérive en fraction de tour ; sans texture de nuages, sans effet. */
   setClouds(opacity: number, driftTurns: number): void { this.clouds?.set(opacity, driftTurns % 1); }
@@ -140,13 +165,14 @@ export class Globe {
     this.beacon.sprite.visible = d !== null && d[0] * c.x + d[1] * c.y + d[2] * c.z > 1;
   }
 
-  /** Horloge des animations propres au globe (pulsation de la balise), en secondes. */
+  /** Horloge des animations propres au globe (pulsation de la balise, fondu de la première photo), en secondes. */
   setTime(seconds: number): void {
     this.beacon.setTime(seconds);
     const f = this.imageFade;
-    if (this.image && this.imageTexture && f.seconds > 0) {
+    if (f.progress < 1 && f.seconds > 0 && this.slotTex.some((t) => t !== null)) {
       f.since ??= seconds;
-      this.image.uniforms.opacity.value = Math.min(1, (seconds - f.since) / f.seconds);
+      f.progress = Math.min(1, (seconds - f.since) / f.seconds);
+      this.images.forEach((img, i) => { img.uniforms.opacity.value = this.slotOpacity[i]! * f.progress; });
     }
   }
 
@@ -182,7 +208,7 @@ export class Globe {
       }
     });
     this.placeholder.dispose();
-    this.image?.dispose();
+    for (const img of this.images) img.dispose();
   }
 
   /** Saturation de la texture de jour (1 = telle quelle) : planches de réglage. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { planFlight, type Pose } from './flight';
+import { planFlight, zoomDurationFactor, type Pose } from './flight';
 import { angleBetween, northUp, toVec, type Vec3 } from '../geo/vec';
 
 const deg = Math.PI / 180;
@@ -80,5 +80,26 @@ describe('mouvement réduit', () => {
     const f = planFlight(pose([0, 0], 0.5), pose([90, 0], 0.3), { ...params, reducedMotion: true });
     expect(f.durationMs).toBe(0);
     expect(angleBetween(f.at(0).dir, toVec([90, 0]))).toBeLessThan(1e-9);
+  });
+});
+
+describe('durée selon le zoom (spec zoom §3)', () => {
+  const ref = { from: 1.1, to: 3 };
+  it('1 à ×1,1 et en deçà, 3 à ×3, linéaire en log2, sans plafond propre', () => {
+    expect(zoomDurationFactor(1.1, ref)).toBeCloseTo(1, 12);
+    expect(zoomDurationFactor(0.71, ref)).toBe(1);
+    expect(zoomDurationFactor(3, ref)).toBeCloseTo(3, 12);
+    expect(zoomDurationFactor(Math.sqrt(1.1 * 3), ref)).toBeCloseTo(2, 12);
+    expect(zoomDurationFactor(184, ref)).toBeGreaterThan(3);
+  });
+  it('un zoom ×3 met trois fois le temps d’un zoom ×1,1 ; plafond à 6000 ms ; mouvement réduit : 0', () => {
+    const a = pose([6.1, 49.6], 0.02), b = pose([4.5, 50.6], 0.06);
+    const p = { ...params, zoomRef: ref, capMs: 6000 };
+    const base = planFlight(a, b, { ...p, zoom: 1.1 }).durationMs;
+    expect(base).toBe(planFlight(a, b, params).durationMs);          // ×1,1 : la durée d'aujourd'hui
+    expect(planFlight(a, b, { ...p, zoom: 3 }).durationMs).toBeCloseTo(Math.min(6000, 3 * base), 6);
+    expect(planFlight(a, b, { ...p, zoom: 184 }).durationMs).toBe(6000);
+    expect(planFlight(a, b, { ...p, zoom: Infinity }).durationMs).toBe(6000);
+    expect(planFlight(a, b, { ...p, zoom: 184, reducedMotion: true }).durationMs).toBe(0);
   });
 });

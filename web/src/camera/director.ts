@@ -1,14 +1,14 @@
-import { frameAltitude, limitingHalfAngle, overviewAltitude, type FramingParams, type Viewport } from './framing';
+import { arrivalAltitude, arrivalZoom, limitingHalfAngle, overviewAltitude, type FramingParams, type Viewport } from './framing';
 import { planFlight, type Flight, type FlightParams, type Pose } from './flight';
 import { homePose } from './home';
 import { northUp, rotate, toVec, type LngLat } from '../geo/vec';
 
-export interface FrameTarget { cap: { center: LngLat; radiusDeg: number } }
+export interface FrameTarget { areaKm2: number; cap: { center: LngLat; radiusDeg: number } }
 
 export interface DirectorOptions {
   viewport: Viewport;
   framing: FramingParams;
-  flight: Omit<FlightParams, 'alphaRad' | 'reducedMotion'>;
+  flight: Omit<FlightParams, 'alphaRad' | 'reducedMotion' | 'zoom'>;
   reducedMotion: boolean;
   /** Point survolé au démarrage, en vue d'ensemble. */
   start: LngLat;
@@ -101,7 +101,8 @@ export class CameraDirector {
     this.target = target;
     this.atHome = false;
     const dir = toVec(target.cap.center);
-    return this.flyToPose({ dir, altitude: frameAltitude(target.cap.radiusDeg, this.viewport, this.framing), up: northUp(dir) });
+    const altitude = arrivalAltitude(target, this.viewport, this.framing);
+    return this.flyToPose({ dir, altitude, up: northUp(dir) }, 0, this.axisTarget, arrivalZoom(target, this.viewport, this.framing));
   }
 
   /** Remonte à la vue d'ensemble au-dessus du point courant (même ticket que `flyTo`). */
@@ -120,12 +121,13 @@ export class CameraDirector {
     return this.flyToPose({ dir: h.dir, altitude: h.altitude, up: h.up }, h.pitch, 0);
   }
 
-  private flyToPose(to: Pose, toPitch = 0, toAxis = this.axisTarget): FlightTicket {
+  private flyToPose(to: Pose, toPitch = 0, toAxis = this.axisTarget, zoom?: number): FlightTicket {
     this.flight?.settle(false);
     this.spinDegPerSec = 0;
     this.reframePending = false;
     const plan = planFlight(this.pose, to, {
       ...this.opts.flight,
+      zoom,
       alphaRad: limitingHalfAngle(this.viewport),
       reducedMotion: this.reducedMotion,
     });
@@ -144,7 +146,7 @@ export class CameraDirector {
       return;
     }
     const altitude = this.target
-      ? frameAltitude(this.target.cap.radiusDeg, this.viewport, this.framing)
+      ? arrivalAltitude(this.target, this.viewport, this.framing)
       : overviewAltitude(this.viewport, this.framing);
     if (Math.abs(altitude - this.pose.altitude) < 1e-9 && this.axisY === this.axisTarget) return;
     const plan = planFlight(this.pose, { ...this.pose, altitude }, {

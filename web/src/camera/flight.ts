@@ -14,6 +14,12 @@ export interface FlightParams {
   minMs: number;
   maxMs: number;
   reducedMotion?: boolean;
+  /** Zoom du vol (part d'écran visée / part B, spec zoom §3) ; absent : facteur 1. */
+  zoom?: number;
+  /** Zooms de référence : facteur 1 à `from`, 3 à `to`. */
+  zoomRef?: { from: number; to: number };
+  /** Plafond de la durée, facteur de zoom compris (ms). */
+  capMs?: number;
 }
 
 export interface Flight { durationMs: number; at(t: number): Pose }
@@ -29,6 +35,11 @@ const smootherstep = (t: number) => t * t * t * (t * (6 * t - 15) + 10);
 /** Angle signé de `a` vers `b` autour de l'axe unitaire `axis` (a, b ⟂ axis). */
 const signedAngle = (a: Vec3, b: Vec3, axis: Vec3) => Math.atan2(dot(axis, cross(a, b)), dot(a, b));
 
+/** Spec zoom §3 : d(z) = max(1, 1 + 2 · log2(z / from) / log2(to / from)) — 1 à ×1,1, 3 à ×3 (« zoom 300 % = 3 fois le temps »). */
+export function zoomDurationFactor(z: number, ref: { from: number; to: number }): number {
+  return Math.max(1, 1 + (2 * Math.log2(z / ref.from)) / Math.log2(ref.to / ref.from));
+}
+
 /**
  * Vol en grand cercle avec le profil d'altitude de van Wijk & Nuij (d3.interpolateZoom), temps en smootherstep.
  * Le haut de l'image est transporté parallèlement le long du grand cercle (aucun retournement au passage
@@ -40,7 +51,9 @@ export function planFlight(from: Pose, to: Pose, p: FlightParams): Flight {
   const d = angleBetween(from.dir, to.dir);
   const tanA = Math.tan(p.alphaRad);
   const zoom = zoomWithRho(p.rho)([0, 0, 2 * from.altitude * tanA], [d, 0, 2 * to.altitude * tanA]);
-  const durationMs = Math.min(p.maxMs, Math.max(p.minMs, zoom.duration * p.timeScale));
+  const natural = Math.min(p.maxMs, Math.max(p.minMs, zoom.duration * p.timeScale));
+  const factor = p.zoom !== undefined && p.zoomRef ? zoomDurationFactor(p.zoom, p.zoomRef) : 1;
+  const durationMs = Math.min(p.capMs ?? Infinity, natural * factor);
 
   // Axe du grand cercle ; sur place (d ≈ 0), un axe quelconque ⟂ dir convient : la direction ne bouge pas.
   const rawAxis = cross(from.dir, to.dir);

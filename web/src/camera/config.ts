@@ -15,5 +15,10 @@ export const FRAMING: FramingParams = {
   arrival: { share: { min: 0.1, max: 0.8 }, sizeFactor: { large: 1.1, small: 3 }, areaRange: { maxKm2: 16859281.08, minKm2: 0.51 } },
 };
 
-/** Vol : ρ de d3, durée naturelle de van Wijk bornée à [1500 ; 3500] ms (spec §5). */
-export const FLIGHT: Omit<FlightParams, 'alphaRad' | 'reducedMotion'> = { rho: Math.SQRT2, timeScale: 1, minMs: 1500, maxMs: 3500 };
+/**
+ * Vol : ρ de d3, durée naturelle de van Wijk bornée à [1500 ; 3500] ms (spec §5), multipliée par le facteur de zoom (1 à
+ * ×1,1, 3 à ×3, spec zoom §3), plafonnée à 6 s (option A de l'utilisateur, 15/10).
+ */
+export const FLIGHT: Omit<FlightParams, 'alphaRad' | 'reducedMotion' | 'zoom'> = {
+  rho: Math.SQRT2, timeScale: 1, minMs: 1500, maxMs: 3500, zoomRef: { from: 1.1, to: 3 }, capMs: 6000,
+};

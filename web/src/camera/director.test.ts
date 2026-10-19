@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CameraDirector } from './director';
-import { frameAltitude } from './framing';
+import { FLIGHT, FRAMING } from './config';
+import { arrivalAltitude, frameAltitude } from './framing';
 import { homePose } from './home';
 import { safeViewport } from './safeArea';
 import { angleBetween, toLngLat, toVec } from '../geo/vec';
@@ -12,8 +13,8 @@ const opts = {
   reducedMotion: false,
   start: [2.35, 48.85] as [number, number],
 };
-const japan = { cap: { center: [137.5, 36.2] as [number, number], radiusDeg: 8.84 } };
-const france = { cap: { center: [1.86, 46.6] as [number, number], radiusDeg: 4.87 } };
+const japan = { areaKm2: 377975, cap: { center: [137.5, 36.2] as [number, number], radiusDeg: 8.84 } };
+const france = { areaKm2: 551695, cap: { center: [1.86, 46.6] as [number, number], radiusDeg: 4.87 } };
 
 describe('CameraDirector', () => {
   it('démarre en vue d’ensemble au-dessus du point de départ', () => {
@@ -316,5 +317,27 @@ describe('CameraDirector', () => {
     const q = d.update(20_016);
     expect(q.pitch).toBeCloseTo(h.pitch, 9);
     expect(q.axisY).toBe(0);
+  });
+});
+
+describe('arrivée au cadrage serré (spec zoom §2-3)', () => {
+  const phone = { width: 390, height: 844, fovYDeg: 50 };
+  const vatican = { areaKm2: 0.51, cap: { center: [12.4528, 41.9037] as [number, number], radiusDeg: 0.0049 } };
+  it('flyTo arrive à arrivalAltitude ; depuis la vue d’ensemble, le Vatican vole 6000 ms', () => {
+    const d = new CameraDirector({ ...opts, viewport: phone, framing: FRAMING, flight: FLIGHT });
+    d.update(0);
+    const t = d.flyTo(vatican);
+    expect(t.durationMs).toBe(6000);
+    expect(d.update(6000).altitude).toBeCloseTo(arrivalAltitude(vatican, phone, FRAMING), 9);
+  });
+  it('le recadrage (changement de viewport) ne prend pas le facteur de zoom', () => {
+    const d = new CameraDirector({ ...opts, viewport: phone, framing: FRAMING, flight: FLIGHT });
+    d.update(0);
+    void d.flyTo(vatican);
+    d.update(6000);
+    d.setViewport({ width: 844, height: 390, fovYDeg: 50 });
+    const start = d.update(6000).altitude;
+    expect(d.update(6600).altitude).not.toBe(start);   // le vol de recadrage dure au plus 600 ms
+    expect(d.update(6600).altitude).toBeCloseTo(arrivalAltitude(vatican, { width: 844, height: 390, fovYDeg: 50 }, FRAMING), 9);
   });
 });

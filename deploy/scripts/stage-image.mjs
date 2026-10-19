@@ -40,12 +40,12 @@ for (const taille of index.sizes) {
   if (!n) { console.error(`Taille ${taille} sans calque prévu (CALQUES, Dockerfile).`); process.exit(1); }
   const dossiers = Array.from({ length: n }, (_, k) => join(out, `img-${taille}-${k}`));
   for (const d of dossiers) mkdirSync(d, { recursive: true });
+  // répartition équilibrée (le plus gros fichier d'abord, dans le calque le moins rempli) : de la marge sous la limite
   const octets = new Array(n).fill(0);
-  let k = 0;
-  for (const f of readdirSync(img).filter((nom) => nom.endsWith(`-${taille}.ktx2`)).sort()) {
-    const s = statSync(join(img, f)).size;
-    if (octets[k] + s >= CALQUE_MAX) k++;
-    if (k >= n) { console.error(`Photos ${taille} : au-delà de ${n} calques de ${CALQUE_MAX} octets ; en ajouter un (CALQUES, Dockerfile).`); process.exit(1); }
+  const fichiers = readdirSync(img).filter((nom) => nom.endsWith(`-${taille}.ktx2`)).map((f) => ({ f, s: statSync(join(img, f)).size }));
+  for (const { f, s } of fichiers.sort((a, b) => b.s - a.s || a.f.localeCompare(b.f))) {
+    const k = octets.indexOf(Math.min(...octets));
+    if (octets[k] + s >= CALQUE_MAX) { console.error(`Photos ${taille} : au-delà de ${n} calques de ${CALQUE_MAX} octets ; en ajouter un (CALQUES, Dockerfile).`); process.exit(1); }
     copyFileSync(join(img, f), join(dossiers[k], f));
     octets[k] += s;
   }

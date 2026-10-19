@@ -5,12 +5,12 @@ import path from 'node:path';
 import { PNG } from 'pngjs';
 import { describe, expect, it } from 'vitest';
 import { FRAMING } from '../../../../src/camera/config';
-import type { ImageryIndex } from '../../../../src/data/imagery';
+import { imagePatchName, type ImageryIndex } from '../../../../src/data/imagery';
 import type { CountryRecord } from '../../../../src/data/types';
 import { sha256 } from '../../../geodata/lib/http';
 import { readKtx2Header } from '../../../textures/lib/ktx2';
 import { EOX, IMAGE_PATCH } from '../../config';
-import { imageExtentRad } from '../../lib/patchImage';
+import { imageLevels } from '../../lib/patchImage';
 import { IMG_INDEX_PATH, IMG_OUT_DIR } from '../../paths';
 
 const countries = JSON.parse(readFileSync(path.resolve(IMG_OUT_DIR, '../../countries.json'), 'utf8')) as CountryRecord[];
@@ -25,31 +25,34 @@ describe('index des patchs image (public/data/imagery.json, versionné)', () => 
     expect([i.layer, i.year, i.license, i.attribution]).toEqual([EOX.service.layer, EOX.year, EOX.license, EOX.attribution]);
   });
   it('généré au cadrage du jeu (sinon : `npm run imagery` après tout changement de FRAMING)', () => {
-    expect(index().framing).toEqual({ margin: FRAMING.margin, minContextDeg: FRAMING.minContextDeg ?? 0 });
+    expect(index().framing).toEqual({ margin: FRAMING.margin, minContextDeg: FRAMING.minContextDeg ?? 0, arrival: FRAMING.arrival });
+    expect([index().viewFactor, index().levelRatio, index().maxExtentDeg, index().viewports]).toEqual([IMAGE_PATCH.viewFactor, IMAGE_PATCH.levelRatio, IMAGE_PATCH.maxExtentDeg, IMAGE_PATCH.viewports]);
   });
-  it('les 197 pays, centrés sur leur calotte, à l’emprise de la vue d’arrivée', () => {
+  it('les 197 pays, centrés sur leur calotte, chaîne de niveaux de la vue d’arrivée (spec zoom §4.1)', () => {
     const i = index();
     expect(Object.keys(i.countries).sort()).toEqual(countries.map((c) => c.cca3).sort());
     for (const c of countries) {
       const m = i.countries[c.cca3]!;
       expect(m.center).toEqual(c.cap.center);
-      expect(m.extentRad).toBeCloseTo(imageExtentRad(c.cap.radiusDeg, FRAMING, IMAGE_PATCH), 12);
+      expect(m.levels.map((l) => l.extentRad), c.cca3).toEqual(imageLevels(c, FRAMING, IMAGE_PATCH).map((e) => expect.closeTo(e, 12)));
     }
   });
 });
 
 describe('fichiers des patchs image (hors dépôt : web/public/data/patches/img)', () => {
-  it('chaque fichier de l’index est présent, à sa taille et à son empreinte, sans retournement (KTXorientation rd)', () => {
+  it('chaque fichier de l’index, tous niveaux, est présent, à sa taille et à son empreinte, sans retournement (KTXorientation rd)', () => {
     const i = index();
     const missing: string[] = [];
     for (const [cca3, m] of Object.entries(i.countries)) {
-      for (const [size, f] of Object.entries(m.files)) {
-        const p = path.join(IMG_OUT_DIR, `${cca3.toLowerCase()}-${size}.ktx2`);
-        if (!existsSync(p)) { missing.push(path.basename(p)); continue; }
-        const bytes = readFileSync(p);
-        expect([bytes.length, sha256(bytes)]).toEqual([f.bytes, f.sha256]);
-        const h = readKtx2Header(bytes);
-        expect([h.width, h.height, h.supercompression, h.kv.KTXorientation]).toEqual([Number(size), Number(size), 1, 'rd']);
+      for (const [level, l] of m.levels.entries()) {
+        for (const [size, f] of Object.entries(l.files)) {
+          const p = path.join(IMG_OUT_DIR, imagePatchName(cca3, level, Number(size)));
+          if (!existsSync(p)) { missing.push(path.basename(p)); continue; }
+          const bytes = readFileSync(p);
+          expect([bytes.length, sha256(bytes)], path.basename(p)).toEqual([f.bytes, f.sha256]);
+          const h = readKtx2Header(bytes);
+          expect([h.width, h.height, h.supercompression, h.kv.KTXorientation], path.basename(p)).toEqual([Number(size), Number(size), 1, 'rd']);
+        }
       }
     }
     expect(missing, 'patchs absents : lancer `npm run imagery`').toEqual([]);
@@ -60,7 +63,7 @@ describe('fichiers des patchs image (hors dépôt : web/public/data/patches/img)
     const tmp = mkdtempSync(path.join(tmpdir(), 'patch-'));
     const landMean = (cca3: string, size: number) => {
       const out = path.join(tmp, `${cca3}-${size}.png`);
-      const r = spawnSync('ktx', ['extract', '--transcode', 'rgba8', path.join(IMG_OUT_DIR, `${cca3.toLowerCase()}-${size}.ktx2`), out]);
+      const r = spawnSync('ktx', ['extract', '--transcode', 'rgba8', path.join(IMG_OUT_DIR, `${cca3.toLowerCase()}-0-${size}.ktx2`), out]);
       if (r.status !== 0) throw new Error(`ktx extract ${cca3}-${size} : ${r.stderr}`);
       const png = PNG.sync.read(readFileSync(out));
       let sum = 0, n = 0;

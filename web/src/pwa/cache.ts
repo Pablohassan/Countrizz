@@ -82,7 +82,8 @@ export async function purgeStale(cacheNames: readonly string[], current: Emprein
   if (typeof caches === 'undefined') return [];
   const removed: string[] = [];
   for (const name of cacheNames) {
-    if (!(await caches.has(name))) continue;
+    // Cache encore absent (première visite : le service worker ne l'a pas créé) : on le crée avec la table courante. Sans
+    // cela, la visite suivante, ne trouvant aucune table, retirait tout ce que la première avait rangé (e2e du 20/10).
     const cache = await caches.open(name);
     const keys = await cache.keys();
     const saved = await cache.match(EMPREINTES_KEY);

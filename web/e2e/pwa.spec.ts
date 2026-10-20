@@ -84,6 +84,35 @@ test('un niveau de photo déjà vu est servi par le service worker à la visite 
 });
 
 /**
+ * Cache fichier par fichier (spec océan §3) : la table des empreintes rangée dans le cache dit de quelle version est chaque
+ * copie. On y vieillit l'empreinte d'une seule texture, comme après un déploiement qui ne change qu'elle : au chargement
+ * suivant, seule cette texture sort du cache, puis revient du réseau ; les autres restent servies par le service worker.
+ */
+test('une seule texture changée : elle seule repasse au réseau, les autres restent sur l’appareil', async ({ page, context }) => {
+  await page.goto(`/?webgl&introVariante=${VARIANTE}`);
+  test.skip((await page.locator('link[rel="manifest"]').count()) === 0, 'pas de service worker : serveur de dev');
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await openHome(page);
+  const lourds = ['/textures/day-4k.ktx2', '/textures/surface-4k.ktx2', '/textures/night-4k.ktx2'];
+  await expect.poll(async () => { const out = await enCache(page); return lourds.filter((w) => !out.includes(w)); }, { timeout: 60_000 }).toEqual([]);
+  const table = '/__countrizz-empreintes__.json';
+  expect(await enCache(page)).toContain(table);
+  await page.evaluate(async (key) => {
+    const c = await caches.open('countrizz-lourd');
+    const t = await (await c.match(key))!.json() as Record<string, string>;
+    t['/textures/surface-4k.ktx2'] = 'ancienne';
+    await c.put(key, new Response(JSON.stringify(t)));
+  }, table);
+  // requêtes émises par le service worker lui-même : ce qu'il va chercher au réseau (le reste vient de son cache)
+  const network: string[] = [];
+  context.on('request', (r) => { if (r.serviceWorker()) network.push(new URL(r.url()).pathname); });
+  await openHome(page);
+  // le service worker est allé chercher la seule texture changée ; jour et nuit viennent du cache
+  expect(network.filter((p) => lourds.includes(p))).toEqual(['/textures/surface-4k.ktx2']);
+  expect(await enCache(page)).toEqual(expect.arrayContaining(lourds));
+});
+
+/**
  * Nouvelle version pendant la visite (src/pwa/update.ts). Le navigateur relit `sw.js` hors des routes de Playwright : on
  * envoie donc l'événement que donne le nouveau service worker en prenant la main (`skipWaiting`, `clientsClaim`). Le
  * vrai cycle (un `sw.js` changé d'un octet) a été essayé à la main le 19/10 sous le nginx de l'image. Marque posée dans

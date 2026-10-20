@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import sharp from 'sharp';
@@ -9,7 +9,10 @@ import { EOX } from '../imagery/config';
 import { snapGrid } from '../imagery/lib/grid';
 import { loadMosaic } from '../imagery/lib/mosaic';
 import { IMG_CACHE_DIR } from '../imagery/paths';
-import { BUDGET_BYTES, CLOUDS_SIZE, COLOR_SIZES, CREDITS, DAY_S2, SURFACE_SIZE, TEXTURE_SOURCES } from './config';
+import { BUDGET_BYTES, CLOUDS_SIZE, COLOR_SIZES, CREDITS, DAY_S2, ELEVATION_MAX_M, GEBCO_2026, SURFACE_SIZE, TEXTURE_SOURCES, WAVES } from './config';
+import { encodeElevation } from './lib/elevation';
+import { seaFill } from './lib/seaFill';
+import { waveSet, waveTexture } from './lib/waves';
 import { polarFill } from './lib/polarFill';
 import { seamless } from './lib/seamless';
 import { rasterizeLandMask } from './lib/landMask';
@@ -32,13 +35,26 @@ function checkToktx(): void {
   }
 }
 
-/** Jour pleine résolution (8192 × 4096) : mosaïque Sentinel-2 2025 du cache, glaces polaires de Blue Marble. */
+/** Masque terre (1) / mer (0) de Natural Earth, `w × h`, ligne 0 au nord. */
+function landMask(w: number, h: number): Uint8Array {
+  const ne = readJson<FeatureCollection<Polygon | MultiPolygon>>(NE_COUNTRIES);
+  return rasterizeLandMask(ne.features.flatMap((f) => polygonsOf(f.geometry)) as number[][][][], w, h);
+}
+
+/** Jour pleine résolution (8192 × 4096) : mosaïque Sentinel-2 2025 du cache ; mer et glaces polaires de Blue Marble. */
 async function daySource(): Promise<string> {
   const png = path.join(TMP, 'day-source.png');
   const { mosaic } = await loadMosaic(snapGrid(DAY_S2.box, DAY_S2.maxStepDeg), { service: EOX.service, cacheDir: IMG_CACHE_DIR, maxPx: EOX.maxPx, offline: true });
   const { width, height } = mosaic.grid;
   const { data: bm } = await sharp(source('day'), { limitInputPixels: false }).resize(width, height, { kernel: 'lanczos3' }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
-  const rgb = polarFill(mosaic.rgb, bm, width, height);
+  // mer de Blue Marble (spec océan §1.1) : masque de mer adouci d'un pixel environ, la côte se mêle
+  const land = landMask(width, height);
+  const seaHard = Buffer.alloc(width * height);
+  for (let i = 0; i < seaHard.length; i++) seaHard[i] = land[i] ? 0 : 255;
+  const { data: sea, info } = await sharp(seaHard, { raw: { width, height, channels: 1 } }).blur(1.2).extractChannel(0).raw().toBuffer({ resolveWithObject: true });
+  // un masque à plusieurs canaux décalerait les lignes de la mer (rayures constatées le 20/10)
+  if (info.channels !== 1 || sea.length !== width * height) throw new Error(`masque de mer : ${info.channels} canaux, ${sea.length} octets`);
+  const rgb = seaFill(polarFill(mosaic.rgb, bm, width, height), bm, sea);
   await sharp(rgb, { raw: { width, height, channels: 3 } }).png({ compressionLevel: 6 }).toFile(png);
   return png;
 }
@@ -52,20 +68,28 @@ async function colorTexture(key: 'day' | 'night', size: number, qlevel: number, 
   return name;
 }
 
-/** Surface : R = altitude (GEBCO_08, 0 en mer), G = mer (255) / terre (0) d'après Natural Earth ; UASTC linéaire. */
+/** Surface : R = altitude (GEBCO_2026, 0 → ELEVATION_MAX_M, 0 en mer), G = mer (255) / terre (0) d'après Natural Earth ; UASTC linéaire. */
 async function surfaceTexture(size: number): Promise<string> {
   const w = size, h = size / 2;
-  const { data: elevation } = await sharp(source('elevation'), { limitInputPixels: false })
-    .resize(w, h, { kernel: 'lanczos3' }).extractChannel(0).raw().toBuffer({ resolveWithObject: true });
-  const ne = readJson<FeatureCollection<Polygon | MultiPolygon>>(NE_COUNTRIES);
-  const land = rasterizeLandMask(ne.features.flatMap((f) => polygonsOf(f.geometry)) as number[][][][], w, h);
+  const raw = readFileSync(path.join(TEX_CACHE_DIR, GEBCO_2026.file));
+  const gebco = new Int16Array(raw.buffer, raw.byteOffset, raw.byteLength / 2);
+  const land = landMask(w, h);
+  const elevation = encodeElevation(gebco, GEBCO_2026.width, GEBCO_2026.height, w, h, ELEVATION_MAX_M, land);
   const rgb = Buffer.alloc(w * h * 3);
   for (let i = 0; i < w * h; i++) {
-    rgb[i * 3] = land[i] ? elevation[i]! : 0;
+    rgb[i * 3] = elevation[i]!;
     rgb[i * 3 + 1] = land[i] ? 0 : 255;
   }
   const png = path.join(TMP, `surface-${size}.png`);
   await sharp(rgb, { raw: { width: w, height: h, channels: 3 } }).png({ compressionLevel: 6 }).toFile(png);
+  // grille du relief soulevé pour les frontières (src/globe/relief.ts) : moyenne 8 × 8 = le niveau 3 de la mipmap
+  const g = 8, gw = w / g, gh = h / g, grid = Buffer.alloc(gw * gh);
+  for (let y = 0; y < gh; y++) for (let x = 0; x < gw; x++) {
+    let sum = 0;
+    for (let j = 0; j < g; j++) for (let i = 0; i < g; i++) sum += elevation[(y * g + j) * w + x * g + i]!;
+    grid[y * gw + x] = Math.round(sum / (g * g));
+  }
+  await sharp(grid, { raw: { width: gw, height: gh, channels: 1 } }).png({ compressionLevel: 9 }).toFile(path.join(TEX_OUT_DIR, `relief-${gw}.png`));
   const name = outName('surface', size);
   toktx(['--t2', '--encode', 'uastc', '--uastc_quality', '2', '--zcmp', '18', '--genmipmap', '--assign_oetf', 'linear', '--lower_left_maps_to_s0t0', path.join(TEX_OUT_DIR, name), png]);
   return name;
@@ -79,6 +103,19 @@ async function cloudsTexture(size: number): Promise<string> {
   await sharp(seamless(raw, w, h, Math.round(w / 96)), { raw: { width: w, height: h, channels: 1 } }).png({ compressionLevel: 6 }).toFile(png);
   const name = outName('clouds', size);
   toktx(['--t2', '--encode', 'etc1s', '--clevel', '2', '--qlevel', '128', '--genmipmap', '--assign_oetf', 'linear', '--lower_left_maps_to_s0t0', path.join(TEX_OUT_DIR, name), png]);
+  return name;
+}
+
+/** Vagues (spec océan §1.3) : pentes répétables en R, G (128 = plat) ; UASTC linéaire, mipmaps. */
+async function wavesTexture(): Promise<string> {
+  const { size, count } = WAVES;
+  const { rg } = waveTexture(size, waveSet(count));
+  const rgb = Buffer.alloc(size * size * 3);
+  for (let i = 0; i < size * size; i++) { rgb[i * 3] = rg[i * 2]!; rgb[i * 3 + 1] = rg[i * 2 + 1]!; rgb[i * 3 + 2] = 128; }
+  const png = path.join(TMP, `waves-${size}.png`);
+  await sharp(rgb, { raw: { width: size, height: size, channels: 3 } }).png().toFile(png);
+  const name = `waves-${size}.ktx2`;
+  toktx(['--t2', '--encode', 'uastc', '--uastc_quality', '2', '--zcmp', '18', '--genmipmap', '--assign_oetf', 'linear', path.join(TEX_OUT_DIR, name), png]);
   return name;
 }
 
@@ -97,16 +134,17 @@ async function main(): Promise<void> {
   }
   names.push(faire('surface') ? await surfaceTexture(SURFACE_SIZE) : outName('surface', SURFACE_SIZE));
   names.push(faire('clouds') ? await cloudsTexture(CLOUDS_SIZE) : outName('clouds', CLOUDS_SIZE));
+  names.push(faire('waves') ? await wavesTexture() : `waves-${WAVES.size}.ktx2`);
   writeJson(path.join(TEX_OUT_DIR, 'credits.json'), CREDITS);
 
   const bytes = Object.fromEntries(names.map((n) => [n, statSync(path.join(TEX_OUT_DIR, n)).size]));
-  const tier = (s: string) => bytes[`day-${s}.ktx2`]! + bytes[`night-${s}.ktx2`]! + bytes['surface-4k.ktx2']! + bytes['clouds-4k.ktx2']!;
+  const tier = (s: string) => bytes[`day-${s}.ktx2`]! + bytes[`night-${s}.ktx2`]! + bytes['surface-4k.ktx2']! + bytes['clouds-4k.ktx2']! + bytes[`waves-${WAVES.size}.ktx2`]!;
   const lines = [
     '# Textures globales — rapport de génération', '',
     '| Fichier | Octets |', '|---|---:|',
     ...names.map((n) => `| ${n} | ${bytes[n]} |`), '',
-    `- Niveau « standard » (day-4k + night-4k + surface-4k + clouds-4k) : ${tier('4k')} octets (budget ${BUDGET_BYTES.standard})`,
-    `- Niveau « haute » (day-8k + night-8k + surface-4k + clouds-4k) : ${tier('8k')} octets (budget ${BUDGET_BYTES.haute})`, '',
+    `- Niveau « standard » (day-4k + night-4k + surface-4k + clouds-4k + vagues) : ${tier('4k')} octets (budget ${BUDGET_BYTES.standard})`,
+    `- Niveau « haute » (day-8k + night-8k + surface-4k + clouds-4k + vagues) : ${tier('8k')} octets (budget ${BUDGET_BYTES.haute})`, '',
   ];
   writeFileSync(TEX_REPORT_PATH, lines.join('\n'));
   rmSync(TMP, { recursive: true, force: true });

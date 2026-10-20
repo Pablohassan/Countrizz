@@ -2,12 +2,13 @@
 
 | Fichier | Octets |
 |---|---:|
-| day-8k.ktx2 | 3873228 |
+| day-8k.ktx2 | 2725472 |
 | night-8k.ktx2 | 1123251 |
-| day-4k.ktx2 | 1096801 |
+| day-4k.ktx2 | 739581 |
 | night-4k.ktx2 | 323745 |
-| surface-4k.ktx2 | 2042258 |
+| surface-4k.ktx2 | 1830066 |
 | clouds-4k.ktx2 | 1281420 |
+| waves-512.ktx2 | 246049 |
 
-- Niveau « standard » (day-4k + night-4k + surface-4k + clouds-4k) : 4744224 octets (budget 15000000)
-- Niveau « haute » (day-8k + night-8k + surface-4k + clouds-4k) : 8320157 octets (budget 25000000)
+- Niveau « standard » (day-4k + night-4k + surface-4k + clouds-4k + vagues) : 4420861 octets (budget 15000000)
+- Niveau « haute » (day-8k + night-8k + surface-4k + clouds-4k + vagues) : 7206258 octets (budget 25000000)

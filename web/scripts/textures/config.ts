@@ -18,6 +18,19 @@ export const TEXTURE_SOURCES = {
   clouds: { url: 'https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57747/cloud_combined_8192.tif', file: 'clouds-8192.tif', bytes: 35_870_468 },
 } as const;
 
+/**
+ * Altitude GEBCO_2026 (avril 2026, domaine public, citation obligatoire ; spec océan §2.2) : COG de source.coop lu dans
+ * son aperçu réduit n° 3 (10 800 × 5 400, Int16, mètres) sans télécharger les 4,6 Go du fichier entier.
+ */
+export const GEBCO_2026 = {
+  url: 'https://data.source.coop/giswqs/gebco-bathymetry/gebco_2026/gebco_2026.tif',
+  overview: 3, width: 10800, height: 5400, file: 'gebco2026-10800x5400.i16',
+} as const;
+/** Altitude codée dans le canal R de la surface : 0 → 8 850 m (l'Everest n'est plus écrêté). */
+export const ELEVATION_MAX_M = 8850;
+/** Vagues (spec océan §1.3) : pentes répétables, 512 × 512, 48 houles. */
+export const WAVES = { size: 512, count: 48 } as const;
+
 export const COLOR_SIZES = [8192, 4096] as const;
 export const SURFACE_SIZE = 4096;
 /** Nuages : 4096 × 2048 suffisent à des formes douces ; ETC1S linéaire (1 283 240 octets au prototype ; UASTC : 7 820 074). */
@@ -26,9 +39,9 @@ export const CLOUDS_SIZE = 4096;
 export const BUDGET_BYTES = { standard: 15_000_000, haute: 25_000_000 } as const;
 
 export const CREDITS = [
-  { layer: 'jour', text: `Data & Viewing Products: ${EOX.attribution}, CC BY-NC-SA 4.0. Glaces polaires : Blue Marble: Next Generation (juillet 2004), NASA Earth Observatory (Reto Stöckli).` },
+  { layer: 'jour', text: `Data & Viewing Products: ${EOX.attribution}, CC BY-NC-SA 4.0. Mer et glaces polaires : Blue Marble: Next Generation (juillet 2004), NASA Earth Observatory (Reto Stöckli).` },
   { layer: 'nuit', text: 'Black Marble 2016, NASA Earth Observatory images by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA GSFC.' },
-  { layer: 'relief', text: "Imagery by Jesse Allen, NASA's Earth Observatory, using data from the General Bathymetric Chart of the Oceans (GEBCO) produced by the British Oceanographic Data Centre." },
+  { layer: 'relief', text: 'GEBCO Bathymetric Compilation Group 2026 (2026). The GEBCO_2026 Grid - a continuous terrain model for oceans and land at 15 arc-second intervals. NERC EDS British Oceanographic Data Centre NOC. doi:10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa' },
   { layer: 'océans', text: 'Masque terre/mer dérivé de Natural Earth (domaine public).' },
   { layer: 'nuages', text: 'Blue Marble: Clouds, NASA Earth Observatory (Reto Stöckli).' },
 ] as const;

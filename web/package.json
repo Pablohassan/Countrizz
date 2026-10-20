@@ -60,6 +60,7 @@
     "@types/topojson-simplify": "3.0.3",
     "@vitejs/plugin-react": "6.1.1",
     "d3-geo": "3.1.1",
+    "geotiff": "^3.0.5",
     "pngjs": "7.0.0",
     "polyclip-ts": "0.16.8",
     "polylabel": "2.1.0",

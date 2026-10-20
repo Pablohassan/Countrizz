@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { CountryRecord } from '../data/types';
-import { CLOUD_FADE_MS, cloudOpacity } from './clouds';
+import { CLOUD_FADE_MS, CLOUD_RELIEF, CLOUD_TOP_MAX, cloudOpacity, parallaxShift } from './clouds';
+import { LIFT_MAX, RELIEF_LIFT } from './relief';
 import { GlobeController } from './controller';
 import type { Globe } from './globe';
 
@@ -31,5 +32,22 @@ describe('opacité des nuages (spec §4.2 : ils s’effacent à l’arrivée sur
     void c.flyTo(fra);
     expect(c.cloudOpacityAt(now)).toBe(0);
     expect(c.cloudOpacityAt(now + CLOUD_FADE_MS)).toBe(1);
+  });
+});
+
+describe('nuages en relief (spec nuages §3)', () => {
+  it('sommet le plus haut : 16 km exagérés comme le relief, au-dessus de l’Everest soulevé', () => {
+    expect(CLOUD_RELIEF.exaggeration).toBe(RELIEF_LIFT.exaggeration);
+    expect(CLOUD_TOP_MAX).toBeCloseTo((10 * 16_000) / 6_371_000, 12);
+    expect(CLOUD_TOP_MAX).toBeGreaterThan(LIFT_MAX);
+  });
+  it('parallaxe : nulle à la verticale, z · tan θ ensuite, bornée en visée rasante', () => {
+    expect(parallaxShift(0.01, 1)).toBe(0);
+    expect(parallaxShift(0.01, Math.cos(Math.PI / 4))).toBeCloseTo(0.01, 9);
+    const max = parallaxShift(0.01, CLOUD_RELIEF.minCos);
+    expect(parallaxShift(0.01, 0.05)).toBe(max);
+    expect(parallaxShift(0.01, 0)).toBe(max);
+    let prev = 0;
+    for (let c = 1; c >= CLOUD_RELIEF.minCos; c -= 0.01) { const s = parallaxShift(0.01, c); expect(s).toBeGreaterThanOrEqual(prev); prev = s; }
   });
 });

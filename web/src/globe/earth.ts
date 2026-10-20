@@ -6,7 +6,7 @@ import { exactSpherePoint } from './frameNodes';
 import { createImageLayer } from './imageLayer';
 import { pixelFootprint, SEAWATER_IOR, seaRoughness, waveSlopes, windNode } from './ocean';
 import { createLift, liftHeight, RELIEF_LIFT } from './relief';
-import type { createClouds } from './clouds';
+import { cloudRelief, type createClouds } from './clouds';
 import type { GlobeTextures } from './textures';
 
 /**
@@ -22,8 +22,6 @@ export const RELIEF = { exaggeration: 14, size: 4096, metresFull: RELIEF_LIFT.me
  * en bloc un quart de la vue de Monaco ; les photos portent déjà leur propre ombrage du relief.
  */
 export const RELIEF_MAGNIFY = { from: 2, to: 4 } as const;
-/** Altitude apparente des nuages pour leur ombre (rayons terrestres, exagérée) : l'ombre glisse à l'opposé du soleil. */
-export const CLOUD_SHADOW_HEIGHT = 0.0035;
 const EARTH_RADIUS_M = 6_371_000;
 /** Plancher de la texture de nuit (fond bleuté de Black Marble), retranché avant le bloom. */
 export const NIGHT_FLOOR = 0.045;
@@ -74,23 +72,21 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const seaNormal = waves ? normalize(P.sub(east.mul(waves.slope.x).add(north.mul(waves.slope.y)))) : P;
   const surfaceNormal = mix(relief, seaNormal, sea);
 
-  // Nuages : blancs et mats par-dessus le sol ; leur ombre tombe décalée à l'opposé du soleil (plus longue au soleil
-  // rasant) et assombrit le sol ; ils voilent les lumières des villes.
-  const cover = clouds ? clouds.coverageAt(st) : float(0);
-  // sous les nuages, pas de relief : les montagnes ne s'ombrent pas à travers eux
-  material.normalNode = normalize(transformNormalToView(normalize(mix(surfaceNormal, P, cover))));
-  const sunTangent = sun.sub(P.mul(dot(P, sun)));
-  const c = clamp(dot(P, sun), 0.15, 1);
-  const shift = normalize(sunTangent.add(vec3(1e-6, 0, 0))).mul(sqrt(c.mul(c).oneMinus()).div(c).mul(CLOUD_SHADOW_HEIGHT));
-  const shadowUv = st.add(vec2(dot(shift, east).div(cosLat.mul(2 * Math.PI)), dot(shift, north).div(Math.PI)));
-  const shadow = clouds ? clouds.coverageAt(shadowUv) : float(0);
+  // Nuages en relief (spec nuages §3) : blancs et mats, vus en parallaxe à la hauteur de leur sommet, modelés par le soleil
+  // et ombrés l'un par l'autre ; leur ombre tombe là où le rayon du soleil les traverse ; ils voilent les lumières des villes.
+  const view = normalize(cameraPosition.sub(positionWorld));
+  const sky3d = clouds ? cloudRelief(clouds, { P, east, north, cosLat, st }, view, sun, lift) : null;
+  const cover = sky3d ? sky3d.cover : float(0);
+  // sous les nuages, pas de relief du sol : les montagnes ne s'ombrent pas à travers eux
+  material.normalNode = normalize(transformNormalToView(normalize(mix(surfaceNormal, sky3d ? sky3d.normal : P, cover))));
+  const shadow = sky3d ? sky3d.shadow : float(0);
   // L'océan profond est très sombre : on le relève très légèrement.
   const dayTex = texture(t.day), nightTex = texture(t.night);
   const dayRgb = dayTex.rgb;
   const dayColor = mix(vec3(dot(dayRgb, vec3(0.2126, 0.7152, 0.0722))), dayRgb, saturation);
   const photo = mix(mix(dayColor, coarse.color, coarse.weight), fine.color, fine.weight);
   const ground = photo.add(vec3(0.0, 0.012, 0.035).mul(sea)).mul(shadow.mul(0.45).oneMinus());
-  material.colorNode = mix(ground, vec3(0.92, 0.92, 0.92), cover);
+  material.colorNode = mix(ground, vec3(0.92, 0.92, 0.92).mul(sky3d ? sky3d.shade : float(1)), cover);
   material.roughnessNode = mix(mix(float(0.92), seaRoughness(wind, waves ? waves.shown : float(0)), sea), float(1), cover);
   material.iorNode = mix(float(1.5), float(SEAWATER_IOR), sea);
   material.metalnessNode = float(0);
@@ -104,7 +100,6 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   // Reflet du ciel sur l'océan (Fresnel de Schlick). Posés avant la couche pays : le jaune du pays reste exact, et hors
   // de l'émissif : le bloom ne les prend pas.
   const day = clamp(ndl.mul(1.5).add(0.25), 0, 1);
-  const view = normalize(cameraPosition.sub(positionWorld));
   const ndv = clamp(abs(dot(P, view)), 0, 1);   // borné : pow(1 − x) d'un x > 1 rendrait NaN, et le bloom l'étalerait
   const grazing = pow(float(1).sub(ndv), float(3));
   const dusk = smoothstep(float(-0.12), float(0.35), ndl);

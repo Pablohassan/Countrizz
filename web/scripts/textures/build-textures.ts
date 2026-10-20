@@ -9,7 +9,8 @@ import { EOX } from '../imagery/config';
 import { snapGrid } from '../imagery/lib/grid';
 import { loadMosaic } from '../imagery/lib/mosaic';
 import { IMG_CACHE_DIR } from '../imagery/paths';
-import { BUDGET_BYTES, CLOUDS_SIZE, COLOR_SIZES, CREDITS, DAY_S2, ELEVATION_MAX_M, GEBCO_2026, SURFACE_SIZE, TEXTURE_SOURCES, WAVES } from './config';
+import { BUDGET_BYTES, CLOUDS_SIZE, COLOR_SIZES, CREDITS, DAY_S2, ELEVATION_MAX_M, GEBCO_2026, GMGSI, gmgsiFile, POLAR_TOP_KM, SURFACE_SIZE, TEXTURE_SOURCES, WAVES } from './config';
+import { CLOUD_TOP_MAX_KM, cloudCover, cloudTop, modeAKelvin, polarWeight, toEquirect } from './lib/cloudsIr';
 import { encodeElevation } from './lib/elevation';
 import { seaFill } from './lib/seaFill';
 import { waveSet, waveTexture } from './lib/waves';
@@ -95,12 +96,56 @@ async function surfaceTexture(size: number): Promise<string> {
   return name;
 }
 
-/** Nuages : couverture (luminance du canal R) en un canal, ETC1S linéaire, mipmaps, origine en bas à gauche. */
+/** Grille GMGSI d'un jour : comptes mode A (Float32) et latitudes des lignes (décroissantes, pas Mercator). */
+async function readGmgsi(day: string): Promise<{ counts: Float32Array; lat: Float32Array }> {
+  const h5wasm = (await import('h5wasm/node')).default;
+  await h5wasm.ready;
+  const file = new h5wasm.File(path.join(TEX_CACHE_DIR, gmgsiFile(day)), 'r');
+  try {
+    const data = file.get('data') as InstanceType<typeof h5wasm.Dataset>, latDs = file.get('lat') as InstanceType<typeof h5wasm.Dataset>;
+    if (String(data.shape) !== String([1, GMGSI.height, GMGSI.width])) throw new Error(`gmgsi ${day} : grille ${String(data.shape)}`);
+    return { counts: Float32Array.from(data.value as Float32Array), lat: Float32Array.from(latDs.slice([[0, GMGSI.height], [0, 1]]) as Float32Array) };
+  } finally { file.close(); }
+}
+
+/**
+ * Nuages (spec nuages §1–2) : RVB = couverture, alpha = hauteur du sommet (0 → CLOUD_TOP_MAX_KM), d'après l'infrarouge
+ * GMGSI du dernier jour contre le sol le plus chaud des 14 ; au-delà de ±72°, nuages de Blue Marble à hauteur fixe.
+ * ETC1S linéaire (deux tranches, couleur et alpha), mipmaps, origine en bas à gauche.
+ */
 async function cloudsTexture(size: number): Promise<string> {
+  const w = size, h = size / 2, n = GMGSI.width * GMGSI.height;
+  const clear = new Float32Array(n).fill(-Infinity);
+  let now: Float32Array | null = null, lat: Float32Array | null = null;
+  for (const day of GMGSI.days) {
+    const g = await readGmgsi(day);
+    for (let i = 0; i < n; i++) if (g.counts[i]! >= 0) clear[i] = Math.max(clear[i]!, modeAKelvin(g.counts[i]!));
+    now = g.counts; lat = g.lat;
+  }
+  // températures ramenées à la grille de sortie, où le masque terre/mer est connu ; un pixel sans mesure reste clair
+  const tNow = Float32Array.from(now!, (c, i) => (c >= 0 ? modeAKelvin(c) : clear[i]!));
+  const clearEq = toEquirect(clear, GMGSI.width, GMGSI.height, lat!, w, h), nowEq = toEquirect(tNow, GMGSI.width, GMGSI.height, lat!, w, h);
+  const land = landMask(w, h), coverEq = new Float32Array(w * h), topEq = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    if (Number.isNaN(clearEq[i]!)) { coverEq[i] = NaN; continue; }
+    coverEq[i] = cloudCover(nowEq[i]!, clearEq[i]!, !land[i]);
+    topEq[i] = cloudTop(clearEq[i]! - nowEq[i]!);
+  }
+  const bm = await sharp(source('clouds'), { limitInputPixels: false }).extractChannel(0).resize(w, h, { kernel: 'lanczos3' }).raw().toBuffer();
+  const c8 = Buffer.alloc(w * h), a8 = Buffer.alloc(w * h);
+  for (let y = 0; y < h; y++) {
+    const p = polarWeight(90 - ((y + 0.5) * 180) / h);
+    for (let x = 0; x < w; x++) {
+      const i = y * w + x, inside = !Number.isNaN(coverEq[i]!), q = inside ? p : 1;
+      c8[i] = Math.round(255 * ((inside ? coverEq[i]! : 0) * (1 - q) + (bm[i]! / 255) * q));
+      a8[i] = Math.round(255 * ((inside ? topEq[i]! : 0) * (1 - q) + (POLAR_TOP_KM / CLOUD_TOP_MAX_KM) * q));
+    }
+  }
+  const seam = Math.round(w / 96), cs = seamless(c8, w, h, seam), as = seamless(a8, w, h, seam);
+  const rgba = Buffer.alloc(w * h * 4);
+  for (let i = 0; i < w * h; i++) { rgba[i * 4] = rgba[i * 4 + 1] = rgba[i * 4 + 2] = cs[i]!; rgba[i * 4 + 3] = as[i]!; }
   const png = path.join(TMP, `clouds-${size}.png`);
-  const w = size, h = size / 2;
-  const raw = await sharp(source('clouds'), { limitInputPixels: false }).extractChannel(0).resize(w, h, { kernel: 'lanczos3' }).raw().toBuffer();
-  await sharp(seamless(raw, w, h, Math.round(w / 96)), { raw: { width: w, height: h, channels: 1 } }).png({ compressionLevel: 6 }).toFile(png);
+  await sharp(rgba, { raw: { width: w, height: h, channels: 4 } }).png({ compressionLevel: 6 }).toFile(png);
   const name = outName('clouds', size);
   toktx(['--t2', '--encode', 'etc1s', '--clevel', '2', '--qlevel', '128', '--genmipmap', '--assign_oetf', 'linear', '--lower_left_maps_to_s0t0', path.join(TEX_OUT_DIR, name), png]);
   return name;

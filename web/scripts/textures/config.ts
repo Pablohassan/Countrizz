@@ -26,6 +26,20 @@ export const GEBCO_2026 = {
   url: 'https://data.source.coop/giswqs/gebco-bathymetry/gebco_2026/gebco_2026.tif',
   overview: 3, width: 10800, height: 5400, file: 'gebco2026-10800x5400.i16',
 } as const;
+/**
+ * Nuages (spec nuages §1) : infrarouge long GMGSI v3r0 (NOAA/NESDIS/OSPO, données ouvertes), image du 19/10/2026 à 12 h
+ * UTC ; le sol sans nuages est le plus chaud des 14 jours à la même heure (du 06 au 19/10). Les clés exactes du seau sont
+ * listées au premier téléchargement et gardées dans le verrou.
+ */
+export const GMGSI = {
+  bucket: 'https://noaa-gmgsi-pds.s3.amazonaws.com', product: 'GMGSI_LW', hour: 12,
+  days: ['2026-10-06', '2026-10-07', '2026-10-08', '2026-10-09', '2026-10-10', '2026-10-11', '2026-10-12',
+    '2026-10-13', '2026-10-14', '2026-10-15', '2026-10-16', '2026-10-17', '2026-10-18', '2026-10-19'],
+  width: 4999, height: 3000,
+} as const;
+/** Hauteur donnée aux nuages polaires de Blue Marble (km), hors de la couverture GMGSI. */
+export const POLAR_TOP_KM = 4;
+export const gmgsiFile = (day: string) => `gmgsi-lw-${day}-${GMGSI.hour}h.nc`;
 /** Altitude codée dans le canal R de la surface : 0 → 8 850 m (l'Everest n'est plus écrêté). */
 export const ELEVATION_MAX_M = 8850;
 /** Vagues (spec océan §1.3) : pentes répétables, 512 × 512, 48 houles. */
@@ -43,5 +57,5 @@ export const CREDITS = [
   { layer: 'nuit', text: 'Black Marble 2016, NASA Earth Observatory images by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA GSFC.' },
   { layer: 'relief', text: 'GEBCO Bathymetric Compilation Group 2026 (2026). The GEBCO_2026 Grid - a continuous terrain model for oceans and land at 15 arc-second intervals. NERC EDS British Oceanographic Data Centre NOC. doi:10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa' },
   { layer: 'océans', text: 'Masque terre/mer dérivé de Natural Earth (domaine public).' },
-  { layer: 'nuages', text: 'Blue Marble: Clouds, NASA Earth Observatory (Reto Stöckli).' },
+  { layer: 'nuages', text: 'GMGSI (Global Mosaic of Geostationary Satellite Imagery), infrarouge, 19/10/2026 12 h UTC, NOAA/NESDIS/OSPO. Pôles : Blue Marble: Clouds, NASA Earth Observatory (Reto Stöckli).' },
 ] as const;

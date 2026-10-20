@@ -37,5 +37,77 @@
   "url": "https://data.source.coop/giswqs/gebco-bathymetry/gebco_2026/gebco_2026.tif",
   "sha256": "2b887d20212cc6b862ebdec4c4b95f2778531f97f0c3a5cfd069ac5c90321f24",
   "bytes": 116640000
+ },
+ "gmgsi": {
+  "2026-10-06": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/06/12/GLOBCOMPLIR_v3r0_blend_s202610061200000_e202610061209599_c202610061235408.nc",
+   "sha256": "d3883291237ed144d22d8e74df115b999d524b761e4cb1e855f3269648e15f9e",
+   "bytes": 7444281
+  },
+  "2026-10-07": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/07/12/GLOBCOMPLIR_v3r0_blend_s202610071200000_e202610071209599_c202610071233546.nc",
+   "sha256": "6bbcaefbbdee1dab08b98d6bd9d049da7a67173bcbe7e38a3ba6ee3aa8ee3d67",
+   "bytes": 7380913
+  },
+  "2026-10-08": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/08/12/GLOBCOMPLIR_v3r0_blend_s202610081200000_e202610081209599_c202610081233550.nc",
+   "sha256": "6bf8b333394c5d98ef62cc6e72bb344b67291a36421f6d892135bca75c856245",
+   "bytes": 7340832
+  },
+  "2026-10-09": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/09/12/GLOBCOMPLIR_v3r0_blend_s202610091200000_e202610091209599_c202610091234124.nc",
+   "sha256": "1c4457f139497014be5e0d343cd0903762f1745be4bc8ad6967e5552dde5bbcc",
+   "bytes": 7342139
+  },
+  "2026-10-10": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/10/12/GLOBCOMPLIR_v3r0_blend_s202610101200000_e202610101209599_c202610101233516.nc",
+   "sha256": "b626a805f20ac7e1f22946cdf9faf22da60c434981482fe6073b0168b55a4231",
+   "bytes": 7451570
+  },
+  "2026-10-11": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/11/12/GLOBCOMPLIR_v3r0_blend_s202610111200000_e202610111209599_c202610111233422.nc",
+   "sha256": "d514206a924226c04d2ccecb11a34e24cef5f0ece4961725bfc715762006e120",
+   "bytes": 7467796
+  },
+  "2026-10-12": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/12/12/GLOBCOMPLIR_v3r0_blend_s202610121200000_e202610121209599_c202610121233535.nc",
+   "sha256": "fa99f4b28d930365337dddd18efca7d98eb400b90141bb756bcf77e5c6ee944f",
+   "bytes": 7427153
+  },
+  "2026-10-13": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/13/12/GLOBCOMPLIR_v3r0_blend_s202610131200000_e202610131209599_c202610131233545.nc",
+   "sha256": "e125eb10091de9a0e52842d70de5c0d9b5fca5e5ea6af2ea3140d2ac8f1ca4c8",
+   "bytes": 7374747
+  },
+  "2026-10-14": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/14/12/GLOBCOMPLIR_v3r0_blend_s202610141200000_e202610141209599_c202610141233548.nc",
+   "sha256": "f575fa07cc289f92ea814a3193ed22806f6100b80a9fddc801440bb8bb122c55",
+   "bytes": 7409235
+  },
+  "2026-10-15": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/15/12/GLOBCOMPLIR_v3r0_blend_s202610151200000_e202610151209599_c202610151233597.nc",
+   "sha256": "7b06fed5efe2872ba31a25a21a5efb117921a01ea04437108124e9054f32a22a",
+   "bytes": 7440794
+  },
+  "2026-10-16": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/16/12/GLOBCOMPLIR_v3r0_blend_s202610161200000_e202610161209599_c202610161233584.nc",
+   "sha256": "bdd9b7181e6e641c9635b88b22c8c0fd55b3d3436531b41b090c5a8e59600f0b",
+   "bytes": 7041349
+  },
+  "2026-10-17": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/17/12/GLOBCOMPLIR_v3r0_blend_s202610171200000_e202610171209599_c202610171235092.nc",
+   "sha256": "534e908cdf6bd64f670352e6db463a68bc6114d6e72f87f46f58d73a9328f4d5",
+   "bytes": 7373711
+  },
+  "2026-10-18": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/18/12/GLOBCOMPLIR_v3r0_blend_s202610181200000_e202610181209599_c202610181233531.nc",
+   "sha256": "dfaceb2ef7c33f79479319fd44a78e57ba26576064ba67fce791090d32c972ce",
+   "bytes": 7352132
+  },
+  "2026-10-19": {
+   "url": "https://noaa-gmgsi-pds.s3.amazonaws.com/GMGSI_LW/2026/10/19/12/GLOBCOMPLIR_v3r0_blend_s202610191200000_e202610191209599_c202610191233467.nc",
+   "sha256": "00305df53391dcaeec312fe6a6d8554129e51d227f93ae74d60b4024ee734b36",
+   "bytes": 7419888
+  }
  }
 }

@@ -6,11 +6,11 @@ import { EOX } from '../imagery/config';
 import { snapGrid } from '../imagery/lib/grid';
 import { loadMosaic, type FetchedTile } from '../imagery/lib/mosaic';
 import { IMG_CACHE_DIR } from '../imagery/paths';
-import { DAY_S2, GEBCO_2026, TEXTURE_SOURCES } from './config';
+import { DAY_S2, GEBCO_2026, GMGSI, gmgsiFile, TEXTURE_SOURCES } from './config';
 import { TEX_CACHE_DIR, TEX_LOCK_PATH } from './paths';
 
 interface LockEntry { url: string; sha256: string; bytes: number }
-type Lock = Record<string, LockEntry> & { s2day?: FetchedTile[] };
+type Lock = Record<string, LockEntry> & { s2day?: FetchedTile[]; gmgsi?: Record<string, LockEntry> };
 
 async function main(): Promise<void> {
   const lock: Lock = existsSync(TEX_LOCK_PATH) ? readJson(TEX_LOCK_PATH) : {};
@@ -54,6 +54,28 @@ async function main(): Promise<void> {
     lock.gebco2026 = { url: GEBCO_2026.url, sha256: hash, bytes: bytes.length };
     console.log(`gebco2026 : ${bytes.length} octets`);
   }
+  // Nuages GMGSI (spec nuages §1) : une image par jour à la même heure ; la clé du seau (date de création incluse) est
+  // listée une fois, puis reprise du verrou.
+  lock.gmgsi ??= {};
+  for (const day of GMGSI.days) {
+    const dest = path.join(TEX_CACHE_DIR, gmgsiFile(day)), prev = lock.gmgsi[day];
+    if (prev && existsSync(dest) && sha256(readFileSync(dest)) === prev.sha256) continue;
+    let url = prev?.url;
+    if (!url) {
+      const prefix = `${GMGSI.product}/${day.replaceAll('-', '/')}/${String(GMGSI.hour).padStart(2, '0')}/`;
+      const list = await (await fetch(`${GMGSI.bucket}/?list-type=2&prefix=${prefix}`)).text();
+      const key = /<Key>([^<]+_s\d{8}\d{2}00000_[^<]+\.nc)<\/Key>/.exec(list)?.[1];
+      if (!key) throw new Error(`gmgsi ${day} : aucune image sous ${prefix}`);
+      url = `${GMGSI.bucket}/${key}`;
+    }
+    const bytes = await fetchBytes(url);
+    const hash = sha256(bytes);
+    if (prev && prev.sha256 !== hash) throw new Error(`gmgsi ${day} : empreinte différente du verrou (${prev.sha256} attendu, ${hash} reçu)`);
+    writeBytes(dest, bytes);
+    lock.gmgsi[day] = { url, sha256: hash, bytes: bytes.length };
+    console.log(`gmgsi ${day} : ${bytes.length} octets`);
+  }
+  console.log(`gmgsi : ${GMGSI.days.length} images en cache`);
   // Jour Sentinel-2 : réponses WMS en cache ; une empreinte qui change (EOX a refait ses tuiles) arrête tout — retirer
   // l'entrée « s2day » du verrou pour accepter le nouveau rendu après l'avoir regardé.
   const { tiles } = await loadMosaic(snapGrid(DAY_S2.box, DAY_S2.maxStepDeg), { service: EOX.service, cacheDir: IMG_CACHE_DIR, maxPx: EOX.maxPx });

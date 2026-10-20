@@ -25,6 +25,11 @@ describe('catalogues', () => {
     expect(messages.fr.home.about).toBe('À propos');
     expect(messages.fr.errors.unsupportedHint).toBe('Countrizz a besoin de WebGPU ou de WebGL 2. Essaie avec un navigateur récent : Chrome, Edge, Firefox ou Safari à jour.');
   });
+  it('textes anglais relus (20/10) : réglages et écran « Turn your phone »', () => {
+    expect(messages.en.about.legal).toBe('Credits & licences');
+    expect(messages.en.about.vibrations).toBe('Vibration');
+    expect(messages.en.rotate.text).toBe('Countrizz is played in portrait mode.');
+  });
   it('intro : la vidéo porte son étiquette pour les lecteurs d’écran (les questions, décoratives, prennent modes.*)', () => {
     expect(messages.fr.intro.videoLabel).toBe('Countrizz : une Terre en pâte à modeler tombe du ciel et montre la France');
     expect(messages.en.intro.videoLabel).toBe('Countrizz: a modelling-clay Earth falls from the sky and shows France');

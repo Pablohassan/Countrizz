@@ -17,6 +17,8 @@ export const FIRST_LOAD_BUDGET = {
   /** Affiche du cadrage (octets) : moins d'un dixième de seconde de bonne connexion (1 280 000 o/s), pris sur le démarrage. */
   affiche: 100_000,
   accueil: 12_000_000,
+  /** Même mesure en « Fast 4G » (choix de l'utilisateur, 20/10/2026) : médiane 1121 ms en ligne (1.12), plus 16 % de marge. */
+  demarrageFast4G: 1_300,
 } as const;
 /**
  * Réseaux du démarrage, émulés par CDP (`Network.emulateNetworkConditions` : latence en ms, débits en octets/s), sources
@@ -25,7 +27,7 @@ export const FIRST_LOAD_BUDGET = {
  *   Lighthouse (`front_end/models/trace/lantern/simulation/Constants.ts` : 40 ms d'aller-retour, 10 × 1024 kbit/s), posés
  *   tels quels en latence par requête — les DevTools multiplient un aller-retour visé par 2,75 à 3,75 pour en faire une
  *   latence par requête : c'est donc un réseau fixe (≈ 11 à 15 ms d'aller-retour), pas un mobile ;
- * - « Fast 4G » (mesurée, pas encore bornée) : le préréglage des DevTools (`front_end/core/sdk/NetworkManager.ts` :
+ * - « Fast 4G » (bornée à 1,3 s, 20/10/2026) : le préréglage des DevTools (`front_end/core/sdk/NetworkManager.ts` :
  *   9 Mbit/s × 0,9 en descente, 1,5 Mbit/s × 0,9 en montée, 60 ms × 2,75 de latence), le plus rapide de ses profils mobiles.
  */
 export const RESEAUX = {
@@ -115,13 +117,12 @@ for (const [reseau, conditions] of Object.entries(RESEAUX)) {
     const visites = [];
     for (let i = 0; i < 3; i++) visites.push(await premiereVisite(browser, baseURL!, conditions));
     const ms = visites.map((v) => v.ms ?? Infinity).sort((x, y) => x - y), mediane = ms[1]!;
-    console.log(`démarrage (${reseau}) : première image à ${ms.map(Math.round).join(', ')} ms, médiane ${Math.round(mediane)} (budget ${FIRST_LOAD_BUDGET.demarrage}) ; affiche ${visites[0]!.affiche} octets (budget ${FIRST_LOAD_BUDGET.affiche}) ; variante ${JSON.stringify(visites[0]!.variante)}`);
+    console.log(`démarrage (${reseau}) : première image à ${ms.map(Math.round).join(', ')} ms, médiane ${Math.round(mediane)} (budget ${reseau === 'Fast 4G' ? FIRST_LOAD_BUDGET.demarrageFast4G : FIRST_LOAD_BUDGET.demarrage}) ; affiche ${visites[0]!.affiche} octets (budget ${FIRST_LOAD_BUDGET.affiche}) ; variante ${JSON.stringify(visites[0]!.variante)}`);
     for (const v of visites) {
       expect(v.echec).toBeNull();
       expect(v.affiche).toBeLessThanOrEqual(FIRST_LOAD_BUDGET.affiche);
     }
-    // « Fast 4G » : mesurée, pas encore bornée (plafond à proposer à l'utilisateur sur ce chiffre)
-    if (reseau === 'bonne connexion') expect(mediane).toBeLessThanOrEqual(FIRST_LOAD_BUDGET.demarrage);
+    expect(mediane).toBeLessThanOrEqual(reseau === 'Fast 4G' ? FIRST_LOAD_BUDGET.demarrageFast4G : FIRST_LOAD_BUDGET.demarrage);
   });
 }
 

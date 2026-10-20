@@ -20,7 +20,7 @@ export const en: Messages = {
     installText: 'Countrizz on your home screen, playable even offline.',
     iosTip: 'On iPhone and iPad: tap Share ⬆︎ then “Add to Home Screen”.',
     share: 'Share the game', shareText: 'Send Countrizz to your friends and family.', linkCopied: 'Link copied!',
-    legal: 'Notices and licences', vibrations: 'Vibrations',
+    legal: 'Credits & licences', vibrations: 'Vibration',
   },
   loading: { text: 'Getting the globe ready…' },
   errors: {
@@ -30,5 +30,5 @@ export const en: Messages = {
     unsupportedText: 'The 3D globe is the heart of the game: there’s no version without it.',
     unsupportedHint: 'Countrizz needs WebGPU or WebGL 2. Try an up-to-date browser: Chrome, Edge, Firefox or Safari.',
   },
-  rotate: { title: 'Turn your phone', text: 'Countrizz is played in portrait.', paused: 'Game paused' },
+  rotate: { title: 'Turn your phone', text: 'Countrizz is played in portrait mode.', paused: 'Game paused' },
 };

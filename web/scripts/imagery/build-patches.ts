@@ -9,7 +9,9 @@ import type { CountryRecord } from '../../src/data/types';
 import { polygonsOf } from '../geodata/lib/geometry';
 import { sha256 } from '../geodata/lib/http';
 import { readJson, writeJson } from '../geodata/lib/io';
-import { NE_COUNTRIES } from '../textures/paths';
+import { TEXTURE_SOURCES } from '../textures/config';
+import { NE_COUNTRIES, TEX_CACHE_DIR } from '../textures/paths';
+import { equirectSampler, seaColor } from './lib/seaColor';
 import { EOX, IMAGE_PATCH } from './config';
 import { snapGrid } from './lib/grid';
 import { loadMosaic, sampleBilinear } from './lib/mosaic';
@@ -44,6 +46,11 @@ async function main(): Promise<void> {
   mkdirSync(TMP, { recursive: true });
   mkdirSync(IMG_OUT_DIR, { recursive: true });
   const [big, small] = IMAGE_PATCH.sizes;
+  // mer de Blue Marble (spec océan §1.1) : l'océan d'EOxCloudless est un bleu uniforme ombré, sans lagons
+  const bmFile = path.join(TEX_CACHE_DIR, TEXTURE_SOURCES.day.file);
+  const bm = await sharp(bmFile, { limitInputPixels: false }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  if (bm.info.channels !== 3) throw new Error(`Blue Marble : ${bm.info.channels} canaux`);
+  const sea = equirectSampler(bm.data, bm.info.width, bm.info.height);
   for (const rec of countries) {
     if (only.length && !only.includes(rec.cca3)) continue;
     const extents = imageLevels(rec, FRAMING, IMAGE_PATCH);
@@ -56,7 +63,10 @@ async function main(): Promise<void> {
       const grid = snapGrid({ west: box.west - pad, south: box.south - pad, east: box.east + pad, north: box.north + pad }, texelDeg);
       const { mosaic } = await loadMosaic(grid, { service: EOX.service, cacheDir: IMG_CACHE_DIR, maxPx: EOX.maxPx });
       const land = sampleMask(grid, rasterizeLandGrid(polygons, grid));
-      const rgba = renderPatch(frame, (lon, lat) => sampleBilinear(mosaic, lon, lat), land);
+      const rgba = renderPatch(frame, (lon, lat) => {
+        const l = land(lon, lat);
+        return l >= 1 ? sampleBilinear(mosaic, lon, lat) : seaColor(sampleBilinear(mosaic, lon, lat), sea(lon, lat), l);
+      }, land);
       const png = path.join(TMP, `${level}-${big}.png`), pngSmall = path.join(TMP, `${level}-${small}.png`);
       await sharp(rgba, { raw: { width: big, height: big, channels: 4 } }).png({ compressionLevel: 6 }).toFile(png);
       await sharp(await downsamplePatch(rgba, big, small), { raw: { width: small, height: small, channels: 4 } }).png({ compressionLevel: 6 }).toFile(pngSmall);

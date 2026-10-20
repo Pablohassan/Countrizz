@@ -8,7 +8,7 @@ import { Intro } from '../intro/Intro';
 import { Home } from '../ui/Home';
 import type { EntreeTitre } from '../ui/LogoTitle';
 import type { QualityTier } from '../globe/renderer';
-import { INTRO_URLS, heavyUrls, persist, purgeOutdated, warm } from '../pwa/cache';
+import { INTRO_URLS, cachesReady, heavyUrls, persist, preloadKey, warm } from '../pwa/cache';
 import { useInstall } from '../pwa/install';
 import { browserUpdater, consumeUpdateFlag } from '../pwa/update';
 import { loadCountries } from '../data/countries';
@@ -106,8 +106,8 @@ export function App() {
   // à l'accueil (intro finie, aucune partie, aucun calque) : une nouvelle version peut recharger la page
   useEffect(() => { updater?.setAtHome(phase === 'accueil' && s.screen === 'home' && overlay === null); }, [phase, s.screen, overlay]);
 
-  // caches d'une version précédente du site : supprimés (leurs noms portent l'empreinte de leur contenu)
-  useEffect(() => { void purgeOutdated(__COUNTRIZZ_CACHES__); }, []);
+  // caches d'une version précédente (anciens noms) et fichiers changés depuis : retirés (spec océan §3)
+  useEffect(() => { void cachesReady(); }, []);
   // Dès que le service worker contrôle la page : les fichiers de l'intro passent une fois par lui (à la première visite,
   // elle les a chargés avant lui ; ils viennent du cache HTTP, sans nouveau téléchargement). Le globe, lui, charge après.
   // Appli installée (ou qui vient de l'être) : tout ce qu'il faut pour jouer, au niveau du téléphone, et stockage
@@ -124,11 +124,13 @@ export function App() {
   const installed = install.standalone || installedNow;
   useEffect(() => {
     if (!tier || !controlled) return;
-    const key = __COUNTRIZZ_CACHES__.join(',') + (installed ? '+persistant' : '');
+    const urls = installed ? heavyUrls(tier) : [...INTRO_URLS];
+    const key = preloadKey(urls, __COUNTRIZZ_EMPREINTES__) + (installed ? '+persistant' : '');
     if (readPref(storage, PREF_KEYS.preloaded) === key) return;
     void (async () => {
+      await cachesReady();
       if (installed) await persist();
-      const r = await warm(installed ? heavyUrls(tier) : INTRO_URLS);
+      const r = await warm(urls);
       if (r.failed.length === 0) writePref(storage, PREF_KEYS.preloaded, key);
     })();
   }, [tier, controlled, installed]);

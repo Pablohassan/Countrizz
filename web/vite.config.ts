@@ -6,8 +6,8 @@ import { VitePWA } from 'vite-plugin-pwa';
 import { MOTIF_DONNEES, MOTIF_LOURD, MOTIF_PAYS } from './src/pwa/motifs.ts';
 
 /**
- * Empreinte du contenu de dossiers (noms et octets) : elle nomme les caches du service worker. Un contenu changé = un
- * nouveau cache ; l'appli supprime l'ancien (src/pwa/cache.ts). Rien ne se re-télécharge tant que rien n'a changé.
+ * Empreinte du contenu de fichiers ou de dossiers (noms et octets) : elle nomme le cache des données (un contenu changé =
+ * un nouveau cache, l'appli supprime l'ancien) et marque chaque fichier lourd (empreintesFichiers).
  */
 function empreinte(...chemins: string[]): string {
   const h = createHash('sha256');
@@ -19,11 +19,31 @@ function empreinte(...chemins: string[]): string {
   return h.digest('hex').slice(0, 10);
 }
 const P = 'public';
+/**
+ * Empreinte de chaque fichier gardé en cache (chemin → empreinte), spec océan §3 : l'appli ne retire du cache que les
+ * fichiers changés (src/pwa/cache.ts, purgeStale). Les photos de pays, hors dépôt, prennent celle d'imagery.json.
+ */
+function empreintesFichiers(): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const dir of ['textures', 'basis', 'intro', 'fonts', 'icons', 'data/flags', 'data/patches/sdf']) {
+    const d = `${P}/${dir}`;
+    if (!existsSync(d)) continue;
+    for (const f of readdirSync(d).sort()) if (statSync(`${d}/${f}`).isFile()) out[`/${dir}/${f}`] = empreinte(`${d}/${f}`);
+  }
+  const index = `${P}/data/imagery.json`;
+  if (existsSync(index)) {
+    const { countries } = JSON.parse(readFileSync(index, 'utf8')) as { countries: Record<string, { levels: { files: Record<string, { sha256: string }> }[] }> };
+    for (const [cca3, c] of Object.entries(countries)) c.levels.forEach((l, i) => {
+      for (const [size, file] of Object.entries(l.files)) out[`/data/patches/img/${cca3.toLowerCase()}-${i}-${size}.ktx2`] = file.sha256.slice(0, 10);
+    });
+  }
+  return out;
+}
 export const CACHES = {
-  /** Textures du globe, transcodeur, intro (affiches, ancres, petite Terre ; pas les vidéos, hors de public/intro), police, icônes. */
-  lourd: `countrizz-lourd-${empreinte(`${P}/textures`, `${P}/basis`, `${P}/intro`, `${P}/fonts`, `${P}/icons`)}`,
-  /** Pays déjà vus : patchs (indexés par imagery.json et countries.json, qui portent leurs empreintes) et drapeaux. */
-  pays: `countrizz-pays-${empreinte(`${P}/data/imagery.json`, `${P}/data/countries.json`, `${P}/data/flags`, `${P}/data/patches/sdf`)}`,
+  /** Textures du globe, transcodeur, intro (affiches, ancres, petite Terre ; pas les vidéos, hors de public/intro), police, icônes. Nom stable. */
+  lourd: 'countrizz-lourd',
+  /** Pays déjà vus : photos, patchs SDF et drapeaux. Nom stable : seuls les fichiers changés se retéléchargent. */
+  pays: 'countrizz-pays',
   /**
    * Index de données : servis du cache, revalidés en arrière-plan ; nommés par leur empreinte, comme les autres : après un
    * déploiement, un ancien countries.json ne doit jamais servir un code neuf (revue du 10/10).
@@ -34,7 +54,7 @@ export const CACHES = {
 // Les pages de sonde et de calibration sont publiées avec le site : les e2e tournent sur la version déployée
 // (décision du 09/10/2026). Elles ne sont liées depuis aucune page du jeu.
 export default defineConfig({
-  define: { __COUNTRIZZ_CACHES__: JSON.stringify(Object.values(CACHES)) },
+  define: { __COUNTRIZZ_CACHES__: JSON.stringify(Object.values(CACHES)), __COUNTRIZZ_EMPREINTES__: JSON.stringify(empreintesFichiers()) },
   plugins: [
     react(),
     // PWA (spec 2A §8, décisions du 10/10) : installable, jouable hors ligne après une visite, fichiers lourds gardés.

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { heavyUrls, outdatedCaches, warm } from './cache';
+import { EMPREINTES_KEY, heavyUrls, outdatedCaches, preloadKey, staleEntries, warm } from './cache';
 import { isIos, shouldOffer } from './install';
 import { MOTIF_DONNEES, MOTIF_LOURD, MOTIF_PAYS } from './motifs';
 
@@ -38,12 +38,37 @@ describe('caches de l’appareil', () => {
     expect(heavyUrls('standard')).toContain('/textures/day-4k.ktx2');
     expect(heavyUrls('standard')).not.toContain('/textures/day-8k.ktx2');
     expect(heavyUrls('haute')).toContain('/textures/day-8k.ktx2');
+    expect(heavyUrls('standard')).toEqual(expect.arrayContaining(['/textures/waves-512.ktx2', '/textures/relief-512.png']));
     expect(heavyUrls('haute')).toEqual(expect.arrayContaining(['/intro/affiche-portrait.webp', '/intro/affiche-paysage.webp', '/intro/ancres.json']));
     expect(heavyUrls('haute').filter((u) => u.startsWith('/video/') || u.endsWith('.jpg'))).toEqual([]);
   });
   it('un fichier en échec n’arrête pas les autres', async () => {
     const r = await warm(['/a', '/b', '/c'], async (u) => { if (u === '/b') throw new Error('réseau'); return { ok: u !== '/c' }; });
     expect(r).toEqual({ ok: 1, failed: ['/b', '/c'] });
+  });
+});
+
+describe('cache fichier par fichier (spec océan §3)', () => {
+  const cur = { '/textures/day-4k.ktx2': 'b', '/textures/night-4k.ktx2': 'n', '/intro/ancres.json': 'a' };
+  it('une texture changée sort du cache, les autres restent', () => {
+    expect(staleEntries(['/textures/day-4k.ktx2', '/textures/night-4k.ktx2', '/intro/ancres.json', EMPREINTES_KEY], { ...cur, '/textures/day-4k.ktx2': 'a' }, cur))
+      .toEqual(['/textures/day-4k.ktx2']);
+  });
+  it('un fichier qui n’existe plus sort ; la table elle-même reste', () => {
+    expect(staleEntries(['/textures/vieux.ktx2', EMPREINTES_KEY], { '/textures/vieux.ktx2': 'v' }, cur)).toEqual(['/textures/vieux.ktx2']);
+  });
+  it('sans table d’avant (migration, stockage vidé) : rien ne prouve qu’une copie est à jour, tout sort', () => {
+    expect(staleEntries(['/textures/day-4k.ktx2', '/intro/ancres.json'], null, cur)).toEqual(['/textures/day-4k.ktx2', '/intro/ancres.json']);
+  });
+  it('la clé du préchargement change avec l’empreinte d’un seul fichier', () => {
+    const urls = ['/textures/day-4k.ktx2', '/textures/night-4k.ktx2'];
+    expect(preloadKey(urls, cur)).not.toBe(preloadKey(urls, { ...cur, '/textures/night-4k.ktx2': 'm' }));
+    expect(preloadKey(urls, cur)).toBe(preloadKey(urls, { ...cur, '/intro/ancres.json': 'z' }));
+  });
+  it('les caches lourds et des pays gardent un nom stable (vite.config.ts)', () => {
+    const conf = readFileSync(new URL('../../vite.config.ts', import.meta.url), 'utf8');
+    expect(conf).toContain("lourd: 'countrizz-lourd',");
+    expect(conf).toContain("pays: 'countrizz-pays',");
   });
 });
 

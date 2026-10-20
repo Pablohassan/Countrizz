@@ -29,14 +29,15 @@ function makeUniforms() {
 export type CountryUniforms = ReturnType<typeof makeUniforms>;
 
 /**
- * Couche pays lue dans le patch SDF (contrat de PatchMeta, src/data/types.ts). Renvoie le nœud de sortie à
- * poser sur `material.outputNode` : la couleur éclairée de la Terre, recouverte du pays.
+ * Couche pays lue dans le patch SDF (contrat de PatchMeta, src/data/types.ts) au point `point` du globe (sphère exacte par
+ * défaut ; le point dessiné quand le relief est soulevé, earth.ts). Renvoie le nœud de sortie à poser sur
+ * `material.outputNode` : la couleur éclairée de la Terre, recouverte du pays.
  */
-export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'> = output) {
+export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'> = output, point: Node<'vec3'> = exactSpherePoint()) {
   const u = makeUniforms();
   const sdfNode = texture(placeholder);
 
-  const uv = frameXY(exactSpherePoint(), u).add(1).mul(0.5);
+  const uv = frameXY(point, u).add(1).mul(0.5);
   const inFrame = uv.x.greaterThanEqual(0).and(uv.x.lessThanEqual(1)).and(uv.y.greaterThanEqual(0)).and(uv.y.lessThanEqual(1));
   const shown = inFrame.and(u.visible.greaterThan(0.5));
   // Facteur 0/1, et non `select(shown, calcul, 0)` : TSL compilerait le calcul dans un `if (shown)`, et la lecture du patch et

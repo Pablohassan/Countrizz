@@ -47,7 +47,9 @@ loi de Cox et Munk :
 - Fresnel de l'eau de mer : F0 = 0,02006 (indice 1,33) au lieu de 0,04 par défaut ;
 - seul l'excès de luminance passe au bloom (seuil doux) ; le reflet reste plafonné pour ne pas saturer.
 - **Vent** : une fonction de la latitude dans le shader (alizés, calmes équatoriaux, vents d'ouest, plus une variation lente
-  en longitude), sans fichier. Les valeurs de U viennent d'une climatologie publiée, lue à la source au moment du plan.
+  en longitude), sans fichier. *Décision d'exécution (20/10)* : aucune climatologie par latitude lisible à la source n'a
+  été trouvée ; les paliers (4 à 11 m/s) sont réglés à l'œil sur la planche, dans l'ordre de grandeur de ces régimes, et
+  documentés comme tels (`ocean.ts`, `WIND_BANDS`).
 
 ### 1.3 Mer vivante
 
@@ -57,7 +59,9 @@ loi de Cox et Munk :
   rugosité de Cox et Munk porte seule le reflet.
 - Quand les vagues de la texture sont visibles, la rugosité baisse d'autant (la pente que la texture dessine n'est plus
   comptée deux fois) : le reflet devient une traînée scintillante au lieu d'une tache floue.
-- Objectif de poids : 300 Ko au plus pour cette texture (mesuré au build ; un dépassement se soumet à l'utilisateur).
+- Objectif de poids : 300 Ko au plus pour cette texture ; mesurée au build : 246 049 octets.
+- *Décision d'exécution (20/10)* : la seconde couche est tournée de 37° et réduite à 0,71 (tournée de 90°, le damier des
+  tuiles se voyait au soleil), et une modulation lente « rafales » tirée de la même texture varie la force des vagues.
 
 ## 2. Relief soulevé
 
@@ -77,9 +81,10 @@ reste à 0 (le relief ne creuse pas l'océan).
 
 ### 2.3 Apparition et disparition
 
-- De près, au cadrage d'un pays, la caméra est à la verticale : la hauteur ne s'y voit pas, et le relief d'ombrage s'y
-  efface déjà (`RELIEF_MAGNIFY`). Le soulèvement s'efface selon le **même critère** (pixels par texel de relief),
-  calculé par image côté CPU à partir de l'altitude de la caméra, et passé en uniforme.
+- De près, au cadrage d'un pays, la caméra est à la verticale : la hauteur ne s'y voit pas. Le soulèvement s'efface entre
+  les altitudes de caméra **0,08 et 0,03** rayon terrestre (uniforme posé à chaque pose, `relief.ts`, `LIFT_ALTITUDE`).
+  *Décision d'exécution (20/10)* : le critère de l'ombrage (pixels par texel) l'aurait effacé dès ≈ 0,4 rayon sur un
+  écran de 1 000 px, soit en plein vol ; sous 0,03, les frontières vectorielles sont déjà effacées.
 - Conséquence voulue : au cadrage serré, la surface redevient la sphère exacte ; photos de près, pays en jaune, balises et
   positions à l'écran gardent leur précision actuelle.
 
@@ -87,9 +92,10 @@ reste à 0 (le relief ne creuse pas l'océan).
 
 - **Pays en jaune et photos de près** (dans le matériau de la Terre) : le point lu passe de la sphère exacte
   (`exactSpherePoint`) au point réellement dessiné (`normalize(positionWorld)`) en proportion de `relief` ; à `relief = 0`,
-  rien ne change.
-- **Frontières** (`borders.ts`, `BORDER_RADIUS = 1.0002`) : soulevées de la même hauteur dans leur vertex shader, et
-  découpées au build en segments assez courts pour ne pas passer sous une crête.
+  rien ne change. Le maillage lit l'altitude au niveau de mipmap 3 (512 texels sur un tour, la résolution du maillage).
+- **Frontières** (`borders.ts`, `BORDER_RADIUS = 1.0002`) : découpées tous les 0,35° et soulevées sur le CPU d'après une
+  grille d'altitude de 512 × 256 (`public/textures/relief-512.png`, 40 219 octets, même résolution que le niveau de
+  mipmap lu par le maillage), plus une marge de 0,0004 rayon sur les reliefs.
 - **Balise** : `depthTest: false`, rien à changer.
 - **Positions à l'écran** (`screenPoint`, bulles et étiquettes) : calculées sur la sphère ; l'écart reste faible là où
   elles servent (cadrage serré, relief effacé). Pas de changement.

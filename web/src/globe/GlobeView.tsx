@@ -23,11 +23,12 @@ import { createDprGovernor, dprOptions } from './dynamicResolution';
 import { effectiveTier, isUncompressed, maxDegradation, nextDegradation, type Degradation, type MeasureState } from './fallback';
 import { createImageSource, loadImageryIndex } from './imagePatch';
 import { createProgress } from './loading';
+import { cachesReady } from '../pwa/cache';
 import { createPostProcessing, postOptions } from './postprocessing';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
 import { lookAt } from './reveal';
 import { withRetry } from './retry';
-import { disposeGlobeTextures, loadDayNight, loadGlobeTextures, type GlobeTextures } from './textures';
+import { disposeGlobeTextures, loadDayNight, loadGlobeTextures, loadReliefGrid, type GlobeTextures } from './textures';
 
 extend(THREE as unknown as Parameters<typeof extend>[0]);
 
@@ -304,17 +305,19 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
       if (!r.ok) throw new Error(`borders.json : HTTP ${r.status}`);
       return (await r.json()) as LngLat[][];
     };
-    // chaque essai repart de 0 : 4 textures et les frontières
+    // chaque essai repart de 0 : 5 textures et les frontières (soulevées par la grille du relief, facultative)
     const attempt = () => {
-      const progress = createProgress(5, (p) => onLoadingRef.current(p));
+      const progress = createProgress(6, (p) => onLoadingRef.current(p));
       return Promise.all([
         loadGlobeTextures(renderer, loadTier, '/', (i, f) => progress.update(i, f)),
-        loadBorders().finally(() => progress.update(4, 1)),
+        loadBorders().finally(() => progress.update(5, 1)),
+        loadReliefGrid('/'),
       ]);
     };
-    void withRetry(attempt, { attempts: 3, delayMs: 800 }).then(([textures, borders]) => {
+    // ménage des caches d'abord : une texture changée ne doit pas venir de l'ancienne copie (spec océan §3)
+    void cachesReady().then(() => withRetry(attempt, { attempts: 3, delayMs: 800 })).then(([textures, borders, relief]) => {
       if (!alive) { disposeGlobeTextures(textures); return; }
-      const g = new Globe('game', { textures, borders });
+      const g = new Globe('game', { textures, borders, relief });
       builtRef.current = { globe: g, textures, tier: loadTier };
       controller.attach(g);
       setGlobe(g);

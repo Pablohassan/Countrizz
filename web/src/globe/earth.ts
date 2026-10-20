@@ -1,19 +1,21 @@
 import * as THREE from 'three/webgpu';
-import { abs, cameraPosition, clamp, cross, dot, float, fwidth, length, max, mix, normalize, output, positionWorld, pow, smoothstep, sqrt, texture, transformNormalToView, uniform, uv, vec2, vec3, vec4 } from 'three/tsl';
+import { abs, asin, atan, cameraPosition, clamp, cross, dot, float, fwidth, length, max, mix, normalize, normalLocal, output, positionLocal, positionWorld, pow, smoothstep, sqrt, texture, transformNormalToView, uniform, uv, vec2, vec3, vec4 } from 'three/tsl';
 import type Node from 'three/src/nodes/core/Node.js';
 import type { Vec3 } from '../geo/vec';
 import { exactSpherePoint } from './frameNodes';
 import { createImageLayer } from './imageLayer';
+import { pixelFootprint, SEAWATER_IOR, seaRoughness, waveSlopes, windNode } from './ocean';
+import { createLift, liftHeight, RELIEF_LIFT } from './relief';
 import type { createClouds } from './clouds';
 import type { GlobeTextures } from './textures';
 
 /**
- * Relief (spec §4.2, « normal map issue de l'altimétrie ») : la texture de surface porte l'altitude GEBCO_08 en R
- * (0 → 6400 m) ; la normale est calculée par différences centrées d'un texel, en distance réelle sur la sphère, puis
+ * Relief (spec §4.2, « normal map issue de l'altimétrie ») : la texture de surface porte l'altitude GEBCO_2026 en R
+ * (0 → 8850 m, spec océan §2.2) ; la normale est calculée par différences centrées d'un texel, en distance réelle sur la sphère, puis
  * exagérée. Le `bumpMap` d'avant mesurait la pente à l'échelle du pixel écran : de près, à l'intérieur d'un texel, le
  * relief s'aplatissait (constaté sur les Alpes le 10/10).
  */
-export const RELIEF = { exaggeration: 14, size: 4096, metresFull: 6400 } as const;
+export const RELIEF = { exaggeration: 14, size: 4096, metresFull: RELIEF_LIFT.metresFull } as const;
 /**
  * Grossissement (pixels par texel de relief) entre lequel le relief s'efface (19/10, zoom et images de près) : au cadrage
  * serré d'un petit pays, un texel de 4K (≈ 10 km) couvre une bonne part de l'écran et sa pente, exagérée, assombrissait
@@ -34,8 +36,14 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const sun = uniform(new THREE.Vector3(1, 0, 0));
   /** Saturation de la texture de jour (1 = telle quelle ; planche de réglage du Sahara). */
   const saturation = uniform(1);
-  const material = new THREE.MeshStandardNodeMaterial();
-  const spherePoint = exactSpherePoint();
+  // Physique (et non Standard) pour l'indice de réfraction : l'eau de mer réfléchit F0 = 0,02, la terre garde 0,04 (ior 1,5).
+  const material = new THREE.MeshPhysicalNodeMaterial();
+  // Relief soulevé (spec océan §2) : la boule monte de l'altitude × 10, et redevient la sphère exacte au cadrage serré.
+  const lift = createLift();
+  material.positionNode = positionLocal.add(normalLocal.mul(liftHeight(t.surface, uv()).mul(lift)));
+  // Point lu par les photos et le pays : la sphère exacte de près (précision au texel), le point dessiné quand le relief
+  // est soulevé (sinon la photo glisserait sous les montagnes).
+  const spherePoint = mix(exactSpherePoint(), normalize(positionWorld), lift);
   // Photos emboîtées (spec zoom §4.3) : le niveau courant (0) se pose sur la texture globale, le suivant, plus fin (1), sur lui.
   const images = [createImageLayer(spherePoint), createImageLayer(spherePoint)] as const;
   const [coarse, fine] = images;
@@ -59,11 +67,18 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const reliefShown = smoothstep(float(RELIEF_MAGNIFY.from), float(RELIEF_MAGNIFY.to), reliefMagnify).oneMinus();
   const relief = normalize(mix(P, normalize(P.sub(east.mul(gE).add(north.mul(gN)).mul(RELIEF.exaggeration))), reliefShown));
 
+  // Mer (spec océan §1.2–1.3) : vent par latitude (rugosité de Cox et Munk), vagues qui glissent en approchant.
+  const latDeg = asin(clamp(P.y, -1, 1)).mul(180 / Math.PI), lngRad = atan(P.z.negate(), P.x);
+  const wind = windNode(latDeg, lngRad);
+  const waves = t.waves ? waveSlopes(t.waves, st, pixelFootprint(positionWorld)) : null;
+  const seaNormal = waves ? normalize(P.sub(east.mul(waves.slope.x).add(north.mul(waves.slope.y)))) : P;
+  const surfaceNormal = mix(relief, seaNormal, sea);
+
   // Nuages : blancs et mats par-dessus le sol ; leur ombre tombe décalée à l'opposé du soleil (plus longue au soleil
   // rasant) et assombrit le sol ; ils voilent les lumières des villes.
   const cover = clouds ? clouds.coverageAt(st) : float(0);
   // sous les nuages, pas de relief : les montagnes ne s'ombrent pas à travers eux
-  material.normalNode = normalize(transformNormalToView(normalize(mix(relief, P, cover))));
+  material.normalNode = normalize(transformNormalToView(normalize(mix(surfaceNormal, P, cover))));
   const sunTangent = sun.sub(P.mul(dot(P, sun)));
   const c = clamp(dot(P, sun), 0.15, 1);
   const shift = normalize(sunTangent.add(vec3(1e-6, 0, 0))).mul(sqrt(c.mul(c).oneMinus()).div(c).mul(CLOUD_SHADOW_HEIGHT));
@@ -76,7 +91,8 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const photo = mix(mix(dayColor, coarse.color, coarse.weight), fine.color, fine.weight);
   const ground = photo.add(vec3(0.0, 0.012, 0.035).mul(sea)).mul(shadow.mul(0.45).oneMinus());
   material.colorNode = mix(ground, vec3(0.92, 0.92, 0.92), cover);
-  material.roughnessNode = mix(mix(float(0.92), float(0.55), sea), float(1), cover);
+  material.roughnessNode = mix(mix(float(0.92), seaRoughness(wind, waves ? waves.shown : float(0)), sea), float(1), cover);
+  material.iorNode = mix(float(1.5), float(SEAWATER_IOR), sea);
   material.metalnessNode = float(0);
   const ndl = dot(P, sun);
   const nightSide = smoothstep(float(0.05), float(-0.15), ndl);
@@ -98,7 +114,9 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const sky = vec3(0.3, 0.52, 0.95).mul(day).mul(sea).mul(cover.oneMinus()).mul(fresnel).mul(0.55);
   const base = vec4(mix(output.rgb, veilColor.mul(day.mul(0.9).add(0.1)), veil).add(sky), output.a);
   return {
-    material, base: base as Node<'vec4'>, images, setSun(dir: Vec3) { sun.value.set(...dir); }, setSaturation(s: number) { saturation.value = s; },
+    material, base: base as Node<'vec4'>, images, point: spherePoint as Node<'vec3'>,
+    /** Part du relief soulevé (0 → sphère exacte, 1 → altitude × 10), posée à chaque pose (relief.ts, liftFactor). */
+    setLift(f: number) { lift.value = f; }, setSun(dir: Vec3) { sun.value.set(...dir); }, setSaturation(s: number) { saturation.value = s; },
     /** Repli de qualité (spec zoom §5 bis) : jour et nuit remplacés sans recompiler le matériau. */
     setDayNight(day: THREE.Texture, night: THREE.Texture) { dayTex.value = day; nightTex.value = night; },
   };

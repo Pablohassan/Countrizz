@@ -9,7 +9,7 @@ import { northUp, toLngLat, toVec } from '../geo/vec';
 import { Globe } from '../globe/globe';
 import { loadPatchTexture } from '../globe/patchTexture';
 import { createRenderer } from '../globe/renderer';
-import { loadGlobeTextures } from '../globe/textures';
+import { loadGlobeTextures, loadReliefGrid } from '../globe/textures';
 import { createImageSource, loadImageryIndex } from '../globe/imagePatch';
 import { createPostProcessing, postOptions } from '../globe/postprocessing';
 import { OffsetCamera } from '../globe/offsetCamera';
@@ -61,7 +61,7 @@ renderer.setSize(width, height);
 const mode = q.get('mode') === 'game' ? 'game' : 'mask';
 const textures = mode === 'game' ? await loadGlobeTextures(renderer, q.get('tier') === 'haute' ? 'haute' : 'standard') : undefined;
 const borders = q.has('borders') ? ((await (await fetch('/data/borders.json')).json()) as LngLat[][]) : undefined;
-const globe = new Globe(mode, { textures, borders });
+const globe = new Globe(mode, { textures, borders, relief: borders ? await loadReliefGrid('/') : null });
 const camera = new OffsetCamera(FOV_Y_DEG, width / height, 0.001, 100);
 
 const rec = q.get('cca3') ? (await loadCountries('/')).find((c) => c.cca3 === q.get('cca3')) : undefined;

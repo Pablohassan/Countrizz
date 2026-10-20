@@ -6,7 +6,8 @@ import type { LngLat, PatchMeta } from '../data/types';
 import { toVec, type Vec3 } from '../geo/vec';
 import { createAtmosphere } from './atmosphere';
 import { createBeacon } from './beacon';
-import { createBorders } from './borders';
+import { createBorders, type ReliefGrid } from './borders';
+import { liftFactor } from './relief';
 import { createClouds } from './clouds';
 import { createCountryLayer, STATE } from './countryLayer';
 import { createEarthMaterial } from './earth';
@@ -21,7 +22,7 @@ export type GlobeMode = 'mask' | 'game';
 export type CountryState = keyof typeof STATE;
 
 /** Habillage du mode jeu ; absent en mode masque. */
-export interface GlobeParts { textures?: GlobeTextures; borders?: LngLat[][] }
+export interface GlobeParts { textures?: GlobeTextures; borders?: LngLat[][]; relief?: ReliefGrid | null }
 
 /** Une photo posée dans un emplacement : son cadre, sa texture, son opacité propre (fondu du relais). */
 export interface ImageSlot { meta: { center: LngLat; extentRad: number }; tex: THREE.Texture; opacity: number }
@@ -40,6 +41,7 @@ export class Globe {
   private readonly sun = new THREE.DirectionalLight(0xffffff, 3);
   private readonly sunListeners: ((dir: Vec3) => void)[] = [];
   private setSaturation: (s: number) => void = () => {};
+  private setLift: (f: number) => void = () => {};
   private readonly altitudeListeners: ((altitude: number) => void)[] = [];
   private readonly beacon = createBeacon();
   private beaconDir: Vec3 | null = null;
@@ -69,14 +71,15 @@ export class Globe {
       this.images = [...earth.images];
       this.setDayNightTex = earth.setDayNight;
       this.dayNightTex = [parts.textures.day, parts.textures.night];
-      this.country = createCountryLayer(this.placeholder, earth.base);
+      this.country = createCountryLayer(this.placeholder, earth.base, earth.point);
+      this.setLift = earth.setLift;
       const atmosphere = createAtmosphere();
       const sunDisc = createSunDisc();
       this.sunListeners.push(earth.setSun, atmosphere.setSun, sunDisc.setDirection);
       this.setSaturation = earth.setSaturation;
       this.root.add(atmosphere.mesh, createStars(), sunDisc.sprite, this.beacon.sprite);
       if (parts.borders) {
-        const borders = createBorders(parts.borders);
+        const borders = createBorders(parts.borders, parts.relief ?? null);
         this.root.add(borders.object);
         this.altitudeListeners.push(borders.setAltitude);
       }
@@ -195,6 +198,7 @@ export class Globe {
     if (camera instanceof OffsetCamera) camera.axisY = pose.axisY;
     camera.updateProjectionMatrix();
     this.setSun(sunDirection(pose));
+    this.setLift(liftFactor(pose.altitude));
     for (const f of this.altitudeListeners) f(pose.altitude);
   }
 

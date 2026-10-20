@@ -16,13 +16,15 @@ import type { createImageLayer } from './imageLayer';
 import { tangentFrame } from './patchFrame';
 import { createStars } from './stars';
 import { createSunDisc } from './sunDisc';
+import { setKeep, type PhysicalSky } from './physicalSky';
 import type { GlobeTextures } from './textures';
 
 export type GlobeMode = 'mask' | 'game';
 export type CountryState = keyof typeof STATE;
 
 /** Habillage du mode jeu ; absent en mode masque. */
-export interface GlobeParts { textures?: GlobeTextures; borders?: LngLat[][]; relief?: ReliefGrid | null }
+/** `sky` : atmosphère physique du renderer (WebGPU, physicalSky.ts) ; absente, le halo approché d'atmosphere.ts. */
+export interface GlobeParts { textures?: GlobeTextures; borders?: LngLat[][]; relief?: ReliefGrid | null; sky?: PhysicalSky | null }
 
 /** Une photo posée dans un emplacement : son cadre, sa texture, son opacité propre (fondu du relais). */
 export interface ImageSlot { meta: { center: LngLat; extentRad: number }; tex: THREE.Texture; opacity: number }
@@ -39,6 +41,8 @@ export class Globe {
   readonly country: ReturnType<typeof createCountryLayer>;
   readonly earthMaterial: THREE.MeshStandardNodeMaterial;
   private readonly sun = new THREE.DirectionalLight(0xffffff, 3);
+  /** Lumières de la scène : le soleil directionnel et l'ambiance, ou la lumière de l'atmosphère physique. */
+  private lights: THREE.Light[] = [this.sun, new THREE.AmbientLight(0xffffff, 0.04)];
   private readonly sunListeners: ((dir: Vec3) => void)[] = [];
   private setSaturation: (s: number) => void = () => {};
   private setLift: (f: number) => void = () => {};
@@ -66,18 +70,28 @@ export class Globe {
   constructor(readonly mode: GlobeMode, parts: GlobeParts = {}) {
     if (mode === 'game' && parts.textures) {
       this.clouds = parts.textures.clouds ? createClouds(parts.textures.clouds) : null;
-      const earth = createEarthMaterial(parts.textures, this.clouds);
+      const sky = parts.sky ?? null;
+      const earth = createEarthMaterial(parts.textures, this.clouds, sky !== null);
       this.earthMaterial = earth.material;
       this.images = [...earth.images];
       this.setDayNightTex = earth.setDayNight;
       this.dayNightTex = [parts.textures.day, parts.textures.night];
       this.country = createCountryLayer(this.placeholder, earth.base, earth.point);
       this.setLift = earth.setLift;
-      const atmosphere = createAtmosphere();
       const sunDisc = createSunDisc();
-      this.sunListeners.push(earth.setSun, atmosphere.setSun, sunDisc.setDirection);
+      this.sunListeners.push(earth.setSun, sunDisc.setDirection);
       this.setSaturation = earth.setSaturation;
-      this.root.add(atmosphere.mesh, createStars(), sunDisc.sprite, this.beacon.sprite);
+      this.root.add(createStars(), sunDisc.sprite, this.beacon.sprite);
+      if (sky) {
+        // lumière du soleil et du ciel de la bibliothèque ; l'image garde la couche pays sans voile (canal « pays »)
+        this.sunListeners.push(sky.setSun);
+        this.lights = [sky.createLight()];
+        setKeep(this.earthMaterial, this.country.coverage);
+      } else {
+        const atmosphere = createAtmosphere();
+        this.sunListeners.push(atmosphere.setSun);
+        this.root.add(atmosphere.mesh);
+      }
       if (parts.borders) {
         const borders = createBorders(parts.borders, parts.relief ?? null);
         this.root.add(borders.object);
@@ -91,7 +105,7 @@ export class Globe {
     this.earthMaterial.outputNode = this.country.outputNode;
     this.country.uniforms.maskMode.value = mode === 'mask' ? 1 : 0;
     const earth = new THREE.Mesh(new THREE.SphereGeometry(1, 512, 256), this.earthMaterial);
-    this.root.add(earth, this.sun, new THREE.AmbientLight(0xffffff, 0.04));
+    this.root.add(earth, ...this.lights);
   }
 
   /** Patch du pays visé ; `null` efface le remplissage (patch absent ou en échec). */

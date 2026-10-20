@@ -37,8 +37,26 @@ Date : 20/10/2026. Suite des sous-projets 2a (océan et relief, 1.12) et 2b (nua
    celui de la bibliothèque s'il s'accorde au bloom, sinon le nôtre.
 5. **Nuages** : liseré à contre-jour, un lobe de diffusion avant (Henyey-Greenstein) sur les bords minces, éclairé par la
    même lumière.
-6. **Qualité** : `raymarchScattering` seulement en « haute » (le bruit temporel qu'il introduit n'est lissé que par le
-   TRAA) ; « standard » lit les tables.
+6. **Qualité** : marche du rayon dans les deux niveaux, avec un décalage fixe d'une image à l'autre (voir les décisions
+   d'exécution : la lecture des tables seule ne donnait pas le voile bleu).
+
+## Décisions d'exécution (20/10)
+
+- **Compatibilité three 0.186** : la 0.19.1 lit `struct().layout.name`, disparu depuis three r185 (ticket #111) ; correctif du
+  PR #118 (non fusionné, vérifié sur 0.186.1 par son auteur) appliqué par `patch-package` (`web/patches/`). Dépôt sans
+  commit depuis le 27/05/2026.
+- **WebGPU seulement** ; le repli WebGL 2 garde le halo approché (tickets #108, #114, #116).
+- **Marche du rayon gardée** : sans elle, la lecture des tables ne donnait presque pas de voile bleu, seulement le
+  roussissement de la transmittance (mesuré sur la vue globale). Son décalage par pixel ne vient plus de la texture STBN
+  téléchargée de GitHub (1 Mo, hors ligne impossible, licence NVIDIA discutée, #117) mais d'un bruit à gradient entrelacé
+  (Jimenez 2014) généré au démarrage, identique d'une image à l'autre (pas de scintillement sans TRAA).
+- **Calibration** tirée des paramètres : exposition 1,7138 (même luminance que l'ancien soleil d'intensité 3), balance des
+  blancs (0,8939 ; 1 ; 1,0184) sur le résultat (le soleil de la bibliothèque est plus rouge que vert).
+- **Épaisseur × 10** (× 6 essayé : halo trop fin vu de loin).
+- **Antialiasing** : avec le MSAA, la profondeur d'un pixel de bord ne correspond plus à sa couleur moyennée (pointillé le
+  long du limbe) ; en standard, MSAA remplacé par SMAA (le FXAA effaçait les étoiles : 1 pixel de ciel au-dessus de 60
+  contre 494) ; le ciel est ajouté à la couleur au lieu de la remplacer.
+- **Canal « pays »** déclaré par la passe et résolu par matériau (une MRT posée sur le matériau échouait hors de la passe).
 
 ## 3. Tests
 

@@ -12,6 +12,7 @@ import { createRenderer } from '../globe/renderer';
 import { loadGlobeTextures, loadReliefGrid } from '../globe/textures';
 import { createImageSource, loadImageryIndex } from '../globe/imagePatch';
 import { createPostProcessing, postOptions } from '../globe/postprocessing';
+import { installPhysicalSky } from '../globe/physicalSky';
 import { OffsetCamera } from '../globe/offsetCamera';
 import { safeViewport } from '../camera/safeArea';
 import { imagePatchUrl } from '../data/imagery';
@@ -61,7 +62,9 @@ renderer.setSize(width, height);
 const mode = q.get('mode') === 'game' ? 'game' : 'mask';
 const textures = mode === 'game' ? await loadGlobeTextures(renderer, q.get('tier') === 'haute' ? 'haute' : 'standard') : undefined;
 const borders = q.has('borders') ? ((await (await fetch('/data/borders.json')).json()) as LngLat[][]) : undefined;
-const globe = new Globe(mode, { textures, borders, relief: borders ? await loadReliefGrid('/') : null });
+// atmosphère physique : WebGPU en mode jeu, sauf `atmo=approchee` (planches avant/après)
+const sky = mode === 'game' && backend === 'webgpu' && q.get('atmo') !== 'approchee' ? installPhysicalSky(renderer) : null;
+const globe = new Globe(mode, { textures, borders, relief: borders ? await loadReliefGrid('/') : null, sky });
 const camera = new OffsetCamera(FOV_Y_DEG, width / height, 0.001, 100);
 
 const rec = q.get('cca3') ? (await loadCountries('/')).find((c) => c.cca3 === q.get('cca3')) : undefined;
@@ -114,6 +117,8 @@ if (tone !== undefined) renderer.toneMapping = tone;   // sans `post`
 if (q.has('exp')) renderer.toneMappingExposure = Number(q.get('exp'));
 const scene = new THREE.Scene();
 scene.add(globe.root);
+// atmosphère physique : ses tables se calculent après le premier rendu qui les lit (physicalSky.ts) ; on les attend
+if (sky) { renderer.render(scene, camera); await sky.ready(); }
 if (q.has('post')) {
   const o = postOptions(q.get('tier') === 'haute' ? 'haute' : 'standard');
   if (q.has('bloom')) o.bloom = { ...o.bloom, strength: Number(q.get('bloom')) };

@@ -1,7 +1,9 @@
 import * as THREE from 'three/webgpu';
 import { emissive, mrt, output, pass, renderOutput, velocity } from 'three/tsl';
+import { applyAtmosphere, keepNode, physicalSkyOf } from './physicalSky';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 import { traa } from 'three/addons/tsl/display/TRAANode.js';
+import { smaa } from 'three/addons/tsl/display/SMAANode.js';
 import type { QualityTier } from './renderer';
 
 export interface PostOptions { bloom: { strength: number; radius: number; threshold: number }; traa: boolean; msaa: number; toneMapping: THREE.ToneMapping }
@@ -20,15 +22,23 @@ export function postOptions(tier: QualityTier): PostOptions {
 export function createPostProcessing(renderer: THREE.WebGPURenderer, scene: THREE.Scene, camera: THREE.Camera, o: PostOptions) {
   // `samples` toujours fixé : sans lui, la passe hérite des échantillons du renderer (4, antialias du jeu), et le TRAA ne
   // peut plus copier la profondeur dans son historique (une erreur du GPU à chaque image, image qui scintille).
-  const scenePass = pass(scene, camera, { samples: o.msaa });
-  scenePass.setMRT(o.traa ? mrt({ output, emissive, velocity }) : mrt({ output, emissive }));
-  const color = scenePass.getTextureNode('output');
+  // Atmosphère physique (WebGPU, spec atmosphère §2.2) : un canal « pays » de plus, que seul le matériau de la Terre remplit ;
+  // sans MSAA (la profondeur d'un pixel de bord ne correspond plus à sa couleur moyennée : pointillé le long du limbe,
+  // 20/10), le SMAA le remplace en fin de chaîne quand le TRAA n'est pas là (le FXAA effaçait les étoiles d'un pixel :
+  // 1 pixel de ciel au-dessus de 60 contre 494, mesuré le 20/10 ; SMAA : 39 718 octets compressés).
+  const sky = physicalSkyOf(renderer);
+  const scenePass = pass(scene, camera, { samples: sky ? 0 : o.msaa });
+  const outputs = { output, emissive, ...(o.traa ? { velocity } : {}), ...(sky ? { pays: keepNode } : {}) };
+  scenePass.setMRT(mrt(outputs));
+  const scene0 = scenePass.getTextureNode('output');
+  const color = sky ? applyAtmosphere(sky, camera, scene0, scenePass.getTextureNode('depth'), scenePass.getTextureNode('pays').r) : scene0;
   const glow = bloom(scenePass.getTextureNode('emissive'), o.bloom.strength, o.bloom.radius, o.bloom.threshold);
   const lit = color.add(glow);
   const pipeline = new THREE.RenderPipeline(renderer);
   // TRAA : MSAA coupé (samples 0), l'historique se réinitialise seul quand la profondeur change trop.
   const final = o.traa ? traa(lit, scenePass.getTextureNode('depth'), scenePass.getTextureNode('velocity'), camera) : lit;
   pipeline.outputColorTransform = false;
-  pipeline.outputNode = renderOutput(final, o.toneMapping, THREE.SRGBColorSpace);
+  const shown = renderOutput(final, o.toneMapping, THREE.SRGBColorSpace);
+  pipeline.outputNode = sky && !o.traa ? smaa(shown) : shown;
   return { render: () => pipeline.render(), dispose: () => pipeline.dispose() };
 }

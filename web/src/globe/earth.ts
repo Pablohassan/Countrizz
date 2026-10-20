@@ -6,7 +6,7 @@ import { exactSpherePoint } from './frameNodes';
 import { createImageLayer } from './imageLayer';
 import { pixelFootprint, SEAWATER_IOR, seaRoughness, waveSlopes, windNode } from './ocean';
 import { createLift, liftHeight, RELIEF_LIFT } from './relief';
-import { cloudRelief, type createClouds } from './clouds';
+import { cloudRelief, silverLining, type createClouds } from './clouds';
 import type { GlobeTextures } from './textures';
 
 /**
@@ -30,7 +30,7 @@ export const NIGHT_FLOOR = 0.045;
  * Terre en couches (spec §4.2) : jour (Sentinel-2, précisé par les photos emboîtées du pays visé), relief, océan (rugosité,
  * reflet du soleil, Fresnel du ciel), nuages et leur ombre, lumières de la face nocturne.
  */
-export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof createClouds> | null = null) {
+export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof createClouds> | null = null, physicalSky = false) {
   const sun = uniform(new THREE.Vector3(1, 0, 0));
   /** Saturation de la texture de jour (1 = telle quelle ; planche de réglage du Sahara). */
   const saturation = uniform(1);
@@ -94,7 +94,8 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const nightSide = smoothstep(float(0.05), float(-0.15), ndl);
   // Black Marble a un fond bleuté hors des villes : avec un bloom sans seuil, il voilait toute la face de nuit de mauve
   // (constaté le 10/10, lever de soleil derrière le limbe). On retranche ce plancher : seules les villes brillent.
-  material.emissiveNode = max(nightTex.rgb.sub(NIGHT_FLOOR), 0).mul(1.6 / (1 - NIGHT_FLOOR)).mul(nightSide).mul(cover.mul(0.6).oneMinus());
+  material.emissiveNode = max(nightTex.rgb.sub(NIGHT_FLOOR), 0).mul(1.6 / (1 - NIGHT_FLOOR)).mul(nightSide).mul(cover.mul(0.6).oneMinus())
+    .add(silverLining(cover, P, view, sun));
 
   // Voile atmosphérique (diffusion de Rayleigh approchée) : bleu de jour, orangé au crépuscule ; épaissit vers le limbe.
   // Reflet du ciel sur l'océan (Fresnel de Schlick). Posés avant la couche pays : le jaune du pays reste exact, et hors
@@ -107,7 +108,8 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const veil = day.mul(grazing.mul(0.35).add(0.03));
   const fresnel = pow(float(1).sub(ndv), float(5)).mul(0.98).add(0.02);
   const sky = vec3(0.3, 0.52, 0.95).mul(day).mul(sea).mul(cover.oneMinus()).mul(fresnel).mul(0.55);
-  const base = vec4(mix(output.rgb, veilColor.mul(day.mul(0.9).add(0.1)), veil).add(sky), output.a);
+  // Atmosphère physique (spec atmosphère §2.2) : le voile vient de la perspective aérienne, en post-traitement.
+  const base = physicalSky ? vec4(output.rgb.add(sky), output.a) : vec4(mix(output.rgb, veilColor.mul(day.mul(0.9).add(0.1)), veil).add(sky), output.a);
   return {
     material, base: base as Node<'vec4'>, images, point: spherePoint as Node<'vec3'>,
     /** Part du relief soulevé (0 → sphère exacte, 1 → altitude × 10), posée à chaque pose (relief.ts, liftFactor). */

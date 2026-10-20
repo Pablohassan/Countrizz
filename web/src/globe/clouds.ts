@@ -30,6 +30,17 @@ export function parallaxShift(z: number, cosView: number): number {
   return (z * Math.sqrt(1 - c * c)) / c;
 }
 
+/**
+ * Liseré à contre-jour (spec atmosphère §2.5) : diffusion avant de Henyey-Greenstein (g = `g`) sur les bords minces des
+ * nuages éclairés, quand l'œil regarde vers le soleil ; `gain` en lumière émise (elle passe aussi au bloom).
+ */
+export const SILVER_LINING = { g: 0.6, gain: 0.6 } as const;
+
+/** Phase de Henyey-Greenstein normalisée sur la sphère, pour le cosinus `c` de l'angle de diffusion. */
+export function henyeyGreenstein(g: number, c: number): number {
+  return (1 - g * g) / (4 * Math.PI * Math.pow(1 + g * g - 2 * g * c, 1.5));
+}
+
 export interface CloudFade { from: number; to: number; atMs: number }
 
 /** Opacité à l'instant `nowMs` : de `from` à `to` en CLOUD_FADE_MS (courbe lissée), puis constante. */
@@ -68,6 +79,16 @@ export function createClouds(tex: THREE.Texture) {
     },
     set(o: number, d: number) { opacity.value = o; drift.value = d; },
   };
+}
+
+/** Lumière du liseré (émissive) : bords minces (couverture ~ 0,5), soleil sur le nuage, diffusion vers l'œil. */
+export function silverLining(cover: Node<'float'>, P: Node<'vec3'>, view: Node<'vec3'>, sun: Node<'vec3'>): Node<'vec3'> {
+  const { g, gain } = SILVER_LINING;
+  const c = dot(sun.negate(), view);                                          // cos de l'angle de diffusion
+  const hg = float(1 - g * g).div(float(1 + g * g).sub(c.mul(2 * g)).pow(1.5).mul(4 * Math.PI));
+  const thin = cover.mul(cover.oneMinus()).mul(4);
+  const sunlit = smoothstep(float(-0.1), float(0.1), dot(P, sun));
+  return vec3(1, 0.95, 0.85).mul(hg.mul(thin).mul(sunlit).mul(gain));
 }
 
 /** Repère local du point P de la sphère unité (est, nord, cos de la latitude) et coordonnées de texture `st`. */

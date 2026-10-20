@@ -26,7 +26,8 @@ for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
   });
 
   test(`${backend} halo bleu côté jour, faible côté nuit ; étoiles`, async ({ page }) => {
-    const s = await shoot(page, backend, 'mode=game&at=0,0&alt=2&sun=-60,0');
+    // avec le post-traitement, comme le jeu : en WebGPU, le halo est la perspective aérienne (spec atmosphère §2.2)
+    const s = await shoot(page, backend, 'mode=game&at=0,0&alt=2&sun=-60,0&post');
     // disque terrestre : rayon écran = 300 · tan(asin(1/3)) / tan(25°) px autour de (480, 300)
     const r = Math.round((300 * Math.tan(Math.asin(1 / 3))) / Math.tan((25 * Math.PI) / 180));
     const day = s.px([480 - r - 4, 300]), night = s.px([480 + r + 4, 300]);

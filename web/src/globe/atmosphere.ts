@@ -1,6 +1,28 @@
 import * as THREE from 'three/webgpu';
 import { cameraPosition, clamp, cross, dot, exp, float, length, max, normalize, positionWorld, pow, smoothstep, uniform, vec3 } from 'three/tsl';
+import { AtmosphereParameters } from '@takram/three-atmosphere/webgpu';
 import type { Vec3 } from '../geo/vec';
+
+/**
+ * Atmosphère physique (spec atmosphère §1) : unité du monde = rayon terrestre ; épaisseur exagérée `thickness` fois
+ * (hauteurs d'échelle et sommet), coefficients divisés d'autant : même épaisseur optique, donc mêmes couleurs.
+ */
+export const ATMOSPHERE = { thickness: 10, earthM: 6_371_000 } as const;
+
+/** Paramètres de @takram/three-atmosphere ramenés au globe unité (la bibliothèque les suppose en mètres du monde). */
+export function atmosphereParameters(thickness: number = ATMOSPHERE.thickness): AtmosphereParameters {
+  const p = new AtmosphereParameters();
+  const len = thickness / ATMOSPHERE.earthM, inv = 1 / len;   // mètres → rayons terrestres, exagérés
+  const top = p.topRadius - p.bottomRadius;
+  p.worldToUnit = ATMOSPHERE.earthM / 1000;                   // rayons → km, l'unité interne
+  p.bottomRadius = 1;
+  p.topRadius = 1 + top * len;
+  for (const d of [p.rayleighDensity, p.mieDensity, p.absorptionDensity]) {
+    for (const l of d.layers) { l.width *= len; l.expScale *= inv; l.linearTerm *= inv; }
+  }
+  for (const v of [p.rayleighScattering, p.mieScattering, p.mieExtinction, p.absorptionExtinction]) v.multiplyScalar(inv);
+  return p;
+}
 
 /** Rayon extérieur de la coquille d'atmosphère (rayons terrestres). */
 const SHELL = 1.06;

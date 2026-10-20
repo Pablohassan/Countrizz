@@ -25,6 +25,7 @@ import { createImageSource, loadImageryIndex } from './imagePatch';
 import { createProgress } from './loading';
 import { cachesReady } from '../pwa/cache';
 import { createPostProcessing, postOptions } from './postprocessing';
+import { installPhysicalSky, physicalSkyOf } from './physicalSky';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
 import { lookAt } from './reveal';
 import { withRetry } from './retry';
@@ -85,6 +86,11 @@ export interface GlobeDebug {
   beacon(): boolean;
   /** Paire de niveaux de photos posée à la dernière image (spec zoom §4.3) ; `null` : aucune photo. */
   imageSlots(): { coarse: number | null; fine: number | null; fineOpacity: number } | null;
+  /**
+   * Tables de l'atmosphère physique calculées (toujours vrai sans elle, en WebGL 2) : sous SwiftShader, leur calcul occupe le
+   * processeur plusieurs centaines de millisecondes au démarrage et fausse une mesure de cadence (rotation, 20/10).
+   */
+  skyReady(): boolean;
 }
 declare global { interface Window { __globe?: GlobeDebug } }
 
@@ -220,6 +226,8 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
             // Perte du GPU : on recrée le renderer (nouveau Canvas) ; le contrôleur garde la partie.
             info.renderer.onDeviceLost = () => { recreating.current = true; signals.current.onLost?.(); regenerate(); };
             Object.assign(info.renderer, { userData: { backend: info.backend, tier, maxTexture2D: info.maxTexture2D } });
+            // atmosphère physique sur WebGPU (spec atmosphère §2), avant toute compilation ; `?atmo=approchee` garde l'ancienne
+            if (info.backend === 'webgpu' && new URLSearchParams(location.search).get('atmo') !== 'approchee') installPhysicalSky(info.renderer);
             return info.renderer;
           }}
         >
@@ -317,7 +325,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     // ménage des caches d'abord : une texture changée ne doit pas venir de l'ancienne copie (spec océan §3)
     void cachesReady().then(() => withRetry(attempt, { attempts: 3, delayMs: 800 })).then(([textures, borders, relief]) => {
       if (!alive) { disposeGlobeTextures(textures); return; }
-      const g = new Globe('game', { textures, borders, relief });
+      const g = new Globe('game', { textures, borders, relief, sky: physicalSkyOf(renderer) });
       builtRef.current = { globe: g, textures, tier: loadTier };
       controller.attach(g);
       setGlobe(g);
@@ -385,6 +393,17 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
 
   useEffect(() => { controller.setViewport({ width: size.width, height: size.height, fovYDeg: FOV_Y_DEG }); }, [controller, size.width, size.height]);
 
+  // tables de l'atmosphère physique prêtes (crochet de test skyReady)
+  const skyReadyRef = useRef(false);
+  useEffect(() => {
+    const sky = physicalSkyOf(renderer);
+    skyReadyRef.current = sky === null;
+    if (!sky) return;
+    let alive = true;
+    void sky.ready().then(() => { if (alive) skyReadyRef.current = true; });
+    return () => { alive = false; };
+  }, [renderer]);
+
   useEffect(() => {
     if (!import.meta.env.DEV && !e2eHooks()) return;
     const debug: GlobeDebug = {
@@ -406,6 +425,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
       maxTexture2D: renderer.userData.maxTexture2D,
       beacon: () => globeRef.current?.beaconShown ?? false,
       imageSlots: () => controller.imageSlots,
+      skyReady: () => skyReadyRef.current,
     };
     window.__globe = debug;
   }, [renderer, camera, size.width, size.height, generation]); // eslint-disable-line react-hooks/exhaustive-deps -- controller est stable, le globe passe par sa ref

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { CountryRecord } from '../data/types';
-import { CLOUD_FADE_MS, CLOUD_RELIEF, CLOUD_TOP_MAX, cloudOpacity, parallaxShift } from './clouds';
+import { CLOUD_FADE_MS, CLOUD_RELIEF, CLOUD_TOP_MAX, cloudOpacity, henyeyGreenstein, parallaxShift, SILVER_LINING } from './clouds';
 import { LIFT_MAX, RELIEF_LIFT } from './relief';
 import { GlobeController } from './controller';
 import type { Globe } from './globe';
@@ -49,5 +49,17 @@ describe('nuages en relief (spec nuages §3)', () => {
     expect(parallaxShift(0.01, 0)).toBe(max);
     let prev = 0;
     for (let c = 1; c >= CLOUD_RELIEF.minCos; c -= 0.01) { const s = parallaxShift(0.01, c); expect(s).toBeGreaterThanOrEqual(prev); prev = s; }
+  });
+});
+
+describe('liseré à contre-jour (spec atmosphère §2.5)', () => {
+  it('Henyey-Greenstein : normalisée sur la sphère, maximale vers l’avant', () => {
+    const { g } = SILVER_LINING;
+    let integral = 0;
+    const n = 20000;
+    for (let i = 0; i < n; i++) { const c = -1 + (2 * (i + 0.5)) / n; integral += henyeyGreenstein(g, c) * 2 * Math.PI * (2 / n); }
+    expect(integral).toBeCloseTo(1, 4);
+    expect(henyeyGreenstein(g, 1)).toBeGreaterThan(henyeyGreenstein(g, 0) * 10);
+    expect(henyeyGreenstein(0, 0.3)).toBeCloseTo(1 / (4 * Math.PI), 12);
   });
 });

@@ -87,9 +87,14 @@ export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'
   const mask = select(shown.and(sd.greaterThan(0)), float(1), float(0));
   const outputNode = select(u.maskMode.greaterThan(0.5), vec4(mask, mask, mask, 1), vec4(withEdge, base.a));
 
+  // Couverture de la couche (remplissage, liseré, lignes) : l'atmosphère physique n'y voile pas l'image (spec atmosphère §2.3) ;
+  // le remplissage (0,63) compte comme plein.
+  const coverage = clamp(max(max(fillA, edgeA), lineA).mul(shownF).div(0.6), 0, 1);
+
   return {
     uniforms: u,
     outputNode,
+    coverage: coverage as Node<'float'>,
     setTexture(t: THREE.Texture) { sdfNode.value = t; },
     /** Revient à la texture vide de la couche (patch retiré, avant que le cache ne le libère). */
     clear() { sdfNode.value = placeholder; },

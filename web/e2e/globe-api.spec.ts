@@ -7,14 +7,16 @@ test.use({ viewport: { width: 390, height: 844 } });
 
 const view = (page: Page) => page.evaluate(() => window.__globe!.view());
 // SwiftShader rend quelques images par seconde et le pas de la rotation est plafonné à 100 ms (director.ts) : 6 °/s n'y
-// avance que de 0,7° en 1,5 s (11/10) ; 30 °/s et un seuil de 0,5°.
+// avance que de 0,7° en 1,5 s (11/10) ; 30 °/s et un seuil de 0,5°, mesuré sur 3 s depuis l'atmosphère physique (images
+// plus lentes : 0,48° en 1,5 s une fois sur trois, 20/10).
 const lngGap = (a: [number, number], b: [number, number]) => Math.abs(((b[0] - a[0] + 540) % 360) - 180);
 
 test('mouvement réduit relu à chaud : la rotation s’arrête puis reprend', async ({ page }) => {
   await page.goto('/demo.html?spin=30');
-  await page.waitForFunction(() => (window.__demo?.ready ?? 0) > 0 && (window.__globe?.frames ?? 0) > 5, null, { timeout: 120_000 });
+  // tables de l'atmosphère calculées : sous SwiftShader, leur calcul freinait la rotation mesurée (0,48° au lieu de > 0,5°, 20/10)
+  await page.waitForFunction(() => (window.__demo?.ready ?? 0) > 0 && (window.__globe?.frames ?? 0) > 5 && window.__globe?.skyReady() === true, null, { timeout: 120_000 });
   const a = (await view(page))!;
-  await page.waitForTimeout(1500);
+  await page.waitForTimeout(3000);
   expect(lngGap(a, (await view(page))!)).toBeGreaterThan(0.5);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.waitForTimeout(300);
@@ -22,7 +24,7 @@ test('mouvement réduit relu à chaud : la rotation s’arrête puis reprend', a
   await page.waitForTimeout(1500);
   expect(lngGap(b, (await view(page))!)).toBeLessThan(0.01);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.waitForTimeout(1500);
+  await page.waitForTimeout(3000);
   expect(lngGap(b, (await view(page))!)).toBeGreaterThan(0.5);
 });
 

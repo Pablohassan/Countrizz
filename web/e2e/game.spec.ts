@@ -352,3 +352,25 @@ test.describe('mouvement réduit', () => {
     expect(await page.locator('.fin-tampon').evaluate((e) => getComputedStyle(e).animationName)).toBe('none');
   });
 });
+
+/** Accueil (retouche du 20/10) : l'invitation à installer vit en bas de l'écran, juste au-dessus des crédits. */
+for (const [nom, viewport] of [['iPhone 14', { width: 390, height: 844 }], ['iPhone SE, barres ouvertes', { width: 375, height: 548 }]] as const) {
+  test.describe(`accueil, ${nom} (${viewport.width} × ${viewport.height})`, () => {
+    test.use({
+      viewport, isMobile: true, hasTouch: true,
+      userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+    });
+    test('« Installer l’appli » en bas, juste au-dessus des crédits, sans toucher les boutons', async ({ page }) => {
+      await openHome(page);
+      const carte = page.locator('.installer');
+      await expect(carte).toBeVisible();
+      await carte.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
+      const c = (await carte.boundingBox())!, cr = (await credit(page).boundingBox())!, rang2 = (await page.locator('.accueil-rang2').boundingBox())!;
+      expect(c.y + c.height, 'au-dessus des crédits').toBeLessThanOrEqual(cr.y + 1);
+      expect(cr.y - (c.y + c.height), 'juste au-dessus').toBeLessThan(24);
+      expect(c.y, 'sous Scores et À propos').toBeGreaterThanOrEqual(rang2.y + rang2.height + 8);
+      await reachable(page, page.getByRole('button', { name: 'Installer l’appli' }), 'Installer');
+      await reachable(page, page.getByRole('button', { name: 'Plus tard' }), 'Plus tard');
+    });
+  });
+}

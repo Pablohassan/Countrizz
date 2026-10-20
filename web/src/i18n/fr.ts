@@ -3,7 +3,7 @@ import type { Messages } from './types';
 export const fr: Messages = {
   modes: { flag: 'Drapeau', country: 'Pays', capital: 'Capitale' },
   prompts: { flag: 'Quel est son drapeau ?', country: 'Quel est ce pays ?', capital: 'Quelle est sa capitale ?' },
-  home: { yourName: 'Ton nom :', defaultName: 'Globetrotteur', play: 'Jouer', scores: 'Scores', about: 'À propos', language: 'Langue', soon: 'Bientôt', later: 'Plus tard' },
+  home: { yourName: 'Ton nom', defaultName: 'Globetrotteur', play: 'Jouer', scores: 'Scores', about: 'À propos', language: 'Langue', soon: 'Bientôt', later: 'Plus tard' },
   intro: { skip: 'Passer ›', videoLabel: 'Countrizz : une Terre en pâte à modeler tombe du ciel et montre la France' },
   mode: { back: '‹ Retour', player: 'Joueur :', choose: 'Choisis ton mode', record: 'Record', new: 'Nouveau' },
   countdown: { go: 'GO !' },

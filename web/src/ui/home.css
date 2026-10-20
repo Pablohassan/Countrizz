@@ -1,10 +1,11 @@
 /* Accueil H3 (valeurs de la maquette validée, téléphone 390 × 844) ; colonne centrée de 440 px au plus sur bureau. */
 .accueil { position: absolute; inset: 0; pointer-events: none; font-family: var(--cartoon); color: #fff; }
 .accueil > * { pointer-events: auto; }
-.accueil-lang { position: absolute; top: calc(56px + env(safe-area-inset-top, 0px)); right: max(18px, calc(50% - 202px)); display: flex; border: 2px solid #000; box-shadow: 3px 3px 0 #000; border-radius: 10px; overflow: hidden;
+.accueil-lang { position: absolute; top: calc(56px + env(safe-area-inset-top, 0px)); right: max(18px, calc(50% - 202px)); display: flex; border: 2px solid var(--pate-bord); border-radius: 10px; overflow: hidden;
+  box-shadow: var(--flanc-nuit-4), -6px 8px 10px rgb(0 0 0 / .55), var(--halo-violet);
   animation: accueil-haut .55s cubic-bezier(.25, .46, .45, 1.54) .8s both; }
-.accueil-lang button { font: 14px var(--cartoon); padding: 5px 10px; border: 0; background: var(--nuit); color: var(--jaune); cursor: pointer; }
-.accueil-lang button[aria-pressed="true"] { background: var(--jaune); color: var(--nuit); }
+.accueil-lang button { font: 14px var(--cartoon); padding: 5px 10px; border: 0; background: var(--pate-nuit); color: var(--jaune); cursor: pointer; text-shadow: var(--relief-jaune-2); }
+.accueil-lang button[aria-pressed="true"] { background: var(--pate-jaune); color: var(--nuit); text-shadow: none; box-shadow: inset 0 2px 0 rgb(255 255 255 / .5), inset 0 -3px 4px rgb(143 117 90 / .45); }
 .accueil-titre { position: absolute; top: calc(110px + env(safe-area-inset-top, 0px)); left: 0; right: 0; margin: 0; text-align: center; font: 54px/1.1 var(--cartoon); font-weight: normal; letter-spacing: 1px;
   color: var(--jaune); text-shadow: var(--relief-titre); white-space: nowrap; }
 /* C🌍untrizz : les lettres surgissent une à une ; la petite Terre (24 images, un tour en 4 s) tient la place du « o ». */
@@ -53,34 +54,121 @@
 .logo-titre--fondu.logo-titre--visible { opacity: 1; animation: logo-fondu var(--fondu) ease-in-out; }
 .logo-titre--fondu .logo-l { animation: none; }
 @keyframes logo-fondu { from { opacity: 0; } }
+/* Commandes en pâte (retouche du 20/10) : le relief du titre — face éclairée en haut à gauche, flanc net vers le bas à
+   gauche le long de (−1 ; +1), puis l'ombre portée — et un halo violet qui les détache du noir de l'espace (les ombres
+   noires d'avant y disparaissaient). */
+.accueil {
+  --pate-bord: #05061a;
+  --pate-nuit: linear-gradient(160deg, #34368a 0%, #23256a 45%, #17184a 100%);
+  --pate-jaune: linear-gradient(160deg, #fbf497 0%, #fce577 30%, #f3d56b 60%, #d6bd5f 100%);
+  --flanc-nuit-4: -1px 1px 0 #05061a, -2px 2px 0 #05061a, -3px 3px 0 #05061a, -4px 4px 0 #05061a;
+  --flanc-nuit-2: -1px 1px 0 #05061a, -2px 2px 0 #05061a;
+  --halo-violet: 0 0 22px rgb(98 37 230 / .35);
+  --relief-jaune-2: -1px 1px 0 #8f755a, -2px 2px 0 #6d5843;
+}
 .accueil-commandes { position: absolute; top: calc(215px + env(safe-area-inset-top, 0px)); left: 50%; width: min(calc(100% - 56px), 384px); transform: translateX(-50%); display: flex; flex-direction: column; gap: 18px; pointer-events: none; }
 .accueil-commandes > * { pointer-events: auto; }
-.accueil-nom { display: flex; align-items: center; gap: 8px; background: var(--nuit); border: 3px solid var(--jaune); box-shadow: 4px 4px 0 #000; color: rgba(247, 220, 111, .55); padding: 10px 14px; font-size: 16px; border-radius: 4px;
+
+/* Nom : une plaque en relief, l'étiquette posée sur son bord, la saisie dans un puits creusé. */
+.accueil-nom { position: relative; display: block; padding: 18px 14px 13px; background: var(--pate-nuit); border: 2px solid var(--pate-bord); border-radius: 16px;
+  box-shadow: inset 0 2px 0 rgb(255 255 255 / .16), var(--flanc-nuit-4), -5px 5px 0 #05061a, -8px 11px 14px rgb(0 0 0 / .55), var(--halo-violet);
   animation: accueil-gauche .6s cubic-bezier(.25, .46, .45, 1.54) 1.1s both; }
-.accueil-nom input { flex: 1; min-width: 0; font: 16px var(--cartoon); color: var(--jaune); background: transparent; border: 0; outline: none; padding: 2px 0; }
-.accueil-nom input::placeholder { color: var(--jaune); opacity: 1; }
-.accueil-nom:focus-within { outline: 3px solid #fff; outline-offset: 3px; }
-.accueil-jouer { align-self: center; display: flex; align-items: center; gap: 18px; background: var(--violet); color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; padding: 12px 30px; font-size: 30px; font-family: var(--cartoon); cursor: pointer;
-  transform: skewX(-15deg); animation: accueil-droite .6s cubic-bezier(.25, .46, .45, 1.54) 1.4s both; }
-.accueil-jouer > * { display: inline-block; transform: skewX(15deg); }
-.accueil-jouer:disabled { cursor: progress; opacity: .7; }
-.accueil-jouer svg { width: 40px; height: 26px; }
-.accueil-jouer:focus-visible, .accueil-lang button:focus-visible, .accueil-sec:focus-visible { outline: 3px solid var(--jaune); outline-offset: 3px; }
+.accueil-nom-etiquette { position: absolute; top: -14px; left: 16px; font: 13px var(--cartoon); color: var(--nuit); background: var(--pate-jaune); border: 2px solid var(--pate-bord); border-radius: 9px; padding: 3px 11px 2px;
+  box-shadow: inset 0 2px 0 rgb(255 255 255 / .55), -1px 1px 0 #8f755a, -2px 2px 0 #8f755a, -4px 5px 5px rgb(0 0 0 / .45); transform: rotate(-3deg); }
+.accueil-nom-puits { display: flex; align-items: center; gap: 8px; background: #0b0c27; border-radius: 11px; padding: 9px 12px;
+  box-shadow: inset 0 4px 8px rgb(0 0 0 / .75), inset 0 -1px 0 rgb(255 255 255 / .1); transition: box-shadow .2s; }
+.accueil-nom input { flex: 1; min-width: 0; font: 22px var(--cartoon); color: var(--jaune); background: transparent; border: 0; outline: none; padding: 2px 0; text-shadow: var(--relief-jaune-2); caret-color: #fff; }
+.accueil-nom input::placeholder { color: var(--jaune); opacity: .85; }
+.accueil-nom-crayon { flex: none; width: 20px; height: 20px; color: var(--jaune); opacity: .7; transition: opacity .2s, transform .2s; }
+.accueil-nom:focus-within .accueil-nom-puits { box-shadow: inset 0 4px 8px rgb(0 0 0 / .75), 0 0 0 3px var(--jaune), 0 0 18px rgb(247 220 111 / .45); }
+.accueil-nom:focus-within .accueil-nom-crayon { opacity: 1; transform: rotate(-12deg); }
+
+/* « Jouer » : un pavé de pâte violette qui respire en 3D. Le bouton ne porte que l'entrée (son cadre reste fixe ensuite :
+   un cadre qui bouge sans fin n'est jamais « stable » pour un clic de Playwright, 7 e2e bloqués le 20/10) ; un calque
+   intérieur respire, la face porte le relief, le reflet qui passe et l'enfoncement sous le doigt. */
+.accueil-jouer { align-self: center; position: relative; padding: 0; border: 0; background: none; font-family: var(--cartoon); cursor: pointer; transform-style: preserve-3d;
+  animation: accueil-entree-droite .6s cubic-bezier(.25, .46, .45, 1.54) 1.4s both; -webkit-tap-highlight-color: transparent; }
+.accueil-jouer-3d { display: block; transform-style: preserve-3d; }
+.accueil-jouer:not(:disabled) .accueil-jouer-3d { animation: jouer-respire 3.4s ease-in-out 2.1s infinite; }
+.accueil-jouer-face { position: relative; display: flex; align-items: center; gap: 16px; padding: 13px 32px 15px; border: 2px solid #1d0661; border-radius: 16px; transform: skewX(-15deg);
+  background: linear-gradient(160deg, #a27cff 0%, #7a3ff5 32%, #6225e6 58%, #4b16c4 100%);
+  box-shadow: inset 0 3px 0 rgb(255 255 255 / .38), inset 0 -6px 10px rgb(30 0 90 / .4),
+    -1px 1px 0 #3d12a6, -2px 2px 0 #3a11a0, -3px 3px 0 #360f98, -4px 4px 0 #320e90, -5px 5px 0 #2e0c88, -6px 6px 0 #2a0b80, -7px 7px 0 #250a76,
+    -11px 13px 16px rgb(0 0 0 / .6), 0 0 30px rgb(139 92 255 / .5);
+  transition: transform .09s ease-out, box-shadow .09s ease-out; overflow: hidden; }
+/* Lustre de la pâte (moitié haute) et reflet qui traverse la face. */
+.accueil-jouer-face::before { content: ''; position: absolute; left: 6px; right: 6px; top: 3px; height: 46%; border-radius: 12px 12px 40% 40% / 12px 12px 18px 18px;
+  background: linear-gradient(rgb(255 255 255 / .42), rgb(255 255 255 / .04)); pointer-events: none; }
+.accueil-jouer-face::after { content: ''; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / .5) 50%, transparent 62%) no-repeat;
+  background-size: 260% 100%; background-position: 160% 0; pointer-events: none; }
+.accueil-jouer:not(:disabled) .accueil-jouer-face::after { animation: jouer-reflet 3.4s ease-in-out 2.4s infinite; }
+.accueil-jouer-face > * { position: relative; display: inline-block; transform: skewX(15deg); }
+.accueil-jouer-texte { font-size: 32px; color: #fff; text-shadow: -1px 1px 0 #3a12a8, -2px 2px 0 #3a12a8, -3px 3px 0 #2d0d8a, -5px 6px 4px rgb(0 0 0 / .35); }
+.accueil-jouer svg { width: 42px; height: 28px; overflow: visible; filter: drop-shadow(-2px 2px 0 #2d0d8a); }
+.accueil-jouer .chevron { transform-box: fill-box; }
+.accueil-jouer:not(:disabled) .chevron { animation: jouer-chevron 1.5s ease-in-out infinite; }
+.accueil-jouer .chevron-2 { animation-delay: .12s !important; }
+.accueil-jouer .chevron-3 { animation-delay: .24s !important; }
+.accueil-jouer:hover:not(:disabled) .accueil-jouer-face { filter: brightness(1.08); }
+.accueil-jouer:active:not(:disabled) .accueil-jouer-face { transform: translate(-5px, 5px) skewX(-15deg);
+  box-shadow: inset 0 3px 0 rgb(255 255 255 / .3), inset 0 -4px 8px rgb(30 0 90 / .45), -1px 1px 0 #3d12a6, -2px 2px 0 #2e0c88, -4px 5px 6px rgb(0 0 0 / .55), 0 0 22px rgb(139 92 255 / .45); }
+.accueil-jouer:disabled { cursor: progress; }
+.accueil-jouer:disabled .accueil-jouer-face { filter: saturate(.45) brightness(.8); }
+.accueil-jouer:focus-visible { outline: none; }
+.accueil-jouer:focus-visible .accueil-jouer-face { outline: 3px solid var(--jaune); outline-offset: 4px; }
+@keyframes jouer-respire {
+  0%, 100% { transform: perspective(640px) rotateX(0) rotateY(0) scale(1); }
+  25% { transform: perspective(640px) rotateX(7deg) rotateY(-9deg) scale(1.02); }
+  50% { transform: perspective(640px) rotateX(0) rotateY(0) scale(1.04); }
+  75% { transform: perspective(640px) rotateX(-5deg) rotateY(9deg) scale(1.02); }
+}
+@keyframes jouer-reflet { 0% { background-position: 160% 0; } 45%, 100% { background-position: -60% 0; } }
+@keyframes jouer-chevron { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+
+/* Scores, À propos : la même pâte, en nuit et jaune, moins épaisse. */
 .accueil-rang2 { display: flex; justify-content: center; gap: 18px; animation: accueil-bas .6s cubic-bezier(.25, .46, .45, 1.54) 1.7s both; }
-.accueil-sec { position: relative; background: var(--nuit); color: var(--jaune); border: 2px solid #000; box-shadow: 4px 4px 0 #000; transform: skewX(-15deg); padding: 9px 18px; font: 15px var(--cartoon); white-space: nowrap; cursor: pointer; }
-.accueil-sec > span { display: inline-block; transform: skewX(15deg); }
+.accueil-sec { position: relative; background: var(--pate-nuit); color: var(--jaune); border: 2px solid var(--pate-bord); border-radius: 11px; transform: skewX(-15deg); padding: 9px 18px 10px; font: 15px var(--cartoon); white-space: nowrap; cursor: pointer;
+  box-shadow: inset 0 2px 0 rgb(255 255 255 / .2), inset 0 -3px 6px rgb(0 0 0 / .35), var(--flanc-nuit-4), -7px 9px 10px rgb(0 0 0 / .55), var(--halo-violet);
+  transition: transform .09s ease-out, box-shadow .09s ease-out; -webkit-tap-highlight-color: transparent; }
+.accueil-sec > span { display: inline-block; transform: skewX(15deg); text-shadow: var(--relief-jaune-2); }
+.accueil-sec:hover { filter: brightness(1.12); }
+.accueil-sec:active { transform: translate(-3px, 3px) skewX(-15deg); box-shadow: inset 0 2px 0 rgb(255 255 255 / .15), var(--flanc-nuit-2), -3px 4px 5px rgb(0 0 0 / .5), var(--halo-violet); }
+.accueil-lang button:focus-visible, .accueil-sec:focus-visible { outline: 3px solid var(--jaune); outline-offset: 3px; }
 /* Le crédit EOX du globe reste au-dessus de tout (jamais recouvert). */
 @keyframes accueil-gauche { from { transform: translateX(-420px); opacity: 0; } 30% { opacity: 1; } }
 @keyframes accueil-haut { from { transform: translateY(-90px); opacity: 0; } 30% { opacity: 1; } }
 @keyframes accueil-bas { from { transform: translateY(160px); opacity: 0; } 30% { opacity: 1; } }
-@keyframes accueil-droite { from { transform: translateX(420px) skewX(-15deg); opacity: 0; } 30% { opacity: 1; } to { transform: skewX(-15deg); } }
-.accueil-commandes .accueil-nom { animation-name: accueil-gauche; }
+@keyframes accueil-entree-droite { from { transform: translateX(420px); opacity: 0; } 30% { opacity: 1; } }
 
-/* Invitation à installer (téléphones) : une carte crème sous les commandes. */
-.installer { position: relative; margin-top: 6px; background: var(--creme); color: var(--nuit); border: 2px solid #000; border-radius: 12px; box-shadow: 4px 4px 0 #000; padding: 12px 14px 10px; display: grid; gap: 6px; justify-items: start;
-  animation: accueil-bas .6s cubic-bezier(.25, .46, .45, 1.54) 2s both; }
-.installer-bouton { font: 16px var(--cartoon); background: var(--jaune); color: var(--nuit); border: 2px solid #000; box-shadow: 3px 3px 0 #000; padding: 6px 14px; transform: skewX(-12deg); cursor: pointer; }
-.installer-bouton > span { display: inline-block; transform: skewX(12deg); }
-.installer-texte { margin: 0; font: 13px/1.35 system-ui, sans-serif; }
-.installer-plus-tard { justify-self: end; font: 12px system-ui, sans-serif; background: none; border: 0; color: #5f5d76; text-decoration: underline; cursor: pointer; padding: 2px; }
+/* Invitation à installer (téléphones) : une carte crème compacte en bas de l'écran, juste au-dessus des crédits
+   (deux lignes de 13 px sur téléphone, à 4 px du bas). */
+.installer { position: absolute; left: 50%; bottom: calc(36px + env(safe-area-inset-bottom, 0px)); width: min(calc(100% - 32px), 400px); box-sizing: border-box;
+  display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: 'icone texte bouton' 'icone texte plus'; align-items: center; gap: 2px 10px;
+  background: linear-gradient(160deg, #fffdf5, #fff1cf); color: var(--nuit); border: 2px solid #05061a; border-radius: 14px; padding: 9px 10px 8px;
+  box-shadow: inset 0 2px 0 #fff, -1px 1px 0 #cbb98a, -2px 2px 0 #c2af80, -3px 3px 0 #b5a274, -4px 4px 0 #a69466, -7px 9px 12px rgb(0 0 0 / .5);
+  transform: translateX(-50%); animation: installer-entree .6s cubic-bezier(.25, .46, .45, 1.54) 2s both; }
+.installer-icone { grid-area: icone; width: 34px; height: 34px; filter: drop-shadow(-2px 2px 0 rgb(143 117 90 / .6)); }
+.installer-texte { grid-area: texte; margin: 0; font: 12.5px/1.3 system-ui, sans-serif; }
+.installer-bouton { grid-area: bouton; font: 13px var(--cartoon); background: var(--jaune); background-image: linear-gradient(160deg, #fbf497 0%, #fce577 30%, #f3d56b 60%, #d6bd5f 100%); color: var(--nuit); border: 2px solid #05061a; border-radius: 9px; padding: 6px 11px; white-space: nowrap; cursor: pointer;
+  transform: skewX(-10deg); box-shadow: inset 0 2px 0 rgb(255 255 255 / .55), -1px 1px 0 #8f755a, -2px 2px 0 #8f755a, -3px 3px 0 #7a6248, -4px 5px 6px rgb(0 0 0 / .35);
+  transition: transform .09s ease-out, box-shadow .09s ease-out; }
+.installer-bouton > span { display: inline-block; transform: skewX(10deg); }
+.installer-bouton:active { transform: translate(-2px, 2px) skewX(-10deg); box-shadow: inset 0 2px 0 rgb(255 255 255 / .45), -1px 1px 0 #8f755a, -2px 3px 4px rgb(0 0 0 / .3); }
+.installer-plus-tard { grid-area: plus; justify-self: end; font: 12px system-ui, sans-serif; background: none; border: 0; color: #5f5d76; text-decoration: underline; cursor: pointer; padding: 3px 2px 0; }
 .installer-bouton:focus-visible, .installer-plus-tard:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }
+@keyframes installer-entree { from { transform: translateX(-50%) translateY(160px); opacity: 0; } 30% { opacity: 1; } to { transform: translateX(-50%); } }
+
+/* Écrans bas (iPhone SE, barres ouvertes) : commandes resserrées, la carte garde sa place au-dessus des crédits. */
+@media (max-height: 640px) {
+  .accueil-commandes { gap: 11px; }
+  .accueil-nom { padding: 15px 12px 10px; }
+  .accueil-nom-puits { padding: 6px 10px; }
+  .accueil-nom input { font-size: 19px; }
+  .accueil-jouer-face { padding: 9px 28px 11px; }
+  .accueil-jouer-texte { font-size: 28px; }
+}
+/* Mouvement réduit : ni respiration, ni reflet, ni chevrons. */
+@media (prefers-reduced-motion: reduce) {
+  .accueil-jouer:not(:disabled) .accueil-jouer-3d { animation: none; }
+  .accueil-jouer:not(:disabled) .accueil-jouer-face::after, .accueil-jouer:not(:disabled) .chevron { animation: none; }
+}

@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import { context, float, mix, nodeObject, vec3, vec4 } from 'three/tsl';
+import { abs, context, float, floor, fract, mix, nodeObject, rtt, select, uv, vec2, vec3, vec4 } from 'three/tsl';
 import type Node from 'three/src/nodes/core/Node.js';
 import { aerialPerspective, AtmosphereContext, AtmosphereLight, AtmosphereLightNode, type AtmosphereParameters } from '@takram/three-atmosphere/webgpu';
 import { Ellipsoid } from '@takram/three-geospatial';
@@ -83,6 +83,7 @@ export function installPhysicalSky(renderer: THREE.WebGPURenderer): PhysicalSky 
   // marche du rayon (défaut de la bibliothèque) : sans elle, la lecture des tables ne donne presque pas de voile bleu sur
   // la surface vue de l'espace, seul le roussissement de la transmittance reste (vu le 20/10)
   ctx.raymarchScattering = true;
+  ctx.scatteringSampleCount.value.set(...SKY_STEPS);
   (stbnTexture as unknown as { url: string }).url = jitterUrl();
   renderer.contextNode = context({ ...(renderer.contextNode.value as object), getAtmosphere: () => ctx });
   // types de la bibliothèque écrits pour @types/three 0.183 (update() rend void, 0.186 attend boolean | undefined)
@@ -106,22 +107,68 @@ export function installPhysicalSky(renderer: THREE.WebGPURenderer): PhysicalSky 
 export const physicalSkyOf = (renderer: THREE.WebGPURenderer): PhysicalSky | null => skies.get(renderer) ?? null;
 
 /**
+ * Échelle de résolution (par axe) du calcul de l'atmosphère : le voile varie lentement, il est calculé sur un quart des
+ * pixels puis étiré. À pleine résolution, il faisait tomber la densité de rendu (démo, GPU du Mac, 21/10 : densité entre
+ * 1,00 et 1,75 contre 2,00 avec le halo approché) — le flou constaté sur téléphone. Prix accepté : l'anneau orange très
+ * fin du lever de soleil derrière la Terre s'amincit (3 401 pixels orangés contre 5 977 à pleine résolution, 21/10).
+ */
+export const SKY_RESOLUTION = 0.5;
+/**
+ * Pas de la marche du rayon (au plus près, au plus loin ; 4 et 14 par défaut). Avec la demi-résolution, (2, 6) garde la
+ * densité de rendu à 2 dans la démo (21/10) pour une image presque identique : écart moyen de 0,04 à 0,17 sur 255 au limbe,
+ * en vue globale et au terminateur. Au quart de résolution, des taches claires longeaient le limbe.
+ */
+export const SKY_STEPS: [number, number] = [2, 6];
+
+/**
+ * Agrandissement des deux calculs réduits sans baver au limbe : pour chaque pixel, seuls les quatre texels réduits voisins
+ * de même nature (ciel ou sol, d'après la profondeur lue à leur centre) comptent, avec leur poids bilinéaire. Un mélange
+ * des deux traçait une marche d'escalier claire et sombre le long du limbe (qualité standard, 21/10). Aucun voisin de même
+ * nature : la lecture bilinéaire simple.
+ */
+function upsampleBySky(lowS: THREE.TextureNode, lowT: THREE.TextureNode, depth: THREE.TextureNode) {
+  const size = vec2(lowS.size(float(0)) as unknown as Node<'ivec2'>);
+  const p = uv().mul(size).sub(0.5), i0 = floor(p), f = fract(p);
+  const isSky = (u: Node<'vec2'>) => select(depth.sample(u).r.greaterThanEqual(1), float(1), float(0));
+  const here = isSky(uv());
+  let S: Node<'vec3'> = vec3(0), T: Node<'vec3'> = vec3(0), w: Node<'float'> = float(0);
+  for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1]] as const) {
+    const u = i0.add(vec2(dx, dy)).add(0.5).div(size);
+    const bilinear = (dx ? f.x : f.x.oneMinus()).mul(dy ? f.y : f.y.oneMinus());
+    const k = bilinear.mul(float(1).sub(abs(isSky(u).sub(here))));
+    S = S.add(lowS.sample(u).rgb.mul(k));
+    T = T.add(lowT.sample(u).rgb.mul(k));
+    w = w.add(k);
+  }
+  const ok = w.greaterThan(1e-4);
+  return { S: select(ok, S.div(w), lowS.rgb), T: select(ok, T.div(w), lowT.rgb) };
+}
+
+/**
  * Voile et halo (perspective aérienne) sur l'image de la scène ; `keep` (0 → 1) garde l'image d'origine (couche pays :
  * son jaune reste exact, spec atmosphère §2.3). Le ciel (profondeur 1) sans soleil, lune ni étoiles : les nôtres restent.
+ *
+ * Calcul à résolution réduite, en deux passes (le voile est linéaire dans la couleur, c·T + S) : S, la lumière diffusée
+ * (couleur noire ; le ciel là où la profondeur vaut 1), et T, la transmittance (couleur blanche, sans diffusion ; T = 1 sur
+ * le ciel, qui s'ajoute donc à la couleur — les pixels de bord du limbe mêlent Terre et espace). L'image nette garde sa
+ * pleine résolution : c·T + S·E, puis la balance des blancs.
  */
 export function applyAtmosphere(sky: PhysicalSky, camera: THREE.Camera, color: Node<'vec4'>, depth: Node<'vec4'>, keep: Node<'float'>): Node<'vec4'> {
   sky.context.camera = camera;
   const { exposure, whiteBalance } = sky.calibration;
-  const ap = aerialPerspective(color.div(exposure), depth as unknown as Node<'float'>);   // la bibliothèque lit depth.r
-  ap.correctGeometricError = false;   // elle aplatirait le relief soulevé sur l'ellipsoïde
-  const skyNode = ap.skyNode as unknown as ({ showSun: boolean; showMoon: boolean; showStars: boolean } & Node<'vec3'>) | null;
-  if (skyNode) {
-    skyNode.showSun = false; skyNode.showMoon = false; skyNode.showStars = false;
-    // la bibliothèque REMPLACE la couleur par le ciel là où la profondeur vaut 1 ; avec le MSAA, les pixels du bord de la
-    // Terre y mêlent Terre et espace : un pointillé sombre longeait le limbe (qualité standard, 20/10). On ajoute le ciel
-    // à la couleur : l'espace vide étant noir (ou une étoile), seul le bord change.
-    ap.skyNode = (skyNode as Node<'vec3'>).add(color.rgb.div(exposure));
-  }
-  const hazed = vec4((ap as unknown as Node<'vec4'>).rgb.mul(vec3(...whiteBalance).mul(exposure)), color.a);
+  const d = depth as unknown as Node<'float'>;   // la bibliothèque lit depth.r
+  const scattered = aerialPerspective(vec4(0, 0, 0, 1), d);
+  scattered.correctGeometricError = false;   // elle aplatirait le relief soulevé sur l'ellipsoïde
+  const skyNode = scattered.skyNode as unknown as { showSun: boolean; showMoon: boolean; showStars: boolean } | null;
+  if (skyNode) { skyNode.showSun = false; skyNode.showMoon = false; skyNode.showStars = false; }
+  const transmitted = aerialPerspective(vec4(1, 1, 1, 1), d);
+  transmitted.correctGeometricError = false;
+  transmitted.inscattering = false;
+  transmitted.skyNode = null;
+  // types de la bibliothèque écrits pour @types/three 0.183 (setup() rend unknown)
+  const lowS = rtt(scattered as unknown as Node<'vec4'>, null, null, { resolutionScale: SKY_RESOLUTION });
+  const lowT = rtt(transmitted as unknown as Node<'vec4'>, null, null, { resolutionScale: SKY_RESOLUTION });
+  const { S, T } = upsampleBySky(lowS, lowT, depth as unknown as THREE.TextureNode);
+  const hazed = vec4(color.rgb.mul(T).add(S.mul(exposure)).mul(vec3(...whiteBalance)), color.a);
   return mix(hazed, color, keep);
 }

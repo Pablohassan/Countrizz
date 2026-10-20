@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createDprGovernor } from './dynamicResolution';
+import { createDprGovernor, DPR_RANGE, dprOptions } from './dynamicResolution';
 
 const o = { min: 0.75, max: 2, step: 0.25, slowMs: 22, fastMs: 14, window: 30 };
 const run = (g: ReturnType<typeof createDprGovernor>, frameMs: number, frames: number) => {
@@ -66,5 +66,21 @@ describe('résolution dynamique (spec §4.1, niveau standard)', () => {
     const g = createDprGovernor(o);
     g.update(2000);
     expect(run(g, 10, 29)).toBe(2);
+  });
+});
+
+describe('bornes de la densité (flou sur téléphone, 21/10)', () => {
+  it('plafond à la densité de l’écran, jusqu’à 3 : un téléphone n’est plus agrandi d’office', () => {
+    expect(dprOptions(3).max).toBe(3);
+    expect(dprOptions(2.625).max).toBe(2.625);
+    expect(dprOptions(4).max).toBe(3);
+    expect(DPR_RANGE).toEqual([1, 3]);
+  });
+  it('plancher à 1,25 (0,75 grossissait l’image quatre fois sur un téléphone), jamais sous la densité d’un écran de densité 1', () => {
+    expect(dprOptions(3).min).toBe(1.25);
+    expect(dprOptions(2).min).toBe(1.25);
+    expect(dprOptions(1).min).toBe(1);
+    expect(dprOptions(1).max).toBe(1);
+    expect(dprOptions(0.5)).toMatchObject({ min: 1, max: 1 });
   });
 });

@@ -17,10 +17,11 @@ export function qualityTier(i: { backend: Backend; maxTexture2D: number }): Qual
  * Crée le renderer : WebGPU, repli WebGL 2 automatique (three le fait dans `init()`). Rejette si aucun des deux
  * n'est disponible — l'appelant affiche alors « navigateur non compatible ».
  */
-export async function createRenderer(canvas: HTMLCanvasElement, opts: { forceWebGL?: boolean; antialias?: boolean } = {}): Promise<RendererInfo> {
+export async function createRenderer(canvas: HTMLCanvasElement, opts: { forceWebGL?: boolean; antialias?: boolean; trackTimestamp?: boolean } = {}): Promise<RendererInfo> {
   // Pas d'antialias de canvas par défaut : tout passe par le post-traitement, dont la passe porte son MSAA (« standard »)
   // ou le TRAA (« haute ») ; un canvas multi-échantillonné doublerait la mémoire et le travail de la sortie pour rien.
-  const renderer = new THREE.WebGPURenderer({ canvas, antialias: opts.antialias ?? false, forceWebGL: opts.forceWebGL ?? false });
+  // `trackTimestamp` : horodatages du GPU (mesure `bench` de la sonde seulement)
+  const renderer = new THREE.WebGPURenderer({ canvas, antialias: opts.antialias ?? false, forceWebGL: opts.forceWebGL ?? false, trackTimestamp: opts.trackTimestamp ?? false });
   await renderer.init();
   // Le type public de Backend n'expose ni le drapeau ni le device : on lit ce que three pose (WebGPUBackend.js / WebGLBackend.js).
   const raw = renderer.backend as unknown as {

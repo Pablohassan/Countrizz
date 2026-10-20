@@ -19,7 +19,7 @@ import { LoadErrorCard } from './LoadErrorCard';
 import { MeasureOverlay } from './MeasureOverlay';
 import { OffsetCamera } from './offsetCamera';
 import type { ScreenPoint } from './project';
-import { createDprGovernor, dprOptions } from './dynamicResolution';
+import { createDprGovernor, DPR_RANGE, dprOptions } from './dynamicResolution';
 import { effectiveTier, isUncompressed, maxDegradation, nextDegradation, type Degradation, type MeasureState } from './fallback';
 import { createImageSource, loadImageryIndex } from './imagePatch';
 import { createProgress } from './loading';
@@ -168,9 +168,9 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
   // Textures globales ou frontières introuvables après les nouvelles tentatives : message et « Réessayer ».
   const [loadError, setLoadError] = useState<string | null>(null);
   // Densité de pixels : celle de la résolution dynamique, en prop du Canvas — R3F réapplique sa prop `dpr` à chaque
-  // re-rendu, et une valeur posée par setDpr à côté était écrasée (03/10, revue finale). Renderer recréé : on repart de [1, 2].
-  const [dpr, setDprProp] = useState<number | [number, number]>([1, 2]);
-  const regenerate = () => { setDprProp([1, 2]); setGeneration((g) => g + 1); };
+  // re-rendu, et une valeur posée par setDpr à côté était écrasée (03/10, revue finale). Renderer recréé : on repart de DPR_RANGE.
+  const [dpr, setDprProp] = useState<number | [number, number]>(DPR_RANGE);
+  const regenerate = () => { setDprProp(DPR_RANGE); setGeneration((g) => g + 1); };
   const forceWebGL = new URLSearchParams(location.search).has('webgl');
   // Signaux par ref : un parent qui les donne en flèches inline ne doit pas recréer le renderer.
   const signals = useRef({ onError, onLoading, onLost });

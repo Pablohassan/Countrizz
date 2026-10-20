@@ -1,8 +1,17 @@
 export interface DprOptions { min: number; max: number; step: number; slowMs: number; fastMs: number; window: number }
 
-/** Les deux niveaux (spec zoom §5) : densité de 0,75 à min(devicePixelRatio, 2), par pas de 0,25 ; vise 45 images/s au moins. */
-export const dprOptions = (devicePixelRatio: number): DprOptions =>
-  ({ min: 0.75, max: Math.min(2, Math.max(1, devicePixelRatio)), step: 0.25, slowMs: 22, fastMs: 14, window: 30 });
+/** Bornes de la prop `dpr` du Canvas (R3F) : la densité de l'écran, ramenée entre 1 et 3. */
+export const DPR_RANGE: [number, number] = [1, 3];
+
+/**
+ * Les deux niveaux (spec zoom §5) : densité de 1,25 à celle de l'écran (3 au plus), par pas de 0,25 ; vise 45 images/s au
+ * moins. Avant le 21/10 : de 0,75 à 2 — un téléphone (densité ≈ 3) était toujours agrandi, jusqu'à quatre fois sous charge
+ * (flou constaté en partie). Un écran de densité 1 reste à 1.
+ */
+export const dprOptions = (devicePixelRatio: number): DprOptions => {
+  const max = Math.min(DPR_RANGE[1], Math.max(DPR_RANGE[0], devicePixelRatio));
+  return { min: Math.min(1.25, max), max, step: 0.25, slowMs: 22, fastMs: 14, window: 30 };
+};
 
 /** Une fenêtre « à la cadence de l'écran » : médiane à 10 % près de la meilleure médiane vue. */
 const AT_DISPLAY_RATE = 1.1;

@@ -27,6 +27,8 @@ export interface ProbeApi {
   unproject(pixels: [number, number][]): (LngLat | null)[];
   /** Fragment shader généré pour chaque objet dessiné de la scène (contrôle de l'uniformité des dérivées). */
   fragmentShaders(): Promise<{ name: string; code: string }[]>;
+  /** `bench` : médiane (ms) d'une image du post-traitement, attendue jusqu'à la fin du travail du GPU ; `null` sans mesure. */
+  benchMs: number | null;
 }
 declare global { interface Window { __probe?: ProbeApi } }
 
@@ -44,7 +46,9 @@ declare global { interface Window { __probe?: ProbeApi } }
  *   la chaîne, le plus fin par défaut ;
  * - `clouds=x` : opacité des nuages (0 par défaut), sans dérive ;
  * - `post` : post-traitement du niveau (`tier`), rendu sur `frames` images (16 par défaut : TRAA converge) ;
- * - `aa` : renderer antialiasé (canvas multi-échantillonné ; le jeu n'en a pas).
+ * - `aa` : renderer antialiasé (canvas multi-échantillonné ; le jeu n'en a pas) ;
+ * - `bench=N` (avec `post`, WebGPU) : N images de plus, chacune attendue jusqu'à la fin du travail du GPU ; médiane dans
+ *   `__probe.benchMs` (coût des effets, analyse du flou sur téléphone du 21/10).
  */
 const q = new URLSearchParams(location.search);
 const num = (name: string, fallback: number) => (q.has(name) ? Number(q.get(name)) : fallback);
@@ -55,7 +59,7 @@ const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
 // Sans antialias de canvas, comme le jeu (et des masques exacts au pixel) ; `aa` en force un : la passe du post-traitement ne
 // doit pas hériter de ses échantillons (contrôle de post.spec).
-const { renderer, backend } = await createRenderer(canvas, { forceWebGL: q.has('webgl'), antialias: q.has('aa') });
+const { renderer, backend } = await createRenderer(canvas, { forceWebGL: q.has('webgl'), antialias: q.has('aa'), trackTimestamp: q.has('bench') });
 renderer.setPixelRatio(1);
 renderer.setSize(width, height);
 
@@ -117,6 +121,7 @@ if (tone !== undefined) renderer.toneMapping = tone;   // sans `post`
 if (q.has('exp')) renderer.toneMappingExposure = Number(q.get('exp'));
 const scene = new THREE.Scene();
 scene.add(globe.root);
+let benchMs: number | null = null;
 // atmosphère physique : ses tables se calculent après le premier rendu qui les lit (physicalSky.ts) ; on les attend
 if (sky) { renderer.render(scene, camera); await sky.ready(); }
 if (q.has('post')) {
@@ -128,6 +133,18 @@ if (q.has('post')) {
     post.render();
     await new Promise((r) => requestAnimationFrame(r));
   }
+  if (q.has('bench') && backend === 'webgpu') {
+    // horodatages du GPU : durée des passes de l'image (l'attente de fin du travail du GPU se résolvait avant la soumission)
+    await renderer.resolveTimestampsAsync('render');
+    const times: number[] = [];
+    for (let i = 0, n = Number(q.get('bench') || 30); i < n; i++) {
+      post.render();
+      await new Promise((r) => requestAnimationFrame(r));
+      const ms = await renderer.resolveTimestampsAsync('render');
+      if (typeof ms === 'number') times.push(ms);
+    }
+    benchMs = times.length ? times.sort((a, b) => a - b)[Math.floor(times.length / 2)]! : null;
+  }
 } else {
   renderer.render(scene, camera);
 }
@@ -137,6 +154,7 @@ const sphere = new THREE.Sphere(new THREE.Vector3(), 1);
 const hit = new THREE.Vector3();
 window.__probe = {
   backend,
+  benchMs,
   cca3: rec?.cca3 ?? null,
   project: (points) => points.map((p) => {
     const v = new THREE.Vector3(...toVec(p));

@@ -1,4 +1,4 @@
-import type { CSSProperties, Ref } from 'react';
+import { useState, type CSSProperties, type Ref } from 'react';
 import ratios from '../data/flagRatios.json';
 import type { CountryRecord } from '../data/types';
 import type { Lang, Mode, Question } from '../game/types';
@@ -33,6 +33,19 @@ function Badge({ state }: { state: AnswerState }) {
   return null;
 }
 
+/**
+ * Autocollant d'un drapeau ; drapeau introuvable (hors ligne, pays jamais vu : plan 2A-6, décision 8) : le nom du pays sur
+ * un autocollant crème, jamais une case vide. Le nom de la révélation n'est montré que sous un vrai drapeau.
+ */
+function FlagSticker({ src, w, h, shaped, name, revealed }: { src: string; w: number; h: number; shaped: boolean; name: string; revealed: boolean }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <span className="reponse-drapeau-sans" style={{ width: w, height: h }}>{name}</span>;
+  return (<>
+    <img src={src} alt="" draggable={false} style={{ width: w, height: h }} className={shaped ? 'forme' : undefined} onError={() => setFailed(true)} />
+    {revealed && <span className="reponse-nom">{name}</span>}
+  </>);
+}
+
 /** La question juste au-dessus de la grille 2×2 (D1), boutons violets inclinés (D2) ou drapeaux autocollants (D3). */
 export function Answers({ ref, m, lang, mode, question, records, picked, hidden, onAnswer, onPress, onRelease }: Props) {
   const states = answerStates(question, picked);
@@ -52,10 +65,9 @@ export function Answers({ ref, m, lang, mode, question, records, picked, hidden,
               <button key={r.cca3} type="button" disabled={locked} aria-label={`${m.modes.flag} ${i + 1}`}
                 className={`reponse-drapeau${st !== 'idle' ? ` reponse-drapeau--${CLASS[st]}` : ''}`}
                 style={{ '--w': `${w}px`, '--h': `${h}px` } as CSSProperties} {...press} onClick={() => onAnswer(i)}>
-                <img src={`/data/${r.flag}`} alt="" draggable={false} style={{ width: w, height: h }} className={SHAPED_FLAGS.has(r.cca3) ? 'forme' : undefined} />
+                <FlagSticker src={`/data/${r.flag}`} w={w} h={h} shaped={SHAPED_FLAGS.has(r.cca3)} name={r.name[lang]} revealed={st === 'ok' || st === 'ko'} />
                 <span className="reponse-touche" aria-hidden="true">{i + 1}</span>
                 <Badge state={st} />
-                {(st === 'ok' || st === 'ko') && <span className="reponse-nom">{r.name[lang]}</span>}
               </button>
             );
           })}

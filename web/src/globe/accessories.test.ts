@@ -6,7 +6,7 @@ const scene = () => { const objects: unknown[] = []; return { objects, add: (o: 
 const acc = (name: string, log: string[]): Accessory => ({
   create: () => { log.push(`+${name}`); return { object: { name } as unknown as THREE.Object3D, update: () => log.push(`~${name}`), dispose: () => log.push(`-${name}`) }; },
 });
-const frame = { nowMs: 0, pose: { dir: [0, 0, 1], altitude: 1, up: [0, 1, 0], cut: false, pitch: 0, axisY: 0 }, sun: [0, 0, 1] } as const;
+const frame = { nowMs: 0, pose: { dir: [0, 0, 1], altitude: 1, up: [0, 1, 0], cut: false, pitch: 0, axisY: 0 }, sun: [0, 0, 1], viewport: { width: 390, height: 844, fovYDeg: 50 } } as const;
 
 describe('accessoires de la scène (spec 2A §5.3)', () => {
   it('monte, met à jour à chaque image, retire et libère', () => {

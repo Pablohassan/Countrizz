@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { openHome, startGame } from './game-helpers';
+import { answer, gameState, openHome, startGame } from './game-helpers';
 
 /**
  * PWA (spec 2A §8, décisions du 10/10) : manifeste installable, service worker, fichiers lourds gardés sur l'appareil,
@@ -48,6 +48,39 @@ test('après une visite, les fichiers lourds sont sur l’appareil et l’accuei
   await page.reload();
   await expect(page.locator('.accueil .accueil-titre')).toBeVisible({ timeout: 30_000 });
   await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 });
+  await context.setOffline(false);
+});
+
+test('hors ligne après une visite : une partie complète en mode Drapeau, chaque autocollant montre un drapeau ou un nom', async ({ page, context }) => {
+  await page.goto(`/?webgl&introVariante=${VARIANTE}`);
+  test.skip((await page.locator('link[rel="manifest"]').count()) === 0, 'pas de service worker : serveur de dev');
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 120_000 });
+  await page.getByRole('button', { name: /Passer|Skip/ }).click();
+  await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 });
+  const utiles = ['/textures/day-4k.ktx2', '/data/countries.json', '/data/borders.json', '/basis/basis_transcoder.wasm'];
+  await expect.poll(async () => { const out = await enCache(page); return utiles.filter((w) => !out.includes(w)); }, { timeout: 60_000 }).toEqual([]);
+  // hors ligne : pays jamais vus (contour : balise ; drapeau : son nom, plan 2A-6) ; la partie ne bloque jamais (spec 2A §10)
+  await context.setOffline(true);
+  await page.goto('/?webgl&partie=6000&graine=7');
+  await expect(page.getByRole('button', { name: /^(Jouer|Play)/ })).toBeEnabled({ timeout: 180_000 });
+  await startGame(page, /Drapeau|Flag/);
+  let rounds = 0;
+  for (;;) {
+    await page.waitForFunction(() => ['question', 'end'].includes(window.__game?.state.screen ?? ''), null, { timeout: 180_000 });
+    if ((await gameState(page)).screen !== 'question') break;
+    const etats = () => page.evaluate(() => [...document.querySelectorAll('.reponse-drapeau')].map((b) => {
+      const img = b.querySelector('img');
+      if (!img) return b.querySelector('.reponse-drapeau-sans')?.textContent?.trim() ? 'nom' : 'vide';
+      return !img.complete ? 'attente' : img.naturalWidth > 0 ? 'drapeau' : 'cassé';
+    }));
+    await expect.poll(async () => (await etats()).every((e) => e === 'drapeau' || e === 'nom'), { timeout: 15_000 }).toBe(true);
+    console.log('manche hors ligne', rounds + 1, JSON.stringify(await etats()));
+    if (!(await answer(page, true))) break;
+    rounds++;
+  }
+  expect(rounds).toBeGreaterThan(0);
+  await expect.poll(async () => (await gameState(page)).screen, { timeout: 180_000 }).toBe('end');
   await context.setOffline(false);
 });
 

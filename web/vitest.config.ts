@@ -4,6 +4,8 @@ export default defineConfig({
   test: {
     projects: [
       {
+        // constantes du build (vite.config.ts) : vides pour les tests unitaires (src/pwa/empreintes.ts)
+        define: { __COUNTRIZZ_EMPREINTES__: '{}', __COUNTRIZZ_CACHES__: '[]' },
         test: {
           name: 'unit',
           environment: 'node',

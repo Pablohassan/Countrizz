@@ -15,6 +15,8 @@ const PLANS = {
   'bonne-reponse': 'mode=game&cca3=JPN&state=correct&t=1',
   'micro-etat': 'mode=game&cca3=VAT&beacon=12.4533,41.9029',
   'lever-de-soleil': 'mode=game&at=0,0&alt=4&sun=180,16.86',
+  // avion A2 de l'accueil figé entre Paris et Athènes (plan 2A-6) : papier toon, contours, perles, ombre portée
+  'accueil-avion': 'mode=game&home&clouds=1&avion=0.0814',
 } as const;
 const SCREENS = { bureau: { width: 800, height: 450 }, telephone: { width: 360, height: 640 } } as const;
 

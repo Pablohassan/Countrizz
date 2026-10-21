@@ -6,9 +6,12 @@ import type { GlobeHandle } from '../globe/GlobeView';
 import { LoadErrorCard } from '../globe/LoadErrorCard';
 import { Intro } from '../intro/Intro';
 import { Home } from '../ui/Home';
+import { HomeMarks, type HomeExtras } from '../ui/HomeMarks';
+import type { HomePlane } from '../globe/plane/plane';
 import type { EntreeTitre } from '../ui/LogoTitle';
 import type { QualityTier } from '../globe/renderer';
-import { INTRO_URLS, cachesReady, heavyUrls, persist, preloadKey, warm } from '../pwa/cache';
+import { OFFLINE_URLS, cachesReady, heavyUrls, persist, preloadKey, warm } from '../pwa/cache';
+import { EMPREINTES } from '../pwa/empreintes';
 import { useInstall } from '../pwa/install';
 import { browserUpdater, consumeUpdateFlag } from '../pwa/update';
 import { loadCountries } from '../data/countries';
@@ -29,6 +32,7 @@ import { e2eOverrides, hooksEnabled, newSeed } from './hooks';
 import { useGame } from './useGame';
 
 const storage = ((): KeyValueStorage | null => { try { return localStorage; } catch { return null; } })();
+declare global { interface Window { __plane?: HomePlane } }
 /**
  * Nouvelle version du site : la page se recharge d'elle-même à un moment sans gêne (src/pwa/update.ts) ; la page rechargée
  * s'ouvre sur l'accueil, sans l'intro (lu une fois, au chargement du module).
@@ -43,6 +47,7 @@ export const HOME_SPIN_DEG_PER_S = 1.5;
  * l'intro démarre sans l'attendre, le globe se monte caché sous elle dès que son code est là.
  */
 const GlobeView = lazy(() => import('../globe/GlobeView').then((m) => ({ default: m.GlobeView })));
+
 
 /**
  * Code du globe introuvable (réseau coupé, version du site remplacée pendant la visite…) : comme un globe en échec,
@@ -108,8 +113,8 @@ export function App() {
 
   // caches d'une version précédente (anciens noms) et fichiers changés depuis : retirés (spec océan §3)
   useEffect(() => { void cachesReady(); }, []);
-  // Dès que le service worker contrôle la page : les fichiers de l'intro passent une fois par lui (à la première visite,
-  // elle les a chargés avant lui ; ils viennent du cache HTTP, sans nouveau téléchargement). Le globe, lui, charge après.
+  // Dès que le service worker contrôle la page : les fichiers de l'intro et les index de données passent une fois par lui (à
+  // la première visite, la page les a chargés avant lui ; ils viennent du cache HTTP). Le globe, lui, charge après.
   // Appli installée (ou qui vient de l'être) : tout ce qu'il faut pour jouer, au niveau du téléphone, et stockage
   // demandé persistant. Une fois par jeu de caches.
   const [installedNow, setInstalledNow] = useState(false);
@@ -124,8 +129,8 @@ export function App() {
   const installed = install.standalone || installedNow;
   useEffect(() => {
     if (!tier || !controlled) return;
-    const urls = installed ? heavyUrls(tier) : [...INTRO_URLS];
-    const key = preloadKey(urls, __COUNTRIZZ_EMPREINTES__) + (installed ? '+persistant' : '');
+    const urls = installed ? heavyUrls(tier) : [...OFFLINE_URLS];
+    const key = preloadKey(urls, EMPREINTES) + (installed ? '+persistant' : '');
     if (readPref(storage, PREF_KEYS.preloaded) === key) return;
     void (async () => {
       await cachesReady();
@@ -136,6 +141,24 @@ export function App() {
   }, [tier, controlled, installed]);
 
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
+  // Avion de l'accueil et repères G5 (plan 2A-6) : seulement l'accueil affiché, globe prêt. Son code arrive avec celui du
+  // globe (GlobeView le réexporte ; déjà chargé ici) ; recréé à chaque retour à l'accueil (il repart de derrière la Terre).
+  const homeVisible = phase === 'accueil' && homeShown && s.screen === 'home' && !overlay && globeReady && !globeError;
+  const [extras, setExtras] = useState<HomeExtras | null>(null);
+  useEffect(() => {
+    if (!homeVisible) return;
+    let alive = true, off: (() => void) | null = null;
+    void import('../globe/GlobeView').then(({ createHomePlane, ESCALES, markGeometry }) => {
+      if (!alive || !globe.current) return;
+      const mq = matchMedia('(prefers-reduced-motion: reduce)');
+      const p = createHomePlane({ reducedMotion: () => mq.matches });
+      off = globe.current.mount(p);
+      setExtras({ plane: p, escales: ESCALES, geometry: markGeometry });
+      if (hooks) window.__plane = p;
+    }, (e: unknown) => console.warn('avion de l’accueil non chargé', e));
+    return () => { alive = false; off?.(); setExtras(null); };
+  }, [homeVisible]); // eslint-disable-line react-hooks/exhaustive-deps -- hooks est stable
+
   // à l'accueil, le globe tourne doucement ; accueil direct : son code peut arriver après, on attend qu'il soit prêt
   useEffect(() => { if (phase === 'accueil' && globeReady) globe.current?.setIdleSpin(HOME_SPIN_DEG_PER_S); }, [phase, globeReady]);
 
@@ -155,6 +178,7 @@ export function App() {
           onDone={(angle) => { if (angle === null) setEntree('pop'); setPhase('accueil'); }} />
       )}
       {!errorShown && (<>
+      {homeVisible && <HomeMarks globe={globe.current} extras={extras} countries={countries} lang={lang} />}
       {homeShown && s.screen === 'home' && !overlay && (
         <Home lang={lang} m={m} name={name} logo={{ angle: logoAngle, visible: phase !== 'intro', entree }}
           canPlay={canPlay} onPlay={() => game.dispatch({ type: 'PLAY' })} onScores={() => game.dispatch({ type: 'SHOW_SCORES' })} onAbout={() => setOverlay('about')}

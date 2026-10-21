@@ -81,6 +81,9 @@ export class GlobeController {
 
   get pose(): FramePose | null { return this.lastPose; }
 
+  /** Pose et vue entière de la dernière image (repères de l'accueil, plan 2A-6) ; `null` avant la première. */
+  get view(): { pose: FramePose; viewport: Viewport } | null { return this.lastPose ? { pose: this.lastPose, viewport: this.fullViewport } : null; }
+
   /** Paire de niveaux posée à la dernière image (contrôles e2e) ; `null` : aucune photo. */
   get imageSlots(): { coarse: number | null; fine: number | null; fineOpacity: number } | null { return this.shownSlots; }
 

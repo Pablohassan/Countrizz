@@ -1,0 +1,46 @@
+/* Repères G5 « Escales » de l'accueil (maquette `accueil-avion-escales.html`, décisions 7 et 8) : positionnés à chaque
+   image par HomeMarks (translate) ; --f = sol vu de face (1) ou par la tranche (0), --n = angle de la verticale du lieu,
+   --t = inclinaison de la tige. Rendus avant l'accueil : sous ses commandes et l'invitation à installer, au-dessus du globe. */
+.reperes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; font-family: var(--cartoon); }
+.mk { position: absolute; left: 0; top: 0; width: 0; height: 0; opacity: clamp(0, calc((var(--f, 0) - .15) * 2.5), 1); will-change: transform; }
+.mk-sol { position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(closest-side, rgb(0 0 0 / .6), rgb(0 0 0 / 0)); transform: rotate(var(--n)) scaleY(var(--f)); }
+.mk-sol--large { transform: rotate(var(--n)) scaleY(var(--f)) scale(1.5); }
+.mk-tige { position: absolute; left: 0; top: 0; transform: rotate(var(--t)) scale(calc(.55 + .5 * var(--f))); transform-origin: 0 0; }
+.mk-aiguille { position: absolute; left: -1px; top: -17px; width: 2px; height: 17px; background: linear-gradient(90deg, #fff8e7, #b9b3a4); box-shadow: 0 0 0 1px #000; border-radius: 1px 1px 0 0; }
+.mk-tete { position: absolute; left: -11px; top: -38px; width: 22px; height: 22px; box-sizing: border-box; border-radius: 50%; border: 2.5px solid #fff8e7; background: #16173a center / cover no-repeat;
+  box-shadow: 0 0 0 1.75px #000, 2.5px 2.5px 0 1.75px #000; }
+.mk-tete::after { content: ''; position: absolute; left: 3px; top: 2px; width: 7px; height: 4px; border-radius: 50%; background: rgb(255 255 255 / .55); transform: rotate(-30deg); }
+/* drapeau planté (Paris) */
+.mk-tache { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; box-sizing: border-box; border-radius: 50%; border: 2px solid #fff8e7;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / .55), inset 0 0 0 1px rgb(0 0 0 / .55); transform: rotate(var(--n)) scaleY(var(--f)); }
+.mk-mat { position: absolute; left: -1.5px; top: -46px; width: 3px; height: 46px; background: #fff8e7; box-shadow: 0 0 0 1.25px #000; border-radius: 2px 2px 0 0; }
+.mk-pommeau { position: absolute; left: -4.5px; top: -52px; width: 9px; height: 9px; box-sizing: border-box; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff6c8, #f7dc6f 55%, #c9a83a); border: 1.5px solid #000; }
+.mk-drapeau { position: absolute; left: 0; top: -47px; width: 44px; height: 32px; overflow: visible; }
+.mk-ondule { animation: mk-vague 1.6s ease-in-out infinite; }
+.mk-pli { animation: mk-pli 1.6s linear infinite; }
+@keyframes mk-vague { 0%, 100% { d: path('M1 1C11 -2 22 4 33 1V23C22 26 11 20 1 23Z'); } 50% { d: path('M1 1C11 4 22 -2 33 1V23C22 20 11 26 1 23Z'); } }
+@keyframes mk-pli { from { transform: translateX(-22px); } to { transform: translateX(0); } }
+.mk-etincelle { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; animation: mk-scintille 2.4s ease-in-out infinite;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 -5 10 10'%3E%3Cpath d='M0-5C.6-1.2 1.2-.6 5 0 1.2.6.6 1.2 0 5-.6 1.2-1.2.6-5 0-1.2-.6-.6-1.2 0-5Z' fill='%23f7dc6f' stroke='%23000' stroke-width='.9'/%3E%3C/svg%3E") center / contain no-repeat; }
+.mk-etincelle--petite { width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; animation-delay: -1.2s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 -5 10 10'%3E%3Cpath d='M0-5C.6-1.2 1.2-.6 5 0 1.2.6.6 1.2 0 5-.6 1.2-1.2.6-5 0-1.2-.6-.6-1.2 0-5Z' fill='%23fff8e7' stroke='%23000' stroke-width='.9'/%3E%3C/svg%3E"); }
+@keyframes mk-scintille { 0%, 100% { transform: scale(.5) rotate(0); opacity: .3; } 50% { transform: scale(1) rotate(20deg); opacity: 1; } }
+/* balise (Athènes) */
+.mk-anneau { position: absolute; left: -12px; top: -12px; width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; border: 2.5px solid #ffee03;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / .6), inset 0 0 0 1px rgb(0 0 0 / .6); transform: rotate(var(--n)) scaleY(var(--f)); }
+.mk-anneau--ping { animation: mk-ping 1.8s ease-out infinite; }
+@keyframes mk-ping { 0% { transform: rotate(var(--n)) scaleY(var(--f)) scale(.6); opacity: 1; } 100% { transform: rotate(var(--n)) scaleY(var(--f)) scale(2); opacity: 0; } }
+.mk-coeur { position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1.5px #000, 0 0 8px 2px rgb(255 238 3 / .9); }
+/* bulles des escales : cachées au départ, apparaissent au passage de l'avion */
+.escale { position: absolute; left: 0; top: 0; will-change: transform; }
+.escale-bulle { white-space: nowrap; background: #fff8e7; color: #16173a; border: 2px solid #000; border-radius: 7px; box-shadow: 2px 2px 0 #000; padding: 2px 7px 3px; font-size: 11px; line-height: 1.1;
+  opacity: 0; transform: rotate(-3deg) scale(.55); transform-origin: 20% 50%; transition: opacity .25s ease, transform .45s cubic-bezier(.3, 1.7, .5, 1); }
+.escale.on .escale-bulle { opacity: 1; transform: rotate(-3deg) scale(1); }
+.escale-bulle i { font-style: normal; color: #6225e6; }
+.escale-sep { color: #6225e6; margin: 0 3px; }
+.escale-point { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #2fbf4a; box-shadow: 0 0 0 1.25px #000; margin-right: 5px; vertical-align: 1px; }
+@media (prefers-reduced-motion: reduce) {
+  .mk-ondule, .mk-pli, .mk-etincelle, .mk-anneau--ping { animation: none; }
+  .mk-anneau--ping { display: none; }
+  .escale-bulle { transition: none; }
+}

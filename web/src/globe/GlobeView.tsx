@@ -2,8 +2,8 @@ import { Component, useCallback, useEffect, useImperativeHandle, useMemo, useRef
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three/webgpu';
 import { FOV_Y_DEG } from '../camera/config';
-import type { FlightTicket } from '../camera/director';
-import type { FramingParams } from '../camera/framing';
+import type { FlightTicket, FramePose } from '../camera/director';
+import type { FramingParams, Viewport } from '../camera/framing';
 import type { SafeArea } from '../camera/safeArea';
 import { sunDirection } from '../camera/sun';
 import type { CountryRecord, LngLat } from '../data/types';
@@ -25,13 +25,21 @@ import { createImageSource, loadImageryIndex } from './imagePatch';
 import { createProgress } from './loading';
 import { cachesReady } from '../pwa/cache';
 import { createPostProcessing, postOptions } from './postprocessing';
-import { installPhysicalSky, physicalSkyOf } from './physicalSky';
+import { installPhysicalSky, physicalSkyOf, setKeep } from './physicalSky';
+import { float } from 'three/tsl';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
 import { lookAt } from './reveal';
 import { withRetry } from './retry';
 import { disposeGlobeTextures, loadDayNight, loadGlobeTextures, loadReliefGrid, type GlobeTextures } from './textures';
 
 extend(THREE as unknown as Parameters<typeof extend>[0]);
+
+/**
+ * Avion et repères de l'accueil (plan 2A-6), livrés avec le code du globe : atteints par les mêmes entrées que lui, ils
+ * restent dans ses morceaux. Par un `import()` à part, ce qu'ils partagent avec le globe (lignes, atmosphère…) sortait en
+ * morceaux de plus, chargés pendant l'intro (Fast 4G de 1112 à 1259 ms, 21/10).
+ */
+export { createHomePlane, ESCALES, markGeometry } from './plane/plane';
 
 export interface GlobeHandle {
   /** Vole vers le pays : `durationMs` (le 3-2-1 s'y règle) ; `arrived` à true à l'arrivée, false si remplacé. */
@@ -48,6 +56,8 @@ export interface GlobeHandle {
   setSafeArea(a: SafeArea | null): void;
   /** Position écran d'un point du sol à la dernière image (px CSS) ; `null` avant la première image ou derrière la caméra. */
   project(p: LngLat): ScreenPoint | null;
+  /** Pose et vue entière de la dernière image (repères projetés de l'accueil) ; `null` avant la première. */
+  view(): { pose: FramePose; viewport: Viewport } | null;
   /** Appelé à chaque image, pose posée, avant le rendu : les calques DOM s'y recalent. Rend la désinscription. */
   onFrame(cb: () => void): () => void;
   /** Après une erreur (chargement, recréation) : nouvel essai complet. */
@@ -205,6 +215,7 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
     setIdleSpin: (d) => controller.director.setIdleSpin(d),
     setSafeArea: (a) => controller.setSafeArea(a),
     project: (p) => controller.project(p),
+    view: () => controller.view,
     onFrame: (cb) => controller.onFrame(cb),
     retry,
     mount: (a) => controller.mount(a),
@@ -361,7 +372,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
   }, [tier, globe, renderer]);
 
   // Accessoires (avion de l'accueil) : un hôte par scène, donc par renderer ; recréés après une perte du GPU.
-  const host = useMemo(() => createAccessoryHost(scene), [scene]);
+  const host = useMemo(() => createAccessoryHost(scene, { unveil: (m) => setKeep(m, float(1)) }), [scene]);
   useEffect(() => {
     if (!globe) return;
     const sync = () => host.sync(controller.accessories());
@@ -449,7 +460,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     globe.setLook(lookAt(controller.timeline, now));
     globe.setTime(now / 1000);
     globe.applyPose(pose, camera);
-    host.update({ nowMs: now, pose, sun: sunDirection(pose) });
+    host.update({ nowMs: now, pose, sun: sunDirection(pose), viewport: { width: size.width, height: size.height, fovYDeg: FOV_Y_DEG } });
     controller.notePose(pose);
     const clouds = controller.cloudOpacityAt(now);
     // Mouvement réduit : les nuages ne dérivent pas.

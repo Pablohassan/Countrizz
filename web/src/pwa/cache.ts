@@ -1,4 +1,6 @@
 import type { QualityTier } from '../globe/renderer';
+import { MOTIF_LOURD, MOTIF_PAYS } from './motifs';
+import { EMPREINTES } from './empreintes';
 
 /**
  * Caches du service worker (spec 2A §8, décisions du 10/10) : les fichiers lourds (textures, transcodeur, intro, police)
@@ -19,6 +21,13 @@ export function outdatedCaches(names: readonly string[], current: readonly strin
 export const INTRO_URLS = ['/intro/affiche-portrait.webp', '/intro/affiche-paysage.webp', '/intro/ancres.json'] as const;
 
 /**
+ * Ce que tout visiteur fait repasser par le service worker dès qu'il contrôle la page : l'intro, et les index de données
+ * demandés avant lui à la première visite (sans countries.json en cache, « Jouer » reste inactif hors ligne : plan 2A-6,
+ * e2e du 21/10). Pas borders.json : le globe le charge après, par lui (1,1 Mo à ne pas retélécharger).
+ */
+export const OFFLINE_URLS = [...INTRO_URLS, '/data/countries.json', '/data/imagery.json'] as const;
+
+/**
  * Clé du préchargement : les empreintes des fichiers préchargés. Un fichier changé change la clé, et le préchargement
  * repasse (seul ce fichier se retélécharge : les autres viennent du cache).
  */
@@ -26,8 +35,12 @@ export function preloadKey(urls: readonly string[], empreintes: Empreintes): str
   return urls.map((u) => empreintes[u] ?? '-').join('.');
 }
 
-/** Ce qu'un téléphone télécharge d'avance à l'installation, selon son niveau de rendu. */
-export function heavyUrls(tier: QualityTier): string[] {
+/**
+ * Ce qu'un téléphone télécharge d'avance à l'installation, selon son niveau de rendu ; et les 197 drapeaux (3,6 Mo), pour
+ * le mode Drapeau hors ligne (plan 2A-6, décision 8). Ni les contours (51 Mo) ni les photos : un pays jamais vu prend la
+ * balise (spec 2A §10).
+ */
+export function heavyUrls(tier: QualityTier, empreintes: Empreintes = EMPREINTES): string[] {
   const size = tier === 'haute' ? '8k' : '4k';
   return [
     `/textures/day-${size}.ktx2`, `/textures/night-${size}.ktx2`, '/textures/surface-4k.ktx2', '/textures/clouds-4k.ktx2',
@@ -35,6 +48,7 @@ export function heavyUrls(tier: QualityTier): string[] {
     '/basis/basis_transcoder.js', '/basis/basis_transcoder.wasm',
     ...INTRO_URLS,
     '/data/borders.json', '/data/countries.json', '/data/imagery.json',
+    ...Object.keys(empreintes).filter((u) => u.startsWith('/data/flags/')).sort(),
   ];
 }
 
@@ -72,9 +86,14 @@ export async function persist(): Promise<boolean> {
 export const EMPREINTES_KEY = '/__countrizz-empreintes__.json';
 export type Empreintes = Readonly<Record<string, string>>;
 
-/** Adresses (chemins) à retirer d'un cache : absentes de la table courante, ou d'une autre empreinte qu'au dernier passage. */
+/**
+ * Adresses (chemins) à retirer d'un cache : absentes de la table courante, ou d'une autre empreinte qu'au dernier passage.
+ * Seuls les fichiers que la table suit (lourds, pays) : les index de données n'y sont pas, leur cache est renommé quand ils
+ * changent (avant le 21/10, ils sortaient à chaque démarrage, et hors ligne le globe ne trouvait plus borders.json).
+ */
 export function staleEntries(cached: readonly string[], previous: Empreintes | null, current: Empreintes): string[] {
-  return cached.filter((u) => u !== EMPREINTES_KEY && (!(u in current) || previous?.[u] !== current[u]));
+  const tracked = (u: string) => MOTIF_LOURD.test(u) || MOTIF_PAYS.test(u);
+  return cached.filter((u) => u !== EMPREINTES_KEY && tracked(u) && (!(u in current) || previous?.[u] !== current[u]));
 }
 
 /** Retire des caches nommés les fichiers périmés, puis range la table courante ; sans Cache API, rien à faire. */
@@ -103,7 +122,7 @@ export async function purgeStale(cacheNames: readonly string[], current: Emprein
  * textures, sinon une ancienne copie servirait encore cette visite. Ne rejette jamais.
  */
 let ready: Promise<void> | null = null;
-export function cachesReady(names: readonly string[] = __COUNTRIZZ_CACHES__, empreintes: Empreintes = __COUNTRIZZ_EMPREINTES__): Promise<void> {
+export function cachesReady(names: readonly string[] = __COUNTRIZZ_CACHES__, empreintes: Empreintes = EMPREINTES): Promise<void> {
   ready ??= (async () => {
     try { await purgeOutdated(names); await purgeStale(names, empreintes); } catch { /* stockage indisponible : le réseau suffit */ }
   })();

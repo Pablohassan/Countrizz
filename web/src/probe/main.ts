@@ -12,10 +12,14 @@ import { createRenderer } from '../globe/renderer';
 import { loadGlobeTextures, loadReliefGrid } from '../globe/textures';
 import { createImageSource, loadImageryIndex } from '../globe/imagePatch';
 import { createPostProcessing, postOptions } from '../globe/postprocessing';
-import { installPhysicalSky } from '../globe/physicalSky';
+import { installPhysicalSky, setKeep } from '../globe/physicalSky';
+import { float } from 'three/tsl';
 import { OffsetCamera } from '../globe/offsetCamera';
 import { safeViewport } from '../camera/safeArea';
 import { imagePatchUrl } from '../data/imagery';
+import { sunDirection } from '../camera/sun';
+import { createAccessoryHost } from '../globe/accessories';
+import { createHomePlane } from '../globe/plane/plane';
 
 /** API exposée aux contrôles Playwright (e2e/). */
 export interface ProbeApi {
@@ -47,6 +51,7 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `clouds=x` : opacité des nuages (0 par défaut), sans dérive ;
  * - `post` : post-traitement du niveau (`tier`), rendu sur `frames` images (16 par défaut : TRAA converge) ;
  * - `aa` : renderer antialiasé (canvas multi-échantillonné ; le jeu n'en a pas) ;
+ * - `avion=e` (mode jeu) : avion de l'accueil figé à la progression e de son trajet (0 = Rabat ; plan 2A-6) ;
  * - `bench=N` (avec `post`, WebGPU) : N images de plus, chacune attendue jusqu'à la fin du travail du GPU ; médiane dans
  *   `__probe.benchMs` (coût des effets, analyse du flou sur téléphone du 21/10).
  */
@@ -123,6 +128,11 @@ if (tone !== undefined) renderer.toneMapping = tone;   // sans `post`
 if (q.has('exp')) renderer.toneMappingExposure = Number(q.get('exp'));
 const scene = new THREE.Scene();
 scene.add(globe.root);
+if (q.has('avion') && mode === 'game') {
+  const host = createAccessoryHost(scene, { unveil: (m) => setKeep(m, float(1)) });
+  host.sync([createHomePlane({ still: Number(q.get('avion')) })]);
+  host.update({ nowMs: 0, pose, sun: sun ? toVec(sun) : sunDirection(pose), viewport: { width, height, fovYDeg: FOV_Y_DEG } });
+}
 let benchMs: number | null = null;
 // atmosphère physique : ses tables se calculent après le premier rendu qui les lit (physicalSky.ts) ; on les attend
 if (sky) { renderer.render(scene, camera); await sky.ready(); }

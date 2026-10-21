@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { EMPREINTES_KEY, heavyUrls, outdatedCaches, preloadKey, staleEntries, warm } from './cache';
+import { EMPREINTES_KEY, heavyUrls, OFFLINE_URLS, outdatedCaches, preloadKey, staleEntries, warm } from './cache';
 import { isIos, shouldOffer } from './install';
 import { MOTIF_DONNEES, MOTIF_LOURD, MOTIF_PAYS } from './motifs';
 
@@ -42,6 +42,19 @@ describe('caches de l’appareil', () => {
     expect(heavyUrls('haute')).toEqual(expect.arrayContaining(['/intro/affiche-portrait.webp', '/intro/affiche-paysage.webp', '/intro/ancres.json']));
     expect(heavyUrls('haute').filter((u) => u.startsWith('/video/') || u.endsWith('.jpg'))).toEqual([]);
   });
+  it('appli installée : tous les drapeaux d’avance (mode Drapeau hors ligne, plan 2A-6), pas les contours ni les photos', () => {
+    const e = { '/data/flags/fra.svg': 'a', '/data/flags/esp.svg': 'b', '/data/patches/sdf/fra.png': 'c', '/data/patches/img/fra-0-1024.ktx2': 'd', '/textures/day-4k.ktx2': 'e' };
+    const urls = heavyUrls('standard', e);
+    expect(urls).toEqual(expect.arrayContaining(['/data/flags/fra.svg', '/data/flags/esp.svg']));
+    expect(urls.filter((u) => u.startsWith('/data/patches/'))).toEqual([]);
+    expect(new Set(urls).size).toBe(urls.length);
+  });
+  it('tout visiteur : les index de données repassent par le service worker (partie hors ligne, plan 2A-6)', () => {
+    // countries.json est demandé avant que le service worker ne contrôle la première visite : sans ce passage, « Jouer » reste
+    // inactif hors ligne (e2e du 21/10)
+    expect(OFFLINE_URLS).toEqual(expect.arrayContaining(['/data/countries.json', '/data/imagery.json', '/intro/ancres.json']));
+    expect((OFFLINE_URLS as readonly string[]).filter((u) => u.startsWith('/video/') || u === '/data/borders.json')).toEqual([]);
+  });
   it('un fichier en échec n’arrête pas les autres', async () => {
     const r = await warm(['/a', '/b', '/c'], async (u) => { if (u === '/b') throw new Error('réseau'); return { ok: u !== '/c' }; });
     expect(r).toEqual({ ok: 1, failed: ['/b', '/c'] });
@@ -59,6 +72,12 @@ describe('cache fichier par fichier (spec océan §3)', () => {
   });
   it('sans table d’avant (migration, stockage vidé) : rien ne prouve qu’une copie est à jour, tout sort', () => {
     expect(staleEntries(['/textures/day-4k.ktx2', '/intro/ancres.json'], null, cur)).toEqual(['/textures/day-4k.ktx2', '/intro/ancres.json']);
+  });
+  it('les index de données, hors de la table, ne sortent jamais (leur cache est renommé quand ils changent)', () => {
+    // avant le 21/10, ils sortaient à chaque démarrage : hors ligne, le globe ne trouvait plus borders.json (« Oups ! »)
+    const cached = ['/data/borders.json', '/data/countries.json', '/data/imagery.json', '/textures/vieux.ktx2', '/data/flags/fra.svg', EMPREINTES_KEY];
+    expect(staleEntries(cached, { '/textures/vieux.ktx2': 'v' }, cur)).toEqual(['/textures/vieux.ktx2', '/data/flags/fra.svg']);
+    expect(staleEntries(['/data/borders.json'], null, cur)).toEqual([]);
   });
   it('la clé du préchargement change avec l’empreinte d’un seul fichier', () => {
     const urls = ['/textures/day-4k.ktx2', '/textures/night-4k.ktx2'];

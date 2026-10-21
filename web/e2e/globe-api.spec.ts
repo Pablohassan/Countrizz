@@ -29,13 +29,13 @@ test('mouvement réduit relu à chaud : la rotation s’arrête puis reprend', a
 });
 
 type Rgb = (r: number, g: number, b: number) => boolean;
-/** Jaune de la question (#d3cd0f) ; le sable a b > 60. */
-const YELLOW: Rgb = (r, g, b) => r > 170 && g > 160 && b < 60;
-/** Vert de la bonne réponse (≈ [88, 186, 139] relevé le 11/10) ; la neige a r > 200, la terre g < 120. */
-const GREEN: Rgb = (r, g, b) => r < 130 && g > 160 && b > 100 && b < 170;
+/** Liseré doré de la question (#f7dc6f, mise en avant du 21/10) ; la neige a b > 200, le sable g < 180. */
+const GOLD: Rgb = (r, g, b) => r > 200 && g > 180 && b < 190 && r - b > 50;
+/** Liseré vert de la bonne réponse ; la terre a g < 120. */
+const GREEN: Rgb = (r, g, b) => r < 150 && g > 170 && b > 90 && b < 200;
 
-/** Centre (moyenne) des pixels du remplissage du pays visé ; `null` s'il n'y en a pas. */
-function fillCentroid(png: PNG, match: Rgb = YELLOW): [number, number] | null {
+/** Centre (moyenne) des pixels du liseré du pays visé ; `null` s'il n'y en a pas. */
+function fillCentroid(png: PNG, match: Rgb = GOLD): [number, number] | null {
   let n = 0, sx = 0, sy = 0;
   for (let y = 0; y < png.height; y++) for (let x = 0; x < png.width; x++) {
     const i = (y * png.width + x) * 4, r = png.data[i]!, g = png.data[i + 1]!, b = png.data[i + 2]!;
@@ -50,7 +50,7 @@ for (const [backend, tier] of [['webgpu', 'haute'], ['webgpu', 'standard'], ['we
     await page.goto(`/probe.html?mode=game&cca3=FRA&safe=80,300&tier=${tier}&post&w=390&h=844${backend === 'webgl2' ? '&webgl' : ''}`);
     await page.waitForFunction(() => window.__probe !== undefined, null, { timeout: 60_000 });
     const c = fillCentroid(PNG.sync.read(await page.screenshot()));
-    console.log(backend, tier, 'centre du jaune', c);
+    console.log(backend, tier, 'centre du liseré', c);
     expect(c).not.toBeNull();
     expect(Math.abs(c![0] - 195)).toBeLessThan(15);
     expect(Math.abs(c![1] - 312)).toBeLessThan(15);
@@ -65,8 +65,8 @@ test('jeu : setSafeArea recentre le pays visé dans la zone libre', async ({ pag
   // la démo répond « bonne réponse » 700 ms après l'arrivée : sous SwiftShader, la capture voit déjà le vert
   await page.waitForTimeout(800);
   const png = PNG.sync.read(await page.screenshot());
-  const c = fillCentroid(png, GREEN) ?? fillCentroid(png, YELLOW);
-  console.log('jeu : centre du remplissage', c);
+  const c = fillCentroid(png, GREEN) ?? fillCentroid(png, GOLD);
+  console.log('jeu : centre du liseré', c);
   expect(c).not.toBeNull();
   expect(Math.abs(c![1] - 312)).toBeLessThan(15);
 });

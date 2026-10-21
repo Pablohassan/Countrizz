@@ -28,9 +28,11 @@ for (const backend of ['webgl2', 'webgpu'] as BackendName[]) {
       // à plus de 16 texels du bord (le liseré du pays déborde légitimement d'environ 1,5 pixel, soit quelques texels)
       if (!s || s.r > 128 - 64) return;
       const i = (y * shot.width + x) * 4;
-      if (shot.data[i]! > 200 && shot.data[i + 1]! > 190 && shot.data[i + 2]! < 80) leaks.push([x, y]);
+      // couleur du liseré doré (le pays n'a plus de remplissage depuis le 21/10) ; la neige a b > 200
+      const [r, g, b] = [shot.data[i]!, shot.data[i + 1]!, shot.data[i + 2]!];
+      if (r > 200 && g > 180 && b < 190 && r - b > 50) leaks.push([x, y]);
     });
-    console.log(backend, 'pixels jaunes hors de France', leaks.length, JSON.stringify(leaks.slice(0, 5)));
+    console.log(backend, 'pixels du liseré hors de France', leaks.length, JSON.stringify(leaks.slice(0, 5)));
     expect(leaks).toEqual([]);
   });
 }

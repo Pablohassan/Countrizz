@@ -17,7 +17,8 @@ const [nw, ne, sw, se] = [[1.5, 1.5], [2.5, 1.5], [1.5, 2.5], [2.5, 2.5]].map(([
 for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {
   test(`${backend} patch image : nord en haut, ouest à gauche (contrat de PatchMeta, sans retournement)`, async ({ page }) => {
     await page.route('**/data/patches/img/fra-*.ktx2', (r) => r.fulfill({ body: quadrants, contentType: 'image/ktx2' }));
-    const s = await shoot(page, backend, 'mode=game&cca3=FRA&img=2048');
+    // sans mise en avant (reveal=0) : on lit la photo seule, sans pénombre ni exposition du pays visé
+    const s = await shoot(page, backend, 'mode=game&cca3=FRA&img=2048&reveal=0');
     const [a, b, c, d] = await s.at([nw!, ne!, sw!, se!]);
     console.log(backend, 'NO', JSON.stringify(a), 'NE', JSON.stringify(b), 'SO', JSON.stringify(c), 'SE', JSON.stringify(d));
     expect(a![0]).toBeGreaterThan(Math.max(a![1], a![2]) + 40); // rouge

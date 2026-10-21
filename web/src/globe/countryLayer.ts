@@ -1,5 +1,6 @@
 import * as THREE from 'three/webgpu';
-import { abs, clamp, exp, float, fwidth, length, max, mix, select, sin, smoothstep, texture, uniform, vec3, vec4, output } from 'three/tsl';
+import { abs, atan, clamp, dot, exp, float, fract, fwidth, length, max, mix, normalize, select, sin, smoothstep, texture, uniform, vec2, vec3, vec4, output } from 'three/tsl';
+import { ARRIVAL, arrivalNodes, breathNode } from './spotlight';
 import type Node from 'three/src/nodes/core/Node.js';
 import { exactSpherePoint, frameXY } from './frameNodes';
 
@@ -28,12 +29,19 @@ function makeUniforms() {
 }
 export type CountryUniforms = ReturnType<typeof makeUniforms>;
 
+/** Réglages de la mise en avant (spec mise en avant §1) : pénombre des voisins, ombre portée, biseau, reflet, lueur, teinte. */
+export const SPOT = { dim: 0.45, desaturate: 0.5, shadowPx: 9, shadow: 0.6, bevelPx: 5, bevelLight: 0.35, bevelDark: 0.4, gleam: 0.22, glowPx: 2.5, glow: 0.18, answerTint: 0.18 } as const;
+
+/** Éclairage du pays visé fourni par le matériau de la Terre (earth.ts) ; par défaut neutre. */
+export interface SpotLook { exposure: Node<'float'>; hillshade: Node<'float'> }
+
 /**
  * Couche pays lue dans le patch SDF (contrat de PatchMeta, src/data/types.ts) au point `point` du globe (sphère exacte par
  * défaut ; le point dessiné quand le relief est soulevé, earth.ts). Renvoie le nœud de sortie à poser sur
- * `material.outputNode` : la couleur éclairée de la Terre, recouverte du pays.
+ * `material.outputNode` : la couleur éclairée de la Terre et le pays mis en avant (photo éclairée, voisins dans la pénombre,
+ * pièce soulevée, liseré).
  */
-export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'> = output, point: Node<'vec3'> = exactSpherePoint()) {
+export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'> = output, point: Node<'vec3'> = exactSpherePoint(), look: SpotLook = { exposure: float(1), hillshade: float(1) }) {
   const u = makeUniforms();
   const sdfNode = texture(placeholder);
 
@@ -56,30 +64,63 @@ export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'
   const sdPx = toPx(sd);
   const gdPx = toPx(gd);
 
-  // vague depuis le centre du patch : rayon en unités de demi-cadre, 0 → √2
-  const radial = length(uv.sub(0.5)).mul(2);
-  const wave = smoothstep(u.reveal.mul(1.5).sub(0.08), u.reveal.mul(1.5), radial).oneMinus();
-
-  const inside = clamp(sdPx.add(0.5), 0, 1);
-  const edge = smoothstep(float(1.5), float(0), abs(sdPx)); // liseré d'environ 1,5 px
-  const glow = exp(max(sd, 0).negate().div(6)).mul(0.35); // lueur intérieure près du bord
-  const neighbor = smoothstep(float(2), float(0.5), gdPx); // lignes des autres frontières, ~1,5 px
-
   const t = u.stateTime;
-  const isCorrect = u.state.equal(STATE.correct), isWrong = u.state.equal(STATE.wrong);
-  const yellow = vec3(1.0, 0.933, 0.012), green = vec3(0.18, 0.8, 0.44), red = vec3(0.91, 0.3, 0.24);
-  const color = select(isCorrect, green, select(isWrong, red, yellow));
+  const isQuestion = u.state.equal(STATE.question), isCorrect = u.state.equal(STATE.correct), isWrong = u.state.equal(STATE.wrong);
+  // Mise en scène (spec mise en avant §3) : tout en place dès la réponse (le temps y repart de 0).
+  const arr = arrivalNodes(t);
+  const settled = select(isQuestion, float(0), float(1));
+  const dim = max(arr.dim, settled), draw = max(arr.draw, settled), lift = max(arr.lift, settled);
+  const sweep = select(isQuestion, arr.sweep, float(1));
+  const spot = u.visible.mul(u.reveal);
+
+  const inside = clamp(sdPx.add(0.5), 0, 1).mul(shownF);
+  const edge = smoothstep(float(1.6), float(0), abs(sdPx)).mul(shownF);   // liseré d'environ 1,6 px
+  const neighbor = smoothstep(float(2), float(0.5), gdPx).mul(shownF);    // lignes des autres frontières
+  const lum = (c: Node<'vec3'>) => dot(c, vec3(0.2126, 0.7152, 0.0722));
+
+  // Le pays : sa photo, éclairée (exposition, estompage), un peu plus vive.
+  const lit = base.rgb;
+  const exposed = lit.mul(spot.mul(look.exposure.mul(look.hillshade).sub(1)).add(1));
+  const vivid = mix(vec3(lum(exposed)), exposed, float(1).add(spot.mul(0.15)));
+  // Les voisins : le projecteur les laisse dans la pénombre.
+  const dimK = dim.mul(spot);
+  const around = mix(lit, vec3(lum(lit)), dimK.mul(SPOT.desaturate)).mul(dimK.mul(SPOT.dim).oneMinus());
+
+  // Pièce soulevée : ombre portée vers le sud-est (y du cadre vers le sud), biseau clair au nord-ouest, sombre au sud-est.
+  const uvPerPx = length(fwidth(uv)).mul(Math.SQRT1_2);
+  const sdAt = (o: Node<'vec2'>) => sdfNode.sample(uv.add(o)).r.mul(255).sub(128).div(127).mul(u.rangeTexels);
+  const shadowAt = sdAt(vec2(-1, -1).mul(Math.SQRT1_2 * SPOT.shadowPx).mul(uvPerPx).mul(lift));
+  const shadow = smoothstep(float(-6), float(3), shadowAt.div(max(fwidth(sd), 1e-4))).mul(inside.oneMinus()).mul(lift).mul(spot).mul(SPOT.shadow);
+  const texel = vec2(1).div(vec2(sdfNode.size(float(0)) as unknown as Node<'ivec2'>));
+  const grad = vec2(sdAt(vec2(texel.x, 0)).sub(sdAt(vec2(texel.x.negate(), 0))), sdAt(vec2(0, texel.y)).sub(sdAt(vec2(0, texel.y.negate()))));
+  const facing = dot(normalize(grad.negate().add(vec2(1e-6, 0))), vec2(-1, -1).mul(Math.SQRT1_2));   // bord tourné vers le nord-ouest : > 0
+  const band = smoothstep(float(SPOT.bevelPx), float(0), sdPx).mul(inside).mul(lift).mul(spot);
+  const bevelLight = band.mul(max(facing, 0)).mul(SPOT.bevelLight), bevelDark = band.mul(max(facing.negate(), 0)).mul(SPOT.bevelDark);
+  // Reflet qui traverse le pays une fois, du nord-ouest au sud-est.
+  const along = dot(uv.sub(0.5), vec2(Math.SQRT1_2, Math.SQRT1_2));
+  const gleamOn = select(sweep.greaterThan(0).and(sweep.lessThan(1)), float(1), float(0));
+  const gleam = vec3(1, 0.95, 0.82).mul(exp(along.sub(mix(float(-0.75), float(0.75), sweep)).div(0.035).pow(2).negate()).mul(inside).mul(gleamOn).mul(spot).mul(SPOT.gleam));
+
+  // Liseré : se dessine depuis le nord dans le sens des aiguilles d'une montre, puis respire ; vert ou rouge à la réponse.
+  const rel = uv.sub(0.5);
+  const turn = fract(atan(rel.x, rel.y.negate()).div(2 * Math.PI).add(1));
+  const drawn = smoothstep(turn.sub(0.02), turn, draw.mul(1.02));
+  const gold = vec3(0.969, 0.863, 0.435), green = vec3(0.18, 0.8, 0.44), red = vec3(0.91, 0.3, 0.24);
+  const rimColor = select(isCorrect, green, select(isWrong, red, gold));
   const pulse = select(isWrong, sin(t.mul(Math.PI * 4)).mul(0.25).add(0.75), float(1));
   const flash = select(isCorrect, exp(t.mul(-3)), float(0));
+  const breathing = select(isQuestion.and(t.greaterThan(ARRIVAL.lift.to + 0.4)), breathNode(t), float(1));
+  const rimA = edge.mul(drawn).mul(spot).mul(pulse).mul(float(0.75).add(breathing.mul(0.25)));
+  const glow = exp(max(sdPx.negate(), 0).div(-SPOT.glowPx)).mul(inside.oneMinus()).mul(shownF).mul(drawn).mul(spot).mul(breathing.mul(0.5).add(0.5).mul(SPOT.glow));
+  const tint = select(isQuestion, float(0), float(SPOT.answerTint)).mul(inside).mul(spot);
 
-  const fillA = inside.mul(wave).mul(float(0.63).add(glow)).mul(pulse);
-  const edgeA = edge.mul(wave).mul(float(0.85).add(flash.mul(0.15)));
-  const lineA = neighbor.mul(wave).mul(0.8);
-
-  const lit = base.rgb;
-  const withLines = mix(lit, vec3(0.03, 0.03, 0.05), lineA.mul(shownF));
-  const withFill = mix(withLines, color, fillA.mul(shownF));
-  const withEdge = mix(withFill, mix(color, vec3(1, 1, 1), flash), edgeA.mul(shownF));
+  let col: Node<'vec3'> = mix(around, vivid, inside);
+  col = col.mul(shadow.oneMinus());
+  col = col.mul(bevelDark.oneMinus()).add(bevelLight).add(gleam);
+  col = mix(col, rimColor, tint);
+  col = col.add(rimColor.mul(glow));
+  col = mix(col, vec3(0.03, 0.03, 0.05), neighbor.mul(0.5).mul(spot));
+  const withEdge = mix(col, mix(rimColor, vec3(1, 1, 1), flash), rimA);
 
   // Masque binaire (instrument des contrôles) : allumé si et seulement si la distance signée est positive. Une couverture
   // anticrénelée y serait faussée par l'encodage sRGB de sortie (0,5 linéaire → 188 sur 255), qui déplace le seuil
@@ -87,9 +128,8 @@ export function createCountryLayer(placeholder: THREE.Texture, base: Node<'vec4'
   const mask = select(shown.and(sd.greaterThan(0)), float(1), float(0));
   const outputNode = select(u.maskMode.greaterThan(0.5), vec4(mask, mask, mask, 1), vec4(withEdge, base.a));
 
-  // Couverture de la couche (remplissage, liseré, lignes) : l'atmosphère physique n'y voile pas l'image (spec atmosphère §2.3) ;
-  // le remplissage (0,63) compte comme plein.
-  const coverage = clamp(max(max(fillA, edgeA), lineA).mul(shownF).div(0.6), 0, 1);
+  // Couverture : le pays et son liseré, que l'atmosphère physique ne voile pas (spec atmosphère §2.3).
+  const coverage = clamp(max(inside.mul(spot), rimA), 0, 1);
 
   return {
     uniforms: u,

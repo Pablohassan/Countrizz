@@ -37,7 +37,7 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `cca3` : pays cadré comme en jeu ; sinon `at=lng,lat` et `alt` : pose explicite ;
  * - `mode=game` : textures, halo, étoiles (sinon masque) ; `tier=haute` : textures 8K ; `sun=lng,lat` : soleil forcé ;
  * - `w`, `h` : taille ; `webgl` : repli WebGL 2 forcé ;
- * - `reveal`, `state`, `t` : apparence du pays (défaut : question, vague achevée) ;
+ * - `reveal`, `state`, `t` : apparence du pays (défaut : question, vague et mise en scène achevées, t = 3 s) ;
  * - `borders` : frontières de vue d'ensemble ;
  * - `beacon=lng,lat` : balise ;
  * - `safe=top,bottom` : bandes occupées, px (zone libre de la Task 4 du plan 2A-4) ;
@@ -86,7 +86,9 @@ if (rec) {
     source.dispose();
     globe.setImageLevels(meta && tex ? { meta: { center: meta.center, extentRad: meta.levels[level]!.extentRad }, tex, opacity: 1 } : null, null);
   }
-  globe.setLook({ visible: true, reveal: Number(q.get('reveal') ?? 1), state: (q.get('state') ?? 'question') as CountryState, stateTime: Number(q.get('t') ?? 0) });
+  // `t` par défaut : 3 s pour une question (mise en scène achevée : liseré dessiné, voisins dans la pénombre), 0 sinon
+  const state = (q.get('state') ?? 'question') as CountryState;
+  globe.setLook({ visible: true, reveal: Number(q.get('reveal') ?? 1), state, stateTime: Number(q.get('t') ?? (state === 'question' ? 3 : 0)) });
   const director = new CameraDirector({
     viewport: { width, height, fovYDeg: FOV_Y_DEG }, framing, flight: FLIGHT, reducedMotion: true, start: rec.cap.center,
   });

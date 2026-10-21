@@ -76,7 +76,7 @@ export class Globe {
       this.images = [...earth.images];
       this.setDayNightTex = earth.setDayNight;
       this.dayNightTex = [parts.textures.day, parts.textures.night];
-      this.country = createCountryLayer(this.placeholder, earth.base, earth.point);
+      this.country = createCountryLayer(this.placeholder, earth.base, earth.point, earth.spot);
       this.setLift = earth.setLift;
       const sunDisc = createSunDisc();
       this.sunListeners.push(earth.setSun, sunDisc.setDirection);

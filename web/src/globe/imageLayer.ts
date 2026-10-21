@@ -5,6 +5,8 @@ import { frameXY } from './frameNodes';
 
 /** Largeur du fondu au bord du cadre, en demi-côtés : le patch se fond dans la texture globale sur ses 15 % extérieurs. */
 export const IMAGE_FEATHER = 0.15;
+/** Niveau de mipmap lu pour l'exposition locale du pays visé (spec mise en avant §2). */
+export const LOCAL_MEAN_LEVEL = 5;
 
 /**
  * Patch image (Sentinel-2) lu au point exact P de la sphère, dans son propre cadre azimutal (contrat de PatchMeta, sans
@@ -27,11 +29,14 @@ export function createImageLayer(P: Node<'vec3'>) {
   const front = select(dot(P, u.center).greaterThan(0), float(1), float(0));
   const weight = edge(xy.x).mul(edge(xy.y)).mul(front).mul(u.opacity);
   const sample = node.sample(xy.add(1).mul(0.5));
+  // Couleur moyenne locale (niveau 5 de mipmap : 64 texels de la photo de 2048 autour du point) et part de mer : la moyenne de
+  // toute la photo mêlait le pays à ses voisins (Bhoutan noir sous le plateau tibétain clair, 21/10).
+  const localNode = texture(empty, xy.add(1).mul(0.5)).level(float(LOCAL_MEAN_LEVEL));
   return {
-    uniforms: u, weight, color: sample.rgb, sea: sample.a,
-    setTexture(t: THREE.Texture) { node.value = t; },
+    uniforms: u, weight, color: sample.rgb, sea: sample.a, localMean: localNode.rgb, localSea: localNode.a,
+    setTexture(t: THREE.Texture) { node.value = t; localNode.value = t; },
     /** Revient à la texture vide de la couche (patch retiré, avant que le cache ne le libère). */
-    clear() { node.value = empty; },
+    clear() { node.value = empty; localNode.value = empty; },
     dispose() { empty.dispose(); },
     /** Texture liée au matériau. */
     get texture() { return node.value as THREE.Texture; },

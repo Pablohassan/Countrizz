@@ -7,6 +7,7 @@ import { createImageLayer } from './imageLayer';
 import { pixelFootprint, SEAWATER_IOR, seaRoughness, waveSlopes, windNode } from './ocean';
 import { createLift, liftHeight, RELIEF_LIFT } from './relief';
 import { cloudRelief, silverLining, type createClouds } from './clouds';
+import { exposureGainNode } from './spotlight';
 import type { GlobeTextures } from './textures';
 
 /**
@@ -22,6 +23,8 @@ export const RELIEF = { exaggeration: 14, size: 4096, metresFull: RELIEF_LIFT.me
  * en bloc un quart de la vue de Monaco ; les photos portent déjà leur propre ombrage du relief.
  */
 export const RELIEF_MAGNIFY = { from: 2, to: 4 } as const;
+/** Estompage du pays visé : exagération des pentes, bornes du facteur d'ombrage, part appliquée. */
+export const HILLSHADE = { exaggeration: 20, min: 0.6, max: 1.4, strength: 0.5 } as const;
 const EARTH_RADIUS_M = 6_371_000;
 /** Plancher de la texture de nuit (fond bleuté de Black Marble), retranché avant le bloom. */
 export const NIGHT_FLOOR = 0.045;
@@ -64,6 +67,10 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const reliefMagnify = float((2 * Math.PI) / RELIEF.size).div(max(length(fwidth(positionWorld)), 1e-7));
   const reliefShown = smoothstep(float(RELIEF_MAGNIFY.from), float(RELIEF_MAGNIFY.to), reliefMagnify).oneMinus();
   const relief = normalize(mix(P, normalize(P.sub(east.mul(gE).add(north.mul(gN)).mul(RELIEF.exaggeration))), reliefShown));
+  // Estompage cartographique du pays visé (spec mise en avant §1) : lumière du nord-ouest (azimut 315°, hauteur 45°), 1 sur le
+  // plat ; effacé au fort grossissement comme le relief.
+  const shadeN = normalize(vec3(gE.mul(-HILLSHADE.exaggeration), gN.mul(-HILLSHADE.exaggeration), 1));
+  const hillshade = mix(float(1), clamp(dot(shadeN, vec3(-0.5, 0.5, Math.SQRT1_2)).div(Math.SQRT1_2), HILLSHADE.min, HILLSHADE.max), reliefShown.mul(HILLSHADE.strength));
 
   // Mer (spec océan §1.2–1.3) : vent par latitude (rugosité de Cox et Munk), vagues qui glissent en approchant.
   const latDeg = asin(clamp(P.y, -1, 1)).mul(180 / Math.PI), lngRad = atan(P.z.negate(), P.x);
@@ -110,8 +117,15 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const sky = vec3(0.3, 0.52, 0.95).mul(day).mul(sea).mul(cover.oneMinus()).mul(fresnel).mul(0.55);
   // Atmosphère physique (spec atmosphère §2.2) : le voile vient de la perspective aérienne, en post-traitement.
   const base = physicalSky ? vec4(output.rgb.add(sky), output.a) : vec4(mix(output.rgb, veilColor.mul(day.mul(0.9).add(0.1)), veil).add(sky), output.a);
+  // Exposition locale du pays visé tirée de sa photo (spec mise en avant §2, « éclaircir les ombres » du tirage) : luminance des
+  // terres autour du point d'après la moyenne locale et la part de mer (mer comptée à 0,03) ; sans photo, 1.
+  const meanLum = dot(coarse.localMean, vec3(0.2126, 0.7152, 0.0722));
+  const landLum = max(meanLum.sub(coarse.localSea.mul(0.03)), 0).div(max(coarse.localSea.oneMinus(), 0.05));
+  const exposure = mix(float(1), exposureGainNode(landLum), coarse.weight);
   return {
     material, base: base as Node<'vec4'>, images, point: spherePoint as Node<'vec3'>,
+    /** Éclairage du pays visé (couche pays) : estompage et exposition. */
+    spot: { hillshade: hillshade as Node<'float'>, exposure: exposure as Node<'float'> },
     /** Part du relief soulevé (0 → sphère exacte, 1 → altitude × 10), posée à chaque pose (relief.ts, liftFactor). */
     setLift(f: number) { lift.value = f; }, setSun(dir: Vec3) { sun.value.set(...dir); }, setSaturation(s: number) { saturation.value = s; },
     /** Repli de qualité (spec zoom §5 bis) : jour et nuit remplacés sans recompiler le matériau. */

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { sunDirection } from './sun';
+import { SUN_ANGLE, sunAngleDeg, sunDirection } from './sun';
 import { dot, northUp, toVec, angleBetween, type Vec3 } from '../geo/vec';
+import { FRAMING } from './config';
+import { HOME } from './home';
 
 const pose = (lngLat: [number, number], altitude: number) => {
   const dir = toVec(lngLat);
@@ -8,10 +10,26 @@ const pose = (lngLat: [number, number], altitude: number) => {
 };
 
 describe('soleil placé par rapport à la caméra', () => {
-  it('le point visé est toujours de jour, à 55° du soleil', () => {
-    for (const p of [pose([2.35, 48.85], 0.22), pose([-70, -35], 1.4), pose([178, -17], 0.08)]) {
-      expect(angleBetween(sunDirection(p), p.dir)).toBeCloseTo((55 * Math.PI) / 180, 9);
+  it('le point visé est toujours de jour, à l’angle voulu pour son altitude', () => {
+    for (const p of [pose([2.35, 48.85], 0.22), pose([-70, -35], 1.4), pose([178, -17], 0.08), pose([10, 20], 4)]) {
+      expect(angleBetween(sunDirection(p), p.dir)).toBeCloseTo((sunAngleDeg(p.altitude) * Math.PI) / 180, 9);
     }
+  });
+
+  it('soleil haut au cadrage d’un pays (35°), plus rasant en vue d’ensemble (55°), passage progressif', () => {
+    expect(sunAngleDeg(0.004)).toBe(SUN_ANGLE.country);
+    expect(sunAngleDeg(SUN_ANGLE.from)).toBe(35);
+    expect(sunAngleDeg(SUN_ANGLE.to)).toBe(55);
+    expect(sunAngleDeg(10)).toBe(55);
+    let prev = 0;
+    for (let a = 0; a <= 4; a += 0.05) { const d = sunAngleDeg(a); expect(d).toBeGreaterThanOrEqual(prev); prev = d; }
+  });
+
+  it('altitudes réelles du jeu : 55° en vue d’ensemble (paysage, portrait) et à l’accueil, 35° au cadrage d’un pays médian', () => {
+    // les bornes du passage ne se règlent pas seules : vue d'ensemble à 1,4 / 2,2 et accueil à 1,6 restaient sous 55° (21/10)
+    for (const a of [FRAMING.overview.landscape, FRAMING.overview.portrait, HOME.altitude]) expect(sunAngleDeg(a)).toBe(55);
+    // médianes des altitudes d'arrivée des 197 pays (arrivalAltitude, 21/10) : bureau 1440 × 900 0,234, téléphone 390 × 844 0,484
+    for (const a of [0.234, 0.484]) expect(sunAngleDeg(a)).toBe(35);
   });
 
   it('en vue d’ensemble, le terminateur passe dans la partie visible du globe', () => {

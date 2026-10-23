@@ -27,6 +27,13 @@ export function skyCalibration(p: AtmosphereParameters, oldSun = 3): { exposure:
 
 export interface PhysicalSky {
   readonly context: AtmosphereContext;
+  /**
+   * Contexte de T (la transmittance seule) : mêmes tables et paramètres, SANS la marche du rayon — la transmittance est lue
+   * dans sa table (Bruneton), intégrée finement au démarrage. La marche (2 à 6 pas) y coûtait presque tout le prix de
+   * l'atmosphère (analyse du manque de fluidité sur téléphone, 23/10). S, la lumière diffusée, la garde : sans elle, presque
+   * pas de voile bleu (20/10).
+   */
+  readonly transmittanceContext: AtmosphereContext;
   readonly calibration: ReturnType<typeof skyCalibration>;
   /** Lumière du soleil et du ciel, rougie au terminateur (une par globe). */
   createLight(): AtmosphereLight;
@@ -92,13 +99,18 @@ export function installPhysicalSky(renderer: THREE.WebGPURenderer): PhysicalSky 
     let n = 0;
     (ctx.lutNode as unknown as THREE.EventDispatcher<{ update: object }>).addEventListener('update', () => { if (++n === 4) resolve(); });
   });
+  const tctx = new AtmosphereContext(ctx.parameters, ctx.lutNode);
+  tctx.ellipsoid = ctx.ellipsoid;
+  tctx.correctAltitude = false;
+  tctx.raymarchScattering = false;
   const calibration = skyCalibration(ctx.parameters);
   const sky: PhysicalSky = {
     context: ctx,
+    transmittanceContext: tctx,
     calibration,
     ready: () => ready,
     createLight() { const l = new AtmosphereLight(); l.intensity = calibration.exposure; return l; },
-    setSun(dir) { ctx.sunDirectionECEF.value.set(...dir).normalize(); },
+    setSun(dir) { ctx.sunDirectionECEF.value.set(...dir).normalize(); tctx.sunDirectionECEF.value.copy(ctx.sunDirectionECEF.value); },
   };
   skies.set(renderer, sky);
   return sky;
@@ -155,6 +167,7 @@ function upsampleBySky(lowS: THREE.TextureNode, lowT: THREE.TextureNode, depth: 
  */
 export function applyAtmosphere(sky: PhysicalSky, camera: THREE.Camera, color: Node<'vec4'>, depth: Node<'vec4'>, keep: Node<'float'>): Node<'vec4'> {
   sky.context.camera = camera;
+  sky.transmittanceContext.camera = camera;
   const { exposure, whiteBalance } = sky.calibration;
   const d = depth as unknown as Node<'float'>;   // la bibliothèque lit depth.r
   const scattered = aerialPerspective(vec4(0, 0, 0, 1), d);
@@ -167,7 +180,8 @@ export function applyAtmosphere(sky: PhysicalSky, camera: THREE.Camera, color: N
   transmitted.skyNode = null;
   // types de la bibliothèque écrits pour @types/three 0.183 (setup() rend unknown)
   const lowS = rtt(scattered as unknown as Node<'vec4'>, null, null, { resolutionScale: SKY_RESOLUTION });
-  const lowT = rtt(transmitted as unknown as Node<'vec4'>, null, null, { resolutionScale: SKY_RESOLUTION });
+  // T se construit dans son contexte : la transmittance lue dans la table, sans marche du rayon
+  const lowT = rtt((transmitted as unknown as Node<'vec4'>).context({ getAtmosphere: () => sky.transmittanceContext }) as unknown as Node<'vec4'>, null, null, { resolutionScale: SKY_RESOLUTION });
   const { S, T } = upsampleBySky(lowS, lowT, depth as unknown as THREE.TextureNode);
   const hazed = vec4(color.rgb.mul(T).add(S.mul(exposure)).mul(vec3(...whiteBalance)), color.a);
   return mix(hazed, color, keep);

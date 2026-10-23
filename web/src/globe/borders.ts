@@ -3,6 +3,7 @@ import { LineSegmentsGeometry } from 'three/addons/lines/LineSegmentsGeometry.js
 import { LineSegments2 } from 'three/addons/lines/webgpu/LineSegments2.js';
 import type { LngLat } from '../data/types';
 import { angleBetween, normalize, toVec, type Vec3 } from '../geo/vec';
+import { BlendedLineMaterial } from './lines';
 import { liftAt } from './relief';
 
 /** Au-dessus des facettes du maillage 512×256 (flèche ≤ 1,9·10⁻⁵ rayon), sous la balise. */
@@ -60,8 +61,8 @@ export function borderPositions(lines: LngLat[][], relief: ReliefGrid | null): n
 }
 
 export function createBorders(lines: LngLat[][], relief: ReliefGrid | null = null): { object: LineSegments2; setAltitude(altitude: number): void } {
-  const material = new THREE.Line2NodeMaterial({ color: 0x000000, linewidth: 1.5, worldUnits: false, alphaToCoverage: false });
-  material.transparent = true;
+  // mélange par le GPU, sans la copie de l'écran de Line2NodeMaterial (lines.ts)
+  const material = new BlendedLineMaterial({ color: 0x000000, linewidth: 1.5, worldUnits: false, alphaToCoverage: false });
   const object = new LineSegments2(new LineSegmentsGeometry().setPositions(borderPositions(lines, relief)), material);
   return {
     object,

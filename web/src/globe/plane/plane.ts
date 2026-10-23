@@ -6,6 +6,7 @@ import { LineSegments2 } from 'three/addons/lines/webgpu/LineSegments2.js';
 import { projectOnScreen } from '../../camera/home';
 import { normalize, type Vec3 } from '../../geo/vec';
 import type { Accessory, AccessoryContext, AccessoryFrame, AccessoryInstance } from '../accessories';
+import { BlendedLineMaterial } from '../lines';
 import { paperGeometry, shadowOutline, TOON } from './paper';
 import { createRoute, ESCALES, PLANE, rollRad } from './route';
 import { createSchedule, SAMPLES, type PlaneLook } from './schedule';
@@ -94,8 +95,7 @@ export function createHomePlane(options: HomePlaneOptions = {}): HomePlane {
     plane.add(verso, recto);
     const contour = new THREE.Group();
     const line = (segments: number[], width: number, order: number) => {
-      const m = keep(new THREE.Line2NodeMaterial({ color: 0x000000, linewidth: width, worldUnits: false, alphaToCoverage: false }));
-      m.transparent = true;
+      const m = keep(new BlendedLineMaterial({ color: 0x000000, linewidth: width, worldUnits: false, alphaToCoverage: false }));
       m.depthWrite = false;
       const g = new LineSegmentsGeometry().setPositions(segments);
       disposables.push(g);

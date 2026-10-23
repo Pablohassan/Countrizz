@@ -69,12 +69,13 @@ describe('résolution dynamique (spec §4.1, niveau standard)', () => {
   });
 });
 
-describe('bornes de la densité (flou sur téléphone, 21/10)', () => {
-  it('plafond à la densité de l’écran, jusqu’à 3 : un téléphone n’est plus agrandi d’office', () => {
-    expect(dprOptions(3).max).toBe(3);
-    expect(dprOptions(2.625).max).toBe(2.625);
-    expect(dprOptions(4).max).toBe(3);
-    expect(DPR_RANGE).toEqual([1, 3]);
+describe('bornes de la densité (flou sur téléphone, 21/10 ; plafond 2,5 et 60 images/s, choix de l’utilisateur du 23/10)', () => {
+  it('plafond à la densité de l’écran, jusqu’à 2,5 : un téléphone de densité 3 ne dessine plus que 69 % de ses pixels', () => {
+    expect(dprOptions(3).max).toBe(2.5);
+    expect(dprOptions(2.625).max).toBe(2.5);
+    expect(dprOptions(2).max).toBe(2);
+    expect(dprOptions(4).max).toBe(2.5);
+    expect(DPR_RANGE).toEqual([1, 2.5]);
   });
   it('plancher à 1,25 (0,75 grossissait l’image quatre fois sur un téléphone), jamais sous la densité d’un écran de densité 1', () => {
     expect(dprOptions(3).min).toBe(1.25);
@@ -82,5 +83,11 @@ describe('bornes de la densité (flou sur téléphone, 21/10)', () => {
     expect(dprOptions(1).min).toBe(1);
     expect(dprOptions(1).max).toBe(1);
     expect(dprOptions(0.5)).toMatchObject({ min: 1, max: 1 });
+  });
+  it('vise 60 images/s : 50 images/s (20 ms) font baisser la densité, la cadence d’un écran à 60 Hz non', () => {
+    const slow = createDprGovernor(dprOptions(3));
+    expect(run(slow, 20, 30)).toBe(2.25);
+    const smooth = createDprGovernor(dprOptions(3));
+    expect(run(smooth, 1000 / 60, 30 * 10)).toBe(2.5);
   });
 });

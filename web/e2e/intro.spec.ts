@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import { messages } from '../src/i18n';
-import { couverture, versEcran } from '../src/intro/lecteur';
+import { couverture, oDuTitre, versEcran } from '../src/intro/lecteur';
 import { MARGE_QUESTION, ORDRE_QUESTIONS, QUESTIONS, RETOUR, ancreQuestion, etatLettre, poserMot, type Ancres, type Question } from '../src/intro/questions';
 import { CADRAGES, INTRO, INTRO_GIVE_UP_MS, LOGO_ANGLE_FIN, LOGO_TOUR_S, type Cadrage } from '../src/intro/temps';
 import { idVariante, type Manifeste } from '../src/intro/videos';
@@ -273,6 +273,24 @@ test('« Passer › » saute à la fin : accueil, fondu, intro démontée', asyn
   await expect(accueil(page)).toBeVisible({ timeout: 5_000 });
   await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 });
   expect(await intro(page)).toMatchObject({ skipped: true, echec: null });
+});
+
+test.describe('écran plus allongé que la vidéo (Pixel 9, 412 × 915)', () => {
+  test.use({ viewport: { width: 412, height: 915 } });
+  test('fondu : le titre de l’accueil posé sur celui de la vidéo (un seul « o »), puis à sa place', async ({ page }) => {
+    // la vidéo, agrandie pour couvrir cet écran, montre son titre 8 % plus grand et 12 px plus bas que celui de l'accueil :
+    // le fondu montrait deux « C » et deux Terres (24/10)
+    await page.goto(`/?webgl&introVariante=${VARIANTE.portrait}`);
+    await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 60_000 });
+    await passer(page).click();
+    await page.waitForFunction(() => !!document.querySelector('.intro--fondu'), null, { timeout: 180_000 });
+    const rond = () => page.locator('.accueil .logo-terre').evaluate((e) => { const r = e.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2, r.width / 2]; });
+    const o = oDuTitre('portrait', { width: 412, height: 915 });
+    await expect.poll(async () => (await rond()).map((v, i) => Math.abs(v - [o.x, o.y, o.r][i]!) < 0.5), { timeout: 5_000 }).toEqual([true, true, true]);
+    await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 });
+    // la vidéo effacée, le titre glisse à sa place
+    await expect.poll(() => accueil(page).evaluate((e) => getComputedStyle(e).transform), { timeout: 10_000 }).toBe('none');
+  });
 });
 
 test('vidéo absente (requête en échec) : accueil direct sur le globe', async ({ page }) => {

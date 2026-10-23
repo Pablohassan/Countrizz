@@ -9,6 +9,7 @@ import { Home } from '../ui/Home';
 import { HomeMarks, type HomeExtras } from '../ui/HomeMarks';
 import type { HomePlane } from '../globe/plane/plane';
 import type { EntreeTitre } from '../ui/LogoTitle';
+import type { RondTitre } from '../intro/lecteur';
 import type { QualityTier } from '../globe/renderer';
 import { OFFLINE_URLS, cachesReady, heavyUrls, persist, preloadKey, warm } from '../pwa/cache';
 import { EMPREINTES } from '../pwa/empreintes';
@@ -78,6 +79,8 @@ export function App() {
   const [phase, setPhase] = useState<'intro' | 'fondu' | 'accueil'>(openedByUpdate ? 'accueil' : 'intro');
   const [homeShown, setHomeShown] = useState(openedByUpdate);
   const [logoAngle, setLogoAngle] = useState<number | null>(null);
+  // le « o » du titre de fin de la vidéo à l'écran : le titre de l'accueil s'y pose pendant le fondu
+  const [titreVideo, setTitreVideo] = useState<RondTitre | null>(null);
   // le titre vient de la vidéo (il apparaît en fondu) ; intro abandonnée (accueil direct) : ses lettres surgissent
   const [entree, setEntree] = useState<EntreeTitre>(openedByUpdate ? 'pop' : 'fondu');
   const globe = useRef<GlobeHandle>(null);
@@ -178,13 +181,13 @@ export function App() {
       </CodeDuGlobe>
       {phase !== 'accueil' && (
         <Intro lang={lang} m={m} globeReady={globeReady} onHome={() => setHomeShown(true)}
-          onFade={(angle) => { setLogoAngle(angle); setPhase((p) => (p === 'intro' ? 'fondu' : p)); }}
+          onFade={(angle, titre) => { setLogoAngle(angle); setTitreVideo(titre ?? null); setPhase((p) => (p === 'intro' ? 'fondu' : p)); }}
           onDone={(angle) => { if (angle === null) setEntree('pop'); setPhase('accueil'); }} />
       )}
       {!errorShown && (<>
       {homeVisible && <HomeMarks globe={globe.current} extras={extras} countries={countries} lang={lang} />}
       {homeShown && s.screen === 'home' && !overlay && (
-        <Home lang={lang} m={m} name={name} logo={{ angle: logoAngle, visible: phase !== 'intro', entree }}
+        <Home lang={lang} m={m} name={name} logo={{ angle: logoAngle, visible: phase !== 'intro', entree, sur: phase === 'fondu' ? titreVideo : null }}
           canPlay={canPlay} onPlay={() => game.dispatch({ type: 'PLAY' })} onScores={() => game.dispatch({ type: 'SHOW_SCORES' })} onAbout={() => setOverlay('about')}
           onLang={(l) => { setLang(l); writePref(storage, PREF_KEYS.lang, l); }}
           onName={(n) => { setName(n); writePref(storage, PREF_KEYS.name, n); }} />

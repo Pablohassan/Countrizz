@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
-  SUIVI_DEPART, angleTerre, choisirCadrage, choisirVariantes, couverture, idVariante, medianeIntervalle, mesurerIntervalle, suivreLecture, versEcran,
+  SUIVI_DEPART, angleTerre, choisirCadrage, choisirVariantes, couverture, idVariante, medianeIntervalle, mesurerIntervalle, oDuTitre, recalage, suivreLecture, versEcran,
   type Capacites, type Manifeste, type Releve, type Suivi, type Variante,
 } from './lecteur';
 import { TITRES } from './cadrages';
@@ -195,6 +195,20 @@ describe('de la vidéo à l’écran (object-fit: cover)', () => {
     }
     expect(couverture(CADRAGES.paysage, ECRANS.bureau219, 'paysage')).toEqual({ echelle: 2560 / 1920, x: 0, y: -180 });
     expect(couverture(CADRAGES.portrait, ECRANS.ipad, 'portrait')).toEqual({ echelle: 768 / 1080, x: 0, y: 0 });
+  });
+
+  it('titre de fin à l’écran (D5) : au format de référence, le « o » de l’accueil ; au Pixel 9 (412 × 915), plus grand et plus bas', () => {
+    const r2 = (o: { x: number; y: number; r: number }) => [o.x, o.y, o.r].map((v) => Math.round(v * 100) / 100);
+    expect(r2(oDuTitre('portrait', ECRANS.telephone))).toEqual([83.72, 144.44, 17.81]);   // 0,33 em de 54 px : le titre de l’accueil
+    expect(r2(oDuTitre('portrait', { width: 412, height: 915 }))).toEqual([85.5, 156.4, 19.29]);
+  });
+
+  it('recalage : le « o » de l’accueil posé sur celui de la vidéo (translation, échelle autour de son centre)', () => {
+    const r = recalage({ x: 94.7, y: 144.4, r: 17.8 }, { x: 85.5, y: 156.4, r: 19.29 });
+    expect(r.x).toBeCloseTo(-9.2, 9);
+    expect(r.y).toBeCloseTo(12, 9);
+    expect(r.k).toBeCloseTo(19.29 / 17.8, 9);
+    expect(recalage({ x: 1, y: 2, r: 3 }, { x: 1, y: 2, r: 3 })).toEqual({ x: 0, y: 0, k: 1 });
   });
 
   it('rotation pendant l’intro : la même vidéo (même cadrage) couvre encore l’écran tourné', () => {

@@ -2,8 +2,8 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Lang } from '../game/types';
 import type { Messages } from '../i18n';
 import {
-  SUIVI_DEPART, angleTerre, choisirCadrage, choisirVariantes, couverture, idVariante, mesurerIntervalle, suivreLecture,
-  type Capacites, type Echec, type Manifeste, type Releve, type Variante,
+  SUIVI_DEPART, angleTerre, choisirCadrage, choisirVariantes, couverture, idVariante, mesurerIntervalle, oDuTitre, suivreLecture,
+  type Capacites, type Echec, type Manifeste, type Releve, type RondTitre, type Variante,
 } from './lecteur';
 import { ORDRE_QUESTIONS, POSES, etatLettre, poserMot, signes, texteQuestion, type Ancres, type Gabarit, type Mot, type Question } from './questions';
 import { CADRAGES, INTRO, LOGO_ANGLE_FIN, type Cadrage } from './temps';
@@ -52,7 +52,7 @@ interface Props {
    * Le fondu part (`INTRO.FONDU`, globe prêt) : le globe reprend son rendu ; `angle` : celui de la Terre de la vidéo à cet
    * instant, d'où part la petite Terre du titre (null : accueil direct).
    */
-  onFade(angle: number | null): void;
+  onFade(angle: number | null, titre?: RondTitre | null): void;
   /** Fin du fondu : l'intro peut être démontée ; `angle` : LOGO_ANGLE_FIN, ou null si elle a été abandonnée (accueil direct). */
   onDone(angle: number | null): void;
 }
@@ -215,7 +215,8 @@ export function Intro({ lang, m, globeReady, onHome, onFade, onDone }: Props) {
       if (!fondu && (gele === null || skip.current) && t >= INTRO.FONDU && ready.current) {
         fondu = true;
         el.classList.add('intro--fondu');
-        cb.current.onFade(angleTerre(t));
+        // le « o » du titre de fin de cette vidéo, à cet écran : le titre de l'accueil s'y pose pendant le fondu (LogoTitle)
+        cb.current.onFade(angleTerre(t), courante ? oDuTitre(courante.cadrage, { width: el.clientWidth, height: el.clientHeight }) : null);
         finFondu = window.setTimeout(finir, FONDU_S * 1000 + 1000);
       }
       dessinerQuestions(t);

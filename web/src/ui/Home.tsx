@@ -3,6 +3,7 @@ import type { Lang } from '../game/types';
 import { NAME_MAX, normalizeName } from '../game/prefs';
 import type { Messages } from '../i18n';
 import { InstallOffer } from './InstallOffer';
+import type { RondTitre } from '../intro/lecteur';
 import { LogoTitle, type EntreeTitre } from './LogoTitle';
 import './home.css';
 
@@ -16,7 +17,7 @@ interface Props {
    * Le titre : `visible` quand le fondu commence (ou à l'accueil direct) ; la petite Terre part alors de `angle`, celui de
    * la Terre de la vidéo ; `entree` : en fondu depuis la vidéo, ou lettres qui surgissent (LogoTitle).
    */
-  logo: { angle: number | null; visible: boolean; entree: EntreeTitre };
+  logo: { angle: number | null; visible: boolean; entree: EntreeTitre; sur?: RondTitre | null };
   /** « Jouer » actif : intro finie, globe prêt, pays chargés. */
   canPlay: boolean;
   onPlay(): void;
@@ -40,7 +41,7 @@ export function Home({ lang, m, name, onLang, onName, logo, canPlay, onPlay, onS
           <button key={l} type="button" aria-pressed={lang === l} onClick={() => onLang(l)}>{l.toUpperCase()}</button>
         ))}
       </div>
-      <LogoTitle angle={logo.angle} visible={logo.visible} entree={logo.entree} />
+      <LogoTitle angle={logo.angle} visible={logo.visible} entree={logo.entree} sur={logo.sur ?? null} />
       <div className="accueil-commandes">
         <label className="accueil-nom">
           <span className="accueil-nom-etiquette">{m.home.yourName}</span>

@@ -1,4 +1,5 @@
-import { INTRO, INTRO_GIVE_UP_MS, LOGO_ANGLE_FIN, LOGO_TOUR_S, type Cadrage } from './temps';
+import { TITRES } from './cadrages';
+import { CADRAGES, INTRO, INTRO_GIVE_UP_MS, LOGO_ANGLE_FIN, LOGO_TOUR_S, type Cadrage } from './temps';
 import type { Manifeste, Variante } from './videos';
 
 /**
@@ -112,6 +113,28 @@ export function couverture(video: { width: number; height: number }, ecran: { wi
 export function versEcran(p: [number, number], video: { width: number; height: number }, ecran: { width: number; height: number }, cadrage: Cadrage): [number, number] {
   const c = couverture(video, ecran, cadrage);
   return [c.x + p[0] * c.echelle, c.y + p[1] * c.echelle];
+}
+
+/** Un « o » de titre à l'écran (px CSS) : centre et rayon de la petite Terre. */
+export interface RondTitre { x: number; y: number; r: number }
+
+/**
+ * Le « o » du titre de fin de la vidéo (cadrages.ts) à l'écran, sous le rognage. Il tombe sur celui du titre de l'accueil
+ * (54 px, à 110 px du haut) sur l'écran de référence seulement (390 × 844) : ailleurs, la vidéo est plus ou moins agrandie
+ * et le fondu montrait deux titres décalés, deux « C » et deux Terres (Pixel 9, 412 × 915 : 8 % plus grand, 12 px plus
+ * bas ; 24/10).
+ */
+export function oDuTitre(cadrage: Cadrage, ecran: { width: number; height: number }): RondTitre {
+  const c = couverture(CADRAGES[cadrage], ecran, cadrage), o = TITRES[cadrage].titre.o;
+  return { x: c.x + o.x * c.echelle, y: c.y + o.y * c.echelle, r: o.r * c.echelle };
+}
+
+/**
+ * Ce qui pose le titre de l'accueil sur celui de la vidéo pendant le fondu : `translate(x, y) scale(k)`, origine au
+ * centre de son « o » (les lettres sont les mêmes, à l'échelle : tout le titre coïncide).
+ */
+export function recalage(accueil: RondTitre, video: RondTitre): { x: number; y: number; k: number } {
+  return { x: video.x - accueil.x, y: video.y - accueil.y, k: video.r / accueil.r };
 }
 
 // ---------- relais de la petite Terre du titre ----------

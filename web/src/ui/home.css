@@ -43,14 +43,10 @@
     radial-gradient(circle at 36.4% 28.9%, #ffffd8 0, #ffffb0 .0091em, #ffff92 .0182em, #fff987 .0299em, #feea79 .0598em, #f4d970 .0897em, #dec467 .1196em, #bea555 .1495em, #a08642 .1794em, #9c8447 .2093em);
   box-shadow: var(--ombre-titre); }
 .logo-o { position: relative; display: inline-block; color: transparent; text-shadow: none; }
-.logo-terre { position: absolute; left: 50%; top: 58%; width: .66em; height: .66em; transform: translate(-50%, -50%); overflow: hidden; transition: opacity .2s; }
-/* 96 vues par tour (24 images/s ; 24 vues avant le 23/10, 6 images/s : la petite Terre saccadait) ; la bande glisse par
-   translation, que le compositeur anime même quand le globe occupe le fil principal (un background-position animé, repeint
-   par lui, saccadait sur téléphone). Le départ (angle de la Terre de la vidéo) : --delai, posé par LogoTitle. */
-.logo-terre::before { content: ''; position: absolute; left: 0; top: 0; width: 63.36em; height: .66em; background: url('/intro/logo-terre.webp') 0 0 / 63.36em .66em no-repeat;
-  animation: logo-tourne 4s steps(96) infinite; animation-delay: var(--delai, 0s); will-change: transform; }
+.logo-terre { position: absolute; left: 50%; top: 58%; width: .66em; height: .66em; transform: translate(-50%, -50%); background: url('/intro/logo-terre.webp') 0 0 / 15.84em .66em no-repeat;
+  animation: logo-tourne 4s steps(24) infinite; transition: opacity .2s; }
 @keyframes logo-lettre { from { transform: translateY(.3em) scale(0); opacity: 0; } 40% { opacity: 1; } }
-@keyframes logo-tourne { to { transform: translateX(-63.36em); } }
+@keyframes logo-tourne { to { background-position: -15.84em 0; } }
 /* Titre venu de la vidéo (D5) : invisible tant qu'elle le montre en pâte, il apparaît en fondu pendant qu'elle s'efface
    (--fondu, posé par LogoTitle) ; ses lettres ne surgissent pas, elles sont déjà là. Une animation et non une transition :
    le fondu joue même quand le titre est monté déjà visible (« Passer » : accueil et fondu dans la même image). */

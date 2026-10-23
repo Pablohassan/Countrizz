@@ -798,18 +798,16 @@ def construire(scene, dossier, mode, fov, police=None):
 
 # rayon de la Terre / côté du cadre : 58,2 px sur 128, comme le sprite actuel (home.css) ; marge du relief au bord (px)
 SPRITE_RAYON, SPRITE_MARGE, SPRITE_COTE = 0.4545, 1.0, 128
-# vues sur un tour : 96 (24 images/s sur le tour de 4 s ; 24 avant le 23/10, 6 images/s : la petite Terre saccadait)
-SPRITE_VUES = 96
 
 
 def vue_sprite(cam, i, src, fov=20):
-    """Vue i (0…SPRITE_VUES − 1) de la petite Terre du titre : la Terre tournée de Rz(−23,4°)·Ry(i·360°/SPRITE_VUES) en axes three (l'orientation
+    """Vue i (0…23) de la petite Terre du titre : la Terre tournée de Rz(−23,4°)·Ry(i·15°) en axes three (l'orientation
     de logoAngleAt), centrée, vue de la distance de `cameraFrom` (timeline.ts) pour un rayon SPRITE_RAYON — ou de plus
     loin s'il le faut pour que le relief le plus haut (1 + hauteurMax + bosses) reste à SPRITE_MARGE px du bord."""
     t = math.tan(math.radians(fov / 2))
     plus_haut = 1 + src['hauteurMax'] + BOSSE_AMP
     d = max(0.5 / (SPRITE_RAYON * t), plus_haut / math.sin(math.atan((1 - 2 * SPRITE_MARGE / SPRITE_COTE) * t)))
-    q = Quaternion((0, 0, 1), math.radians(-23.4)) @ Quaternion((0, 1, 0), math.radians(360 / SPRITE_VUES * i))
+    q = Quaternion((0, 0, 1), math.radians(-23.4)) @ Quaternion((0, 1, 0), math.radians(15 * i))
     qi = q.inverted()
     cam.location = qi @ Vector((0.0, 0.0, d))
     cam.rotation_quaternion = qi

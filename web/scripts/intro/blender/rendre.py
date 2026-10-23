@@ -3,9 +3,9 @@ Point d'entrée Blender de la fabrique (spec intro vidéo §2.4), lancé par `np
   temoins : quelques instants clés (--images, donnés par blender.ts depuis temps.ts) à pleine qualité, pour mesurer ;
   apercu  : toutes les images, définition et échantillons réduits, pour juger le rythme ;
   rendu   : toutes les images à pleine qualité (la nuit) ;
-  sprite  : les vues de la petite Terre du titre (logo-terre.webp, SPRITE_VUES de scene.py), 128 × 128, sans clés.
+  sprite  : les 24 vues de la petite Terre du titre (logo-terre.webp), 128 × 128, sans clés.
 Sortie : <cache>/frames/<mode>/<cadrage>/f_0001.png … (RGBA 8 bits, image n ↔ t = (n − 1) / 120 s) ; sprite :
-<cache>/frames/sprite/f_0001.png … (vue n ↔ angle (n − 1)·360°/SPRITE_VUES). Une image entière déjà écrite est gardée
+<cache>/frames/sprite/f_0001.png … f_0024.png (vue n ↔ angle (n − 1)·15°). Une image entière déjà écrite est gardée
 (reprise après un arrêt) ; un dossier rendu avec d'autres réglages, d'autres clés ou une autre scène (scripts de blender/,
 sources, police) est refusé sans --neuf : une vidéo ne mélange ni deux qualités ni deux scènes. Toute piste des clés doit
 trouver son objet dans la scène (contrat avec export-keys.ts).
@@ -77,12 +77,12 @@ def main():
     if a.mode == 'sprite':
         src = construction.construire(scene, sources, 'sprite', 20)
         commun.regler_cycles(scene, a, construction.SPRITE_COTE, construction.SPRITE_COTE)
-        total, sortie = construction.SPRITE_VUES, os.path.join(a.cache, 'frames', 'sprite')
+        total, sortie = 24, os.path.join(a.cache, 'frames', 'sprite')
         fiche = {'scene': empreinte(scripts() + terre)}
 
         def poser(n):
             construction.vue_sprite(scene.camera, n - 1, src)
-            scene.frame_set(1)   # frémissement figé : toutes les vues ont la même pâte
+            scene.frame_set(1)   # frémissement figé : les 24 vues ont la même pâte
     else:
         chemin_cles = os.path.join(a.cache, f'keys-{a.cadrage}.json')
         with open(chemin_cles, encoding='utf-8') as f:

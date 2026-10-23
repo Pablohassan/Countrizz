@@ -47,21 +47,6 @@ describe('LogoTitle : le « i » à boule (lettres B de la vidéo, point du « i
   });
 });
 
-describe('home.css : la petite Terre du « o » tourne à 24 images/s, hors du fil principal (23/10)', () => {
-  const css = readFileSync(new URL('./home.css', import.meta.url), 'utf8');
-  const bande = /^\.logo-terre::before\s*\{([^}]*)\}/m.exec(css)?.[1] ?? '';
-  it('96 vues par tour de 4 s : une bande de 96 × 0,66 em, 96 pas', () => {
-    expect(bande).toMatch(/width: 63\.36em/);
-    expect(bande).toMatch(/\/ 63\.36em \.66em/);
-    expect(bande).toMatch(/steps\(96\)/);
-    expect(bande).toMatch(/animation-delay: var\(--delai, 0s\)/);
-  });
-  it('la bande glisse par translation (le compositeur l’anime même quand le globe occupe le fil principal), pas par background-position', () => {
-    expect(css).toMatch(/@keyframes logo-tourne \{ to \{ transform: translateX\(-63\.36em\); \} \}/);
-    expect(css).not.toMatch(/logo-tourne[^}]*background-position/);
-  });
-});
-
 describe('home.css : la boule du « i » est celle de la vidéo (scene.py), pour que le fondu de fin ne saute pas', () => {
   const css = readFileSync(new URL('./home.css', import.meta.url), 'utf8');
   const scene = readFileSync(new URL('../../scripts/intro/blender/scene.py', import.meta.url), 'utf8');

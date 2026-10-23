@@ -126,11 +126,13 @@ export const physicalSkyOf = (renderer: THREE.WebGPURenderer): PhysicalSky | nul
  */
 export const SKY_RESOLUTION = 0.5;
 /**
- * Pas de la marche du rayon (au plus près, au plus loin ; 4 et 14 par défaut). Avec la demi-résolution, (2, 6) garde la
- * densité de rendu à 2 dans la démo (21/10) pour une image presque identique : écart moyen de 0,04 à 0,17 sur 255 au limbe,
- * en vue globale et au terminateur. Au quart de résolution, des taches claires longeaient le limbe.
+ * Pas de la marche du rayon : 24, partout. La bibliothèque en fait x + (y − x)·d / 100 (d en km, sans plafond) ; avec
+ * l'atmosphère exagérée (sommet à 600 km), (2, 6) donnait 26 pas au centre du disque et 115 au limbe — 65 % du travail du
+ * GPU à l'accueil (Pixel 9 à la densité 2,5, GPU du Mac : 2,7 ms sur 4,2). Un nombre constant, 24 : 2,2 ms en tout, et une
+ * image plus proche d'une intégration fine à 64 pas (écart moyen 0,67 sur 255 contre 0,93, max 16 contre 18 ; analyse du
+ * manque de fluidité sur téléphone, 23/10). À moins de pas, le voile bleu faiblit (16 : 1,37 en moyenne ; 4 : 6,2).
  */
-export const SKY_STEPS: [number, number] = [2, 6];
+export const SKY_STEPS: [number, number] = [24, 24];
 
 /**
  * Agrandissement des deux calculs réduits sans baver au limbe : pour chaque pixel, seuls les quatre texels réduits voisins

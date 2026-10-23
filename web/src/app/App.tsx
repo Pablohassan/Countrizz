@@ -141,12 +141,16 @@ export function App() {
   }, [tier, controlled, installed]);
 
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
-  // Avion de l'accueil et repères G5 (plan 2A-6) : seulement l'accueil affiché, globe prêt. Son code arrive avec celui du
-  // globe (GlobeView le réexporte ; déjà chargé ici) ; recréé à chaque retour à l'accueil (il repart de derrière la Terre).
-  const homeVisible = phase === 'accueil' && homeShown && s.screen === 'home' && !overlay && globeReady && !globeError;
+  // Avion de l'accueil et repères G5 (plan 2A-6). L'avion est monté dès que le globe est prêt et que l'accueil vient, sous
+  // la vidéo de l'intro : ses pipelines se compilent avec la scène pendant qu'elle joue (GlobeView), pas d'un bloc à
+  // l'apparition de l'accueil (à-coup, 23/10) ; il part de derrière la Terre, invisible. Repères et bulles : l'accueil
+  // affiché seulement. Son code arrive avec celui du globe (GlobeView le réexporte ; déjà chargé ici) ; recréé à chaque
+  // retour à l'accueil.
+  const homeNext = s.screen === 'home' && !overlay && globeReady && !globeError;
+  const homeVisible = phase === 'accueil' && homeShown && homeNext;
   const [extras, setExtras] = useState<HomeExtras | null>(null);
   useEffect(() => {
-    if (!homeVisible) return;
+    if (!homeNext) return;
     let alive = true, off: (() => void) | null = null;
     void import('../globe/GlobeView').then(({ createHomePlane, ESCALES, markGeometry }) => {
       if (!alive || !globe.current) return;
@@ -157,7 +161,7 @@ export function App() {
       if (hooks) window.__plane = p;
     }, (e: unknown) => console.warn('avion de l’accueil non chargé', e));
     return () => { alive = false; off?.(); setExtras(null); };
-  }, [homeVisible]); // eslint-disable-line react-hooks/exhaustive-deps -- hooks est stable
+  }, [homeNext]); // eslint-disable-line react-hooks/exhaustive-deps -- hooks est stable
 
   // à l'accueil, le globe tourne doucement ; accueil direct : son code peut arriver après, on attend qu'il soit prêt
   useEffect(() => { if (phase === 'accueil' && globeReady) globe.current?.setIdleSpin(HOME_SPIN_DEG_PER_S); }, [phase, globeReady]);

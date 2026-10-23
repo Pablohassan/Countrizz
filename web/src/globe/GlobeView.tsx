@@ -302,11 +302,13 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
   }, [setFrameloop, active]);
   // Inactif (l'intro joue par-dessus) et prêt : les matériaux de la scène se compilent tout de suite, pipelines créés sans
   // attendre ; l'image de préchauffage n'a plus que le post-traitement à compiler (23/10 : elle gelait l'accueil 571 ms à
-  // son apparition, processeur ralenti 4 fois).
+  // son apparition, processeur ralenti 4 fois). De nouveau à chaque accessoire monté pendant ce temps (l'avion de l'accueil,
+  // monté sous la vidéo : `accessoryRev`).
+  const [accessoryRev, setAccessoryRev] = useState(0);
   useEffect(() => {
     if (active || !globe || !post) return;
     void post.compileAsync().catch((e: unknown) => console.warn('précompilation de la scène', e));
-  }, [active, globe, post]);
+  }, [active, globe, post, accessoryRev]);
   // Inactif, prêt, et l'appelant le demande (peu avant le fondu, pas pendant la toupie de l'intro : la compilation bloque
   // le fil principal) : une image, pour que shaders et textures soient sur le GPU avant le fondu.
   useEffect(() => {
@@ -320,6 +322,8 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
   const onLoadingRef = useRef(onLoading);
   onLoadingRef.current = onLoading;
   const lastFrame = useRef(-1);
+  // `?mesure` : intervalle et calcul de chaque image, relevés par l'encart (frameReport.ts)
+  const frameLog = useRef(new URLSearchParams(location.search).has('mesure') ? { intervals: [] as number[], js: [] as number[] } : null);
 
   useEffect(() => {
     let alive = true;
@@ -382,7 +386,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
   const host = useMemo(() => createAccessoryHost(scene, { unveil: (m) => setKeep(m, float(1)) }), [scene]);
   useEffect(() => {
     if (!globe) return;
-    const sync = () => host.sync(controller.accessories());
+    const sync = () => { host.sync(controller.accessories()); setAccessoryRev((n) => n + 1); };
     sync();
     const off = controller.onAccessories(sync);
     return () => { off(); host.dispose(); };
@@ -449,6 +453,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
   }, [renderer, camera, size.width, size.height, generation]); // eslint-disable-line react-hooks/exhaustive-deps -- controller est stable, le globe passe par sa ref
 
   useFrame((_, delta) => {
+    const t0 = performance.now();
     const before = governor.dpr;
     const dpr = governor.update(window.__globe?.frameMsOverride ?? delta * 1000, performance.now());
     if (dpr !== before) onDpr(dpr);
@@ -459,7 +464,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     const q = qualityRef.current;
     measure.current = {
       backend: renderer.userData.backend, tier: renderer.userData.tier, degradation: q.degradation, maxTexture2D: renderer.userData.maxTexture2D,
-      format: builtRef.current?.textures.day.format ?? null, dpr: renderer.getPixelRatio(), medianMs: governor.lastMedianMs, traa: q.traa, events: events.current,
+      format: builtRef.current?.textures.day.format ?? null, dpr: renderer.getPixelRatio(), medianMs: governor.lastMedianMs, traa: q.traa, events: events.current, log: frameLog.current ?? undefined,
     };
     if (!globe) return;
     const now = performance.now();
@@ -478,6 +483,8 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     if (post) post.render();
     else renderer.render(scene, camera);
     if (window.__globe) { window.__globe.frames++; window.__globe.cloudOpacity = clouds; }
+    const log = frameLog.current;
+    if (log && log.intervals.length < 1200) { log.intervals.push(delta * 1000); log.js.push(performance.now() - t0); }
   }, 1); // priorité 1 : R3F ne rend plus lui-même, la boucle passe par le post-traitement
 
   return globe ? <primitive object={globe.root} /> : null;

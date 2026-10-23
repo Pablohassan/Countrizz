@@ -34,6 +34,8 @@ export const formatName = (format: number): string => FORMATS.find(([f]) => f ==
 export interface MeasureState {
   backend: Backend; tier: QualityTier; degradation: Degradation; maxTexture2D: number; format: number | null;
   dpr: number; medianMs: number | null; traa: boolean; events: { step: Degradation; atS: number; reason: 'lenteur' | 'format' }[];
+  /** `?mesure` : intervalle (ms) et calcul (ms) de chaque image depuis la dernière lecture ; l'encart les vide (frameReport.ts). */
+  log?: { intervals: number[]; js: number[] };
 }
 
 const STEP: Record<Degradation, string> = { aucune: 'aucun', 'sans-traa': 'sans TRAA', standard: 'standard' };

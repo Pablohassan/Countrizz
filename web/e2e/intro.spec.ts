@@ -233,6 +233,30 @@ test('la vidéo se lit jusqu’au bout et mène à l’accueil, sans « Passer �
   await expectNoStaleFrame(page);
 });
 
+test('WebGPU : rien ne se compile à l’apparition de l’accueil, avion compris (précompilé sous la vidéo)', async ({ page }) => {
+  // L'avion était monté à la fin du fondu : ses pipelines se compilaient alors, d'un bloc, sur le fil principal (à-coup à
+  // l'apparition de l'accueil, 23/10). On compte les créations bloquantes de pipelines une fois l'intro démontée.
+  await page.addInitScript(() => {
+    const D = (globalThis as unknown as { GPUDevice?: { prototype: Record<string, (...a: unknown[]) => unknown> } }).GPUDevice;
+    const w = window as unknown as { __bloquants: number };
+    w.__bloquants = 0;
+    if (!D) return;
+    const f = D.prototype.createRenderPipeline!;
+    D.prototype.createRenderPipeline = function (this: unknown, ...a: unknown[]) {
+      if (!document.querySelector('.intro') && document.querySelector('.accueil')) w.__bloquants++;
+      return f.apply(this, a);
+    };
+  });
+  await page.goto(`/?introVariante=${VARIANTE.portrait}`);
+  await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 60_000 });
+  await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 });
+  test.skip(await page.evaluate(() => window.__globe?.backend !== 'webgpu'), 'WebGPU seulement');
+  await page.waitForFunction(() => !!window.__plane?.look(), null, { timeout: 60_000 });
+  const f0 = await page.evaluate(() => window.__globe!.frames);
+  await page.waitForFunction((f) => window.__globe!.frames >= f + 5, f0, { timeout: 120_000 });
+  expect(await page.evaluate(() => (window as unknown as { __bloquants: number }).__bloquants)).toBe(0);
+});
+
 test('sans variante forcée : le lecteur choisit une vidéo lisible du bon cadrage, à 60 i/s, et elle avance', async ({ page }) => {
   await page.goto('/?webgl');
   await page.waitForFunction(() => window.__intro?.ready === true, null, { timeout: 60_000 });
@@ -361,7 +385,10 @@ test('titre de l’accueil (D5) : invisible sous la vidéo jusqu’au fondu, pui
   expect(await style()).toMatchObject({ animation: 'logo-fondu', duree: expect.closeTo(INTRO.FIN - INTRO.FONDU, 2) });
   await expect.poll(async () => (await style()).opacite, { timeout: 10_000 }).toBe(1);
   // « Passer » : la vidéo est sur sa dernière image, la petite Terre part de son angle (LOGO_ANGLE_FIN)
-  const delai = await page.locator('.accueil .logo-terre').evaluate((e) => parseFloat(getComputedStyle(e).animationDelay));
+  // planche en grille : la ligne et la planche (::before) partent du même --delai (23/10)
+  const delais = await page.locator('.accueil .logo-terre-ligne').evaluate((e) => [getComputedStyle(e), getComputedStyle(e, '::before')].map((s) => parseFloat(s.animationDelay)));
+  expect(delais[1]).toBe(delais[0]);
+  const delai = delais[0]!;
   expect(delai).toBeCloseTo(-(LOGO_ANGLE_FIN / (2 * Math.PI)) * LOGO_TOUR_S, 2);
 });
 

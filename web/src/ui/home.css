@@ -43,10 +43,17 @@
     radial-gradient(circle at 36.4% 28.9%, #ffffd8 0, #ffffb0 .0091em, #ffff92 .0182em, #fff987 .0299em, #feea79 .0598em, #f4d970 .0897em, #dec467 .1196em, #bea555 .1495em, #a08642 .1794em, #9c8447 .2093em);
   box-shadow: var(--ombre-titre); }
 .logo-o { position: relative; display: inline-block; color: transparent; text-shadow: none; }
-.logo-terre { position: absolute; left: 50%; top: 58%; width: .66em; height: .66em; transform: translate(-50%, -50%); background: url('/intro/logo-terre.webp') 0 0 / 15.84em .66em no-repeat;
-  animation: logo-tourne 4s steps(24) infinite; transition: opacity .2s; }
+.logo-terre { position: absolute; left: 50%; top: 58%; width: .66em; height: .66em; transform: translate(-50%, -50%); overflow: hidden; transition: opacity .2s; }
+/* 96 vues par tour de 4 s (24 images/s ; 24 vues, 6 images/s, avant le 23/10) sur une planche de 12 × 8 (encode.ts) : la
+   ligne descend d'un cran toutes les 0,5 s, la planche glisse d'une vue tous les 1/24 s ; vue = 12 × ligne + colonne. Deux
+   translations, que le compositeur anime même quand le globe occupe le fil principal (un background-position animé est
+   repeint par lui). Départ (angle de la Terre de la vidéo) : --delai, posé par LogoTitle sur les deux. */
+.logo-terre-ligne { position: absolute; left: 0; top: 0; animation: logo-ligne 4s steps(8) infinite; animation-delay: var(--delai, 0s); }
+.logo-terre-ligne::before { content: ''; position: absolute; left: 0; top: 0; width: 7.92em; height: 5.28em; background: url('/intro/logo-terre.webp') 0 0 / 7.92em 5.28em no-repeat;
+  animation: logo-colonne .5s steps(12) infinite; animation-delay: var(--delai, 0s); }
 @keyframes logo-lettre { from { transform: translateY(.3em) scale(0); opacity: 0; } 40% { opacity: 1; } }
-@keyframes logo-tourne { to { background-position: -15.84em 0; } }
+@keyframes logo-ligne { to { transform: translateY(-5.28em); } }
+@keyframes logo-colonne { to { transform: translateX(-7.92em); } }
 /* Titre venu de la vidéo (D5) : invisible tant qu'elle le montre en pâte, il apparaît en fondu pendant qu'elle s'efface
    (--fondu, posé par LogoTitle) ; ses lettres ne surgissent pas, elles sont déjà là. Une animation et non une transition :
    le fondu joue même quand le titre est monté déjà visible (« Passer » : accueil et fondu dans la même image). */

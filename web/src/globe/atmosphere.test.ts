@@ -44,6 +44,14 @@ describe('branchement de la bibliothèque (spec atmosphère §2)', () => {
     const raw = (['x', 'y', 'z'] as const).map((k) => ref.solarIrradiance[k] * ref.sunRadianceToLuminance[k] * ref.luminanceScale);
     expect(exposure * (0.2126 * raw[0]! + 0.7152 * raw[1]! + 0.0722 * raw[2]!)).toBeCloseTo(3, 12);
   });
+  it('marche du rayon : 24 pas, au centre du disque comme au limbe (la bibliothèque en fait x + (y − x)·d / 100, d en km, sans plafond)', async () => {
+    const { SKY_STEPS } = await import('./physicalSky');
+    const p = atmosphereParameters();
+    const pas = (dKm: number) => Math.floor(SKY_STEPS[0] + ((SKY_STEPS[1] - SKY_STEPS[0]) * dKm) / 100);
+    // vu de l'espace : de son sommet jusqu'au sol, à la verticale (≈ 600 km, atmosphère exagérée) et au ras du limbe (≈ 2 830 km)
+    const vertical = (p.topRadius - 1) * p.worldToUnit, rasant = Math.sqrt(p.topRadius ** 2 - 1) * p.worldToUnit;
+    expect([pas(vertical), pas(rasant)]).toEqual([24, 24]);
+  });
   it('décalage de la marche du rayon : format de la bibliothèque, mêmes valeurs à chaque image, bien réparti', async () => {
     const { jitterVolume } = await import('./physicalSky');
     const v = jitterVolume();

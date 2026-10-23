@@ -8,9 +8,10 @@
  *    vidéo ffprobe (codec, format, taille, cadence, nombre d'images, étiquettes de couleur), `moov` avant `mdat`, fond
  *    décodé à ± 3 de (22, 23, 58) ; la chaîne de codec du manifeste est lue dans le fichier (`lib/mp4.ts`) ;
  *  - affiches : la première image sur la nuit, en WebP sans perte (sharp : ffmpeg n'a pas d'encodeur WebP).
- * `--sprite` assemble les 24 vues de la petite Terre du titre (`npm run intro:sprite` : `.cache/frames/sprite/f_0001.png`
- * … `f_0024.png`, 128 × 128, vue i ↔ angle (i − 1)·15°) en `public/intro/logo-terre.webp` (3072 × 128, q88, alpha 90 :
- * même chemin, même disposition qu'avant).
+ * `--sprite` assemble les 96 vues de la petite Terre du titre (`npm run intro:sprite` : `.cache/frames/sprite/f_0001.png`
+ * … `f_0096.png`, 128 × 128, vue i ↔ angle (i − 1)·3,75°) en `public/intro/logo-terre.webp` : grille de 12 colonnes × 8
+ * lignes (1536 × 1024, q88, alpha 90), vue i en (colonne (i − 1) mod 12, ligne ⌊(i − 1) / 12⌋). Pas une bande : 12 288 px
+ * de large dépassent la plus grande texture d'un GPU de téléphone (la 1.18 cassait la petite Terre sur un Pixel 9).
  * `--bulles` fait de l'aperçu (`.cache/frames/apercu/`) une vidéo à juger, bulles esquissées à leurs ancres
  * (`lib/apercu.ts`) : `.cache/video-apercu/apercu-<cadrage>-bulles.mp4`, HEVC 60 i/s lu par QuickTime.
  * `--plafonds` fige les plafonds d'octets du test de budget depuis `public/video/videos.json` dans
@@ -42,7 +43,8 @@ sharp.cache(false);
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const WEB = path.resolve(ICI, '../..');
 const CACHE = path.join(ICI, '.cache');
-const SPRITE = { vues: 24, cote: 128 };
+/** Vues de la petite Terre : SPRITE_VUES de scripts/intro/blender/scene.py, en grille (home.css `.logo-terre-ligne`). */
+const SPRITE = { vues: 96, cote: 128, colonnes: 12 };
 
 const { values: opts } = parseArgs({
   options: {
@@ -161,7 +163,7 @@ async function encoder(source: 'apercu' | 'rendu', choix: Sortie[]): Promise<voi
   if (erreurs.length > 0) throw new Error(`${erreurs.length} écart(s) :\n${erreurs.join('\n')}`);
 }
 
-/** Les 24 vues de la petite Terre, côte à côte (vue i = angle i·15°). */
+/** Les vues de la petite Terre en grille, ligne par ligne (vue i = angle i·360°/SPRITE.vues). */
 async function assemblerSprite(): Promise<void> {
   const dossier = path.join(CACHE, 'frames', 'sprite');
   verifierImages(dossier, SPRITE.vues);
@@ -173,8 +175,9 @@ async function assemblerSprite(): Promise<void> {
     vues.push(readFileSync(f));
   }
   const fichier = path.join(WEB, 'public/intro/logo-terre.webp');
-  await sharp({ create: { width: SPRITE.cote * SPRITE.vues, height: SPRITE.cote, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
-    .composite(vues.map((input, i) => ({ input, left: i * SPRITE.cote, top: 0 })))
+  const lignes = Math.ceil(SPRITE.vues / SPRITE.colonnes);
+  await sharp({ create: { width: SPRITE.cote * SPRITE.colonnes, height: SPRITE.cote * lignes, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite(vues.map((input, i) => ({ input, left: (i % SPRITE.colonnes) * SPRITE.cote, top: Math.floor(i / SPRITE.colonnes) * SPRITE.cote })))
     .webp({ quality: 88, alphaQuality: 90 }).toFile(fichier);
   console.log(`${fichier} : ${statSync(fichier).size} o`);
 }

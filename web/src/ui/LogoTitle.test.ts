@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
@@ -42,8 +43,41 @@ describe('LogoTitle : le « i » à boule (lettres B de la vidéo, point du « i
   it('les lettres gardent leur rang d’apparition (--i) ; en fondu, même arbre', () => {
     expect([...html.matchAll(/--i:(\d+)/g)].map((m) => +m[1]!)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
     const fondu = renderToStaticMarkup(createElement(LogoTitle, { angle: 1, visible: false, entree: 'fondu' }));
-    expect(fondu.replace(/<i [^>]*class="logo-terre"[^>]*><\/i>/, '')).toBe(html.replace(/<i [^>]*class="logo-terre"[^>]*><\/i>/, '')
+    const terre = /<i [^>]*class="logo-terre"[^>]*><i class="logo-terre-ligne"><\/i><\/i>/;
+    expect(fondu.replace(terre, '')).toBe(html.replace(terre, '')
       .replace('logo-titre--pop logo-titre--visible', 'logo-titre--fondu'));
+  });
+});
+
+describe('petite Terre du « o » : 96 vues (24 images/s) en grille 12 × 8, animées par le compositeur (23/10)', () => {
+  const css = readFileSync(new URL('./home.css', import.meta.url), 'utf8');
+  const regle = (selecteur: string) => new RegExp(`^${selecteur.replace(/[.:]/g, '\\$&')}\\s*\\{([^}]*)\\}`, 'm').exec(css)?.[1] ?? '';
+
+  it('la planche tient dans 2048 px de côté : 12 colonnes × 8 lignes de 128 px (la bande de 12 288 px de la 1.18 cassait la petite Terre sur téléphone)', async () => {
+    const sharp = (await import('sharp')).default;
+    const m = await sharp(fileURLToPath(new URL('../../public/intro/logo-terre.webp', import.meta.url))).metadata();
+    expect([m.width, m.height, m.channels]).toEqual([12 * 128, 8 * 128, 4]);
+  });
+
+  it('la ligne descend de 8 pas sur le tour de 4 s, la planche avance de 12 pas sur 0,5 s : vue = 12 × ligne + colonne', () => {
+    const ligne = regle('.logo-terre-ligne'), planche = regle('.logo-terre-ligne::before');
+    expect(ligne).toMatch(/animation: logo-ligne 4s steps\(8\) infinite/);
+    expect(planche).toMatch(/animation: logo-colonne \.5s steps\(12\) infinite/);
+    expect(planche).toMatch(/width: 7\.92em; height: 5\.28em/);
+    expect(planche).toMatch(/\/ 7\.92em 5\.28em/);
+    expect(css).toMatch(/@keyframes logo-ligne \{ to \{ transform: translateY\(-5\.28em\); \} \}/);
+    expect(css).toMatch(/@keyframes logo-colonne \{ to \{ transform: translateX\(-7\.92em\); \} \}/);
+    for (const r of [ligne, planche]) expect(r).toMatch(/animation-delay: var\(--delai, 0s\)/);
+  });
+
+  it('par translation seulement (le compositeur l’anime même quand le globe occupe le fil principal), jamais par background-position', () => {
+    expect(css).not.toMatch(/@keyframes logo-(ligne|colonne)[^}]*background-position/);
+    expect(css).not.toMatch(/logo-tourne/);
+  });
+
+  it('LogoTitle pose la ligne dans la petite Terre et le départ dans --delai', () => {
+    const vue = renderToStaticMarkup(createElement(LogoTitle, { angle: Math.PI, visible: true, entree: 'pop' }));
+    expect(vue).toContain('<i class="logo-terre" style="opacity:1;--delai:-2s"><i class="logo-terre-ligne"></i></i>');
   });
 });
 

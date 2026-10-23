@@ -300,6 +300,13 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     document.addEventListener('visibilitychange', onVisibility);
     return () => document.removeEventListener('visibilitychange', onVisibility);
   }, [setFrameloop, active]);
+  // Inactif (l'intro joue par-dessus) et prêt : les matériaux de la scène se compilent tout de suite, pipelines créés sans
+  // attendre ; l'image de préchauffage n'a plus que le post-traitement à compiler (23/10 : elle gelait l'accueil 571 ms à
+  // son apparition, processeur ralenti 4 fois).
+  useEffect(() => {
+    if (active || !globe || !post) return;
+    void post.compileAsync().catch((e: unknown) => console.warn('précompilation de la scène', e));
+  }, [active, globe, post]);
   // Inactif, prêt, et l'appelant le demande (peu avant le fondu, pas pendant la toupie de l'intro : la compilation bloque
   // le fil principal) : une image, pour que shaders et textures soient sur le GPU avant le fondu.
   useEffect(() => {

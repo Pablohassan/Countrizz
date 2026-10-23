@@ -40,5 +40,14 @@ export function createPostProcessing(renderer: THREE.WebGPURenderer, scene: THRE
   pipeline.outputColorTransform = false;
   const shown = renderOutput(final, o.toneMapping, THREE.SRGBColorSpace);
   pipeline.outputNode = sky && !o.traa ? smaa(shown) : shown;
-  return { render: () => pipeline.render(), dispose: () => pipeline.dispose() };
+  return {
+    render: () => pipeline.render(),
+    dispose: () => pipeline.dispose(),
+    /**
+     * Précompile les matériaux de la scène pour la passe (sa cible et ses sorties MRT), pipelines créés sans attendre :
+     * appelée pendant l'intro, elle retire ce travail de l'image de préchauffage qui gelait l'accueil à son apparition
+     * (571 ms, processeur ralenti 4 fois, format Pixel 9, 23/10).
+     */
+    compileAsync: () => scenePass.compileAsync(renderer),
+  };
 }

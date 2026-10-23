@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: countrizz-web
-          image: pablohassan/countrizz-web:1.17
+          image: pablohassan/countrizz-web:1.18
           ports:
             - containerPort: 8080
           securityContext:

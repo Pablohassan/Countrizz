@@ -32,7 +32,7 @@ export type Bulle = keyof typeof BULLES;
 
 /** Le nom autour du « o » (la Terre) : « C », puis « untrizz ». */
 export const LOGO_LETTRES = ['C', 'u', 'n', 't', 'r', 'i', 'z', 'z'] as const;
-/** La petite Terre du titre de l'accueil fait un tour en 4 s (24 images, stop motion à 6 i/s). */
+/** La petite Terre du titre de l'accueil fait un tour en 4 s (96 images, 24 i/s ; 24 images avant le 23/10). */
 export const LOGO_TOUR_S = 4;
 /** Angle de la Terre à FIN (rad, [0, 2π[) : la petite Terre du titre part de cette image ; = logoAngleAt(INTRO.FIN) (test). */
 export const LOGO_ANGLE_FIN = 2.436418150808498;

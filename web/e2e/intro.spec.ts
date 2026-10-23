@@ -361,7 +361,8 @@ test('titre de l’accueil (D5) : invisible sous la vidéo jusqu’au fondu, pui
   expect(await style()).toMatchObject({ animation: 'logo-fondu', duree: expect.closeTo(INTRO.FIN - INTRO.FONDU, 2) });
   await expect.poll(async () => (await style()).opacite, { timeout: 10_000 }).toBe(1);
   // « Passer » : la vidéo est sur sa dernière image, la petite Terre part de son angle (LOGO_ANGLE_FIN)
-  const delai = await page.locator('.accueil .logo-terre').evaluate((e) => parseFloat(getComputedStyle(e).animationDelay));
+  // la bande des vues glisse dans le ::before (translation, compositeur : 23/10)
+  const delai = await page.locator('.accueil .logo-terre').evaluate((e) => parseFloat(getComputedStyle(e, '::before').animationDelay));
   expect(delai).toBeCloseTo(-(LOGO_ANGLE_FIN / (2 * Math.PI)) * LOGO_TOUR_S, 2);
 });
 

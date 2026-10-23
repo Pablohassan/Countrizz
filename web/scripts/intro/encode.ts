@@ -42,7 +42,8 @@ sharp.cache(false);
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const WEB = path.resolve(ICI, '../..');
 const CACHE = path.join(ICI, '.cache');
-const SPRITE = { vues: 24, cote: 128 };
+/** Vues de la petite Terre : SPRITE_VUES de scripts/intro/blender/scene.py (96 depuis le 23/10 : 24 images/s). */
+const SPRITE = { vues: 96, cote: 128 };
 
 const { values: opts } = parseArgs({
   options: {
@@ -161,7 +162,7 @@ async function encoder(source: 'apercu' | 'rendu', choix: Sortie[]): Promise<voi
   if (erreurs.length > 0) throw new Error(`${erreurs.length} écart(s) :\n${erreurs.join('\n')}`);
 }
 
-/** Les 24 vues de la petite Terre, côte à côte (vue i = angle i·15°). */
+/** Les vues de la petite Terre, côte à côte (vue i = angle i·360°/SPRITE.vues). */
 async function assemblerSprite(): Promise<void> {
   const dossier = path.join(CACHE, 'frames', 'sprite');
   verifierImages(dossier, SPRITE.vues);

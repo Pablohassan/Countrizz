@@ -13,6 +13,7 @@ import { loadGlobeTextures, loadReliefGrid } from '../globe/textures';
 import { createImageSource, loadImageryIndex } from '../globe/imagePatch';
 import { createPostProcessing, postOptions } from '../globe/postprocessing';
 import { installPhysicalSky, setKeep } from '../globe/physicalSky';
+import { fondNuit } from '../globe/nuit';
 import { float } from 'three/tsl';
 import { OffsetCamera } from '../globe/offsetCamera';
 import { safeViewport } from '../camera/safeArea';
@@ -127,6 +128,8 @@ const tone = TONE[q.get('tm') ?? ''];
 if (tone !== undefined) renderer.toneMapping = tone;   // sans `post`
 if (q.has('exp')) renderer.toneMappingExposure = Number(q.get('exp'));
 const scene = new THREE.Scene();
+// le ciel du jeu : la nuit de la vidéo (GlobeView, nuit.ts) ; `noir` : fond noir, pour mesurer un halo sans le fond
+if (mode === 'game' && !q.has('noir')) scene.background = new THREE.Color().setRGB(...fondNuit(sky?.calibration.whiteBalance), THREE.LinearSRGBColorSpace);
 scene.add(globe.root);
 if (q.has('avion') && mode === 'game') {
   const host = createAccessoryHost(scene, { unveil: (m) => setKeep(m, float(1)) });

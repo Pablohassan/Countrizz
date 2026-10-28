@@ -9,7 +9,6 @@ import { openScoreBook } from '../game/scores';
 import { en } from '../i18n/en';
 import { fr } from '../i18n/fr';
 import { EndScreen } from './EndScreen';
-import { bestScores, ModeScreen } from './ModeScreen';
 import { ScoresScreen } from './ScoresScreen';
 
 const countries = JSON.parse(readFileSync('public/data/countries.json', 'utf8')) as CountryRecord[];
@@ -18,21 +17,7 @@ const memory = (): KeyValueStorage => { const m = new Map<string, string>(); ret
 const noop = () => {};
 const result = (p: Partial<GameResult>): GameResult => ({ mode: 'country', score: 190, correct: 19, total: 24, record: true, previousBest: 160, rank: 3, saved: true, entry: { name: 'Globetrotteur', score: 190, at: 3 }, ...p });
 
-describe('écrans hors partie (D9, D12, D13)', () => {
-  it('choix du mode A : trois boutons, étoiles 1 à 3, record en pastille, « Nouveau » si jamais joué', () => {
-    const book = openScoreBook(memory());
-    book.write('flag', [{ name: 'Lina', score: 18, at: 1 }]);
-    book.write('capital', [{ name: 'Lina', score: 0, at: 2 }]);
-    expect(bestScores(book)).toEqual({ flag: 18, country: null, capital: 0 });
-    const html = renderToStaticMarkup(createElement(ModeScreen, { m: fr, name: 'Globetrotteur', best: bestScores(book), onChoose: noop, onBack: noop }));
-    expect(html).toContain('Choisis ton mode');
-    expect(html).toContain('Joueur : <b>Globetrotteur</b>');
-    expect(html.match(/class="mode-bouton"/g)).toHaveLength(3);
-    expect(html).toContain('<small>Record</small> 18');
-    expect(html).toContain('record record--nouveau');
-    expect(html).toContain('★<span class="etoiles-off">★★</span>');
-  });
-
+describe('écrans hors partie (D12, D13 ; le choix du mode D9 vit dans l’accueil : Home.test.ts)', () => {
   it('fin F1 : score, « 19 bonnes réponses sur 24 », ancien record, tampon, drapeaux (erreurs grisées)', () => {
     const rounds = [{ cca3: 'FRA', ok: true }, { cca3: 'EST', ok: false }];
     const html = renderToStaticMarkup(createElement(EndScreen, { m: fr, lang: 'fr', name: 'Globetrotteur', result: result({}), rounds, records, onReplay: noop, onChangeMode: noop, onScores: noop }));

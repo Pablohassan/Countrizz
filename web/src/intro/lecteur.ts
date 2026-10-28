@@ -137,6 +137,15 @@ export function recalage(accueil: RondTitre, video: RondTitre): { x: number; y: 
   return { x: video.x - accueil.x, y: video.y - accueil.y, k: video.r / accueil.r };
 }
 
+/**
+ * Après le fondu, le titre reste posé sur celui de la vidéo quand l'écart est faible (un téléphone : Pixel 9, × 1,08 et
+ * 12 px) : il ne bouge plus (mise en scène du 24/10). Au-delà de ± 15 % ou de 24 px (tablette, bureau : la vidéo y est bien
+ * plus agrandie, le titre gênerait les commandes), il glisse à sa place.
+ */
+export function garderRecalage(r: { x: number; y: number; k: number }): boolean {
+  return Math.abs(r.k - 1) <= 0.15 && Math.abs(r.x) <= 24 && Math.abs(r.y) <= 24;
+}
+
 // ---------- relais de la petite Terre du titre ----------
 /**
  * Angle de la Terre en pâte (rad, [0, 2π[) à l'instant `t` de la vidéo, de FONDU à FIN : elle y tourne à la vitesse de

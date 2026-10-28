@@ -2,8 +2,7 @@
 .accueil { position: absolute; inset: 0; pointer-events: none; font-family: var(--cartoon); color: #fff; }
 .accueil > * { pointer-events: auto; }
 .accueil-lang { position: absolute; top: calc(56px + env(safe-area-inset-top, 0px)); right: max(18px, calc(50% - 202px)); display: flex; border: 2px solid var(--pate-bord); border-radius: 10px; overflow: hidden;
-  box-shadow: var(--flanc-nuit-4), -6px 8px 10px rgb(0 0 0 / .55), var(--halo-violet);
-  animation: accueil-haut .55s cubic-bezier(.25, .46, .45, 1.54) .8s both; }
+  box-shadow: var(--flanc-nuit-4), -6px 8px 10px rgb(0 0 0 / .55), var(--halo-violet); transition: opacity .25s ease; }
 .accueil-lang button { font: 14px var(--cartoon); padding: 5px 10px; border: 0; background: var(--pate-nuit); color: var(--jaune); cursor: pointer; text-shadow: var(--relief-jaune-2); }
 .accueil-lang button[aria-pressed="true"] { background: var(--pate-jaune); color: var(--nuit); text-shadow: none; box-shadow: inset 0 2px 0 rgb(255 255 255 / .5), inset 0 -3px 4px rgb(143 117 90 / .45); }
 .accueil-titre { position: absolute; top: calc(110px + env(safe-area-inset-top, 0px)); left: 0; right: 0; margin: 0; text-align: center; font: 54px/1.1 var(--cartoon); font-weight: normal; letter-spacing: 1px;
@@ -54,13 +53,14 @@
 @keyframes logo-lettre { from { transform: translateY(.3em) scale(0); opacity: 0; } 40% { opacity: 1; } }
 @keyframes logo-ligne { to { transform: translateY(-5.28em); } }
 @keyframes logo-colonne { to { transform: translateX(-7.92em); } }
-/* Titre venu de la vidéo (D5) : invisible tant qu'elle le montre en pâte, il apparaît en fondu pendant qu'elle s'efface
-   (--fondu, posé par LogoTitle) ; ses lettres ne surgissent pas, elles sont déjà là. Une animation et non une transition :
-   le fondu joue même quand le titre est monté déjà visible (« Passer » : accueil et fondu dans la même image). */
+/* Titre venu de la vidéo (D5) : invisible tant qu'elle le montre en pâte ; posé exactement sur le sien (LogoTitle), il
+   apparaît d'un coup 0,35 s après le début du fondu, quand le titre de la vidéo est complet — un fondu croisé de deux titres
+   identiques pâlissait au milieu (mise en scène du 24/10). Une animation et non une transition : elle joue même quand le
+   titre est monté déjà visible (« Passer » : accueil et fondu dans la même image). Ses lettres ne surgissent pas. */
 .logo-titre--fondu { opacity: 0; }
-.logo-titre--fondu.logo-titre--visible { opacity: 1; animation: logo-fondu var(--fondu) ease-in-out; }
-.logo-titre--fondu .logo-l { animation: none; }
-@keyframes logo-fondu { from { opacity: 0; } }
+.logo-titre--fondu.logo-titre--visible { opacity: 1; animation: logo-pose .35s backwards; }
+.logo-titre--fondu .logo-l, .logo-titre--deja .logo-l { animation: none; }
+@keyframes logo-pose { from, to { opacity: 0; } }
 /* Commandes en pâte (retouche du 20/10) : le relief du titre — face éclairée en haut à gauche, flanc net vers le bas à
    gauche le long de (−1 ; +1), puis l'ombre portée — et un halo violet qui les détache du noir de l'espace (les ombres
    noires d'avant y disparaissaient). */
@@ -78,8 +78,7 @@
 
 /* Nom : une plaque en relief, l'étiquette posée sur son bord, la saisie dans un puits creusé. */
 .accueil-nom { position: relative; display: block; padding: 18px 14px 13px; background: var(--pate-nuit); border: 2px solid var(--pate-bord); border-radius: 16px;
-  box-shadow: inset 0 2px 0 rgb(255 255 255 / .16), var(--flanc-nuit-4), -5px 5px 0 #05061a, -8px 11px 14px rgb(0 0 0 / .55), var(--halo-violet);
-  animation: accueil-gauche .6s cubic-bezier(.25, .46, .45, 1.54) 1.1s both; }
+  box-shadow: inset 0 2px 0 rgb(255 255 255 / .16), var(--flanc-nuit-4), -5px 5px 0 #05061a, -8px 11px 14px rgb(0 0 0 / .55), var(--halo-violet); }
 .accueil-nom-etiquette { position: absolute; top: -14px; left: 16px; font: 13px var(--cartoon); color: var(--nuit); background: var(--pate-jaune); border: 2px solid var(--pate-bord); border-radius: 9px; padding: 3px 11px 2px;
   box-shadow: inset 0 2px 0 rgb(255 255 255 / .55), -1px 1px 0 #8f755a, -2px 2px 0 #8f755a, -4px 5px 5px rgb(0 0 0 / .45); transform: rotate(-3deg); }
 .accueil-nom-puits { display: flex; align-items: center; gap: 8px; background: #0b0c27; border-radius: 11px; padding: 9px 12px;
@@ -94,7 +93,7 @@
    un cadre qui bouge sans fin n'est jamais « stable » pour un clic de Playwright, 7 e2e bloqués le 20/10) ; un calque
    intérieur respire, la face porte le relief, le reflet qui passe et l'enfoncement sous le doigt. */
 .accueil-jouer { align-self: center; position: relative; padding: 0; border: 0; background: none; font-family: var(--cartoon); cursor: pointer; transform-style: preserve-3d;
-  animation: accueil-entree-droite .6s cubic-bezier(.25, .46, .45, 1.54) 1.4s both; -webkit-tap-highlight-color: transparent; }
+  -webkit-tap-highlight-color: transparent; }
 .accueil-jouer-3d { display: block; transform-style: preserve-3d; }
 .accueil-jouer:not(:disabled) .accueil-jouer-3d { animation: jouer-respire 3.4s ease-in-out 2.1s infinite; }
 .accueil-jouer-face { position: relative; display: flex; align-items: center; gap: 16px; padding: 13px 32px 15px; border: 2px solid #1d0661; border-radius: 16px; transform: skewX(-15deg);
@@ -102,7 +101,7 @@
   box-shadow: inset 0 3px 0 rgb(255 255 255 / .38), inset 0 -6px 10px rgb(30 0 90 / .4),
     -1px 1px 0 #3d12a6, -2px 2px 0 #3a11a0, -3px 3px 0 #360f98, -4px 4px 0 #320e90, -5px 5px 0 #2e0c88, -6px 6px 0 #2a0b80, -7px 7px 0 #250a76,
     -11px 13px 16px rgb(0 0 0 / .6), 0 0 30px rgb(139 92 255 / .5);
-  transition: transform .09s ease-out, box-shadow .09s ease-out; overflow: hidden; }
+  transition: transform .09s ease-out, box-shadow .09s ease-out, filter .3s ease; overflow: hidden; }
 /* Lustre de la pâte (moitié haute) et reflet qui traverse la face. */
 .accueil-jouer-face::before { content: ''; position: absolute; left: 6px; right: 6px; top: 3px; height: 46%; border-radius: 12px 12px 40% 40% / 12px 12px 18px 18px;
   background: linear-gradient(rgb(255 255 255 / .42), rgb(255 255 255 / .04)); pointer-events: none; }
@@ -133,7 +132,7 @@
 @keyframes jouer-chevron { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
 
 /* Scores, À propos : la même pâte, en nuit et jaune, moins épaisse. */
-.accueil-rang2 { display: flex; justify-content: center; gap: 18px; animation: accueil-bas .6s cubic-bezier(.25, .46, .45, 1.54) 1.7s both; }
+.accueil-rang2 { display: flex; justify-content: center; gap: 18px; }
 .accueil-sec { position: relative; background: var(--pate-nuit); color: var(--jaune); border: 2px solid var(--pate-bord); border-radius: 11px; transform: skewX(-15deg); padding: 9px 18px 10px; font: 15px var(--cartoon); white-space: nowrap; cursor: pointer;
   box-shadow: inset 0 2px 0 rgb(255 255 255 / .2), inset 0 -3px 6px rgb(0 0 0 / .35), var(--flanc-nuit-4), -7px 9px 10px rgb(0 0 0 / .55), var(--halo-violet);
   transition: transform .09s ease-out, box-shadow .09s ease-out; -webkit-tap-highlight-color: transparent; }
@@ -142,10 +141,42 @@
 .accueil-sec:active { transform: translate(-3px, 3px) skewX(-15deg); box-shadow: inset 0 2px 0 rgb(255 255 255 / .15), var(--flanc-nuit-2), -3px 4px 5px rgb(0 0 0 / .5), var(--halo-violet); }
 .accueil-lang button:focus-visible, .accueil-sec:focus-visible { outline: 3px solid var(--jaune); outline-offset: 3px; }
 /* Le crédit EOX du globe reste au-dessus de tout (jamais recouvert). */
-@keyframes accueil-gauche { from { transform: translateX(-420px); opacity: 0; } 30% { opacity: 1; } }
-@keyframes accueil-haut { from { transform: translateY(-90px); opacity: 0; } 30% { opacity: 1; } }
-@keyframes accueil-bas { from { transform: translateY(160px); opacity: 0; } 30% { opacity: 1; } }
-@keyframes accueil-entree-droite { from { transform: translateX(420px); opacity: 0; } 30% { opacity: 1; } }
+/* Apparition (mise en scène du 24/10) : à la première seulement (accueil--fondu, accueil--pop), une fois visible (fondu
+   commencé, ou accueil direct). Les commandes montent ensemble avec le globe, d'un seul côté, à 0,08 s d'écart ; FR/EN
+   apparaît sur place. Avant (la vidéo pose encore ses lettres) : rien. Ensuite (accueil--deja, tout retour) : rien ne rejoue.
+   En `backwards` : finies, elles rendent la main aux transitions de la sortie.
+   Elles arrivaient de quatre côtés avec élan, par-dessus la vidéo. */
+.accueil--fondu:not(.accueil--visible) :is(.accueil-lang, .accueil-commandes, .accueil-modes, .accueil-retour, .installer) { visibility: hidden; }
+.accueil--visible:not(.accueil--deja) .accueil-commandes > * { animation: accueil-monte .9s cubic-bezier(.2, .7, .2, 1) calc(var(--k, 0) * .08s) backwards; }
+.accueil-commandes > :nth-child(2) { --k: 1; }
+.accueil-commandes > :nth-child(3) { --k: 2; }
+.accueil--visible:not(.accueil--deja) .accueil-lang { animation: accueil-apparait .6s ease-out .2s backwards; }
+@keyframes accueil-monte { from { transform: translateY(120px); opacity: 0; } 40% { opacity: 1; } }
+@keyframes accueil-apparait { from { opacity: 0; } }
+
+/* Choix du mode sur place (D9, mise en scène du 24/10) : les commandes glissent à gauche et s'effacent, les trois modes
+   arrivent de la droite à la même place ; « ‹ Retour » remplace FR/EN. Titre, globe, avion et repères ne bougent pas. */
+.accueil-commandes, .accueil-modes { transition: opacity .25s ease, transform .3s cubic-bezier(.2, .7, .2, 1); }
+.accueil--choix .accueil-commandes { opacity: 0; transform: translateX(calc(-50% - 40px)); }
+.accueil-modes { position: absolute; top: calc(215px + env(safe-area-inset-top, 0px)); left: 50%; width: min(calc(100% - 56px), 384px); display: flex; flex-direction: column; gap: 20px;
+  opacity: 0; transform: translateX(calc(-50% + 40px)); pointer-events: none; }
+.accueil--choix .accueil-modes { opacity: 1; transform: translateX(-50%); pointer-events: auto; }
+.accueil--choix .accueil-lang { opacity: 0; }
+.accueil-retour { opacity: 0; transition: opacity .25s ease; font-family: var(--cartoon); }
+.accueil-modes .mode-bouton { font-family: var(--cartoon); }
+.accueil-modes .mode-bouton:focus-visible, .accueil-retour:focus-visible { outline: 3px solid var(--jaune); outline-offset: 4px; }
+.accueil--choix .accueil-retour { opacity: 1; }
+/* Les modes, en pâte comme « Jouer » (D9 : « les mêmes que Jouer ») */
+.accueil-modes .mode-bouton { border: 2px solid #1d0661; border-radius: 14px; background: linear-gradient(160deg, #a27cff 0%, #7a3ff5 32%, #6225e6 58%, #4b16c4 100%);
+  box-shadow: inset 0 3px 0 rgb(255 255 255 / .38), inset 0 -5px 9px rgb(30 0 90 / .4), -1px 1px 0 #3d12a6, -2px 2px 0 #360f98, -3px 3px 0 #320e90, -4px 4px 0 #2e0c88, -5px 5px 0 #2a0b80,
+    -9px 11px 14px rgb(0 0 0 / .55), 0 0 26px rgb(139 92 255 / .45);
+  transition: transform .09s ease-out, box-shadow .09s ease-out; -webkit-tap-highlight-color: transparent; }
+.accueil-modes .mode-nom > span:first-child { text-shadow: -1px 1px 0 #3a12a8, -2px 2px 0 #3a12a8, -3px 3px 0 #2d0d8a; }
+.accueil-modes .mode-bouton:active { transform: translate(-4px, 4px) skewX(-15deg); box-shadow: inset 0 3px 0 rgb(255 255 255 / .3), -1px 1px 0 #3d12a6, -2px 2px 0 #2e0c88, -4px 5px 6px rgb(0 0 0 / .55); }
+
+/* Le mode choisi : l'accueil sort en 0,3 s (les modes descendent, le reste s'efface) pendant que le vol part. */
+.accueil--sortie > * { opacity: 0; transition: opacity .3s ease, transform .3s ease; }
+.accueil--sortie .accueil-modes { transform: translateX(-50%) translateY(40px); }
 
 /* Invitation à installer (téléphones) : une carte crème compacte en bas de l'écran, juste au-dessus des crédits
    (deux lignes de 13 px sur téléphone, à 4 px du bas). */
@@ -153,7 +184,8 @@
   display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: 'icone texte bouton' 'icone texte plus'; align-items: center; gap: 2px 10px;
   background: linear-gradient(160deg, #fffdf5, #fff1cf); color: var(--nuit); border: 2px solid #05061a; border-radius: 14px; padding: 9px 10px 8px;
   box-shadow: inset 0 2px 0 #fff, -1px 1px 0 #cbb98a, -2px 2px 0 #c2af80, -3px 3px 0 #b5a274, -4px 4px 0 #a69466, -7px 9px 12px rgb(0 0 0 / .5);
-  transform: translateX(-50%); animation: installer-entree .6s cubic-bezier(.25, .46, .45, 1.54) 2s both; }
+  transform: translateX(-50%); }
+.accueil--visible:not(.accueil--deja) .installer { animation: installer-entree .9s cubic-bezier(.2, .7, .2, 1) .3s backwards; }
 .installer-icone { grid-area: icone; width: 34px; height: 34px; filter: drop-shadow(-2px 2px 0 rgb(143 117 90 / .6)); }
 .installer-texte { grid-area: texte; margin: 0; font: 12.5px/1.3 system-ui, sans-serif; }
 .installer-bouton { grid-area: bouton; font: 13px var(--cartoon); background: var(--jaune); background-image: linear-gradient(160deg, #fbf497 0%, #fce577 30%, #f3d56b 60%, #d6bd5f 100%); color: var(--nuit); border: 2px solid #05061a; border-radius: 9px; padding: 6px 11px; white-space: nowrap; cursor: pointer;
@@ -174,8 +206,10 @@
   .accueil-jouer-face { padding: 9px 28px 11px; }
   .accueil-jouer-texte { font-size: 28px; }
 }
-/* Mouvement réduit : ni respiration, ni reflet, ni chevrons. */
+/* Mouvement réduit : ni respiration, ni reflet, ni chevrons ; les commandes apparaissent sans monter, les panneaux sans glisser. */
 @media (prefers-reduced-motion: reduce) {
+  .accueil--visible:not(.accueil--deja) .accueil-commandes > * { animation-name: accueil-apparait; }
+  .accueil-commandes, .accueil-modes { transition: opacity .25s ease; }
   .accueil-jouer:not(:disabled) .accueil-jouer-3d { animation: none; }
   .accueil-jouer:not(:disabled) .accueil-jouer-face::after, .accueil-jouer:not(:disabled) .chevron { animation: none; }
 }

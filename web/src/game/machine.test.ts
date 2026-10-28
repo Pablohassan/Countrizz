@@ -8,34 +8,28 @@ const countries = JSON.parse(readFileSync('public/data/countries.json', 'utf8'))
 const reduce = createGame(countries);
 const run = (events: GameEvent[], from: GameState = initialState('fr')) => events.reduce(reduce, from);
 
-/** Jusqu'à la première question : premier vol arrivé pendant le décompte. */
+/** Jusqu'à la première question : le premier vol part au choix du mode et arrive à 4 s (plus de 3-2-1, 24/10). */
 const toQuestion: GameEvent[] = [
-  { type: 'PLAY' }, { type: 'CHOOSE_MODE', mode: 'country', seed: 42 },
-  { type: 'COUNTDOWN_TICK', now: 1_000 }, { type: 'ARRIVED', flight: 1, now: 1_500 },
-  { type: 'COUNTDOWN_TICK', now: 2_000 }, { type: 'COUNTDOWN_TICK', now: 3_000 }, { type: 'COUNTDOWN_TICK', now: 4_000 },
+  { type: 'PLAY' }, { type: 'CHOOSE_MODE', mode: 'country', seed: 42 }, { type: 'ARRIVED', flight: 1, now: 4_000 },
 ];
 
 describe('machine d\'états du jeu', () => {
-  it('accueil → mode → 3-2-1 : la première manche est tirée et son vol part pendant le décompte', () => {
+  it('accueil → mode → vol : la première manche est tirée et son vol part tout de suite (le vol tient lieu de 3-2-1)', () => {
     const s = run([{ type: 'PLAY' }, { type: 'CHOOSE_MODE', mode: 'flag', seed: 7 }]);
-    expect(s.screen).toBe('countdown');
-    expect(s.countdown).toBe(3);
+    expect(s.screen).toBe('flight');
+    expect(s.flight).toBe(1);
     expect(s.question?.options).toHaveLength(4);
     expect(s.asked).toEqual([s.question!.cca3]);
   });
 
-  it('premier vol arrivé avant « GO ! » : la question arrive juste après, chrono lancé', () => {
+  it('premier vol arrivé : la question, chrono lancé à l’arrivée', () => {
     const s = run(toQuestion);
     expect(s.screen).toBe('question');
     expect(remainingMs(s.clock, 14_000)).toBe(50_000);
   });
 
-  it('premier vol plus long que le décompte : écran de vol, chrono en pause jusqu\'à l\'arrivée', () => {
-    const s = run([
-      { type: 'PLAY' }, { type: 'CHOOSE_MODE', mode: 'country', seed: 42 },
-      { type: 'COUNTDOWN_TICK', now: 1_000 }, { type: 'COUNTDOWN_TICK', now: 2_000 },
-      { type: 'COUNTDOWN_TICK', now: 3_000 }, { type: 'COUNTDOWN_TICK', now: 4_000 },
-    ]);
+  it('premier vol : chrono arrêté jusqu\'à l\'arrivée, quelle que soit sa durée', () => {
+    const s = run([{ type: 'PLAY' }, { type: 'CHOOSE_MODE', mode: 'country', seed: 42 }]);
     expect(s.screen).toBe('flight');
     expect(remainingMs(s.clock, 9_000)).toBe(60_000);
     const q = reduce(s, { type: 'ARRIVED', flight: 1, now: 9_000 });
@@ -101,8 +95,7 @@ describe('machine d\'états du jeu', () => {
   });
 
   it('arrivée d\'un ancien vol (partie quittée puis relancée pendant le vol) : ignorée', () => {
-    const ticks: GameEvent[] = [1_000, 2_000, 3_000, 4_000].map((now) => ({ type: 'COUNTDOWN_TICK', now }));
-    let s = run([{ type: 'PLAY' }, { type: 'CHOOSE_MODE', mode: 'country', seed: 1 }, ...ticks]);
+    let s = run([{ type: 'PLAY' }, { type: 'CHOOSE_MODE', mode: 'country', seed: 1 }]);
     expect([s.screen, s.flight]).toEqual(['flight', 1]);
     s = run([{ type: 'QUIT' }, { type: 'PLAY' }, { type: 'CHOOSE_MODE', mode: 'country', seed: 2 }], s);
     expect(s.flight).toBe(2);
@@ -114,7 +107,7 @@ describe('machine d\'états du jeu', () => {
   it('Rejouer depuis l\'écran des scores, dans le mode de l\'onglet ; sans mode connu : rien', () => {
     const sc = run([{ type: 'SHOW_SCORES' }]);
     const g = reduce(sc, { type: 'REPLAY', seed: 5, mode: 'capital' });
-    expect([g.screen, g.mode, g.seed]).toEqual(['countdown', 'capital', 5]);
+    expect([g.screen, g.mode, g.seed]).toEqual(['flight', 'capital', 5]);
     expect(reduce(sc, { type: 'REPLAY', seed: 5 })).toBe(sc);
   });
 
@@ -124,14 +117,14 @@ describe('machine d\'états du jeu', () => {
     expect(s.lang).toBe('en');
   });
 
-  it('fin : Rejouer (nouvelle graine, même mode), Changer de mode, Scores puis Retour à la fin', () => {
+  it('fin : Rejouer (nouvelle graine, même mode), Changer de mode, Scores puis Retour à l\'accueil (la fin ne se rejoue pas)', () => {
     const end = reduce(run(toQuestion), { type: 'TICK', now: 64_000 });
     const again = reduce(end, { type: 'REPLAY', seed: 99 });
-    expect([again.screen, again.mode, again.seed, again.tally.rounds.length, again.asked.length]).toEqual(['countdown', 'country', 99, 0, 1]);
+    expect([again.screen, again.mode, again.seed, again.tally.rounds.length, again.asked.length]).toEqual(['flight', 'country', 99, 0, 1]);
     expect(reduce(end, { type: 'CHANGE_MODE' }).screen).toBe('mode');
     const scores = reduce(end, { type: 'SHOW_SCORES' });
     expect(scores.screen).toBe('scores');
-    expect(reduce(scores, { type: 'BACK' }).screen).toBe('end');
+    expect(reduce(scores, { type: 'BACK' }).screen).toBe('home');
   });
 
   it('accueil : langue changeable, Scores puis Retour à l\'accueil ; Retour depuis le choix du mode', () => {

@@ -5,10 +5,9 @@ import { emptyTally, GAME_MS, recordAnswer, type Tally } from './rules';
 import type { DrawCountry, Lang, Mode, Question } from './types';
 
 /** Écrans du parcours (spec 2A §2) ; « À propos », erreurs et « Tourne ton téléphone » sont des calques de l'interface. */
-export type Screen = 'home' | 'mode' | 'countdown' | 'flight' | 'question' | 'reveal' | 'end' | 'scores';
+export type Screen = 'home' | 'mode' | 'flight' | 'question' | 'reveal' | 'end' | 'scores';
 
 export const REVEAL_MS = 1500;
-export const COUNTDOWN_FROM = 3;
 
 export interface GameState {
   screen: Screen;
@@ -24,14 +23,10 @@ export interface GameState {
   streak: number;
   tally: Tally;
   clock: Clock;
-  /** 3, 2, 1, puis 0 = « GO ! ». */
-  countdown: number;
   /** Le vol de la manche en cours est arrivé. */
   arrived: boolean;
   /** Réponse choisie, pendant la révélation. */
   picked: number | null;
-  /** Écran d'où l'on est venu aux scores (accueil ou fin). */
-  scoresFrom: 'home' | 'end' | null;
   /** Numéro du vol en cours, croissant d'une partie à l'autre (Quitter compris) : ARRIVED doit le rappeler. */
   flight: number;
 }
@@ -42,7 +37,6 @@ export type GameEvent =
   | { type: 'BACK' }
   | { type: 'SHOW_SCORES' }
   | { type: 'CHOOSE_MODE'; mode: Mode; seed: number }
-  | { type: 'COUNTDOWN_TICK'; now: number }
   | { type: 'ARRIVED'; flight: number; now: number }
   | { type: 'ANSWER'; index: number; now: number }
   | { type: 'REVEAL_DONE'; now: number }
@@ -55,10 +49,10 @@ export type GameEvent =
 
 export const initialState = (lang: Lang): GameState => ({
   screen: 'home', lang, mode: null, seed: 0, rngState: 0, asked: [], question: null, streak: 0,
-  tally: emptyTally(), clock: createClock(GAME_MS), countdown: COUNTDOWN_FROM, arrived: false, picked: null, scoresFrom: null, flight: 0,
+  tally: emptyTally(), clock: createClock(GAME_MS), arrived: false, picked: null, flight: 0,
 });
 
-const IN_GAME: readonly Screen[] = ['countdown', 'flight', 'question', 'reveal'];
+const IN_GAME: readonly Screen[] = ['flight', 'question', 'reveal'];
 
 /**
  * Manche suivante, telle que `REVEAL_DONE` la tirera : connue dès la révélation (la réponse a fixé la série), ce qui laisse
@@ -73,14 +67,17 @@ export function drawNext(countries: DrawCountry[], s: GameState): { question: Qu
 
 /** `gameMs` : durée nette d'une partie (60 s ; plus courte seulement par le crochet `?partie=` des e2e). */
 export function createGame(countries: DrawCountry[], gameMs: number = GAME_MS): (s: GameState, e: GameEvent) => GameState {
-  /** Nouvelle partie : première manche tirée, son vol part pendant le 3-2-1 (chrono pas encore lancé, cause « vol »). */
+  /**
+   * Nouvelle partie : première manche tirée, son vol part tout de suite ; il tient lieu de 3-2-1 (retiré le 24/10 : il
+   * doublait le vol, chacun sur son horloge). Chrono pas encore lancé, en pause « vol » : il démarre à l'arrivée.
+   */
   function newGame(s: GameState, mode: Mode, seed: number): GameState {
     const rng = createRng(seed);
     const question = drawQuestion(countries, new Set(), 0, mode, s.lang, rng);
     if (!question) throw new Error('jeu : aucun pays à demander');
     return {
-      ...s, screen: 'countdown', mode, seed, rngState: rng.state, asked: [question.cca3], question, streak: 0,
-      tally: emptyTally(), clock: createClock(gameMs, ['flight']), countdown: COUNTDOWN_FROM, arrived: false, picked: null,
+      ...s, screen: 'flight', mode, seed, rngState: rng.state, asked: [question.cca3], question, streak: 0,
+      tally: emptyTally(), clock: createClock(gameMs, ['flight']), arrived: false, picked: null,
       flight: s.flight + 1,
     };
   }
@@ -92,23 +89,19 @@ export function createGame(countries: DrawCountry[], gameMs: number = GAME_MS): 
       case 'PLAY':
         return s.screen === 'home' ? { ...s, screen: 'mode' } : s;
       case 'SHOW_SCORES':
-        return s.screen === 'home' || s.screen === 'end' ? { ...s, screen: 'scores', scoresFrom: s.screen } : s;
+        return s.screen === 'home' || s.screen === 'end' ? { ...s, screen: 'scores' } : s;
       case 'BACK':
         if (s.screen === 'mode') return { ...s, screen: 'home' };
-        if (s.screen === 'scores') return { ...s, screen: s.scoresFrom ?? 'home', scoresFrom: null };
+        // des scores, toujours l'accueil : y revenir par la fin la rejouait (tampon compris), sans rien apporter (24/10)
+        if (s.screen === 'scores') return { ...s, screen: 'home' };
         return s;
       case 'CHOOSE_MODE':
         return s.screen === 'mode' ? newGame(s, e.mode, e.seed) : s;
-      case 'COUNTDOWN_TICK': {
-        if (s.screen !== 'countdown') return s;
-        if (s.countdown > 0) return { ...s, countdown: s.countdown - 1 };
-        return { ...s, clock: startClock(s.clock, e.now), screen: s.arrived ? 'question' : 'flight' };
-      }
       case 'ARRIVED':
         if (e.flight !== s.flight) return s; // un vol remplacé (partie quittée, manche suivante) n'arrive plus
-        if (s.screen === 'countdown' && !s.arrived) return { ...s, arrived: true, clock: resumeClock(s.clock, 'flight', e.now) };
         if (s.screen !== 'flight') return s;
-        return { ...s, screen: 'question', arrived: true, clock: resumeClock(s.clock, 'flight', e.now) };
+        // le premier vol arrivé lance le chrono ; les suivants le reprennent
+        return { ...s, screen: 'question', arrived: true, clock: resumeClock(startClock(s.clock, e.now), 'flight', e.now) };
       case 'ANSWER': {
         if (s.screen !== 'question' || !s.question || !Number.isInteger(e.index) || e.index < 0 || e.index > 3) return s;
         // Réponse arrivée après zéro (TICK pas encore reçu) : la question en cours n'est pas comptée.
@@ -143,7 +136,7 @@ export function createGame(countries: DrawCountry[], gameMs: number = GAME_MS): 
       case 'REPLAY': {
         // Depuis la fin (même mode) ou l'écran des scores (mode de l'onglet ouvert).
         const mode = e.mode ?? s.mode;
-        return (s.screen === 'end' || s.screen === 'scores') && mode ? newGame({ ...s, scoresFrom: null }, mode, e.seed) : s;
+        return (s.screen === 'end' || s.screen === 'scores') && mode ? newGame(s, mode, e.seed) : s;
       }
       case 'CHANGE_MODE':
         return s.screen === 'end' ? { ...s, screen: 'mode' } : s;

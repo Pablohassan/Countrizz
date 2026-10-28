@@ -6,7 +6,6 @@ export const fr: Messages = {
   home: { yourName: 'Ton nom', defaultName: 'Globetrotteur', play: 'Jouer', scores: 'Scores', about: 'À propos', language: 'Langue', soon: 'Bientôt', later: 'Plus tard' },
   intro: { skip: 'Passer ›', videoLabel: 'Countrizz : une Terre en pâte à modeler tombe du ciel et montre la France' },
   mode: { back: '‹ Retour', player: 'Joueur :', choose: 'Choisis ton mode', record: 'Record', new: 'Nouveau' },
-  countdown: { go: 'GO !' },
   hud: { quit: 'Quitter', score: 'Score', secondsLeft: { one: '{seconds} seconde restante', other: '{seconds} secondes restantes' }, paused: 'Partie en pause' },
   reveal: { label: '{country} · {capital}', correct: 'Bonne réponse : {answer}', wrong: 'Raté : c’était {answer}' },
   end: {

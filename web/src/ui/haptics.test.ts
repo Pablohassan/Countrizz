@@ -16,7 +16,7 @@ describe('haptique (spec 2A §7, prototype haptique.js)', () => {
   it('les motifs du prototype, en ms', () => {
     expect(PATTERNS).toEqual({
       press: [9], release: [4], correct: [14, 60, 22], wrong: [70, 25, 8, 2, 8, 2, 8, 2, 8, 25, 140],
-      countdown: [18], go: [45], record: [20, 40, 20, 40, 20, 40, 90],
+      go: [45], record: [20, 40, 20, 40, 20, 40, 90],
     });
   });
 

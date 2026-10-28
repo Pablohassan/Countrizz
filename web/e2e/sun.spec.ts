@@ -5,7 +5,8 @@ import type { BackendName } from './sdf-check';
 // Caméra en (5, 0, 0), regard vers l'origine, 960 × 600, champ vertical 50° : la Terre couvre asin(1/5) = 11,5° autour du
 // centre (limbe haut à y ≈ 169). Soleil à 40 rayons dans la direction (−0,957 ; 0,290 ; 0), soit lng 180°, lat 16,86° :
 // vu de la caméra, 15° au-dessus du centre → y = 300 − tan 15° / tan 25° × 300 ≈ 128, juste au-dessus du limbe.
-const SUNRISE = 'mode=game&at=0,0&alt=4&sun=180,16.86';
+// Fond noir (`noir`) : sans post-traitement, le fond nuit ne passe pas par la chaîne du jeu et éclaircit le halo mesuré.
+const SUNRISE = 'mode=game&at=0,0&alt=4&sun=180,16.86&noir';
 const sum = (p: number[]) => p[0]! + p[1]! + p[2]!;
 
 for (const backend of ['webgpu', 'webgl2'] as BackendName[]) {

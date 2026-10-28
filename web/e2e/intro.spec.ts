@@ -277,7 +277,7 @@ test('« Passer › » saute à la fin : accueil, fondu, intro démontée', asyn
 
 test.describe('écran plus allongé que la vidéo (Pixel 9, 412 × 915)', () => {
   test.use({ viewport: { width: 412, height: 915 } });
-  test('fondu : le titre de l’accueil posé sur celui de la vidéo (un seul « o »), puis à sa place', async ({ page }) => {
+  test('fondu : le titre de l’accueil posé sur celui de la vidéo (un seul « o »), et il y reste', async ({ page }) => {
     // la vidéo, agrandie pour couvrir cet écran, montre son titre 8 % plus grand et 12 px plus bas que celui de l'accueil :
     // le fondu montrait deux « C » et deux Terres (24/10)
     await page.goto(`/?webgl&introVariante=${VARIANTE.portrait}`);
@@ -286,10 +286,11 @@ test.describe('écran plus allongé que la vidéo (Pixel 9, 412 × 915)', () => 
     await page.waitForFunction(() => !!document.querySelector('.intro--fondu'), null, { timeout: 180_000 });
     const rond = () => page.locator('.accueil .logo-terre').evaluate((e) => { const r = e.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2, r.width / 2]; });
     const o = oDuTitre('portrait', { width: 412, height: 915 });
-    await expect.poll(async () => (await rond()).map((v, i) => Math.abs(v - [o.x, o.y, o.r][i]!) < 0.5), { timeout: 5_000 }).toEqual([true, true, true]);
+    await expect.poll(async () => (await rond()).map((v, i) => Math.abs(v - [o.x, o.y, o.r][i]!) < 0.5), { timeout: 30_000 }).toEqual([true, true, true]);   // SwiftShader : le rendu du fondu peut tarder
     await expect(page.locator('.intro')).toHaveCount(0, { timeout: 180_000 });
-    // la vidéo effacée, le titre glisse à sa place
-    await expect.poll(() => accueil(page).evaluate((e) => getComputedStyle(e).transform), { timeout: 10_000 }).toBe('none');
+    // la vidéo effacée, le titre ne bouge plus (écart faible : un téléphone, garderRecalage, 24/10)
+    await page.waitForTimeout(1_200);   // au-delà des 0,8 s d'un glissé
+    expect((await rond()).map((v, i) => Math.abs(v - [o.x, o.y, o.r][i]!) < 0.5)).toEqual([true, true, true]);
   });
 });
 
@@ -383,7 +384,7 @@ test('code du globe introuvable (D15) : le fondu part quand même, « Réessayer
   await expect(page.getByRole('button', { name: /Réessayer|Try again/ })).toBeVisible();
 });
 
-test('titre de l’accueil (D5) : invisible sous la vidéo jusqu’au fondu, puis en fondu ; la petite Terre repart à l’angle de la vidéo', async ({ page }) => {
+test('titre de l’accueil (D5) : invisible sous la vidéo jusqu’au fondu, puis posé d’un coup sur le sien ; la petite Terre repart à l’angle de la vidéo', async ({ page }) => {
   let release!: () => void;
   const gate = new Promise<void>((r) => { release = r; });
   await page.route('**/textures/day-*.ktx2', async (route) => { await gate; await route.continue(); });
@@ -399,8 +400,8 @@ test('titre de l’accueil (D5) : invisible sous la vidéo jusqu’au fondu, pui
   expect(await titre.locator('.logo-l').first().evaluate((e) => getComputedStyle(e).animationName)).toBe('none'); // ses lettres ne surgissent pas
   release();
   await expect(titre).toHaveClass(/\blogo-titre--visible\b/, { timeout: 180_000 });
-  // en fondu, au rythme de la vidéo qui s'efface (FIN − FONDU), jusqu'à l'opacité pleine
-  expect(await style()).toMatchObject({ animation: 'logo-fondu', duree: expect.closeTo(INTRO.FIN - INTRO.FONDU, 2) });
+  // d'un coup, 0,35 s après le début du fondu (le titre de la vidéo complet ; un fondu croisé pâlissait, 24/10)
+  expect(await style()).toMatchObject({ animation: 'logo-pose', duree: expect.closeTo(0.35, 2) });
   await expect.poll(async () => (await style()).opacite, { timeout: 10_000 }).toBe(1);
   // « Passer » : la vidéo est sur sa dernière image, la petite Terre part de son angle (LOGO_ANGLE_FIN)
   // planche en grille : la ligne et la planche (::before) partent du même --delai (23/10)

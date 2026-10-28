@@ -56,9 +56,7 @@ for (const [cadrage, options] of CADRAGES) {
       await shot(page, `fin-${cadrage}`);
       await page.getByRole('button', { name: 'Scores' }).click();
       await shot(page, `scores-${cadrage}`);
-      await page.getByRole('button', { name: '‹ Retour' }).click();
-      await page.getByRole('button', { name: 'Changer de mode' }).click();
-      await page.getByRole('button', { name: '‹ Retour' }).click();
+      await page.getByRole('button', { name: '‹ Retour' }).click();   // des scores, l'accueil (24/10)
       await page.getByRole('button', { name: 'À propos' }).click();
       await shot(page, `apropos-${cadrage}`);
     });

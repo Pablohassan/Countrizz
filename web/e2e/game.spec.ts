@@ -8,12 +8,13 @@ import { answer, credit, gameState, openHome, startGame } from './game-helpers';
 test.slow(true, 'SwiftShader : vols et globe lents');
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, locale: 'fr-FR' });
 
-test('partie complète en mode Pays, téléphone, français : 3-2-1, questions, révélation, fin, scores', async ({ page }) => {
+test('partie complète en mode Pays, téléphone, français : premier vol, questions, révélation, fin, scores', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   await openHome(page, '&partie=20000&graine=42');   // 20 s nettes : sous SwiftShader, un clic attend plusieurs images du globe
   await startGame(page, /Pays/);
-  await expect(page.locator('.decompte-n')).toHaveText('3');
+  expect((await gameState(page)).screen).toBe('flight');   // plus de 3-2-1 : le vol part au choix du mode (24/10)
+  await expect(page.locator('.jeu-bas--cache')).toHaveCount(1);   // la grille attend l'arrivée
   await expect(page.locator('.hud-sec--pause')).toContainText('❚❚');
   await expect(credit(page)).toBeVisible();
   expect(await answer(page, true)).toBe(true);
@@ -33,18 +34,19 @@ test('partie complète en mode Pays, téléphone, français : 3-2-1, questions, 
   await page.getByRole('button', { name: 'Scores' }).click();
   await expect(page.locator('.scores-ligne--toi')).toContainText('· toi');
   await expect(page.getByRole('tab', { name: 'Pays' })).toHaveAttribute('aria-selected', 'true');
-  await page.getByRole('button', { name: '‹ Retour' }).click();
-  await page.getByRole('button', { name: 'Changer de mode' }).click();
-  await expect(page.locator('.mode-bouton')).toHaveCount(3);
-  await page.getByRole('button', { name: '‹ Retour' }).click();
+  await page.getByRole('button', { name: '‹ Retour' }).click();   // des scores, l'accueil (24/10)
   await expect(page.locator('.accueil .accueil-titre')).toBeVisible();
+  await page.getByRole('button', { name: /^(Jouer|Play)/ }).click();
+  await expect(page.locator('.accueil--choix .mode-bouton')).toHaveCount(3);
+  await page.getByRole('button', { name: '‹ Retour' }).click();
+  await expect(page.getByRole('button', { name: /^(Jouer|Play)/ })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
-test('quitter pendant le 3-2-1 : retour à l’accueil, le vol abandonné n’amène aucune question', async ({ page }) => {
+test('quitter pendant le premier vol : retour à l’accueil, le vol abandonné n’amène aucune question', async ({ page }) => {
   await openHome(page, '&graine=7');
   await startGame(page, /Drapeau/);
-  await expect(page.locator('.decompte-n')).toBeVisible();
+  expect((await gameState(page)).screen).toBe('flight');
   await page.getByRole('button', { name: 'Quitter' }).click();
   await expect(page.locator('.accueil .accueil-titre')).toBeVisible();
   await page.waitForTimeout(5_000);
@@ -168,14 +170,14 @@ async function creditFree(page: Page, where: string) {
   expect(free, where).toBe(true);
 }
 
-test('crédit EOX jamais recouvert : accueil, mode, 3-2-1, question, révélation, fin, scores, À propos', async ({ page }) => {
+test('crédit EOX jamais recouvert : accueil, mode, premier vol, question, révélation, fin, scores, À propos', async ({ page }) => {
   await openHome(page, '&partie=20000&graine=8');   // le temps de relever chaque écran ; la 2e question, sans réponse, finit la partie
   await creditFree(page, 'accueil');
   await page.getByRole('button', { name: /^(Jouer|Play)/ }).click();
   await creditFree(page, 'mode');
   await page.locator('.mode-bouton', { hasText: /Pays/ }).click();
-  await expect(page.locator('.decompte-n')).toBeVisible();
-  await creditFree(page, '3-2-1');
+  expect((await gameState(page)).screen).toBe('flight');
+  await creditFree(page, 'premier vol');
   await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
   await creditFree(page, 'question');
   await answer(page, true);
@@ -184,9 +186,7 @@ test('crédit EOX jamais recouvert : accueil, mode, 3-2-1, question, révélatio
   await creditFree(page, 'fin');
   await page.getByRole('button', { name: 'Scores' }).click();
   await creditFree(page, 'scores');
-  await page.getByRole('button', { name: '‹ Retour' }).click();
-  await page.getByRole('button', { name: 'Changer de mode' }).click();
-  await page.getByRole('button', { name: '‹ Retour' }).click();
+  await page.getByRole('button', { name: '‹ Retour' }).click();   // des scores, l'accueil
   await page.getByRole('button', { name: 'À propos' }).click();
   await creditFree(page, 'À propos');
 });
@@ -197,6 +197,8 @@ test('360 × 640 : rien ne déborde, la grille reste au-dessus du crédit', asyn
   await startGame(page, /Pays/);
   await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360);
+  // la grille monte à la première question (0,3 s) : mesurée à sa place
+  await page.locator('.jeu-bas').evaluate((e) => Promise.all(e.getAnimations({ subtree: true }).map((x) => x.finished)));
   const grille = (await page.locator('.reponses').boundingBox())!;
   const c = (await credit(page).boundingBox())!;
   expect(grille.y + grille.height).toBeLessThanOrEqual(c.y);
@@ -244,7 +246,7 @@ test.describe('bureau, mise en page', () => {
     expect((await box(page.locator('.apropos-bloc'))).width).toBeLessThanOrEqual(480);
     await page.getByRole('button', { name: '‹ Retour' }).click();
     await page.getByRole('button', { name: /^(Jouer|Play)/ }).click();
-    expect((await box(page.locator('.mode-liste'))).width).toBeLessThanOrEqual(480);
+    expect((await box(page.locator('.accueil-modes'))).width).toBeLessThanOrEqual(480);
     await page.locator('.mode-bouton', { hasText: /Drapeau/ }).click();
     await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
     for (const b of await page.locator('.reponse-drapeau').all()) {
@@ -334,7 +336,7 @@ test.describe('haptique, par espion', () => {
     await startGame(page, /Pays/);
     await answer(page, false);
     const vib = await page.evaluate(() => (window as unknown as { __vib: number[][] }).__vib);
-    expect(vib.slice(0, 4)).toEqual([[18], [18], [18], [45]]);
+    expect(vib[0]).toEqual([45]);   // « go » à la première question (le vol tient lieu de 3-2-1)
     expect(vib).toContainEqual([9]);
     expect(vib).toContainEqual([70, 25, 8, 2, 8, 2, 8, 2, 8, 25, 140]);
   });
@@ -342,11 +344,11 @@ test.describe('haptique, par espion', () => {
 
 test.describe('mouvement réduit', () => {
   test.use({ reducedMotion: 'reduce' });
-  test('3-2-1 et tampon « Nouveau record ! » immobiles', async ({ page }) => {
+  test('grille sans montée et tampon « Nouveau record ! » immobile', async ({ page }) => {
     await openHome(page, '&partie=20000&graine=2');   // une bonne réponse le temps de cliquer, puis la question suivante finit la partie
     await startGame(page, /Pays/);
-    await expect(page.locator('.decompte-n')).toBeVisible();
-    expect(await page.locator('.decompte-n').evaluate((e) => getComputedStyle(e).animationName)).toBe('none');
+    await page.waitForFunction(() => window.__game?.state.screen === 'question', null, { timeout: 120_000 });
+    expect(await page.locator('.jeu-bas--monte > .reponses').evaluate((e) => getComputedStyle(e).animationName)).toBe('none');
     expect(await answer(page, true)).toBe(true);
     await expect(page.locator('.fin-tampon')).toBeVisible({ timeout: 120_000 });
     expect(await page.locator('.fin-tampon').evaluate((e) => getComputedStyle(e).animationName)).toBe('none');

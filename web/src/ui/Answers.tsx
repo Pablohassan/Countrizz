@@ -7,6 +7,11 @@ import { isLongLabel } from './answerLabel';
 import { flagSize, SHAPED_FLAGS } from './flagSize';
 
 export type AnswerState = 'idle' | 'ok' | 'ko' | 'dim';
+/**
+ * La grille (mise en scène du 24/10) : `cache` au premier vol (elle monte à l'arrivée), `vol` entre deux questions (en
+ * place, estompée, inerte, sans les libellés de la manche suivante : le chrono est arrêté), `actif` le reste du temps.
+ */
+export type GridState = 'cache' | 'vol' | 'actif';
 const CLASS: Record<AnswerState, string> = { idle: '', ok: 'ok', ko: 'ko', dim: 'estompe' };
 
 /** R3 : pendant la question tout est « idle » ; à la révélation, le bon en vert, le choix faux en rouge, les autres estompés. */
@@ -22,8 +27,10 @@ interface Props {
   m: Messages; lang: Lang; mode: Mode; question: Question; records: ReadonlyMap<string, CountryRecord>;
   /** Réponse choisie pendant la révélation, sinon `null`. */
   picked: number | null;
-  /** 3-2-1 et vol : question et grille gardent leur place (la zone libre se mesure) mais restent cachées et inertes. */
-  hidden: boolean;
+  /** Question et grille gardent toujours leur place (la zone libre se mesure) ; voir `GridState`. */
+  etat: GridState;
+  /** Première question de la partie : la grille monte (elle était cachée pendant le premier vol). */
+  monte?: boolean;
   onAnswer(index: number): void; onPress(): void; onRelease(): void;
 }
 
@@ -47,13 +54,14 @@ function FlagSticker({ src, w, h, shaped, name, revealed }: { src: string; w: nu
 }
 
 /** La question juste au-dessus de la grille 2×2 (D1), boutons violets inclinés (D2) ou drapeaux autocollants (D3). */
-export function Answers({ ref, m, lang, mode, question, records, picked, hidden, onAnswer, onPress, onRelease }: Props) {
+export function Answers({ ref, m, lang, mode, question, records, picked, etat, monte = false, onAnswer, onPress, onRelease }: Props) {
   const states = answerStates(question, picked);
   const recs = question.options.map((c) => records.get(c)!);
-  const locked = picked !== null || hidden;
+  const locked = picked !== null || etat !== 'actif';
+  const vol = etat === 'vol';
   const press = { onPointerDown: onPress, onPointerUp: onRelease };
   return (
-    <div ref={ref} className={`jeu-bas${hidden ? ' jeu-bas--cache' : ''}`}>
+    <div ref={ref} className={`jeu-bas${etat === 'cache' ? ' jeu-bas--cache' : vol ? ' jeu-bas--vol' : monte ? ' jeu-bas--monte' : ''}`}>
       <h2 className="jeu-question">{m.prompts[mode]}</h2>
       {mode === 'flag' ? (
         <div className="reponses reponses--drapeaux">
@@ -65,7 +73,7 @@ export function Answers({ ref, m, lang, mode, question, records, picked, hidden,
               <button key={r.cca3} type="button" disabled={locked} aria-label={`${m.modes.flag} ${i + 1}`}
                 className={`reponse-drapeau${st !== 'idle' ? ` reponse-drapeau--${CLASS[st]}` : ''}`}
                 style={{ '--w': `${w}px`, '--h': `${h}px` } as CSSProperties} {...press} onClick={() => onAnswer(i)}>
-                <FlagSticker src={`/data/${r.flag}`} w={w} h={h} shaped={SHAPED_FLAGS.has(r.cca3)} name={r.name[lang]} revealed={st === 'ok' || st === 'ko'} />
+                {!vol && <FlagSticker src={`/data/${r.flag}`} w={w} h={h} shaped={SHAPED_FLAGS.has(r.cca3)} name={r.name[lang]} revealed={st === 'ok' || st === 'ko'} />}
                 <span className="reponse-touche" aria-hidden="true">{i + 1}</span>
                 <Badge state={st} />
               </button>
@@ -75,7 +83,7 @@ export function Answers({ ref, m, lang, mode, question, records, picked, hidden,
       ) : (
         <div className="reponses">
           {recs.map((r, i) => {
-            const label = optionLabel(r, mode, lang);
+            const label = vol ? '\u00a0' : optionLabel(r, mode, lang);
             const st = states[i]!;
             return (
               <button key={r.cca3} type="button" disabled={locked} {...press} onClick={() => onAnswer(i)}

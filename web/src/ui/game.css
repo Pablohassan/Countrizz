@@ -7,7 +7,9 @@
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* HUD H2 (D10) */
-.hud { position: absolute; top: calc(54px + env(safe-area-inset-top, 0px)); left: 16px; right: 16px; }
+.hud { position: absolute; top: calc(54px + env(safe-area-inset-top, 0px)); left: 16px; right: 16px; animation: hud-descend .3s cubic-bezier(.2, .7, .2, 1) both; }
+/* Le HUD descend quand la partie part (le vol tient lieu de 3-2-1, mise en scène du 24/10). */
+@keyframes hud-descend { from { opacity: 0; transform: translateY(-24px); } }
 .hud-l1 { display: flex; align-items: center; gap: 13px; }
 .hud-quitter { flex: none; width: 42px; height: 42px; padding: 0; border-radius: 50%; background: var(--nuit); color: var(--jaune); border: 2px solid #000; box-shadow: 3px 3px 0 #000; display: grid; place-items: center; font: 16px var(--cartoon); cursor: pointer; }
 .hud-sec { min-width: 57px; color: var(--jaune); font-size: 26px; text-shadow: 4px 3px 1px #000; font-variant-numeric: tabular-nums; }
@@ -23,20 +25,18 @@
 .hud-jauge--urgent > i { background: #e8413a; animation: hud-clign 1s steps(2) infinite; }
 @keyframes hud-clign { 50% { opacity: .55; } }
 
-/* 3-2-1 C1 (D11) : chaque chiffre surgit, tient, puis s'envole en grossissant ; « GO ! » dans le pavé violet. */
-.decompte { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
-.decompte > * { grid-area: 1 / 1; animation: decompte 1s linear both; }
-.decompte-n { font-size: 195px; line-height: 1; color: var(--jaune); text-shadow: -12px 8px 3px rgb(11, 13, 15); -webkit-text-stroke: 4px #000; }
-.decompte-go { font-size: 83px; color: #fff; background: var(--violet); border: 4px solid #000; box-shadow: 10px 10px 0 #000; padding: 8px 34px 13px; animation-name: decompte-go; }
-@keyframes decompte { 0% { opacity: 0; transform: scale(.3); } 18% { opacity: 1; transform: scale(1.18); } 35% { transform: scale(1); } 84% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.7); } }
-@keyframes decompte-go { 0% { opacity: 0; transform: scale(.3) rotate(-8deg); } 18% { opacity: 1; transform: scale(1.15) rotate(-4deg); } 35% { transform: scale(1) rotate(-4deg); } 80% { opacity: 1; transform: scale(1) rotate(-4deg); } 100% { opacity: 0; transform: scale(1.4) rotate(-4deg); } }
-
 /* Question et grille (D1, D2), sous le voile ; le crédit EOX garde sa ligne en dessous (padding bas). */
 .jeu-bas { position: absolute; left: 16px; right: 16px; bottom: 0; padding-bottom: calc(34px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 12px; }
 .jeu-bas--cache > * { visibility: hidden; }
+/* Entre deux questions, la grille reste en place, estompée ; à l'arrivée elle se rallume (mise en scène du 24/10). */
+.jeu-bas--vol .reponse, .jeu-bas--vol .reponse-drapeau { opacity: .35; }
+.reponse-drapeau { transition: opacity .25s; }
+/* Première question : la grille monte (elle était cachée pendant le premier vol). */
+.jeu-bas--monte > * { animation: jeu-monte .3s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes jeu-monte { from { opacity: 0; transform: translateY(24px); } }
 .jeu-question { margin: 0; text-align: center; color: var(--jaune); font: 19px var(--cartoon); text-shadow: 4px 2px 1px #000; }
 .reponses { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
-.reponse { position: relative; min-height: 56px; padding: 4px 10px; background: var(--violet); color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; transform: skewX(-15deg); display: grid; place-items: center; font: 15px/1.15 var(--cartoon); text-align: center; cursor: pointer; transition: translate .06s, box-shadow .06s; }
+.reponse { position: relative; min-height: 56px; padding: 4px 10px; background: var(--violet); color: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; transform: skewX(-15deg); display: grid; place-items: center; font: 15px/1.15 var(--cartoon); text-align: center; cursor: pointer; transition: translate .06s, box-shadow .06s, opacity .25s; }
 .reponse > span { display: block; transform: skewX(15deg); }
 .reponse--long { font-size: 12px; }
 .reponse:active:not(:disabled) { translate: 4px 4px; box-shadow: 2px 2px 0 #000; }
@@ -104,5 +104,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .decompte > *, .hud-plus, .hud-jauge--urgent > i, .reponse--ko, .reponse-drapeau--ko { animation: none; }
+  .hud, .hud-plus, .hud-jauge--urgent > i, .reponse--ko, .reponse-drapeau--ko, .jeu-bas--monte > * { animation: none; }
 }

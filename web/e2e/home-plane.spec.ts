@@ -52,6 +52,6 @@ test('mouvement réduit : l’avion figé entre Paris et Athènes, trois bulles,
 
 test('repères : cinq posés sur le globe, le drapeau planté de Paris visible', async ({ page }) => {
   await openHome(page);
-  await expect(page.locator('.reperes .mk')).toHaveCount(5);
+  await expect(page.locator('.reperes .mk')).toHaveCount(5, { timeout: 30_000 });   // l'avion et ses repères arrivent avec le code du globe
   await page.waitForFunction(() => Number(getComputedStyle(document.querySelector('.mk--paris')!).opacity) > 0.5, null, { timeout: 30_000 });
 });

@@ -11,7 +11,6 @@ export interface Messages {
   /** `videoLabel` : la vidéo pour les lecteurs d'écran (les questions, décoratives, prennent `modes.*` : intro/questions.ts). */
   intro: { skip: string; videoLabel: string };
   mode: { back: string; player: string; choose: string; record: string; new: string };
-  countdown: { go: string };
   hud: { quit: string; score: string; secondsLeft: Plural; paused: string };
   reveal: { label: string; correct: string; wrong: string };
   end: { timeUp: string; modeLine: string; newRecord: string; points: Plural; correctOf: Plural; previousRecord: string; replay: string; changeMode: string; scores: string; notSaved: string };

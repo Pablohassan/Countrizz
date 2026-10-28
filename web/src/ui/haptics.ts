@@ -5,12 +5,12 @@ import { isIos } from '../pwa/install';
  * essayé par l'utilisateur le 05/10). Les motifs ne vivent qu'ici : le réglage fin au doigt, après la 2A sur countrizz.fr,
  * ne touche que ce tableau (spec §13.1).
  */
-export type HapticEvent = 'press' | 'release' | 'correct' | 'wrong' | 'countdown' | 'go' | 'record';
+export type HapticEvent = 'press' | 'release' | 'correct' | 'wrong' | 'go' | 'record';
 
 /** Motifs (ms : vibration, pause, vibration…) ; la mauvaise réponse : choc, grondement haché, long retour de force. */
 export const PATTERNS: Readonly<Record<HapticEvent, readonly number[]>> = {
   press: [9], release: [4], correct: [14, 60, 22], wrong: [70, 25, 8, 2, 8, 2, 8, 2, 8, 25, 140],
-  countdown: [18], go: [45], record: [20, 40, 20, 40, 20, 40, 90],
+  go: [45], record: [20, 40, 20, 40, 20, 40, 90],
 };
 
 /** Ce que sait l'appareil : vibrer (Android), « tic » du système (iPhone, iOS 18+), ou rien (ordinateur). */

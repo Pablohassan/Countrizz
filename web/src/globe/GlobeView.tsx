@@ -26,6 +26,7 @@ import { createProgress } from './loading';
 import { cachesReady } from '../pwa/cache';
 import { createPostProcessing, postOptions } from './postprocessing';
 import { installPhysicalSky, physicalSkyOf, setKeep } from './physicalSky';
+import { fondNuit } from './nuit';
 import { float } from 'three/tsl';
 import { createRenderer, qualityTier, type Backend, type QualityTier } from './renderer';
 import { lookAt } from './reveal';
@@ -381,6 +382,12 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     }, (e: unknown) => console.warn('repli 4K : jour et nuit non chargés, la 8K reste', e));
     return () => { alive = false; };
   }, [tier, globe, renderer]);
+
+  // Ciel : la nuit de la vidéo et de l'interface (nuit.ts), calculée pour la chaîne de l'image de ce renderer (balance des
+  // blancs de l'atmosphère physique en WebGPU) : au fondu de l'intro, le fond ne change plus de couleur (24/10).
+  useEffect(() => {
+    scene.background = new THREE.Color().setRGB(...fondNuit(physicalSkyOf(renderer)?.calibration.whiteBalance), THREE.LinearSRGBColorSpace);
+  }, [scene, renderer]);
 
   // Accessoires (avion de l'accueil) : un hôte par scène, donc par renderer ; recréés après une perte du GPU.
   const host = useMemo(() => createAccessoryHost(scene, { unveil: (m) => setKeep(m, float(1)) }), [scene]);

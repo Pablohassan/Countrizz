@@ -35,7 +35,7 @@ const BUBBLE_OFFSET: [number, number][] = [[-42, 10], [14, 7], [41, -52], [-50, 
  * Espagne, Islande), drapeau planté qui ondule à Paris, balise jaune à Athènes, bulles « Pays · Capitale » qui s'allument
  * au passage de l'avion. Recalés à chaque image du globe (`onFrame`) ; échelle et estompe selon l'orientation du sol.
  */
-export function HomeMarks({ globe, extras, countries, lang }: { globe: MarksSource | null; extras: HomeExtras | null; countries: readonly CountryRecord[]; lang: Lang }) {
+export function HomeMarks({ globe, extras, countries, lang, sortie = false }: { globe: MarksSource | null; extras: HomeExtras | null; countries: readonly CountryRecord[]; lang: Lang; sortie?: boolean }) {
   const marks = useRef<(HTMLDivElement | null)[]>([]);
   const bubbles = useRef<(HTMLDivElement | null)[]>([]);
   const id = useId().replace(/:/g, '');
@@ -79,7 +79,7 @@ export function HomeMarks({ globe, extras, countries, lang }: { globe: MarksSour
   const flag = (cca3: string) => `url('/data/flags/${cca3.toLowerCase()}.svg')`;
   const pins = [extras.escales[0]!.cca3, extras.escales[1]!.cca3, 'ISL'];
   return (
-    <div className="reperes" aria-hidden="true">
+    <div className={`reperes${sortie ? ' reperes--sortie' : ''}`} aria-hidden="true">
       {pins.map((cca3, i) => (
         <div key={cca3} className="mk" ref={(el) => { marks.current[i] = el; }}>
           <div className="mk-sol" />

@@ -5,11 +5,12 @@ import { detectLang, messages, type Messages } from '../i18n';
 import type { GlobeHandle } from '../globe/GlobeView';
 import { LoadErrorCard } from '../globe/LoadErrorCard';
 import { Intro } from '../intro/Intro';
-import { Home } from '../ui/Home';
+import { bestScores, Home } from '../ui/Home';
 import { HomeMarks, type HomeExtras } from '../ui/HomeMarks';
 import type { HomePlane } from '../globe/plane/plane';
 import type { EntreeTitre } from '../ui/LogoTitle';
-import type { RondTitre } from '../intro/lecteur';
+import { oDuTitre } from '../intro/lecteur';
+import type { Cadrage } from '../intro/temps';
 import type { QualityTier } from '../globe/renderer';
 import { OFFLINE_URLS, cachesReady, heavyUrls, persist, preloadKey, warm } from '../pwa/cache';
 import { EMPREINTES } from '../pwa/empreintes';
@@ -24,7 +25,6 @@ import { LegalScreen } from '../ui/LegalScreen';
 import { GameScreen } from '../ui/GameScreen';
 import { GlobeErrorScreen } from '../ui/GlobeError';
 import { browserEngine, createHaptics, vibrationsOn } from '../ui/haptics';
-import { bestScores, ModeScreen } from '../ui/ModeScreen';
 import { RotateScreen } from '../ui/RotateScreen';
 import { ScoresScreen } from '../ui/ScoresScreen';
 import { useRotated } from '../ui/rotate';
@@ -79,8 +79,16 @@ export function App() {
   const [phase, setPhase] = useState<'intro' | 'fondu' | 'accueil'>(openedByUpdate ? 'accueil' : 'intro');
   const [homeShown, setHomeShown] = useState(openedByUpdate);
   const [logoAngle, setLogoAngle] = useState<number | null>(null);
-  // le « o » du titre de fin de la vidéo à l'écran : le titre de l'accueil s'y pose pendant le fondu
-  const [titreVideo, setTitreVideo] = useState<RondTitre | null>(null);
+  // le cadrage de la vidéo vue : le « o » de son titre à cet écran (recalculé quand l'écran change) ; le titre de l'accueil
+  // s'y pose pendant le fondu, et y reste sur un téléphone (LogoTitle)
+  const [cadrageVideo, setCadrageVideo] = useState<Cadrage | null>(null);
+  const [ecran, setEcran] = useState(() => ({ width: innerWidth, height: innerHeight }));
+  useEffect(() => {
+    const on = () => setEcran({ width: innerWidth, height: innerHeight });
+    addEventListener('resize', on);
+    return () => removeEventListener('resize', on);
+  }, []);
+  const titreVideo = useMemo(() => (cadrageVideo ? oDuTitre(cadrageVideo, ecran) : null), [cadrageVideo, ecran]);
   // le titre vient de la vidéo (il apparaît en fondu) ; intro abandonnée (accueil direct) : ses lettres surgissent
   const [entree, setEntree] = useState<EntreeTitre>(openedByUpdate ? 'pop' : 'fondu');
   const globe = useRef<GlobeHandle>(null);
@@ -101,8 +109,9 @@ export function App() {
   const shownName = playerName(name, m.home.defaultName);
   const game = useGame({ countries, lang, globe, haptics, book, name, rotated, gameMs: overrides.gameMs, homeSpin: HOME_SPIN_DEG_PER_S, hooks });
   const s = game.state;
-  const inGame = s.screen === 'countdown' || s.screen === 'flight' || s.screen === 'question' || s.screen === 'reveal';
-  const canPlay = phase === 'accueil' && globeReady && countries.length > 0 && !globeError;
+  const inGame = s.screen === 'flight' || s.screen === 'question' || s.screen === 'reveal';
+  // dès le fondu : il n'a lieu que le globe prêt (un « Jouer » grisé jusqu'à la fin du fondu s'allumait sèchement, 24/10)
+  const canPlay = phase !== 'intro' && globeReady && countries.length > 0 && !globeError;
   // une erreur du globe pendant une partie la quitte (décision 6 du plan 2A-5) ; une perte du GPU recréée ne la touche pas
   useEffect(() => { if (globeError && inGame) game.dispatch({ type: 'QUIT' }); }, [globeError, inGame]); // eslint-disable-line react-hooks/exhaustive-deps
   const seed = () => newSeed(overrides.seed);
@@ -149,8 +158,28 @@ export function App() {
   // l'apparition de l'accueil (à-coup, 23/10) ; il part de derrière la Terre, invisible. Repères et bulles : l'accueil
   // affiché seulement. Son code arrive avec celui du globe (GlobeView le réexporte ; déjà chargé ici) ; recréé à chaque
   // retour à l'accueil.
-  const homeNext = s.screen === 'home' && !overlay && globeReady && !globeError;
-  const homeVisible = phase === 'accueil' && homeShown && homeNext;
+  // Accueil et choix du mode, un seul décor (mise en scène du 24/10) : l'avion et les repères restent pendant le choix, et
+  // pendant la sortie de l'accueil (0,3 s après le choix du mode, pendant que le vol part).
+  // Déduite pendant le rendu même où l'écran passe au vol : posée par un effet, elle arrivait après le rendu qui démontait
+  // l'accueil (remonté ensuite déjà effacé, aucune sortie visible ; film du 28/10).
+  const [sortie, setSortie] = useState(false);
+  const [ecranAvant, setEcranAvant] = useState(s.screen);
+  if (ecranAvant !== s.screen) {
+    setEcranAvant(s.screen);
+    setSortie(ecranAvant === 'mode' && s.screen === 'flight');
+  }
+  useEffect(() => {
+    if (!sortie) return;
+    const t = setTimeout(() => setSortie(false), 320);
+    return () => clearTimeout(t);
+  }, [sortie]);
+  const accueilMonte = s.screen === 'home' || s.screen === 'mode' || sortie;
+  const homeNext = accueilMonte && !overlay && globeReady && !globeError;
+  // repères et bulles : dès le fondu, en fondu avec le globe (ils surgissaient à sa fin, 24/10)
+  const homeVisible = phase !== 'intro' && homeShown && homeNext;
+  // l'entrée de l'accueil ne joue qu'à sa première apparition ; ensuite il revient déjà en place
+  const [accueilVu, setAccueilVu] = useState(false);
+  useEffect(() => { if (phase === 'accueil' && homeShown) setAccueilVu(true); }, [phase, homeShown]);
   const [extras, setExtras] = useState<HomeExtras | null>(null);
   useEffect(() => {
     if (!homeNext) return;
@@ -181,13 +210,16 @@ export function App() {
       </CodeDuGlobe>
       {phase !== 'accueil' && (
         <Intro lang={lang} m={m} globeReady={globeReady} onHome={() => setHomeShown(true)}
-          onFade={(angle, titre) => { setLogoAngle(angle); setTitreVideo(titre ?? null); setPhase((p) => (p === 'intro' ? 'fondu' : p)); }}
+          onFade={(angle, cadrage) => { setLogoAngle(angle); setCadrageVideo(cadrage ?? null); setPhase((p) => (p === 'intro' ? 'fondu' : p)); }}
           onDone={(angle) => { if (angle === null) setEntree('pop'); setPhase('accueil'); }} />
       )}
       {!errorShown && (<>
-      {homeVisible && <HomeMarks globe={globe.current} extras={extras} countries={countries} lang={lang} />}
-      {homeShown && s.screen === 'home' && !overlay && (
-        <Home lang={lang} m={m} name={name} logo={{ angle: logoAngle, visible: phase !== 'intro', entree, sur: phase === 'fondu' ? titreVideo : null }}
+      {homeVisible && <HomeMarks globe={globe.current} extras={extras} countries={countries} lang={lang} sortie={sortie} />}
+      {homeShown && accueilMonte && !overlay && (
+        <Home lang={lang} m={m} name={name} entree={accueilVu ? 'deja' : entree}
+          logo={{ angle: logoAngle, visible: phase !== 'intro', sur: entree === 'fondu' ? titreVideo : null, fondu: phase === 'fondu' }}
+          choix={s.screen === 'mode'} sortie={sortie} best={bestScores(book)}
+          onChoose={(mode) => game.dispatch({ type: 'CHOOSE_MODE', mode, seed: seed() })} onBack={() => game.dispatch({ type: 'BACK' })}
           canPlay={canPlay} onPlay={() => game.dispatch({ type: 'PLAY' })} onScores={() => game.dispatch({ type: 'SHOW_SCORES' })} onAbout={() => setOverlay('about')}
           onLang={(l) => { setLang(l); writePref(storage, PREF_KEYS.lang, l); }}
           onName={(n) => { setName(n); writePref(storage, PREF_KEYS.name, n); }} />
@@ -197,10 +229,6 @@ export function App() {
           onVibrations={(on) => writePref(storage, PREF_KEYS.vibrations, on ? '1' : '0')} />
       )}
       {s.screen === 'home' && overlay === 'legal' && <LegalScreen m={m} onBack={() => setOverlay('about')} />}
-      {s.screen === 'mode' && (
-        <ModeScreen m={m} name={shownName} best={bestScores(book)} onBack={() => game.dispatch({ type: 'BACK' })}
-          onChoose={(mode) => game.dispatch({ type: 'CHOOSE_MODE', mode, seed: seed() })} />
-      )}
       {inGame && (
         <GameScreen m={m} lang={lang} state={s} records={game.records} globe={globe.current} haptics={haptics}
           onAnswer={game.answer} onQuit={() => game.dispatch({ type: 'QUIT' })} />

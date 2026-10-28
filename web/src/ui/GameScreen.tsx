@@ -4,8 +4,7 @@ import type { GameState } from '../game/machine';
 import type { Lang } from '../game/types';
 import type { GlobeHandle } from '../globe/GlobeView';
 import { fill, type Messages } from '../i18n';
-import { Answers, optionLabel } from './Answers';
-import { Countdown } from './Countdown';
+import { Answers, optionLabel, type GridState } from './Answers';
 import type { Haptics } from './haptics';
 import { Hud } from './Hud';
 import { RevealLabel } from './RevealLabel';
@@ -16,12 +15,16 @@ interface Props {
   onAnswer(index: number): void; onQuit(): void;
 }
 
+/** La grille : cachée au premier vol (`asked` = 1), en place mais estompée aux vols suivants, active sinon. */
+export const gridState = (screen: GameState['screen'], asked: number): GridState =>
+  screen !== 'flight' ? 'actif' : asked <= 1 ? 'cache' : 'vol';
+
 /** Marge sous le HUD avant la zone libre (px). */
 const HUD_GAP = 8;
 
 /**
- * Une partie (3-2-1, vol, question, révélation) sur le globe plein écran : HUD en haut, question et grille en bas sur le
- * voile (D1). La zone libre entre les deux (contrat 2A-4) est mesurée et donnée au globe dès le 3-2-1, puis à chaque
+ * Une partie (vol, question, révélation) sur le globe plein écran : HUD en haut, question et grille en bas sur le
+ * voile (D1). La zone libre entre les deux (contrat 2A-4) est mesurée et donnée au globe dès le premier vol, puis à chaque
  * changement de taille : le pays s'y cadre et s'y centre.
  */
 export function GameScreen({ m, lang, state, records, globe, haptics, onAnswer, onQuit }: Props) {
@@ -45,17 +48,19 @@ export function GameScreen({ m, lang, state, records, globe, haptics, onAnswer, 
   const revealing = state.screen === 'reveal' && !!q && state.picked !== null;
   const ok = revealing && state.picked === q!.answer;
   const answer = q && mode ? records.get(q.options[q.answer]!) : undefined;
+  // l'étiquette du pays révélé reste posée sur lui pendant le vol suivant : elle part avec lui (cachée derrière l'horizon)
+  const quitte = state.screen === 'flight' && state.asked.length > 1 ? records.get(state.asked[state.asked.length - 2]!) : undefined;
+  const etiquette = revealing ? rec : quitte;
   return (
     <div className={`jeu${mode === 'flag' ? ' jeu--drapeau' : ''}`}>
       <div className="jeu-voile" aria-hidden="true" />
       <Hud ref={hud} m={m} lang={lang} clock={state.clock} score={state.tally.score} plus={ok} onQuit={onQuit} />
-      {state.screen === 'countdown' && <Countdown value={state.countdown} m={m} />}
       {q && mode && (
         <Answers ref={bas} m={m} lang={lang} mode={mode} question={q} records={records} picked={revealing ? state.picked : null}
-          hidden={state.screen === 'countdown' || state.screen === 'flight'} onAnswer={onAnswer}
+          etat={gridState(state.screen, state.asked.length)} monte={state.asked.length === 1} onAnswer={onAnswer}
           onPress={() => haptics.play('press')} onRelease={() => haptics.play('release')} />
       )}
-      {revealing && rec && <RevealLabel globe={globe} rec={rec} lang={lang} />}
+      {etiquette && <RevealLabel key={etiquette.cca3} globe={globe} rec={etiquette} lang={lang} />}
       <p className="sr" aria-live="polite">
         {revealing && answer && mode ? fill(ok ? m.reveal.correct : m.reveal.wrong, { answer: optionLabel(answer, mode, lang) }) : ''}
       </p>

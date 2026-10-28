@@ -1,7 +1,11 @@
 /* Repères G5 « Escales » de l'accueil (maquette `accueil-avion-escales.html`, décisions 7 et 8) : positionnés à chaque
    image par HomeMarks (translate) ; --f = sol vu de face (1) ou par la tranche (0), --n = angle de la verticale du lieu,
    --t = inclinaison de la tige. Rendus avant l'accueil : sous ses commandes et l'invitation à installer, au-dessus du globe. */
-.reperes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; font-family: var(--cartoon); }
+.reperes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; font-family: var(--cartoon); animation: reperes-apparait .9s ease-out backwards; transition: opacity .3s ease; }
+/* En fondu avec le globe, et avec l'accueil à sa sortie (mise en scène du 24/10 : ils surgissaient d'un coup). Apparition
+   en `backwards` : une animation finie en `both` garde la main sur l'opacité, la sortie tombait d'un coup (film du 28/10). */
+.reperes--sortie { opacity: 0; }
+@keyframes reperes-apparait { from { opacity: 0; } }
 .mk { position: absolute; left: 0; top: 0; width: 0; height: 0; opacity: clamp(0, calc((var(--f, 0) - .15) * 2.5), 1); will-change: transform; }
 .mk-sol { position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(closest-side, rgb(0 0 0 / .6), rgb(0 0 0 / 0)); transform: rotate(var(--n)) scaleY(var(--f)); }
 .mk-sol--large { transform: rotate(var(--n)) scaleY(var(--f)) scale(1.5); }

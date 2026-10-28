@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
-  SUIVI_DEPART, angleTerre, choisirCadrage, choisirVariantes, couverture, idVariante, medianeIntervalle, mesurerIntervalle, oDuTitre, recalage, suivreLecture, versEcran,
+  SUIVI_DEPART, angleTerre, choisirCadrage, choisirVariantes, couverture, idVariante, medianeIntervalle, garderRecalage, mesurerIntervalle, oDuTitre, recalage, suivreLecture, versEcran,
   type Capacites, type Manifeste, type Releve, type Suivi, type Variante,
 } from './lecteur';
 import { TITRES } from './cadrages';
@@ -209,6 +209,14 @@ describe('de la vidéo à l’écran (object-fit: cover)', () => {
     expect(r.y).toBeCloseTo(12, 9);
     expect(r.k).toBeCloseTo(19.29 / 17.8, 9);
     expect(recalage({ x: 1, y: 2, r: 3 }, { x: 1, y: 2, r: 3 })).toEqual({ x: 0, y: 0, k: 1 });
+  });
+
+  it('recalage gardé après le fondu sur un téléphone (écart faible), relâché sinon (tablette, bureau : la vidéo y est bien plus agrandie)', () => {
+    expect(garderRecalage({ x: -9.2, y: 12, k: 1.08 })).toBe(true);     // Pixel 9
+    expect(garderRecalage({ x: 0, y: 0, k: 1 })).toBe(true);
+    expect(garderRecalage({ x: 0, y: 140, k: 1.97 })).toBe(false);      // tablette en portrait
+    expect(garderRecalage({ x: 0, y: 0, k: 0.83 })).toBe(false);
+    expect(garderRecalage({ x: 30, y: 0, k: 1 })).toBe(false);
   });
 
   it('rotation pendant l’intro : la même vidéo (même cadrage) couvre encore l’écran tourné', () => {

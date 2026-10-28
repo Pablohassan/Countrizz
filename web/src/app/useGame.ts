@@ -34,7 +34,7 @@ export interface GameOptions {
 }
 
 /**
- * Le jeu branché (contrat 2A-3 de l'appelant) : la machine pure, ses minuteries (3-2-1 à la seconde, `TICK` pendant la
+ * Le jeu branché (contrat 2A-3 de l'appelant) : la machine pure, ses minuteries (`TICK` pendant la
  * question, révélation de 1,5 s), l'onglet caché et le téléphone tourné (pauses), le globe (`globeCommands`, ticket de vol :
  * `ARRIVED` seulement sur `true`), l'haptique et l'enregistrement du score à l'entrée en fin (une fois par partie).
  */
@@ -68,13 +68,10 @@ export function useGame(o: GameOptions) {
     }
   }, [state, records]);
 
-  // 3-2-1 : un pas par seconde ; une vibration par chiffre, plus forte à « GO ! »
+  // la première question d'une partie : vibration « go » (le vol a tenu lieu de 3-2-1)
   useEffect(() => {
-    if (state.screen !== 'countdown') return;
-    opts.current.haptics.play(state.countdown > 0 ? 'countdown' : 'go');
-    const t = setTimeout(() => dispatch({ type: 'COUNTDOWN_TICK', now: now() }), 1000);
-    return () => clearTimeout(t);
-  }, [state.screen, state.countdown, state.flight]);
+    if (state.screen === 'question' && state.asked.length === 1) opts.current.haptics.play('go');
+  }, [state.screen, state.asked.length, state.flight]);
 
   // question : le chrono peut atteindre zéro
   useEffect(() => {

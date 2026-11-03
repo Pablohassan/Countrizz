@@ -55,6 +55,18 @@ test('partie : le vol tient lieu de 3-2-1, la grille monte à l’arrivée, puis
   await expect(page.locator('.etiquette')).toHaveCount(0);
 });
 
+test('intro → accueil : la scène précompilée sous la vidéo se dessine, aucun pipeline du GPU refusé', async ({ page }) => {
+  // 03/11 : plusieurs précompilations simultanées laissaient le renderer sur la cible de la passe ; à la sortie de l'intro,
+  // le quad de sortie se compilait pour elle, refusé, et chaque image avec lui : pas de Terre sous l'accueil.
+  const refus: string[] = [];
+  page.on('console', (m) => { if (m.type() === 'error' && /pipeline creation failed|GPUValidationError/.test(m.text())) refus.push(m.text().split('\n')[0]!); });
+  await page.goto('/');
+  await page.waitForFunction(() => !document.querySelector('.intro') && (window.__globe?.frames ?? 0) > 30, null, { timeout: 180_000 });
+  test.skip(await page.evaluate(() => window.__globe!.backend) !== 'webgpu', 'WebGPU indisponible');
+  await page.waitForTimeout(1000);
+  expect(refus).toEqual([]);
+});
+
 test('scores → « ‹ Retour » : l’accueil, déjà en place (rien ne rejoue)', async ({ page }) => {
   await openHome(page);
   await page.getByRole('button', { name: 'Scores' }).click();

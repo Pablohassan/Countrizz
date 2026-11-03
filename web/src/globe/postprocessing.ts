@@ -18,6 +18,27 @@ export function postOptions(tier: QualityTier): PostOptions {
   return { bloom: { strength: 0.3, radius: 0.4, threshold: 0 }, traa: tier === 'haute', msaa: tier === 'haute' ? 0 : 4, toneMapping: THREE.NeutralToneMapping };
 }
 
+/**
+ * Précompilations une à la fois (03/11) : celle de three pose la cible de la passe et ses sorties MRT sur le renderer,
+ * attend, puis remet ce qu'elle avait trouvé. Deux à la fois (l'avion monté sous la vidéo en relance une), la seconde
+ * trouvait la cible de la première et la remettait : le renderer y restait, le quad de sortie se compilait pour elle, refusé
+ * par le GPU, et chaque image avec lui (pas de Terre sous l'accueil). Les demandes faites pendant une compilation n'en font
+ * qu'une, après elle ; `enCours` : le rendu attend (une image rendue pendant l'attente le serait dans la cible de la passe).
+ */
+export function precompilation(compile: () => Promise<void>) {
+  let courante: Promise<void> | null = null;
+  let suivante: Promise<void> | null = null;
+  const lancer = (): Promise<void> => {
+    if (!courante) {
+      courante = compile().finally(() => { courante = null; });
+      return courante;
+    }
+    suivante ??= courante.catch(() => {}).then(() => { suivante = null; return lancer(); });
+    return suivante;
+  };
+  return { lancer, enCours: () => courante !== null || suivante !== null };
+}
+
 /** RenderPipeline (nom de PostProcessing depuis r183) : scène (MRT sortie + émissif [+ vitesse]) → bloom → [TRAA] → sortie sRGB. */
 export function createPostProcessing(renderer: THREE.WebGPURenderer, scene: THREE.Scene, camera: THREE.Camera, o: PostOptions) {
   // `samples` toujours fixé : sans lui, la passe hérite des échantillons du renderer (4, antialias du jeu), et le TRAA ne
@@ -40,14 +61,16 @@ export function createPostProcessing(renderer: THREE.WebGPURenderer, scene: THRE
   pipeline.outputColorTransform = false;
   const shown = renderOutput(final, o.toneMapping, THREE.SRGBColorSpace);
   pipeline.outputNode = sky && !o.traa ? smaa(shown) : shown;
+  const compilation = precompilation(() => scenePass.compileAsync(renderer));
   return {
-    render: () => pipeline.render(),
+    // pendant une précompilation, la cible de la passe est posée sur le renderer : l'image attend la suivante
+    render: () => { if (!compilation.enCours()) pipeline.render(); },
     dispose: () => pipeline.dispose(),
     /**
      * Précompile les matériaux de la scène pour la passe (sa cible et ses sorties MRT), pipelines créés sans attendre :
      * appelée pendant l'intro, elle retire ce travail de l'image de préchauffage qui gelait l'accueil à son apparition
-     * (571 ms, processeur ralenti 4 fois, format Pixel 9, 23/10).
+     * (571 ms, processeur ralenti 4 fois, format Pixel 9, 23/10). Une à la fois (`precompilation`).
      */
-    compileAsync: () => scenePass.compileAsync(renderer),
+    compileAsync: compilation.lancer,
   };
 }

@@ -46,7 +46,7 @@ function fillCentroid(png: PNG, match: Rgb = GOLD): [number, number] | null {
 
 // HUD 80 px, grille 300 px sur 390 × 844 : zone libre de 464 px, milieu à y = 312.
 for (const [backend, tier] of [['webgpu', 'haute'], ['webgpu', 'standard'], ['webgl2', 'standard']] as [BackendName, string][]) {
-  test(`${backend} ${tier} : la France se centre dans la zone libre (TRAA compris en haute)`, async ({ page }) => {
+  test(`${backend} ${tier} : la France se centre dans la zone libre`, async ({ page }) => {
     await page.goto(`/probe.html?mode=game&cca3=FRA&safe=80,300&tier=${tier}&post&w=390&h=844${backend === 'webgl2' ? '&webgl' : ''}`);
     await page.waitForFunction(() => window.__probe !== undefined, null, { timeout: 60_000 });
     const c = fillCentroid(PNG.sync.read(await page.screenshot()));

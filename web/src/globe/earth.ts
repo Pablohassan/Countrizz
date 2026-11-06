@@ -6,7 +6,6 @@ import { exactSpherePoint } from './frameNodes';
 import { createImageLayer } from './imageLayer';
 import { pixelFootprint, SEAWATER_IOR, seaRoughness, waveSlopes, windNode } from './ocean';
 import { createLift, liftHeight, RELIEF_LIFT } from './relief';
-import { cloudRelief, silverLining, type createClouds } from './clouds';
 import { exposureGainNode } from './spotlight';
 import type { GlobeTextures } from './textures';
 
@@ -31,9 +30,10 @@ export const NIGHT_FLOOR = 0.045;
 
 /**
  * Terre en couches (spec §4.2) : jour (Sentinel-2, précisé par les photos emboîtées du pays visé), relief, océan (rugosité,
- * reflet du soleil, Fresnel du ciel), nuages et leur ombre, lumières de la face nocturne.
+ * reflet du soleil, Fresnel du ciel), lumières de la face nocturne. Sans nuages depuis le 06/11 : figés sur la Terre, effacés à chaque
+ * arrivée, ils n'apportaient rien au jeu (« pas suffisamment intéressant », l'utilisateur) et coûtaient 10 % du GPU.
  */
-export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof createClouds> | null = null, physicalSky = false) {
+export function createEarthMaterial(t: GlobeTextures, physicalSky = false) {
   const sun = uniform(new THREE.Vector3(1, 0, 0));
   /** Saturation de la texture de jour (1 = telle quelle ; planche de réglage du Sahara). */
   const saturation = uniform(1);
@@ -77,32 +77,22 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const wind = windNode(latDeg, lngRad);
   const waves = t.waves ? waveSlopes(t.waves, st, pixelFootprint(positionWorld)) : null;
   const seaNormal = waves ? normalize(P.sub(east.mul(waves.slope.x).add(north.mul(waves.slope.y)))) : P;
-  const surfaceNormal = mix(relief, seaNormal, sea);
-
-  // Nuages en relief (spec nuages §3) : blancs et mats, vus en parallaxe à la hauteur de leur sommet, modelés par le soleil
-  // et ombrés l'un par l'autre ; leur ombre tombe là où le rayon du soleil les traverse ; ils voilent les lumières des villes.
+  material.normalNode = normalize(transformNormalToView(normalize(mix(relief, seaNormal, sea))));
   const view = normalize(cameraPosition.sub(positionWorld));
-  const sky3d = clouds ? cloudRelief(clouds, { P, east, north, cosLat, st }, view, sun, lift) : null;
-  const cover = sky3d ? sky3d.cover : float(0);
-  // sous les nuages, pas de relief du sol : les montagnes ne s'ombrent pas à travers eux
-  material.normalNode = normalize(transformNormalToView(normalize(mix(surfaceNormal, sky3d ? sky3d.normal : P, cover))));
-  const shadow = sky3d ? sky3d.shadow : float(0);
   // L'océan profond est très sombre : on le relève très légèrement.
   const dayTex = texture(t.day), nightTex = texture(t.night);
   const dayRgb = dayTex.rgb;
   const dayColor = mix(vec3(dot(dayRgb, vec3(0.2126, 0.7152, 0.0722))), dayRgb, saturation);
   const photo = mix(mix(dayColor, coarse.color, coarse.weight), fine.color, fine.weight);
-  const ground = photo.add(vec3(0.0, 0.012, 0.035).mul(sea)).mul(shadow.mul(0.45).oneMinus());
-  material.colorNode = mix(ground, vec3(0.92, 0.92, 0.92).mul(sky3d ? sky3d.shade : float(1)), cover);
-  material.roughnessNode = mix(mix(float(0.92), seaRoughness(wind, waves ? waves.shown : float(0)), sea), float(1), cover);
+  material.colorNode = photo.add(vec3(0.0, 0.012, 0.035).mul(sea));
+  material.roughnessNode = mix(float(0.92), seaRoughness(wind, waves ? waves.shown : float(0)), sea);
   material.iorNode = mix(float(1.5), float(SEAWATER_IOR), sea);
   material.metalnessNode = float(0);
   const ndl = dot(P, sun);
   const nightSide = smoothstep(float(0.05), float(-0.15), ndl);
   // Black Marble a un fond bleuté hors des villes : avec un bloom sans seuil, il voilait toute la face de nuit de mauve
   // (constaté le 10/10, lever de soleil derrière le limbe). On retranche ce plancher : seules les villes brillent.
-  material.emissiveNode = max(nightTex.rgb.sub(NIGHT_FLOOR), 0).mul(1.6 / (1 - NIGHT_FLOOR)).mul(nightSide).mul(cover.mul(0.6).oneMinus())
-    .add(silverLining(cover, P, view, sun));
+  material.emissiveNode = max(nightTex.rgb.sub(NIGHT_FLOOR), 0).mul(1.6 / (1 - NIGHT_FLOOR)).mul(nightSide);
 
   // Voile atmosphérique (diffusion de Rayleigh approchée) : bleu de jour, orangé au crépuscule ; épaissit vers le limbe.
   // Reflet du ciel sur l'océan (Fresnel de Schlick). Posés avant la couche pays : le jaune du pays reste exact, et hors
@@ -114,7 +104,7 @@ export function createEarthMaterial(t: GlobeTextures, clouds: ReturnType<typeof 
   const veilColor = mix(vec3(1.0, 0.55, 0.25), vec3(0.32, 0.55, 1.0), dusk);
   const veil = day.mul(grazing.mul(0.35).add(0.03));
   const fresnel = pow(float(1).sub(ndv), float(5)).mul(0.98).add(0.02);
-  const sky = vec3(0.3, 0.52, 0.95).mul(day).mul(sea).mul(cover.oneMinus()).mul(fresnel).mul(0.55);
+  const sky = vec3(0.3, 0.52, 0.95).mul(day).mul(sea).mul(fresnel).mul(0.55);
   // Atmosphère physique (spec atmosphère §2.2) : le voile vient de la perspective aérienne, en post-traitement.
   const base = physicalSky ? vec4(output.rgb.add(sky), output.a) : vec4(mix(output.rgb, veilColor.mul(day.mul(0.9).add(0.1)), veil).add(sky), output.a);
   // Exposition locale du pays visé tirée de sa photo (spec mise en avant §2, « éclaircir les ombres » du tirage) : luminance des

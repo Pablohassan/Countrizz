@@ -28,7 +28,7 @@ export function reportQuery(w: FrameWindow, m: MeasureState, x: ReportExtra): st
     v: '1', t: String(Math.round(x.t)), vue: x.vue,
     n: String(w.n), med: w.med.toFixed(1), p90: w.p90.toFixed(1), max: String(Math.round(w.max)), a25: String(w.over25), a50: String(w.over50),
     js: w.jsMed.toFixed(1), jsmax: String(Math.round(w.jsMax)), lt: String(x.longTasks), ltms: String(Math.round(x.longMs)),
-    dpr: String(m.dpr), tier: m.tier, deg: m.degradation, traa: m.traa ? '1' : '0', be: m.backend, tex: String(m.maxTexture2D), gpu: x.gpu,
+    dpr: String(m.dpr), tier: m.tier, deg: m.degradation, be: m.backend, tex: String(m.maxTexture2D), gpu: x.gpu,
     w: String(x.w), h: String(x.h), ecran: String(x.ecran),
   }).toString();
 }

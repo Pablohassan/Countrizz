@@ -17,11 +17,11 @@ describe('mesure sur téléphone (?mesure) : fenêtre d’images et rapport', ()
   it('rapport : une requête courte, tout ce qu’il faut pour savoir qui freine (GPU ou calcul)', () => {
     const w = frameWindow(intervals, js)!;
     const q = new URLSearchParams(reportQuery(w, {
-      backend: 'webgpu', tier: 'haute', degradation: 'aucune', maxTexture2D: 8192, format: null, dpr: 2.25, medianMs: 16.7, traa: true, events: [],
+      backend: 'webgpu', tier: 'haute', degradation: 'aucune', maxTexture2D: 8192, format: null, dpr: 2.25, medianMs: 16.7, events: [],
     }, { t: 12.4, longTasks: 1, longMs: 54, gpu: 'arm/valhall', vue: 'accueil', w: 412, h: 915, ecran: 2.625 }));
     expect(Object.fromEntries(q)).toEqual({
       v: '1', t: '12', vue: 'accueil', n: '10', med: '16.7', p90: '70.0', max: '70', a25: '2', a50: '1', js: '7.0', jsmax: '11',
-      lt: '1', ltms: '54', dpr: '2.25', tier: 'haute', deg: 'aucune', traa: '1', be: 'webgpu', tex: '8192', gpu: 'arm/valhall',
+      lt: '1', ltms: '54', dpr: '2.25', tier: 'haute', deg: 'aucune', be: 'webgpu', tex: '8192', gpu: 'arm/valhall',
       w: '412', h: '915', ecran: '2.625',
     });
   });

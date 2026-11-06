@@ -42,7 +42,7 @@ test('haute (WebGPU) : la résolution dynamique tourne aussi (spec zoom §5), la
   expect(await page.evaluate(() => window.__globe!.quality().tier)).toBe('haute');
   await page.evaluate(() => { window.__globe!.frameMsOverride = 40; });
   await page.waitForFunction(() => window.__globe!.dpr() === 1.75);
-  expect(await page.evaluate(() => window.__globe!.quality())).toEqual({ tier: 'haute', degradation: 'aucune', traa: true });
+  expect(await page.evaluate(() => window.__globe!.quality())).toEqual({ tier: 'haute', degradation: 'aucune' });
 });
 
 test('onglet caché : plus aucune frame ; elles reprennent au retour (spec §6.6)', async ({ page }) => {

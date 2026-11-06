@@ -8,7 +8,6 @@ import { createAtmosphere } from './atmosphere';
 import { createBeacon } from './beacon';
 import { createBorders, type ReliefGrid } from './borders';
 import { liftFactor } from './relief';
-import { createClouds } from './clouds';
 import { createCountryLayer, STATE } from './countryLayer';
 import { createEarthMaterial } from './earth';
 import { OffsetCamera } from './offsetCamera';
@@ -60,7 +59,6 @@ export class Globe {
   private readonly placeholder = new THREE.Texture();
   /** Emplacements des photos emboîtées (mode jeu) : 0 le niveau courant, 1 le suivant, plus fin ; vide en mode masque. */
   readonly images: ReturnType<typeof createImageLayer>[] = [];
-  private readonly clouds: ReturnType<typeof createClouds> | null = null;
   private readonly slotTex: (THREE.Texture | null)[] = [null, null];
   private readonly slotOpacity = [0, 0];
   private imageFade: { seconds: number; since: number | null; progress: number } = { seconds: 0, since: null, progress: 1 };
@@ -69,9 +67,8 @@ export class Globe {
 
   constructor(readonly mode: GlobeMode, parts: GlobeParts = {}) {
     if (mode === 'game' && parts.textures) {
-      this.clouds = parts.textures.clouds ? createClouds(parts.textures.clouds) : null;
       const sky = parts.sky ?? null;
-      const earth = createEarthMaterial(parts.textures, this.clouds, sky !== null);
+      const earth = createEarthMaterial(parts.textures, sky !== null);
       this.earthMaterial = earth.material;
       this.images = [...earth.images];
       this.setDayNightTex = earth.setDayNight;
@@ -157,9 +154,6 @@ export class Globe {
 
   /** Textures de jour et de nuit liées au matériau (contrôles). */
   get dayNight(): [THREE.Texture, THREE.Texture] | null { return this.dayNightTex; }
-
-  /** Nuages : opacité (0 → effacés) et dérive en fraction de tour ; sans texture de nuages, sans effet. */
-  setClouds(opacity: number, driftTurns: number): void { this.clouds?.set(opacity, driftTurns % 1); }
 
   setLook(look: CountryLook): void {
     const u = this.country.uniforms;

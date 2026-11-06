@@ -1,17 +1,17 @@
 import * as THREE from 'three/webgpu';
 import type { Backend, QualityTier } from './renderer';
 
-/** Spec zoom §5 bis : ce qui a été retiré à la qualité haute en cours de visite. */
-export type Degradation = 'aucune' | 'sans-traa' | 'standard';
+/** Spec zoom §5 bis : ce qui a été retiré à la qualité haute en cours de visite (le palier « sans TRAA » est parti avec le TRAA, 06/11). */
+export type Degradation = 'aucune' | 'standard';
 
-/** Fenêtres consécutives de la résolution dynamique au plancher et encore lentes avant chaque repli. */
-export const FALLBACK_WINDOWS = { traa: 3, standard: 6 } as const;
+/** Fenêtres consécutives de la résolution dynamique au plancher et encore lentes avant le repli. */
+export const FALLBACK_WINDOWS = { standard: 6 } as const;
 
-const RANK: Record<Degradation, number> = { aucune: 0, 'sans-traa': 1, standard: 2 };
+const RANK: Record<Degradation, number> = { aucune: 0, standard: 1 };
 
 /** Le repli ne fait que descendre : il tient jusqu'à la fin de la visite, jamais annulé en cours de partie. */
 export function nextDegradation(current: Degradation, slowWindowsAtFloor: number): Degradation {
-  const wanted: Degradation = slowWindowsAtFloor >= FALLBACK_WINDOWS.standard ? 'standard' : slowWindowsAtFloor >= FALLBACK_WINDOWS.traa ? 'sans-traa' : 'aucune';
+  const wanted: Degradation = slowWindowsAtFloor >= FALLBACK_WINDOWS.standard ? 'standard' : 'aucune';
   return RANK[wanted] > RANK[current] ? wanted : current;
 }
 
@@ -33,24 +33,23 @@ export const formatName = (format: number): string => FORMATS.find(([f]) => f ==
 
 export interface MeasureState {
   backend: Backend; tier: QualityTier; degradation: Degradation; maxTexture2D: number; format: number | null;
-  dpr: number; medianMs: number | null; traa: boolean; events: { step: Degradation; atS: number; reason: 'lenteur' | 'format' }[];
+  dpr: number; medianMs: number | null; events: { step: Degradation; atS: number; reason: 'lenteur' | 'format' }[];
   /** `?mesure` : intervalle (ms) et calcul (ms) de chaque image depuis la dernière lecture ; l'encart les vide (frameReport.ts). */
   log?: { intervals: number[]; js: number[] };
 }
 
-const STEP: Record<Degradation, string> = { aucune: 'aucun', 'sans-traa': 'sans TRAA', standard: 'standard' };
+const STEP: Record<Degradation, string> = { aucune: 'aucun', standard: 'standard' };
 const num = (x: number, digits: number) => x.toFixed(digits).replace('.', ',');
 
 /** L'encart `?mesure` (spec zoom §5 bis), une ligne par mesure. */
 export function measureLines(m: MeasureState): string[] {
   return [
     `Moteur : ${m.backend === 'webgpu' ? 'WebGPU' : 'WebGL 2'}`,
-    `Qualité : ${effectiveTier(m.tier, m.degradation)}${m.degradation === 'sans-traa' ? ' (sans TRAA)' : m.degradation === 'standard' && m.tier === 'haute' ? ' (repli)' : ''}`,
+    `Qualité : ${effectiveTier(m.tier, m.degradation)}${m.degradation === 'standard' && m.tier === 'haute' ? ' (repli)' : ''}`,
     `Textures max : ${m.maxTexture2D}`,
     `Format : ${m.format === null ? '—' : formatName(m.format)}`,
     `Densité : ${num(m.dpr, 2)}`,
     `Image : ${m.medianMs === null ? '—' : `${num(m.medianMs, 1)} ms (médiane)`}`,
-    `TRAA : ${m.traa ? 'oui' : 'non'}`,
     `Replis : ${m.events.length ? m.events.map((e) => `${STEP[e.step]} à ${Math.round(e.atS)} s (${e.reason})`).join(' ; ') : 'aucun'}`,
   ];
 }

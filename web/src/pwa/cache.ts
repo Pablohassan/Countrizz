@@ -43,7 +43,7 @@ export function preloadKey(urls: readonly string[], empreintes: Empreintes): str
 export function heavyUrls(tier: QualityTier, empreintes: Empreintes = EMPREINTES): string[] {
   const size = tier === 'haute' ? '8k' : '4k';
   return [
-    `/textures/day-${size}.ktx2`, `/textures/night-${size}.ktx2`, '/textures/surface-4k.ktx2', '/textures/clouds-4k.ktx2',
+    `/textures/day-${size}.ktx2`, `/textures/night-${size}.ktx2`, '/textures/surface-4k.ktx2',
     '/textures/waves-512.ktx2', '/textures/relief-512.png',
     '/basis/basis_transcoder.js', '/basis/basis_transcoder.wasm',
     ...INTRO_URLS,

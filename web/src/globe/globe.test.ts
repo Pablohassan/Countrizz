@@ -6,7 +6,7 @@ describe('patchs retirés (pays suivant pas prêt, 404)', () => {
   it('setPatch(null) et setImageLevels(null, null) délient les textures : le cache peut les libérer sans réenvoi', () => {
     // 03/10 (revue finale) : la texture retirée restait liée au matériau (opacité 0) pendant que le cache la libérait ;
     // three la réenvoyait (SDF depuis un ImageBitmap fermé : erreur à chaque vol ; KTX2 recréé, jamais libéré).
-    const textures = { day: new THREE.Texture(), night: new THREE.Texture(), surface: new THREE.Texture(), clouds: new THREE.Texture() };
+    const textures = { day: new THREE.Texture(), night: new THREE.Texture(), surface: new THREE.Texture() };
     const globe = new Globe('game', { textures });
     const sdf = new THREE.Texture(), big = new THREE.Texture(), fine = new THREE.Texture();
     globe.setPatch({ sdf: 'patches/sdf/jpn.png', size: 1024, center: [137.1, 38], extentRad: 0.23, rangeTexels: 32 }, sdf);
@@ -24,7 +24,7 @@ describe('patchs retirés (pays suivant pas prêt, 404)', () => {
   });
 
   it('première photo du pays en fondu ; le relais d’un niveau à l’autre sans fondu', () => {
-    const textures = { day: new THREE.Texture(), night: new THREE.Texture(), surface: new THREE.Texture(), clouds: new THREE.Texture() };
+    const textures = { day: new THREE.Texture(), night: new THREE.Texture(), surface: new THREE.Texture() };
     const globe = new Globe('game', { textures });
     const l0 = new THREE.Texture(), l1 = new THREE.Texture();
     const slot = (tex: THREE.Texture, extentRad: number, opacity = 1) => ({ meta: { center: [0, 0] as [number, number], extentRad }, tex, opacity });
@@ -42,7 +42,7 @@ describe('patchs retirés (pays suivant pas prêt, 404)', () => {
   });
 
   it('setDayNight remplace les textures de jour et de nuit du matériau', () => {
-    const textures = { day: new THREE.Texture(), night: new THREE.Texture(), surface: new THREE.Texture(), clouds: new THREE.Texture() };
+    const textures = { day: new THREE.Texture(), night: new THREE.Texture(), surface: new THREE.Texture() };
     const globe = new Globe('game', { textures });
     const day = new THREE.Texture(), night = new THREE.Texture();
     globe.setDayNight(day, night);
@@ -52,7 +52,7 @@ describe('patchs retirés (pays suivant pas prêt, 404)', () => {
 
 describe('Globe.dispose', () => {
   it('libère ses géométries et ses matériaux, pas les textures prêtées par l’appelant', () => {
-    const textures = { day: new THREE.Texture(), night: new THREE.Texture(), surface: new THREE.Texture(), clouds: new THREE.Texture() };
+    const textures = { day: new THREE.Texture(), night: new THREE.Texture(), surface: new THREE.Texture() };
     const globe = new Globe('game', { textures, borders: [[[0, 0], [1, 1], [2, 1]]] });
     // Ressources distinctes : les sprites (balise, soleil) partagent la géométrie statique de three.
     const owned = new Set<{ addEventListener(type: 'dispose', cb: () => void): void }>();

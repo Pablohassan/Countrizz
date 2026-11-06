@@ -12,7 +12,6 @@ import type { Messages } from '../i18n';
 import { fr } from '../i18n/fr';
 import { GlobeController } from './controller';
 import { Globe } from './globe';
-import { CLOUD_DRIFT_TURNS_PER_S } from './clouds';
 import { createAccessoryHost, type Accessory } from './accessories';
 import { ImageryCredit, type CreditPlacement } from './credits';
 import { LoadErrorCard } from './LoadErrorCard';
@@ -77,8 +76,6 @@ export interface GlobeDebug {
    * `NodeFrame.frameId`), un second rendu montre une image périmée (skill threejs-r186-webgpu-tsl, règle 3). Doit rester à 0.
    */
   staleFrames: number;
-  /** Opacité des nuages à la dernière frame. */
-  cloudOpacity: number;
   /** Densité de pixels du renderer. */
   dpr(): number;
   /** Remplace le temps de frame vu par la résolution dynamique (contrôles headless). */
@@ -89,8 +86,8 @@ export interface GlobeDebug {
   simulateDeviceLost(): void;
   /** La prochaine création du renderer échoue (contrôle de la recréation en échec après une perte du GPU). */
   failNextRenderer?: boolean;
-  /** Niveau effectif, repli en cours de partie (spec zoom §5 bis) et TRAA actif. */
-  quality(): { tier: QualityTier; degradation: Degradation; traa: boolean };
+  /** Niveau effectif et repli en cours de partie (spec zoom §5 bis). */
+  quality(): { tier: QualityTier; degradation: Degradation };
   /** Plus grande texture 2D du GPU (le niveau haute en dépend). */
   maxTexture2D: number;
   /** La balise est-elle dessinée ? */
@@ -162,7 +159,7 @@ class Unsupported extends Component<{ children: ReactNode; ui: boolean; texts: M
 
 /** Globe plein cadre : R3F habille `Globe` ; l'état (caméra, pays, patchs) vit dans `GlobeController`. */
 export function GlobeView({ ref, framing, onReady, startAtHome = false, active = true, warmUp = false, onLoading, onLost, onError, texts = fr.errors, errorUi = true, credit }: Props) {
-  const [controller] = useState(() => new GlobeController('/', matchMedia('(prefers-reduced-motion: reduce)').matches, undefined, startAtHome));
+  const [controller] = useState(() => new GlobeController('/', matchMedia('(prefers-reduced-motion: reduce)').matches, startAtHome));
   const [generation, setGeneration] = useState(0);
   // Caméra décentrée (zone libre, D1) : une par GlobeView, réutilisée par les Canvas recréés après une perte du GPU.
   const [camera] = useState(() => new OffsetCamera(FOV_Y_DEG, 1, 0.001, 100));
@@ -284,11 +281,10 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
   const advance = useThree((s) => s.advance);
   // Niveau effectif : celui du renderer, moins le repli en cours (spec zoom §5 bis).
   const tier = effectiveTier(renderer.userData.tier, degradation);
-  const traa = degradation === 'aucune' && renderer.userData.tier === 'haute';
   const degradationRef = useRef(degradation);
   degradationRef.current = degradation;
-  const qualityRef = useRef({ tier, degradation, traa });
-  qualityRef.current = { tier, degradation, traa };
+  const qualityRef = useRef({ tier, degradation });
+  qualityRef.current = { tier, degradation };
   // Résolution dynamique pour les deux niveaux (spec zoom §5) : au plancher et encore lente, elle déclenche le repli.
   const governor = useMemo(() => createDprGovernor(dprOptions(window.devicePixelRatio)), [renderer]);
   // Textures chargées et leur niveau : le repli 8K → 4K remplace jour et nuit sans reconstruire le globe.
@@ -336,12 +332,12 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
       if (!r.ok) throw new Error(`borders.json : HTTP ${r.status}`);
       return (await r.json()) as LngLat[][];
     };
-    // chaque essai repart de 0 : 5 textures et les frontières (soulevées par la grille du relief, facultative)
+    // chaque essai repart de 0 : 4 textures et les frontières (soulevées par la grille du relief, facultative)
     const attempt = () => {
-      const progress = createProgress(6, (p) => onLoadingRef.current(p));
+      const progress = createProgress(5, (p) => onLoadingRef.current(p));
       return Promise.all([
         loadGlobeTextures(renderer, loadTier, '/', (i, f) => progress.update(i, f)),
-        loadBorders().finally(() => progress.update(5, 1)),
+        loadBorders().finally(() => progress.update(4, 1)),
         loadReliefGrid('/'),
       ]);
     };
@@ -399,13 +395,13 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     return () => { off(); host.dispose(); };
   }, [globe, host, controller]);
 
-  // Post-traitement (spec §4.1) : un par renderer ; recréé avec lui après une perte du GPU, et au repli (TRAA coupé dès
-  // le premier, spec zoom §5 bis).
+  // Post-traitement (spec §4.1) : un par renderer ; recréé avec lui après une perte du GPU (le même aux deux niveaux : le
+  // repli ne le touche plus depuis le départ du TRAA, 06/11).
   useEffect(() => {
-    const p = createPostProcessing(renderer, scene, camera, postOptions(degradation === 'aucune' ? renderer.userData.tier : 'standard'));
+    const p = createPostProcessing(renderer, scene, camera, postOptions(window.devicePixelRatio));
     setPost(p);
     return () => { setPost(null); p.dispose(); };
-  }, [renderer, scene, camera, degradation]);
+  }, [renderer, scene, camera]);
 
   // Photos emboîtées (Sentinel-2) : facultatives — sans index ni fichier, la texture globale suffit. Au repli en
   // standard, les 2048 sont retirées puis remplacées par les 1024.
@@ -440,7 +436,6 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
       generation,
       frames: 0,
       staleFrames: 0,
-      cloudOpacity: 1,
       dpr: () => renderer.getPixelRatio(),
       project(p) {
         const v = new THREE.Vector3(...toVec(p));
@@ -471,7 +466,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     const q = qualityRef.current;
     measure.current = {
       backend: renderer.userData.backend, tier: renderer.userData.tier, degradation: q.degradation, maxTexture2D: renderer.userData.maxTexture2D,
-      format: builtRef.current?.textures.day.format ?? null, dpr: renderer.getPixelRatio(), medianMs: governor.lastMedianMs, traa: q.traa, events: events.current, log: frameLog.current ?? undefined,
+      format: builtRef.current?.textures.day.format ?? null, dpr: renderer.getPixelRatio(), medianMs: governor.lastMedianMs, events: events.current, log: frameLog.current ?? undefined,
     };
     if (!globe) return;
     const now = performance.now();
@@ -481,15 +476,12 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     globe.applyPose(pose, camera);
     host.update({ nowMs: now, pose, sun: sunDirection(pose), viewport: { width: size.width, height: size.height, fovYDeg: FOV_Y_DEG } });
     controller.notePose(pose);
-    const clouds = controller.cloudOpacityAt(now);
-    // Mouvement réduit : les nuages ne dérivent pas.
-    globe.setClouds(clouds, controller.reducedMotion ? 0 : (now / 1000) * CLOUD_DRIFT_TURNS_PER_S);
     if (pose.cut) onCut();
     if (window.__globe && renderer.info.frame === lastFrame.current) window.__globe.staleFrames++;
     lastFrame.current = renderer.info.frame;
     if (post) post.render();
     else renderer.render(scene, camera);
-    if (window.__globe) { window.__globe.frames++; window.__globe.cloudOpacity = clouds; }
+    if (window.__globe) window.__globe.frames++;
     const log = frameLog.current;
     if (log && log.intervals.length < 1200) { log.intervals.push(delta * 1000); log.js.push(performance.now() - t0); }
   }, 1); // priorité 1 : R3F ne rend plus lui-même, la boucle passe par le post-traitement

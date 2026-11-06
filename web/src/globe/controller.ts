@@ -12,7 +12,6 @@ import { availableSlots, pickLevels } from './imageLevels';
 import { visibleHalfAngle } from '../camera/framing';
 import { createPatchCache } from './patchCache';
 import { disposePatchTexture, loadPatchTexture } from './patchTexture';
-import { cloudOpacity, type CloudFade } from './clouds';
 import { screenPoint, type ScreenPoint } from './project';
 import type { Accessory } from './accessories';
 import type { RevealTimeline } from './reveal';
@@ -55,14 +54,13 @@ export class GlobeController {
   private shownSlots: { coarse: number | null; fine: number | null; fineOpacity: number } | null = null;
   private readonly images = createPatchCache((url: string) => this.imageSource!.load(url), (t: THREE.Texture) => t.dispose());
 
-  private cloudFade: CloudFade = { from: 1, to: 1, atMs: 0 };
   private reduced: boolean;
   private lastPose: FramePose | null = null;
   private readonly frameListeners = new Set<() => void>();
   private readonly mounted = new Set<Accessory>();
   private readonly accessoryListeners = new Set<() => void>();
 
-  constructor(private readonly baseUrl = '/', reducedMotion = false, private readonly clock: () => number = () => performance.now(), startAtHome = false) {
+  constructor(private readonly baseUrl = '/', reducedMotion = false, startAtHome = false) {
     this.viewport = { width: 960, height: 600, fovYDeg: FOV_Y_DEG };
     this.fullViewport = this.viewport;
     this.framing = FRAMING;
@@ -116,7 +114,7 @@ export class GlobeController {
 
   get reducedMotion(): boolean { return this.reduced; }
 
-  /** Réglage du système changé pendant la visite (spec 2A §5.7) : caméra et dérive des nuages le suivent. */
+  /** Réglage du système changé pendant la visite (spec 2A §5.7) : la caméra le suit. */
   setReducedMotion(on: boolean): void {
     this.reduced = on;
     this.director.setReducedMotion(on);
@@ -185,7 +183,6 @@ export class GlobeController {
     this.departing = left && left !== rec && this.levelTex.some((t) => t !== null) ? { rec: left, tex: this.levelTex } : null;
     this.levelTex = [];
     this.requestImage();
-    this.fadeClouds(1);
     this.apply();
     const t = this.director.flyTo(rec);
     return {
@@ -195,7 +192,6 @@ export class GlobeController {
         this.arrived = true;
         this.departing = null;
         this.keepImages();
-        this.fadeClouds(0);
         this.apply();
         return true;
       }),
@@ -279,17 +275,8 @@ export class GlobeController {
     if (this.timeline) this.timeline = { ...this.timeline, answer: { kind, atMs: nowMs } };
   }
 
-  /** Opacité des nuages pour la frame (horloge de la boucle de rendu). */
-  cloudOpacityAt(nowMs: number): number { return cloudOpacity(this.cloudFade, nowMs); }
-
-  private fadeClouds(to: number): void {
-    const now = this.clock();
-    this.cloudFade = { from: cloudOpacity(this.cloudFade, now), to, atMs: now };
-  }
-
   clear(): void {
     this.departing = null;
-    this.fadeClouds(1);
     this.target = null;
     this.timeline = null;
     this.apply();

@@ -123,8 +123,10 @@ export const physicalSkyOf = (renderer: THREE.WebGPURenderer): PhysicalSky | nul
  * pixels puis étiré. À pleine résolution, il faisait tomber la densité de rendu (démo, GPU du Mac, 21/10 : densité entre
  * 1,00 et 1,75 contre 2,00 avec le halo approché) — le flou constaté sur téléphone. Prix accepté : l'anneau orange très
  * fin du lever de soleil derrière la Terre s'amincit (3 401 pixels orangés contre 5 977 à pleine résolution, 21/10).
+ * Puis un seizième (0,25 par axe, 06/11, fluidité sur téléphone) : 3,33 → 2,71 ms par image en vol (GPU du Mac, format du
+ * Pixel 9), pour un écart moyen de 0,05 à 1,79 sur 255 selon la scène (lever de soleil : 0,05).
  */
-export const SKY_RESOLUTION = 0.5;
+export const SKY_RESOLUTION = 0.25;
 /**
  * Pas de la marche du rayon : 24, partout. La bibliothèque en fait x + (y − x)·d / 100 (d en km, sans plafond) ; avec
  * l'atmosphère exagérée (sommet à 600 km), (2, 6) donnait 26 pas au centre du disque et 115 au limbe — 65 % du travail du
@@ -167,7 +169,7 @@ function upsampleBySky(lowS: THREE.TextureNode, lowT: THREE.TextureNode, depth: 
  * le ciel, qui s'ajoute donc à la couleur — les pixels de bord du limbe mêlent Terre et espace). L'image nette garde sa
  * pleine résolution : c·T + S·E, puis la balance des blancs.
  */
-export function applyAtmosphere(sky: PhysicalSky, camera: THREE.Camera, color: Node<'vec4'>, depth: Node<'vec4'>, keep: Node<'float'>): Node<'vec4'> {
+export function applyAtmosphere(sky: PhysicalSky, camera: THREE.Camera, color: Node<'vec4'>, depth: Node<'vec4'>, keep: Node<'float'>, scale = SKY_RESOLUTION): Node<'vec4'> {
   sky.context.camera = camera;
   sky.transmittanceContext.camera = camera;
   const { exposure, whiteBalance } = sky.calibration;
@@ -181,9 +183,9 @@ export function applyAtmosphere(sky: PhysicalSky, camera: THREE.Camera, color: N
   transmitted.inscattering = false;
   transmitted.skyNode = null;
   // types de la bibliothèque écrits pour @types/three 0.183 (setup() rend unknown)
-  const lowS = rtt(scattered as unknown as Node<'vec4'>, null, null, { resolutionScale: SKY_RESOLUTION });
+  const lowS = rtt(scattered as unknown as Node<'vec4'>, null, null, { resolutionScale: scale });
   // T se construit dans son contexte : la transmittance lue dans la table, sans marche du rayon
-  const lowT = rtt((transmitted as unknown as Node<'vec4'>).context({ getAtmosphere: () => sky.transmittanceContext }) as unknown as Node<'vec4'>, null, null, { resolutionScale: SKY_RESOLUTION });
+  const lowT = rtt((transmitted as unknown as Node<'vec4'>).context({ getAtmosphere: () => sky.transmittanceContext }) as unknown as Node<'vec4'>, null, null, { resolutionScale: scale });
   const { S, T } = upsampleBySky(lowS, lowT, depth as unknown as THREE.TextureNode);
   const hazed = vec4(color.rgb.mul(T).add(S.mul(exposure)).mul(vec3(...whiteBalance)), color.a);
   return mix(hazed, color, keep);

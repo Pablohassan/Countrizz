@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three/webgpu';
-import { postOptions, precompilation } from './postprocessing';
+import { BLOOM_RESOLUTION, postOptions, precompilation } from './postprocessing';
+import { SKY_RESOLUTION } from './physicalSky';
 
 /** Une précompilation qu'on termine à la main : `fin[i]()` achève le i-ième appel. */
 function compilations() {
@@ -54,21 +55,22 @@ describe('précompilation de la scène : une à la fois, aucun rendu pendant', (
   });
 });
 
-describe('post-traitement par niveau (spec §4.1)', () => {
-  it('haute : bloom + TRAA, sans MSAA (TRAA l’exige)', () => {
-    const o = postOptions('haute');
-    expect([o.traa, o.msaa]).toEqual([true, 0]);
-    expect(o.bloom.strength).toBeGreaterThan(0);
+describe('post-traitement (spec §4.1, amendée le 06/11)', () => {
+  it('sans TRAA ; MSAA 4× du pass sans l’atmosphère physique (avec elle, le SMAA)', () => {
+    expect(postOptions().msaa).toBe(4);
+    expect(Object.keys(postOptions())).not.toContain('traa');
   });
-  it('standard : effets allégés — bloom, MSAA 4× du pass, pas de TRAA', () => {
-    const o = postOptions('standard');
-    expect([o.traa, o.msaa]).toEqual([false, 4]);
-    expect(o.bloom).toEqual(postOptions('haute').bloom);
+  it('fluidité sur téléphone (06/11) : bloom et atmosphère calculés au quart de la résolution par axe', () => {
+    expect([BLOOM_RESOLUTION, SKY_RESOLUTION]).toEqual([0.25, 0.25]);
+    expect([postOptions().bloom.scale, postOptions().skyScale]).toEqual([0.25, 0.25]);
+  });
+  it('SMAA seulement sous une densité d’écran de 2 : au-delà, rien de visible (écart moyen 0,10 à 0,17 sur 255) pour 12 % du GPU (06/11)', () => {
+    expect([postOptions(1).smaa, postOptions(1.5).smaa]).toEqual([true, true]);
+    expect([postOptions(2).smaa, postOptions(2.625).smaa]).toEqual([false, false]);
+    expect(postOptions().smaa).toBe(true);
   });
   it('sortie en tone mapping Neutral, bloom à 0,3 (planche du 10/10 : le jaune pays bouge à peine, AgX le délavait)', () => {
-    for (const tier of ['haute', 'standard'] as const) {
-      expect(postOptions(tier).toneMapping).toBe(THREE.NeutralToneMapping);
-      expect(postOptions(tier).bloom.strength).toBe(0.3);
-    }
+    expect(postOptions().toneMapping).toBe(THREE.NeutralToneMapping);
+    expect(postOptions().bloom.strength).toBe(0.3);
   });
 });

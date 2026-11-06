@@ -5,8 +5,8 @@ import type { BackendName } from './sdf-check';
 // Nuit sur Paris (même pose que earth.spec) : le bloom fait déborder la lumière des villes autour d'elles.
 const NIGHT = 'mode=game&at=2.35,48.85&alt=1.4&sun=-177.65,-48.85';
 
-// Un renderer antialiasé a 4 échantillons : en « haute », une passe sans `samples` en héritait, et la copie de la
-// profondeur multi-échantillonnée vers l'historique du TRAA était refusée à chaque image (03/10, revue finale de la 1B).
+// Un renderer antialiasé a 4 échantillons : une passe sans `samples` en héritait (03/10, revue finale de la 1B : la copie de
+// la profondeur vers l'historique du TRAA, retiré depuis le 06/11, était refusée à chaque image).
 for (const [backend, tier] of [['webgpu', 'haute'], ['webgpu', 'standard'], ['webgl2', 'standard']] as [BackendName, string][]) {
   test(`${backend} ${tier} : post-traitement sans erreur du GPU, même avec un renderer antialiasé`, async ({ page }) => {
     const errors: string[] = [];

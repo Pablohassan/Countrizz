@@ -34,6 +34,8 @@ export interface ProbeApi {
   fragmentShaders(): Promise<{ name: string; code: string }[]>;
   /** `bench` : médiane (ms) d'une image du post-traitement, attendue jusqu'à la fin du travail du GPU ; `null` sans mesure. */
   benchMs: number | null;
+  /** `debit=N` (WebGPU) : ms par image sur N images enchaînées, GPU saturé. */
+  debitMs: number | null;
 }
 declare global { interface Window { __probe?: ProbeApi } }
 
@@ -49,10 +51,12 @@ declare global { interface Window { __probe?: ProbeApi } }
  * - `k`, `margin`, `ctx` (θ_min) : cadrage autre que celui du jeu (contrôles de précision à cadrage serré) ;
  * - `img` (avec `cca3`, mode jeu) : photo du pays, à la taille du niveau (`img`) ou forcée (`img=1024`) ; `level` : niveau de
  *   la chaîne, le plus fin par défaut ;
- * - `clouds=x` : opacité des nuages (0 par défaut), sans dérive ;
- * - `post` : post-traitement du niveau (`tier`), rendu sur `frames` images (16 par défaut : TRAA converge) ;
+ * - `post` : post-traitement du jeu, rendu sur `frames` images (16 par défaut) ; `ciel=x`, `bloomres=x` : résolution du calcul
+ *   de l'atmosphère et du bloom ; `pas=n` : pas de la marche du rayon de l'atmosphère ; `seg=n` : finesse de la sphère ;
+ *   `ecran=x` : densité de l'écran (1 par défaut ; le SMAA s'arrête à 2) ;
  * - `aa` : renderer antialiasé (canvas multi-échantillonné ; le jeu n'en a pas) ;
  * - `avion=e` (mode jeu) : avion de l'accueil figé à la progression e de son trajet (0 = Rabat ; plan 2A-6) ;
+ * - `debit=N` (WebGPU) : ms par image sur N images enchaînées, GPU saturé (lancer Chrome sans vsync) ;
  * - `bench=N` (avec `post`, WebGPU) : N images de plus, chacune attendue jusqu'à la fin du travail du GPU ; médiane dans
  *   `__probe.benchMs` (coût des effets, analyse du flou sur téléphone du 21/10).
  */
@@ -74,8 +78,12 @@ const textures = mode === 'game' ? await loadGlobeTextures(renderer, q.get('tier
 const borders = q.has('borders') ? ((await (await fetch('/data/borders.json')).json()) as LngLat[][]) : undefined;
 // atmosphère physique : WebGPU en mode jeu, sauf `atmo=approchee` (planches avant/après)
 const sky = mode === 'game' && backend === 'webgpu' && q.get('atmo') !== 'approchee' ? installPhysicalSky(renderer) : null;
+// `pas=n` : pas de la marche du rayon de l'atmosphère (SKY_STEPS)
+if (sky && q.has('pas')) sky.context.scatteringSampleCount.value.set(Number(q.get('pas')), Number(q.get('pas')));
 const globe = new Globe(mode, { textures, borders, relief: borders ? await loadReliefGrid('/') : null, sky });
 const camera = new OffsetCamera(FOV_Y_DEG, width / height, 0.001, 100);
+// `seg=n` : sphère de la Terre à n × n/2 segments (512 dans le jeu ; coût des sommets, 06/11)
+if (q.has('seg')) globe.root.traverse((o) => { const m = o as THREE.Mesh; if (m.geometry instanceof THREE.SphereGeometry && m.material === globe.earthMaterial) { m.geometry.dispose(); m.geometry = new THREE.SphereGeometry(1, Number(q.get('seg')), Number(q.get('seg')) / 2); } });
 
 const rec = q.get('cca3') ? (await loadCountries('/')).find((c) => c.cca3 === q.get('cca3')) : undefined;
 if (q.get('cca3') && !rec) throw new Error(`pays inconnu : ${q.get('cca3')}`);
@@ -111,7 +119,6 @@ if (rec) {
 }
 globe.applyPose(pose, camera);
 globe.setBeacon(lngLat(q.get('beacon')));
-globe.setClouds(Number(q.get('clouds') ?? 0), 0);
 const sun = lngLat(q.get('sun'));
 if (sun) globe.setSun(toVec(sun));
 // planches de réglage (10/10) : `lever=x,y` place le soleil derrière ce pixel (lever derrière le limbe) ; `sat` : saturation
@@ -136,14 +143,19 @@ if (q.has('avion') && mode === 'game') {
   host.sync([createHomePlane({ still: Number(q.get('avion')) })]);
   host.update({ nowMs: 0, pose, sun: sun ? toVec(sun) : sunDirection(pose), viewport: { width, height, fovYDeg: FOV_Y_DEG } });
 }
-let benchMs: number | null = null;
+let benchMs: number | null = null, debitMs: number | null = null;
 // atmosphère physique : ses tables se calculent après le premier rendu qui les lit (physicalSky.ts) ; on les attend
 if (sky) { renderer.render(scene, camera); await sky.ready(); }
+let draw = () => renderer.render(scene, camera);
 if (q.has('post')) {
-  const o = postOptions(q.get('tier') === 'haute' ? 'haute' : 'standard');
+  // `ecran=x` : densité de l'écran simulée (le SMAA s'arrête à 2)
+  const o = postOptions(Number(q.get('ecran') ?? 1));
   if (q.has('bloom')) o.bloom = { ...o.bloom, strength: Number(q.get('bloom')) };
   if (tone !== undefined) o.toneMapping = tone;
+  if (q.has('ciel')) o.skyScale = Number(q.get('ciel'));
+  if (q.has('bloomres')) o.bloom.scale = Number(q.get('bloomres'));
   const post = createPostProcessing(renderer, scene, camera, o);
+  draw = () => post.render();
   for (let i = 0, n = Number(q.get('frames') ?? 16); i < n; i++) {
     post.render();
     await new Promise((r) => requestAnimationFrame(r));
@@ -163,6 +175,18 @@ if (q.has('post')) {
 } else {
   renderer.render(scene, camera);
 }
+if (q.has('debit') && backend === 'webgpu') {
+  // débit : N images enchaînées, GPU saturé (cadence débridée), jusqu'à la fin de son travail ; ms par image. Les horodatages
+  // du GPU d'Apple ne se lisent pas passe par passe (18 passes de 1,5 à 2,4 ms, 06/11) : on compare des variantes.
+  const queue = (renderer.backend as unknown as { device: { queue: { onSubmittedWorkDone(): Promise<void> } } }).device.queue;
+  const n = Number(q.get('debit') || 120);
+  for (let i = 0; i < 10; i++) { draw(); await new Promise((r) => requestAnimationFrame(r)); }
+  await queue.onSubmittedWorkDone();
+  const t0 = performance.now();
+  for (let i = 0; i < n; i++) { draw(); await new Promise((r) => requestAnimationFrame(r)); }
+  await queue.onSubmittedWorkDone();
+  debitMs = (performance.now() - t0) / n;
+}
 
 const ray = new THREE.Raycaster();
 const sphere = new THREE.Sphere(new THREE.Vector3(), 1);
@@ -170,6 +194,7 @@ const hit = new THREE.Vector3();
 window.__probe = {
   backend,
   benchMs,
+  debitMs,
   cca3: rec?.cca3 ?? null,
   project: (points) => points.map((p) => {
     const v = new THREE.Vector3(...toVec(p));

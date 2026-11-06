@@ -1,22 +1,36 @@
 import * as THREE from 'three/webgpu';
-import { emissive, mrt, output, pass, renderOutput, velocity } from 'three/tsl';
-import { applyAtmosphere, keepNode, physicalSkyOf } from './physicalSky';
+import { emissive, mrt, output, pass, renderOutput } from 'three/tsl';
+import { applyAtmosphere, keepNode, physicalSkyOf, SKY_RESOLUTION } from './physicalSky';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
-import { traa } from 'three/addons/tsl/display/TRAANode.js';
 import { smaa } from 'three/addons/tsl/display/SMAANode.js';
-import type { QualityTier } from './renderer';
-
-export interface PostOptions { bloom: { strength: number; radius: number; threshold: number }; traa: boolean; msaa: number; toneMapping: THREE.ToneMapping }
 
 /**
- * Spec §4.1 : « haute » = bloom + TRAA ; « standard » = effets allégés (bloom seul, MSAA 4× du pass). Le bloom ne lit que
- * l'émissif (lumières des villes, soleil). Sortie en tone mapping Neutral (planche du 10/10, choix de l'utilisateur) : il
- * garde les teintes de base (jaune pays mesuré #d7d12c sans, #d3cd0f avec ; AgX le délavait en #bdb56b) et creuse les mers.
- * Appliqué dans la chaîne, après le TRAA : le prop `flat` de R3F laisse le renderer sans tone mapping.
+ * `bloom.strength` à 0 : pas de bloom du tout (ni ses passes, ni la sortie émissive) ; `bloom.scale` : sa résolution ;
+ * `skyScale` : résolution du calcul de l'atmosphère (réglages de la sonde, mesures du 06/11) ; `smaa` : antialias de fin de
+ * chaîne avec l'atmosphère physique.
  */
-export function postOptions(tier: QualityTier): PostOptions {
-  return { bloom: { strength: 0.3, radius: 0.4, threshold: 0 }, traa: tier === 'haute', msaa: tier === 'haute' ? 0 : 4, toneMapping: THREE.NeutralToneMapping };
+export interface PostOptions { bloom: { strength: number; radius: number; threshold: number; scale: number }; msaa: number; toneMapping: THREE.ToneMapping; skyScale: number; smaa: boolean }
+
+/**
+ * Les mêmes aux deux niveaux (spec §4.1 amendée le 06/11) : bloom de l'émissif (lumières des villes, soleil), au quart de la
+ * résolution (sa lueur est large : écart moyen 0,42 sur 255 au lever de soleil), puis antialias. Plus de TRAA en « haute » :
+ * le SMAA rend une image plus nette pour moins cher (en vol, 3,33 → 3,11 ms par image, GPU du Mac au format du Pixel 9), et le repli « sans TRAA » disparaît avec lui. Sortie en tone mapping Neutral (planche du 10/10, choix de
+ * l'utilisateur) : il garde les teintes de base (jaune pays mesuré #d7d12c sans, #d3cd0f avec ; AgX le délavait en
+ * #bdb56b) et creuse les mers. Appliqué dans la chaîne : le prop `flat` de R3F laisse le renderer sans tone mapping.
+ */
+export function postOptions(screenDpr = 1): PostOptions {
+  return { bloom: { strength: 0.3, radius: 0.4, threshold: 0, scale: BLOOM_RESOLUTION }, msaa: 4, toneMapping: THREE.NeutralToneMapping, skyScale: SKY_RESOLUTION, smaa: screenDpr < SMAA_BELOW_DPR };
 }
+
+/**
+ * Densité d'écran (`devicePixelRatio`) à partir de laquelle le SMAA ne sert plus : au format du Pixel 9 (densité 2,5), rien de
+ * visible sans lui (écart moyen 0,10 à 0,17 sur 255 selon la scène) pour 0,28 ms sur 2,24 en vol (GPU du Mac, 06/11). Lue
+ * une fois, sur l'écran : la densité de rendu, elle, bouge avec la résolution dynamique, et changer d'antialias recompilerait.
+ */
+export const SMAA_BELOW_DPR = 2;
+
+/** Résolution du bloom (par axe) : 0,5 jusqu'au 06/11 (défaut de three). */
+export const BLOOM_RESOLUTION = 0.25;
 
 /**
  * Précompilations une à la fois (03/11) : celle de three pose la cible de la passe et ses sorties MRT sur le renderer,
@@ -39,28 +53,27 @@ export function precompilation(compile: () => Promise<void>) {
   return { lancer, enCours: () => courante !== null || suivante !== null };
 }
 
-/** RenderPipeline (nom de PostProcessing depuis r183) : scène (MRT sortie + émissif [+ vitesse]) → bloom → [TRAA] → sortie sRGB. */
+/** RenderPipeline (nom de PostProcessing depuis r183) : scène (MRT sortie + émissif [+ pays]) → [atmosphère] → bloom → sortie sRGB → [SMAA]. */
 export function createPostProcessing(renderer: THREE.WebGPURenderer, scene: THREE.Scene, camera: THREE.Camera, o: PostOptions) {
-  // `samples` toujours fixé : sans lui, la passe hérite des échantillons du renderer (4, antialias du jeu), et le TRAA ne
-  // peut plus copier la profondeur dans son historique (une erreur du GPU à chaque image, image qui scintille).
+  // `samples` toujours fixé : sans lui, la passe hérite des échantillons du renderer (canvas antialiasé de la sonde, `aa`).
   // Atmosphère physique (WebGPU, spec atmosphère §2.2) : un canal « pays » de plus, que seul le matériau de la Terre remplit ;
   // sans MSAA (la profondeur d'un pixel de bord ne correspond plus à sa couleur moyennée : pointillé le long du limbe,
-  // 20/10), le SMAA le remplace en fin de chaîne quand le TRAA n'est pas là (le FXAA effaçait les étoiles d'un pixel :
+  // 20/10), le SMAA le remplace en fin de chaîne (le FXAA effaçait les étoiles d'un pixel :
   // 1 pixel de ciel au-dessus de 60 contre 494, mesuré le 20/10 ; SMAA : 39 718 octets compressés).
   const sky = physicalSkyOf(renderer);
   const scenePass = pass(scene, camera, { samples: sky ? 0 : o.msaa });
-  const outputs = { output, emissive, ...(o.traa ? { velocity } : {}), ...(sky ? { pays: keepNode } : {}) };
+  const glowing = o.bloom.strength > 0;
+  const outputs = { output, ...(glowing ? { emissive } : {}), ...(sky ? { pays: keepNode } : {}) };
   scenePass.setMRT(mrt(outputs));
   const scene0 = scenePass.getTextureNode('output');
-  const color = sky ? applyAtmosphere(sky, camera, scene0, scenePass.getTextureNode('depth'), scenePass.getTextureNode('pays').r) : scene0;
-  const glow = bloom(scenePass.getTextureNode('emissive'), o.bloom.strength, o.bloom.radius, o.bloom.threshold);
-  const lit = color.add(glow);
+  const color = sky ? applyAtmosphere(sky, camera, scene0, scenePass.getTextureNode('depth'), scenePass.getTextureNode('pays').r, o.skyScale) : scene0;
+  const glow = glowing ? bloom(scenePass.getTextureNode('emissive'), o.bloom.strength, o.bloom.radius, o.bloom.threshold) : null;
+  glow?.setResolutionScale(o.bloom.scale);
+  const lit = glow ? color.add(glow) : color;
   const pipeline = new THREE.RenderPipeline(renderer);
-  // TRAA : MSAA coupé (samples 0), l'historique se réinitialise seul quand la profondeur change trop.
-  const final = o.traa ? traa(lit, scenePass.getTextureNode('depth'), scenePass.getTextureNode('velocity'), camera) : lit;
   pipeline.outputColorTransform = false;
-  const shown = renderOutput(final, o.toneMapping, THREE.SRGBColorSpace);
-  pipeline.outputNode = sky && !o.traa ? smaa(shown) : shown;
+  const shown = renderOutput(lit, o.toneMapping, THREE.SRGBColorSpace);
+  pipeline.outputNode = sky && o.smaa ? smaa(shown) : shown;
   const compilation = precompilation(() => scenePass.compileAsync(renderer));
   return {
     // pendant une précompilation, la cible de la passe est posée sur le renderer : l'image attend la suivante

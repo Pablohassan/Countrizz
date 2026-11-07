@@ -44,7 +44,7 @@ export function heavyUrls(tier: QualityTier, empreintes: Empreintes = EMPREINTES
   const size = tier === 'haute' ? '8k' : '4k';
   return [
     `/textures/day-${size}.ktx2`, `/textures/night-${size}.ktx2`, '/textures/surface-4k.ktx2',
-    '/textures/waves-512.ktx2', '/textures/relief-512.png',
+    '/textures/waves-512.ktx2', '/textures/wind-1440.ktx2', '/textures/relief-512.png',
     '/basis/basis_transcoder.js', '/basis/basis_transcoder.wasm',
     ...INTRO_URLS,
     '/data/borders.json', '/data/countries.json', '/data/imagery.json',

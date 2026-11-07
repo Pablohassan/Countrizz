@@ -32,5 +32,10 @@
   "url": "https://data.source.coop/giswqs/gebco-bathymetry/gebco_2026/gebco_2026.tif",
   "sha256": "2b887d20212cc6b862ebdec4c4b95f2778531f97f0c3a5cfd069ac5c90321f24",
   "bytes": 116640000
+ },
+ "wind": {
+  "url": "https://coastwatch.noaa.gov/erddap/griddap/noaacwBlendedWinds6hr.csv?u_wind[(2026-09-30T18:00:00Z)][(10.0)][(-89.75):1:(89.75)][(0.0):1:(359.75)],v_wind[(2026-09-30T18:00:00Z)][(10.0)][(-89.75):1:(89.75)][(0.0):1:(359.75)]",
+  "sha256": "19a3b5ba20d5fac7a1e2cd274161bac89329b92739bf6cba34fa621326161f66",
+  "bytes": 56435000
  }
 }

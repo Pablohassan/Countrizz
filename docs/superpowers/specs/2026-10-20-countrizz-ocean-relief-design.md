@@ -51,6 +51,28 @@ loi de Cox et Munk :
   été trouvée ; les paliers (4 à 11 m/s) sont réglés à l'œil sur la planche, dans l'ordre de grandeur de ces régimes, et
   documentés comme tels (`ocean.ts`, `WIND_BANDS`).
 
+### 1.2 bis Vent relevé (07/11/2026, demande de l'utilisateur : « surface complètement lisse »)
+
+- Constat : de loin, seul le reflet du soleil anime la mer, et le vent par latitude le laissait uniforme (une tache floue) ;
+  les vagues (§1.3) n'apparaissent qu'à moins de 204 m par pixel (4,5 pixels par tuile au cadrage de la France).
+- **Décision** : un vrai relevé de vent remplace les paliers par latitude — NOAA NCEI Blended Seawinds v2 (0,25°, six
+  heures, « publically available for use with citation »), relevé du 30/09/2026 à 18 h UTC lu par ERDDAP
+  (`noaacwBlendedWinds6hr`). Fronts, cyclones et calmes marbrent le reflet. Terre et glace comblées par la moyenne des
+  voisins de mer ; `wind-1440.ktx2`, 0 → 30 m/s en R, ETC1S (153 260 octets avec mipmaps ; écart quadratique de la
+  compression 0,305 m/s). Sans le fichier, les paliers par latitude restent.
+- Mesuré le 07/11 (GPU du Mac, format du Pixel 9) : pic du reflet à la verticale de 28° S, 80° O (1,7 m/s) contre 28° S, 40° E
+  (10,6 m/s), rapport 1,80 (vent par latitude : 1,00). Débit, même passe, alterné : vol 3,17 à 3,39 ms → 3,18 à 3,51 ;
+  pays 3,17 à 3,24 → 3,17 à 3,34 (au plus ≈ 0,1 à 0,2 ms, dans le bruit).
+
+### 1.2 ter Ciel reflété (07/11/2026)
+
+- **Décision** : avec l'atmosphère physique (WebGPU), la mer reflète le ciel que calcule la bibliothèque dans la direction
+  réfléchie (vagues comprises), relevée au-dessus de l'horizon, avec le Fresnel de Schlick de l'eau (F0 = 0,02) — lecture de
+  ses tables (`getIndirectLuminance`), sans marche du rayon (`skyLuminance`, `physicalSky.ts`). Remplace un bleu fixe
+  `vec3(0.3, 0.52, 0.95)`, qui ajoutait un liseré bleu clair au limbe (bleu moyen juste sous le limbe, physique contre fixe :
+  crépuscule 62,9 contre 69,7, jour 147,3 contre 154,2). Face à la caméra, F0 = 0,02 : 1 à 3 niveaux d'écart seulement.
+  Le repli WebGL 2 garde le bleu fixe.
+
 ### 1.3 Mer vivante
 
 - **Scintillement et vagues** : une petite texture de pentes de vagues (normal map RG, 512 × 512, répétable), fabriquée
@@ -168,3 +190,8 @@ profondeur ; caméra qui s'incline sur le pays visé.
 - Basis Universal (BinomialLLC, README, v2.5) : XUASTC LDR.
 - Copernicus Data Space : mosaïques trimestrielles Sentinel-2 sans nuages (piste pour les côtes).
 - NASA Blue Marble: Next Generation (juillet 2004), déjà dans `scripts/textures/config.ts`.
+- (07/11) NOAA NCEI Blended Seawinds v2.0 : métadonnées ERDDAP de `noaacwBlendedWinds6hr` (licence, couverture jusqu'au
+  30/09/2026, variables `u_wind`, `v_wind`, références) ; produit : coastwatch.noaa.gov/cwn/products/noaa-ncei-experimental-blended-seawinds-nbs-v2.html.
+- (07/11) `@takram/three-atmosphere` 0.19.1, sources lues : `runtime.ts` (`getIndirectLuminance`), `SkyNode.ts`,
+  `SkyEnvironmentNode.ts` (cube d'environnement pris à la caméra : faux vu de l'espace, écarté), `AtmosphereLightNode.ts`
+  (éclairement diffus du ciel seulement : pas de double compte avec le reflet).

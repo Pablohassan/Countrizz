@@ -32,7 +32,15 @@ export function windSpeed(latDeg: number): number {
   return b[b.length - 1]![1];
 }
 
-/** Nœud : vent (m/s) à la latitude `latDeg`, mêmes paliers que `windSpeed` ; une ondulation lente en longitude le varie. */
+/**
+ * Vent relevé (spec océan §1.2 bis, 07/11) : NOAA NCEI Blended Seawinds v2 du 30/09/2026 (scripts/textures, `wind-1440.ktx2`),
+ * vitesse 0 → `WIND_MAX_MS` en R, même cadre que la texture de jour. Fronts, cyclones et calmes sous le vent des îles
+ * marbrent le reflet du soleil, que les paliers par latitude laissaient uniforme (« surface complètement lisse »).
+ */
+export const WIND_MAX_MS = 30;
+export const windFieldNode = (tex: THREE.Texture, st: Node<'vec2'>): Node<'float'> => texture(tex, st).r.mul(WIND_MAX_MS);
+
+/** Repli sans le relevé (fichier absent) — nœud : vent (m/s) à la latitude `latDeg`, mêmes paliers que `windSpeed` ; une ondulation lente en longitude le varie. */
 export function windNode(latDeg: Node<'float'>, lngRad: Node<'float'>): Node<'float'> {
   const b = WIND_BANDS;
   let v: Node<'float'> = float(b[0]![1]);

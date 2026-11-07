@@ -23,7 +23,11 @@ export type CountryState = keyof typeof STATE;
 
 /** Habillage du mode jeu ; absent en mode masque. */
 /** `sky` : atmosphère physique du renderer (WebGPU, physicalSky.ts) ; absente, le halo approché d'atmosphere.ts. */
-export interface GlobeParts { textures?: GlobeTextures; borders?: LngLat[][]; relief?: ReliefGrid | null; sky?: PhysicalSky | null }
+export interface GlobeParts {
+  textures?: GlobeTextures; borders?: LngLat[][]; relief?: ReliefGrid | null; sky?: PhysicalSky | null;
+  /** Reflet du ciel sur la mer : `fixe` = l'ancien bleu de jour (planches et leurres de la page de sonde). */
+  seaSky?: 'physique' | 'fixe';
+}
 
 /** Une photo posée dans un emplacement : son cadre, sa texture, son opacité propre (fondu du relais). */
 export interface ImageSlot { meta: { center: LngLat; extentRad: number }; tex: THREE.Texture; opacity: number }
@@ -68,7 +72,7 @@ export class Globe {
   constructor(readonly mode: GlobeMode, parts: GlobeParts = {}) {
     if (mode === 'game' && parts.textures) {
       const sky = parts.sky ?? null;
-      const earth = createEarthMaterial(parts.textures, sky !== null);
+      const earth = createEarthMaterial(parts.textures, sky, parts.seaSky);
       this.earthMaterial = earth.material;
       this.images = [...earth.images];
       this.setDayNightTex = earth.setDayNight;

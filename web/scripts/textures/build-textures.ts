@@ -9,10 +9,11 @@ import { EOX } from '../imagery/config';
 import { snapGrid } from '../imagery/lib/grid';
 import { loadMosaic } from '../imagery/lib/mosaic';
 import { IMG_CACHE_DIR } from '../imagery/paths';
-import { BUDGET_BYTES, COLOR_SIZES, CREDITS, DAY_S2, ELEVATION_MAX_M, GEBCO_2026, SURFACE_SIZE, TEXTURE_SOURCES, WAVES } from './config';
+import { BUDGET_BYTES, COLOR_SIZES, CREDITS, DAY_S2, ELEVATION_MAX_M, GEBCO_2026, SURFACE_SIZE, TEXTURE_SOURCES, WAVES, WIND, WIND_SOURCE } from './config';
 import { encodeElevation } from './lib/elevation';
 import { seaFill } from './lib/seaFill';
 import { waveSet, waveTexture } from './lib/waves';
+import { encodeWind, parseWindCsv } from './lib/wind';
 import { polarFill } from './lib/polarFill';
 import { rasterizeLandMask } from './lib/landMask';
 import { NE_COUNTRIES, TEX_CACHE_DIR, TEX_OUT_DIR, TEX_REPORT_PATH } from './paths';
@@ -107,6 +108,23 @@ async function wavesTexture(): Promise<string> {
   return name;
 }
 
+/**
+ * Vent (spec océan §1.2 bis) : vitesse en R (0 → WIND.maxMs), même cadre que le jour ; ETC1S linéaire, mipmaps. Essai du
+ * 07/11 (sans mipmaps) : ETC1S 97 634 octets, écart quadratique 0,305 m/s ; UASTC avec RDO 264 421 octets, 0,284 m/s ; UASTC
+ * avec mipmaps 715 858 octets — un champ lisse n'y gagne rien.
+ */
+async function windTexture(): Promise<string> {
+  const { width: w, height: h, maxMs } = WIND;
+  const speed = encodeWind(parseWindCsv(readFileSync(path.join(TEX_CACHE_DIR, WIND_SOURCE.file), 'utf8')), w, h, maxMs);
+  const rgb = Buffer.alloc(w * h * 3);
+  for (let i = 0; i < w * h; i++) rgb[i * 3] = speed[i]!;
+  const png = path.join(TMP, `wind-${w}.png`);
+  await sharp(rgb, { raw: { width: w, height: h, channels: 3 } }).png().toFile(png);
+  const name = `wind-${w}.ktx2`;
+  toktx(['--t2', '--encode', 'etc1s', '--clevel', '4', '--qlevel', '255', '--genmipmap', '--assign_oetf', 'linear', '--lower_left_maps_to_s0t0', path.join(TEX_OUT_DIR, name), png]);
+  return name;
+}
+
 async function main(): Promise<void> {
   checkToktx();
   mkdirSync(TMP, { recursive: true });
@@ -122,16 +140,17 @@ async function main(): Promise<void> {
   }
   names.push(faire('surface') ? await surfaceTexture(SURFACE_SIZE) : outName('surface', SURFACE_SIZE));
   names.push(faire('waves') ? await wavesTexture() : `waves-${WAVES.size}.ktx2`);
+  names.push(faire('wind') ? await windTexture() : `wind-${WIND.width}.ktx2`);
   writeJson(path.join(TEX_OUT_DIR, 'credits.json'), CREDITS);
 
   const bytes = Object.fromEntries(names.map((n) => [n, statSync(path.join(TEX_OUT_DIR, n)).size]));
-  const tier = (s: string) => bytes[`day-${s}.ktx2`]! + bytes[`night-${s}.ktx2`]! + bytes['surface-4k.ktx2']! + bytes[`waves-${WAVES.size}.ktx2`]!;
+  const tier = (s: string) => bytes[`day-${s}.ktx2`]! + bytes[`night-${s}.ktx2`]! + bytes['surface-4k.ktx2']! + bytes[`waves-${WAVES.size}.ktx2`]! + bytes[`wind-${WIND.width}.ktx2`]!;
   const lines = [
     '# Textures globales — rapport de génération', '',
     '| Fichier | Octets |', '|---|---:|',
     ...names.map((n) => `| ${n} | ${bytes[n]} |`), '',
-    `- Niveau « standard » (day-4k + night-4k + surface-4k + vagues) : ${tier('4k')} octets (budget ${BUDGET_BYTES.standard})`,
-    `- Niveau « haute » (day-8k + night-8k + surface-4k + vagues) : ${tier('8k')} octets (budget ${BUDGET_BYTES.haute})`, '',
+    `- Niveau « standard » (day-4k + night-4k + surface-4k + vagues + vent) : ${tier('4k')} octets (budget ${BUDGET_BYTES.standard})`,
+    `- Niveau « haute » (day-8k + night-8k + surface-4k + vagues + vent) : ${tier('8k')} octets (budget ${BUDGET_BYTES.haute})`, '',
   ];
   writeFileSync(TEX_REPORT_PATH, lines.join('\n'));
   rmSync(TMP, { recursive: true, force: true });

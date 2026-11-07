@@ -29,6 +29,18 @@ export const ELEVATION_MAX_M = 8850;
 /** Vagues (spec océan §1.3) : pentes répétables, 512 × 512, 48 houles. */
 export const WAVES = { size: 512, count: 48 } as const;
 
+/**
+ * Vent de surface (spec océan §1.2 bis, 07/11) : NOAA NCEI Blended Seawinds v2 (0,25°, six heures, « publically available
+ * for use with citation »), un seul relevé lu par ERDDAP. Le dernier publié au 07/11/2026 (couverture jusqu'au 30/09/2026).
+ */
+const WIND_QUERY = '[(2026-09-30T18:00:00Z)][(10.0)][(-89.75):1:(89.75)][(0.0):1:(359.75)]';
+export const WIND_SOURCE = {
+  url: `https://coastwatch.noaa.gov/erddap/griddap/noaacwBlendedWinds6hr.csv?u_wind${WIND_QUERY},v_wind${WIND_QUERY}`,
+  file: 'nbs-v2-20260930T18.csv',
+} as const;
+/** Texture du vent : grille de la source (1 440 × 720, ligne polaire comprise), 0 → 30 m/s sur 0 → 255. */
+export const WIND = { width: 1440, height: 720, maxMs: 30 } as const;
+
 export const COLOR_SIZES = [8192, 4096] as const;
 export const SURFACE_SIZE = 4096;
 /** Budget des textures globales par niveau de qualité (spec §10.5) ; un dépassement se soumet à l'utilisateur. */
@@ -39,4 +51,5 @@ export const CREDITS = [
   { layer: 'nuit', text: 'Black Marble 2016, NASA Earth Observatory images by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA GSFC.' },
   { layer: 'relief', text: 'GEBCO Bathymetric Compilation Group 2026 (2026). The GEBCO_2026 Grid - a continuous terrain model for oceans and land at 15 arc-second intervals. NERC EDS British Oceanographic Data Centre NOC. doi:10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa' },
   { layer: 'océans', text: 'Masque terre/mer dérivé de Natural Earth (domaine public).' },
+  { layer: 'vent', text: 'Vent de surface du 30/09/2026 : NOAA NCEI Blended Seawinds (NBS) v2.0, https://coastwatch.noaa.gov/cwn/products/noaa-ncei-experimental-blended-seawinds-nbs-v2.html ; Zhang, H.-M., J. J. Bates et R. W. Reynolds (2006), Geophysical Research Letters, 33, L17714.' },
 ] as const;

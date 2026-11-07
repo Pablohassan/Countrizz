@@ -43,6 +43,7 @@ declare global { interface Window { __probe?: ProbeApi } }
  * Page de sonde (dev seulement). Paramètres :
  * - `cca3` : pays cadré comme en jeu ; sinon `at=lng,lat` et `alt` : pose explicite ;
  * - `mode=game` : textures, halo, étoiles (sinon masque) ; `tier=haute` : textures 8K ; `sun=lng,lat` : soleil forcé ;
+ * - `vent=bandes` : vent par latitude au lieu du relevé ; `reflet=fixe` : ciel reflété par la mer en bleu fixe (avant le 07/11) ;
  * - `w`, `h` : taille ; `webgl` : repli WebGL 2 forcé ;
  * - `reveal`, `state`, `t` : apparence du pays (défaut : question, vague et mise en scène achevées, t = 3 s) ;
  * - `borders` : frontières de vue d'ensemble ;
@@ -75,12 +76,15 @@ renderer.setSize(width, height);
 
 const mode = q.get('mode') === 'game' ? 'game' : 'mask';
 const textures = mode === 'game' ? await loadGlobeTextures(renderer, q.get('tier') === 'haute' ? 'haute' : 'standard') : undefined;
+// `vent=bandes` : sans le vent relevé, la mer prend le vent par latitude (avant le 07/11)
+if (textures && q.get('vent') === 'bandes') { textures.wind?.dispose(); textures.wind = null; }
 const borders = q.has('borders') ? ((await (await fetch('/data/borders.json')).json()) as LngLat[][]) : undefined;
 // atmosphère physique : WebGPU en mode jeu, sauf `atmo=approchee` (planches avant/après)
 const sky = mode === 'game' && backend === 'webgpu' && q.get('atmo') !== 'approchee' ? installPhysicalSky(renderer) : null;
 // `pas=n` : pas de la marche du rayon de l'atmosphère (SKY_STEPS)
 if (sky && q.has('pas')) sky.context.scatteringSampleCount.value.set(Number(q.get('pas')), Number(q.get('pas')));
-const globe = new Globe(mode, { textures, borders, relief: borders ? await loadReliefGrid('/') : null, sky });
+// `reflet=fixe` : reflet du ciel sur la mer en bleu fixe (avant le 07/11)
+const globe = new Globe(mode, { textures, borders, relief: borders ? await loadReliefGrid('/') : null, sky, seaSky: q.get('reflet') === 'fixe' ? 'fixe' : 'physique' });
 const camera = new OffsetCamera(FOV_Y_DEG, width / height, 0.001, 100);
 // `seg=n` : sphère de la Terre à n × n/2 segments (512 dans le jeu ; coût des sommets, 06/11)
 if (q.has('seg')) globe.root.traverse((o) => { const m = o as THREE.Mesh; if (m.geometry instanceof THREE.SphereGeometry && m.material === globe.earthMaterial) { m.geometry.dispose(); m.geometry = new THREE.SphereGeometry(1, Number(q.get('seg')), Number(q.get('seg')) / 2); } });

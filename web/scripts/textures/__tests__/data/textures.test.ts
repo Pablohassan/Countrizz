@@ -11,6 +11,8 @@ const FILES = [
   { name: 'night-8k.ktx2', width: 8192, supercompression: 1 },
   { name: 'night-4k.ktx2', width: 4096, supercompression: 1 },
   { name: 'surface-4k.ktx2', width: 4096, supercompression: 2 },
+  // vent (spec océan §1.2 bis) : grille de la source, ETC1S (BasisLZ)
+  { name: 'wind-1440.ktx2', width: 1440, supercompression: 1 },
 ];
 const size = (n: string) => statSync(path.join(TEX_OUT_DIR, n)).size;
 
@@ -21,7 +23,7 @@ describe('textures globales générées', () => {
       if (!existsSync(p)) throw new Error(`${f.name} absent : lancer \`npm run textures:fetch && npm run textures\``);
       const h = readKtx2Header(readFileSync(p));
       expect([h.width, h.height]).toEqual([f.width, f.width / 2]);
-      expect(h.levels).toBe(Math.log2(f.width) + 1);
+      expect(h.levels).toBe(Math.floor(Math.log2(f.width)) + 1);
       expect(h.supercompression).toBe(f.supercompression);
       expect(h.kv.KTXorientation).toBe('ru');
     });
@@ -30,8 +32,8 @@ describe('textures globales générées', () => {
     expect(size('day-4k.ktx2') + size('night-4k.ktx2') + size('surface-4k.ktx2')).toBeLessThanOrEqual(BUDGET_BYTES.standard);
     expect(size('day-8k.ktx2') + size('night-8k.ktx2') + size('surface-4k.ktx2')).toBeLessThanOrEqual(BUDGET_BYTES.haute);
   });
-  it('publie les crédits des quatre couches (sans nuages depuis le 06/11)', () => {
-    expect((JSON.parse(readFileSync(path.join(TEX_OUT_DIR, 'credits.json'), 'utf8')) as { layer: string }[]).map((c) => c.layer)).toEqual(['jour', 'nuit', 'relief', 'océans']);
+  it('publie les crédits des cinq couches (sans nuages depuis le 06/11, vent depuis le 07/11)', () => {
+    expect((JSON.parse(readFileSync(path.join(TEX_OUT_DIR, 'credits.json'), 'utf8')) as { layer: string }[]).map((c) => c.layer)).toEqual(['jour', 'nuit', 'relief', 'océans', 'vent']);
   });
   it('le jour crédite EOxCloudless 2025 avec l’attribution exacte (spec §9)', () => {
     const credits = JSON.parse(readFileSync(path.join(TEX_OUT_DIR, 'credits.json'), 'utf8')) as { layer: string; text: string }[];

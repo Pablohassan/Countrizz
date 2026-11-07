@@ -1,7 +1,7 @@
 import * as THREE from 'three/webgpu';
 import { abs, context, float, floor, fract, mix, nodeObject, rtt, select, uv, vec2, vec3, vec4 } from 'three/tsl';
 import type Node from 'three/src/nodes/core/Node.js';
-import { aerialPerspective, AtmosphereContext, AtmosphereLight, AtmosphereLightNode, type AtmosphereParameters } from '@takram/three-atmosphere/webgpu';
+import { aerialPerspective, AtmosphereContext, AtmosphereLight, AtmosphereLightNode, getIndirectLuminance, type AtmosphereParameters } from '@takram/three-atmosphere/webgpu';
 import { Ellipsoid } from '@takram/three-geospatial';
 import { stbnTexture } from '@takram/three-geospatial/webgpu';
 import type { Vec3 } from '../geo/vec';
@@ -91,6 +91,11 @@ export function installPhysicalSky(renderer: THREE.WebGPURenderer): PhysicalSky 
   // la surface vue de l'espace, seul le roussissement de la transmittance reste (vu le 20/10)
   ctx.raymarchScattering = true;
   ctx.scatteringSampleCount.value.set(...SKY_STEPS);
+  // Tables lues au niveau 0, sans dérivées : le reflet du ciel sur la mer (`skyLuminance`) les lit dans les branches de la
+  // bibliothèque, qui dépendent du pixel (lecture à niveau implicite là : résultat indéfini, e2e shader-uniformity, 07/11).
+  // Elles n'ont qu'un niveau : même image. `sample()` garde le niveau (OutputTextureNode.clone).
+  for (const name of ['transmittance', 'multipleScattering', 'irradiance'] as const) ctx.lutNode.getTextureNode(name).levelNode = float(0);
+  for (const name of ['scattering', 'singleMieScattering', 'higherOrderScattering'] as const) ctx.lutNode.getTextureNode(name).levelNode = float(0);
   (stbnTexture as unknown as { url: string }).url = jitterUrl();
   renderer.contextNode = context({ ...(renderer.contextNode.value as object), getAtmosphere: () => ctx });
   // types de la bibliothèque écrits pour @types/three 0.183 (update() rend void, 0.186 attend boolean | undefined)
@@ -114,6 +119,19 @@ export function installPhysicalSky(renderer: THREE.WebGPURenderer): PhysicalSky 
   };
   skies.set(renderer, sky);
   return sky;
+}
+
+/**
+ * Luminance du ciel vu depuis `pointWorld` (à la surface) dans la direction `dirWorld`, à l'échelle de la lumière de la scène
+ * (`exposure`) : le reflet du ciel sur la mer (spec océan §1.2 ter, 07/11). Lecture des tables de la bibliothèque
+ * (`getIndirectLuminance`, Bruneton), sans marche du rayon ; repère du monde = ECEF de la bibliothèque, comme sa lumière
+ * (AtmosphereLightNode : position × worldToUnit). Remplace un bleu fixe : le ciel du crépuscule rougit le reflet, la nuit
+ * l'éteint.
+ */
+export function skyLuminance(sky: PhysicalSky, pointWorld: Node<'vec3'>, dirWorld: Node<'vec3'>): Node<'vec3'> {
+  const { parametersNode, sunDirectionECEF } = sky.context;
+  const transfer = getIndirectLuminance(pointWorld.mul(parametersNode.worldToUnit as unknown as Node<'float'>), dirWorld, vec2(0), sunDirectionECEF);
+  return (transfer.get('luminance') as unknown as Node<'vec3'>).mul(sky.calibration.exposure);
 }
 
 export const physicalSkyOf = (renderer: THREE.WebGPURenderer): PhysicalSky | null => skies.get(renderer) ?? null;

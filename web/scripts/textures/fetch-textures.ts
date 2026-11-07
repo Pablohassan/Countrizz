@@ -6,7 +6,7 @@ import { EOX } from '../imagery/config';
 import { snapGrid } from '../imagery/lib/grid';
 import { loadMosaic, type FetchedTile } from '../imagery/lib/mosaic';
 import { IMG_CACHE_DIR } from '../imagery/paths';
-import { DAY_S2, GEBCO_2026, TEXTURE_SOURCES } from './config';
+import { DAY_S2, GEBCO_2026, TEXTURE_SOURCES, WIND_SOURCE } from './config';
 import { TEX_CACHE_DIR, TEX_LOCK_PATH } from './paths';
 
 interface LockEntry { url: string; sha256: string; bytes: number }
@@ -53,6 +53,18 @@ async function main(): Promise<void> {
     writeBytes(gebco, bytes);
     lock.gebco2026 = { url: GEBCO_2026.url, sha256: hash, bytes: bytes.length };
     console.log(`gebco2026 : ${bytes.length} octets`);
+  }
+  // Vent (NOAA NCEI Blended Seawinds) : un relevé, CSV d'ERDDAP d'environ 50 Mo ; l'empreinte se fige au premier téléchargement
+  const wind = path.join(TEX_CACHE_DIR, WIND_SOURCE.file);
+  if (lock.wind && existsSync(wind) && sha256(readFileSync(wind)) === lock.wind.sha256) {
+    console.log(`wind : déjà en cache (${lock.wind.bytes} octets)`);
+  } else {
+    const bytes = await fetchBytes(WIND_SOURCE.url);
+    const hash = sha256(bytes);
+    if (lock.wind && lock.wind.sha256 !== hash) throw new Error(`wind : empreinte différente du verrou (${lock.wind.sha256} attendu, ${hash} reçu)`);
+    writeBytes(wind, bytes);
+    lock.wind = { url: WIND_SOURCE.url, sha256: hash, bytes: bytes.length };
+    console.log(`wind : ${bytes.length} octets`);
   }
   // Jour Sentinel-2 : réponses WMS en cache ; une empreinte qui change (EOX a refait ses tuiles) arrête tout — retirer
   // l'entrée « s2day » du verrou pour accepter le nouveau rendu après l'avoir regardé.

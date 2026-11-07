@@ -1,5 +1,7 @@
 /* Accueil H3 (valeurs de la maquette validée, téléphone 390 × 844) ; colonne centrée de 440 px au plus sur bureau. */
-.accueil { position: absolute; inset: 0; pointer-events: none; font-family: var(--cartoon); color: #fff; }
+/* `overflow: clip` : le panneau des modes, caché à 40 px à droite pour son entrée, et ses boutons inclinés élargissaient la page
+   (434 px au format du Pixel 9) ; coupé au bord de l'écran, sans zone de défilement (07/11). */
+.accueil { position: absolute; inset: 0; overflow: clip; pointer-events: none; font-family: var(--cartoon); color: #fff; }
 .accueil > * { pointer-events: auto; }
 .accueil-lang { position: absolute; top: calc(56px + env(safe-area-inset-top, 0px)); right: max(18px, calc(50% - 202px)); display: flex; border: 2px solid var(--pate-bord); border-radius: 10px; overflow: hidden;
   box-shadow: var(--flanc-nuit-4), -6px 8px 10px rgb(0 0 0 / .55), var(--halo-violet); transition: opacity .25s ease; }

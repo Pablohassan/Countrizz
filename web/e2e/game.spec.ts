@@ -376,3 +376,22 @@ for (const [nom, viewport] of [['iPhone 14', { width: 390, height: 844 }], ['iPh
     });
   });
 }
+
+/**
+ * L'accueil ne déborde pas (07/11) : le panneau des modes, caché à 40 px à droite pour son entrée glissée, et ses boutons
+ * inclinés élargissaient la page (434 px au format du Pixel 9, 412 à 390 px) ; pour cliquer « Pays », Playwright la faisait
+ * défiler de 22 px et le crédit sortait de l'écran (game.spec, « crédit EOX », échec intermittent du 07/11).
+ */
+for (const viewport of [{ width: 412, height: 915 }, { width: 390, height: 844 }]) {
+  test.describe(`accueil ${viewport.width} × ${viewport.height}`, () => {
+    test.use({ viewport, isMobile: true, hasTouch: true });
+    test('la page garde la largeur de l’écran, à l’accueil comme au choix du mode', async ({ page }) => {
+      await openHome(page);
+      const largeur = () => page.evaluate(() => document.documentElement.scrollWidth);
+      expect(await largeur(), 'accueil').toBeLessThanOrEqual(viewport.width);
+      await page.getByRole('button', { name: /^(Jouer|Play)/ }).click();
+      await expect(page.locator('.mode-bouton')).toHaveCount(3);
+      expect(await largeur(), 'choix du mode').toBeLessThanOrEqual(viewport.width);
+    });
+  });
+}

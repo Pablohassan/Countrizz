@@ -14,5 +14,9 @@
  {
   "layer": "océans",
   "text": "Masque terre/mer dérivé de Natural Earth (domaine public)."
+ },
+ {
+  "layer": "vent",
+  "text": "Vent de surface du 30/09/2026 : NOAA NCEI Blended Seawinds (NBS) v2.0, https://coastwatch.noaa.gov/cwn/products/noaa-ncei-experimental-blended-seawinds-nbs-v2.html ; Zhang, H.-M., J. J. Bates et R. W. Reynolds (2006), Geophysical Research Letters, 33, L17714."
  }
 ]

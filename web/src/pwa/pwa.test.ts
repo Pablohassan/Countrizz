@@ -38,7 +38,7 @@ describe('caches de l’appareil', () => {
     expect(heavyUrls('standard')).toContain('/textures/day-4k.ktx2');
     expect(heavyUrls('standard')).not.toContain('/textures/day-8k.ktx2');
     expect(heavyUrls('haute')).toContain('/textures/day-8k.ktx2');
-    expect(heavyUrls('standard')).toEqual(expect.arrayContaining(['/textures/waves-512.ktx2', '/textures/relief-512.png']));
+    expect(heavyUrls('standard')).toEqual(expect.arrayContaining(['/textures/waves-512.ktx2', '/textures/wind-1440.ktx2', '/textures/relief-512.png']));
     expect(heavyUrls('haute')).toEqual(expect.arrayContaining(['/intro/affiche-portrait.webp', '/intro/affiche-paysage.webp', '/intro/ancres.json']));
     expect(heavyUrls('haute').filter((u) => u.startsWith('/video/') || u.endsWith('.jpg'))).toEqual([]);
   });

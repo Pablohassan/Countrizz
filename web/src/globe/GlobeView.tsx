@@ -332,12 +332,12 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
       if (!r.ok) throw new Error(`borders.json : HTTP ${r.status}`);
       return (await r.json()) as LngLat[][];
     };
-    // chaque essai repart de 0 : 4 textures et les frontières (soulevées par la grille du relief, facultative)
+    // chaque essai repart de 0 : 5 textures et les frontières (soulevées par la grille du relief, facultative)
     const attempt = () => {
-      const progress = createProgress(5, (p) => onLoadingRef.current(p));
+      const progress = createProgress(6, (p) => onLoadingRef.current(p));
       return Promise.all([
         loadGlobeTextures(renderer, loadTier, '/', (i, f) => progress.update(i, f)),
-        loadBorders().finally(() => progress.update(4, 1)),
+        loadBorders().finally(() => progress.update(5, 1)),
         loadReliefGrid('/'),
       ]);
     };

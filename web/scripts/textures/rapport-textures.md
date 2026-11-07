@@ -8,6 +8,7 @@
 | night-4k.ktx2 | 323745 |
 | surface-4k.ktx2 | 1830066 |
 | waves-512.ktx2 | 246049 |
+| wind-1440.ktx2 | 153260 |
 
-- Niveau « standard » (day-4k + night-4k + surface-4k + vagues) : 3139441 octets (budget 15000000)
-- Niveau « haute » (day-8k + night-8k + surface-4k + vagues) : 5924838 octets (budget 25000000)
+- Niveau « standard » (day-4k + night-4k + surface-4k + vagues + vent) : 3292701 octets (budget 15000000)
+- Niveau « haute » (day-8k + night-8k + surface-4k + vagues + vent) : 6078098 octets (budget 25000000)

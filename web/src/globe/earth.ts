@@ -1,10 +1,11 @@
 import * as THREE from 'three/webgpu';
-import { abs, asin, atan, cameraPosition, clamp, cross, dot, float, fwidth, length, max, mix, normalize, normalLocal, output, positionLocal, positionWorld, pow, smoothstep, sqrt, texture, transformNormalToView, uniform, uv, vec2, vec3, vec4 } from 'three/tsl';
+import { abs, asin, atan, cameraPosition, clamp, cross, dot, float, fwidth, length, max, mix, normalize, normalLocal, output, positionLocal, positionWorld, pow, reflect, smoothstep, sqrt, texture, transformNormalToView, uniform, uv, vec2, vec3, vec4 } from 'three/tsl';
 import type Node from 'three/src/nodes/core/Node.js';
 import type { Vec3 } from '../geo/vec';
 import { exactSpherePoint } from './frameNodes';
 import { createImageLayer } from './imageLayer';
-import { pixelFootprint, SEAWATER_IOR, seaRoughness, waveSlopes, windNode } from './ocean';
+import { pixelFootprint, SEAWATER_IOR, seaRoughness, waveSlopes, windFieldNode, windNode } from './ocean';
+import { skyLuminance, type PhysicalSky } from './physicalSky';
 import { createLift, liftHeight, RELIEF_LIFT } from './relief';
 import { exposureGainNode } from './spotlight';
 import type { GlobeTextures } from './textures';
@@ -33,7 +34,8 @@ export const NIGHT_FLOOR = 0.045;
  * reflet du soleil, Fresnel du ciel), lumières de la face nocturne. Sans nuages depuis le 06/11 : figés sur la Terre, effacés à chaque
  * arrivée, ils n'apportaient rien au jeu (« pas suffisamment intéressant », l'utilisateur) et coûtaient 10 % du GPU.
  */
-export function createEarthMaterial(t: GlobeTextures, physicalSky = false) {
+export function createEarthMaterial(t: GlobeTextures, atmo: PhysicalSky | null = null, seaSky: 'physique' | 'fixe' = 'physique') {
+  const physicalSky = atmo !== null;
   const sun = uniform(new THREE.Vector3(1, 0, 0));
   /** Saturation de la texture de jour (1 = telle quelle ; planche de réglage du Sahara). */
   const saturation = uniform(1);
@@ -72,9 +74,10 @@ export function createEarthMaterial(t: GlobeTextures, physicalSky = false) {
   const shadeN = normalize(vec3(gE.mul(-HILLSHADE.exaggeration), gN.mul(-HILLSHADE.exaggeration), 1));
   const hillshade = mix(float(1), clamp(dot(shadeN, vec3(-0.5, 0.5, Math.SQRT1_2)).div(Math.SQRT1_2), HILLSHADE.min, HILLSHADE.max), reliefShown.mul(HILLSHADE.strength));
 
-  // Mer (spec océan §1.2–1.3) : vent par latitude (rugosité de Cox et Munk), vagues qui glissent en approchant.
+  // Mer (spec océan §1.2–1.3) : vent relevé (rugosité de Cox et Munk ; par latitude sans le fichier), vagues qui glissent en
+  // approchant.
   const latDeg = asin(clamp(P.y, -1, 1)).mul(180 / Math.PI), lngRad = atan(P.z.negate(), P.x);
-  const wind = windNode(latDeg, lngRad);
+  const wind = t.wind ? windFieldNode(t.wind, st) : windNode(latDeg, lngRad);
   const waves = t.waves ? waveSlopes(t.waves, st, pixelFootprint(positionWorld)) : null;
   const seaNormal = waves ? normalize(P.sub(east.mul(waves.slope.x).add(north.mul(waves.slope.y)))) : P;
   material.normalNode = normalize(transformNormalToView(normalize(mix(relief, seaNormal, sea))));
@@ -104,7 +107,16 @@ export function createEarthMaterial(t: GlobeTextures, physicalSky = false) {
   const veilColor = mix(vec3(1.0, 0.55, 0.25), vec3(0.32, 0.55, 1.0), dusk);
   const veil = day.mul(grazing.mul(0.35).add(0.03));
   const fresnel = pow(float(1).sub(ndv), float(5)).mul(0.98).add(0.02);
-  const sky = vec3(0.3, 0.52, 0.95).mul(day).mul(sea).mul(fresnel).mul(0.55);
+  // Avec l'atmosphère physique (spec océan §1.2 ter) : le ciel vu dans la direction réfléchie par la mer, vagues comprises,
+  // relevée au-dessus de l'horizon ; Fresnel de Schlick sur la normale de la mer. Sinon (ou `seaSky = fixe`, planches), un
+  // bleu de jour.
+  const seaView = clamp(dot(seaNormal, view), 0, 1);
+  const r = reflect(view.negate(), seaNormal);
+  const rSky = normalize(r.add(P.mul(max(dot(r, P).negate(), 0).add(0.01))));
+  const seaFresnel = pow(float(1).sub(seaView), float(5)).mul(0.98).add(0.02);
+  const sky = atmo && seaSky === 'physique'
+    ? skyLuminance(atmo, P, rSky).mul(seaFresnel).mul(sea)
+    : vec3(0.3, 0.52, 0.95).mul(day).mul(sea).mul(fresnel).mul(0.55);
   // Atmosphère physique (spec atmosphère §2.2) : le voile vient de la perspective aérienne, en post-traitement.
   const base = physicalSky ? vec4(output.rgb.add(sky), output.a) : vec4(mix(output.rgb, veilColor.mul(day.mul(0.9).add(0.1)), veil).add(sky), output.a);
   // Exposition locale du pays visé tirée de sa photo (spec mise en avant §2, « éclaircir les ombres » du tirage) : luminance des

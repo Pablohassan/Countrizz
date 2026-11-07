@@ -133,8 +133,12 @@ export const SKY_RESOLUTION = 0.25;
  * GPU à l'accueil (Pixel 9 à la densité 2,5, GPU du Mac : 2,7 ms sur 4,2). Un nombre constant, 24 : 2,2 ms en tout, et une
  * image plus proche d'une intégration fine à 64 pas (écart moyen 0,67 sur 255 contre 0,93, max 16 contre 18 ; analyse du
  * manque de fluidité sur téléphone, 23/10). À moins de pas, le voile bleu faiblit (16 : 1,37 en moyenne ; 4 : 6,2).
+ * Puis 64 (07/11) : avec l'atmosphère au seizième des pixels (`SKY_RESOLUTION`), le décalage des 24 pas (`jitterVolume`)
+ * s'étirait en un quadrillage de losanges sur la mer et dans le voile, vu par l'utilisateur sur le Pixel 9 et sur le Mac
+ * (1.23) ; 48 le laisse deviner, 64 l'efface. Prix : vol 1,94 → 2,23 ms par image (GPU du Mac, format du Pixel 9), moins
+ * que l'atmosphère au quart des pixels (2,56).
  */
-export const SKY_STEPS: [number, number] = [24, 24];
+export const SKY_STEPS: [number, number] = [64, 64];
 
 /**
  * Agrandissement des deux calculs réduits sans baver au limbe : pour chaque pixel, seuls les quatre texels réduits voisins

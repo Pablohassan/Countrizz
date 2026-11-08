@@ -1,0 +1,5943 @@
+{
+ "AFG": {
+  "principal": {
+   "nom": "Minaret de Djam",
+   "type": "ouvrage",
+   "qid": "Q192981",
+   "wikidata": "Djâm",
+   "description": "minaret in Afghanistan",
+   "coord": [
+    64.515888,
+    34.396386
+   ],
+   "auteurs": [],
+   "debut": 1194,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1194)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ZAF": {
+  "principal": {
+   "nom": "Montagne de la Table",
+   "type": "nature",
+   "qid": "Q213360",
+   "wikidata": "montagne de la Table",
+   "description": "massif qui surplombe la ville du Cap, en Afrique du Sud",
+   "coord": [
+    18.41352,
+    -33.96216
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ALB": {
+  "principal": {
+   "nom": "Butrint",
+   "type": "ouvrage",
+   "qid": "Q188694",
+   "wikidata": "Butrint",
+   "description": "ville d'Albanie",
+   "coord": [
+    20.016628,
+    39.757066
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "DZA": {
+  "principal": {
+   "nom": "Mémorial du Martyr (Maqam Echahid)",
+   "type": "ouvrage",
+   "qid": "Q3056085",
+   "wikidata": "mémorial du martyr",
+   "description": "monument aux morts situé à Alger érigé en 1982, Algérie",
+   "coord": [
+    3.0697222222222,
+    36.745833333333
+   ],
+   "auteurs": [
+    {
+     "nom": "Bachir Yellès",
+     "naissance": 1921,
+     "mort": 2022
+    }
+   ],
+   "debut": 1982,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2093,
+    "motif": "Bachir Yellès mort en 2022"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Timgad",
+   "type": "ouvrage",
+   "qid": "Q459629",
+   "wikidata": "Timgad",
+   "description": "cité antique en Algérie",
+   "coord": [
+    6.468666,
+    35.484237
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "DEU": {
+  "principal": {
+   "nom": "Porte de Brandebourg",
+   "type": "ouvrage",
+   "qid": "Q82425",
+   "wikidata": "porte de Brandebourg",
+   "description": "monument allemand situé à Berlin",
+   "coord": [
+    13.377722222222,
+    52.516272222222
+   ],
+   "auteurs": [
+    {
+     "nom": "Carl Gotthard Langhans",
+     "naissance": 1732,
+     "mort": 1808
+    },
+    {
+     "nom": "Heinrich Strack",
+     "naissance": 1805,
+     "mort": 1880
+    }
+   ],
+   "debut": 1791,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1951,
+    "motif": "Heinrich Strack mort en 1880"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "AND": {
+  "principal": {
+   "nom": "Casa de la Vall",
+   "type": "ouvrage",
+   "qid": "Q1046548",
+   "wikidata": "casa de la Vall",
+   "description": "bâtiment accueillant anciennement le Conseil général d'Andorre",
+   "coord": [
+    1.5205555555556,
+    42.506666666667
+   ],
+   "auteurs": [],
+   "debut": 1580,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1580)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "AGO": {
+  "principal": {
+   "nom": "Forteresse São Miguel de Luanda",
+   "type": "ouvrage",
+   "qid": "Q1408988",
+   "wikidata": "Fortress of São Miguel",
+   "description": "bâtiment en Afrique",
+   "coord": [
+    13.223222222222,
+    -8.8078611111111
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ATG": {
+  "principal": {
+   "nom": "Nelson's Dockyard",
+   "type": "ouvrage",
+   "qid": "Q1435206",
+   "wikidata": "chantier naval d'Antigua",
+   "description": "site du patrimoine mondial à Antigua-et-Barbuda",
+   "coord": [
+    -61.764444444444,
+    17.008333333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SAU": {
+  "principal": {
+   "nom": "Qasr al-Farid (Hégra)",
+   "type": "ouvrage",
+   "qid": "Q20403473",
+   "wikidata": "Qasr al Farid",
+   "description": "ancient mansion and tomb in Saudi Arabia",
+   "coord": [
+    37.96122,
+    26.77397
+   ],
+   "auteurs": [],
+   "debut": 100,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (100)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ARG": {
+  "principal": {
+   "nom": "Glacier Perito Moreno",
+   "type": "nature",
+   "qid": "Q367943",
+   "wikidata": "glacier Perito Moreno",
+   "description": "glacier entre le Chili et l'Argentine",
+   "coord": [
+    -73.12798244937426,
+    -50.49321938689202
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Obélisque de Buenos Aires",
+   "type": "ouvrage",
+   "qid": "Q831389",
+   "wikidata": "obélisque de Buenos Aires",
+   "description": "obélisque situé à Buenos Aires, Argentine",
+   "coord": [
+    -58.38162,
+    -34.60376
+   ],
+   "auteurs": [
+    {
+     "nom": "Alberto Prebisch",
+     "naissance": 1899,
+     "mort": 1970
+    }
+   ],
+   "debut": 1936,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2041,
+    "motif": "Alberto Prebisch mort en 1970"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ARM": {
+  "principal": {
+   "nom": "Monastère de Khor Virap",
+   "type": "ouvrage",
+   "qid": "Q1144626",
+   "wikidata": "Khor Virap",
+   "description": "monastère arménien faisant face au mont Ararat",
+   "coord": [
+    44.576111111111,
+    39.878333333333
+   ],
+   "auteurs": [
+    {
+     "nom": "Nersès III le Bâtisseur",
+     "naissance": null,
+     "mort": 661
+    }
+   ],
+   "debut": 601,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 732,
+    "motif": "Nersès III le Bâtisseur mort en 661"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "AUS": {
+  "principal": {
+   "nom": "Opéra de Sydney",
+   "type": "ouvrage",
+   "qid": "Q45178",
+   "wikidata": "opéra de Sydney",
+   "description": "opéra de Sydney (Australie)",
+   "coord": [
+    151.214897,
+    -33.857058
+   ],
+   "auteurs": [
+    {
+     "nom": "Jørn Utzon",
+     "naissance": 1918,
+     "mort": 2008
+    },
+    {
+     "nom": "Peter Brian Hall",
+     "naissance": 1931,
+     "mort": 1995
+    }
+   ],
+   "debut": 1973,
+   "unesco": true,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2079,
+    "motif": "Jørn Utzon mort en 2008"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Uluru",
+   "type": "nature",
+   "note": "lieu sacré anangu : le parc encadre l'usage commercial des images",
+   "qid": "Q33910",
+   "wikidata": "Uluru",
+   "description": "inselberg situé dans le Territoire du Nord, en Australie.",
+   "coord": [
+    131.0361111111111,
+    -25.345
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "AUT": {
+  "principal": {
+   "nom": "Château de Schönbrunn",
+   "type": "ouvrage",
+   "qid": "Q131330",
+   "wikidata": "château de Schönbrunn",
+   "description": "château à Vienne, Autriche",
+   "coord": [
+    16.31227,
+    48.18479
+   ],
+   "auteurs": [
+    {
+     "nom": "Johann Bernhard Fischer von Erlach",
+     "naissance": 1656,
+     "mort": 1723
+    },
+    {
+     "nom": "Nicolò Pacassi",
+     "naissance": 1716,
+     "mort": 1790
+    }
+   ],
+   "debut": 1638,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1861,
+    "motif": "Nicolò Pacassi mort en 1790"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "AZE": {
+  "principal": {
+   "nom": "Tour de la Vierge (Bakou)",
+   "type": "ouvrage",
+   "qid": "Q842822",
+   "wikidata": "tour de la Vierge",
+   "description": "tour fortifiée en Azerbaïdjan",
+   "coord": [
+    49.83725,
+    40.366166666667
+   ],
+   "auteurs": [],
+   "debut": 1200,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1200)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Flame Towers",
+   "type": "ouvrage",
+   "qid": "Q80499",
+   "wikidata": "Flame Towers",
+   "description": "skyscraper",
+   "coord": [
+    49.826111111111,
+    40.359722222222
+   ],
+   "auteurs": [
+    {
+     "nom": "HOK",
+     "naissance": null,
+     "mort": null
+    }
+   ],
+   "debut": 2012,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "ouvrage de 2012 : son auteur ne peut être mort avant 1956"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BHS": {
+  "principal": {
+   "nom": "Queen's Staircase",
+   "type": "ouvrage",
+   "qid": "Q43079731",
+   "wikidata": "Escalier de la reine",
+   "description": "point remarquable à Nassau, Bahamas",
+   "coord": [
+    -77.337818,
+    25.073837
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BHR": {
+  "principal": {
+   "nom": "Qal'at al-Bahreïn",
+   "type": "ouvrage",
+   "qid": "Q740104",
+   "wikidata": "Qal'at al-Bahreïn",
+   "description": "archaeological site in Bahrain",
+   "coord": [
+    50.520555555556,
+    26.233611111111
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BGD": {
+  "principal": {
+   "nom": "Parlement de Dacca (Louis Kahn)",
+   "type": "ouvrage",
+   "qid": "Q497536",
+   "wikidata": "Jatiya Sangsad Bhaban",
+   "description": "édifice législatif situé à Dacca au Bangladesh",
+   "coord": [
+    90.37861111111111,
+    23.76222222222222
+   ],
+   "auteurs": [
+    {
+     "nom": "Louis Kahn",
+     "naissance": 1901,
+     "mort": 1974
+    }
+   ],
+   "debut": 1982,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2045,
+    "motif": "Louis Kahn mort en 1974"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Mosquée aux soixante dômes",
+   "type": "ouvrage",
+   "qid": "Q2834259",
+   "wikidata": "Sixty Dome Mosque",
+   "description": "mosque in Bangladesh",
+   "coord": [
+    89.74182,
+    22.6745
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BRB": {
+  "principal": {
+   "nom": "Moulin de Morgan Lewis",
+   "type": "ouvrage",
+   "qid": "Q3325651",
+   "wikidata": "moulin de Morgan Lewis",
+   "description": "dernier moulin à canne à sucre en état de marche à la Barbade",
+   "coord": [
+    -59.575,
+    13.26833333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BEL": {
+  "principal": {
+   "nom": "Atomium",
+   "type": "ouvrage",
+   "note": "droits gérés et défendus (SABAM)",
+   "qid": "Q180901",
+   "wikidata": "Atomium",
+   "description": "monument architectural construit à l'origine comme pièce maîtresse de l'Expo 58 à Bruxelles",
+   "coord": [
+    4.3413888888889,
+    50.895
+   ],
+   "auteurs": [
+    {
+     "nom": "André et Jean Polak",
+     "naissance": null,
+     "mort": null
+    },
+    {
+     "nom": "André Waterkeyn",
+     "naissance": 1917,
+     "mort": 2005
+    }
+   ],
+   "debut": 1955,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2076,
+    "motif": "André Waterkeyn mort en 2005"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Grand-Place de Bruxelles",
+   "type": "ouvrage",
+   "qid": "Q215429",
+   "wikidata": "Grand-Place",
+   "description": "place principale de Bruxelles, Belgique",
+   "coord": [
+    4.35253815,
+    50.84670775
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BLZ": {
+  "principal": {
+   "nom": "Xunantunich",
+   "type": "ouvrage",
+   "qid": "Q1646630",
+   "wikidata": "Xunantunich",
+   "description": "Ancient Maya archaeological site in western Belize",
+   "coord": [
+    -89.142212,
+    17.090194
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BEN": {
+  "principal": {
+   "nom": "Palais royaux d'Abomey",
+   "type": "ouvrage",
+   "qid": "Q2425839",
+   "wikidata": "Palais royaux d'Abomey",
+   "description": "bâtiment en Afrique",
+   "coord": [
+    1.9940027777778,
+    7.18645
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BTN": {
+  "principal": {
+   "nom": "Monastère de Taktsang (nid du Tigre)",
+   "type": "ouvrage",
+   "qid": "Q2209873",
+   "wikidata": "Taktshang",
+   "description": "temple complex in Bhutan",
+   "coord": [
+    89.363333333333,
+    27.491666666667
+   ],
+   "auteurs": [],
+   "debut": 1692,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1692)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BLR": {
+  "principal": {
+   "nom": "Château de Mir",
+   "type": "ouvrage",
+   "qid": "Q209643",
+   "wikidata": "ensemble du château de Mir",
+   "description": "castle in Mir, Belarus",
+   "coord": [
+    26.472894444444,
+    53.451266666667
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MMR": {
+  "principal": {
+   "nom": "Pagode Shwedagon",
+   "type": "ouvrage",
+   "qid": "Q464535",
+   "wikidata": "pagode Shwedagon",
+   "description": "lieu saint bouddhiste et premier centre religieux à Rangoon, Birmanie",
+   "coord": [
+    96.14944444,
+    16.79833333
+   ],
+   "auteurs": [
+    {
+     "nom": "Hsinbyushin",
+     "naissance": 1736,
+     "mort": 1776
+    }
+   ],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1847,
+    "motif": "Hsinbyushin mort en 1776"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BOL": {
+  "principal": {
+   "nom": "Porte du Soleil (Tiwanaku)",
+   "type": "ouvrage",
+   "qid": "Q2669375",
+   "wikidata": "porte du Soleil",
+   "description": "monument situé sur le site archéologique de Tiwanaku en Bolivie.",
+   "coord": [
+    -68.6741,
+    -16.5544
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BIH": {
+  "principal": {
+   "nom": "Vieux pont de Mostar",
+   "type": "ouvrage",
+   "qid": "Q188528",
+   "wikidata": "Stari Most",
+   "description": "pont à Mostar sur la rivière Neretva, en Bosnie-Herzégovine",
+   "coord": [
+    17.81502777777778,
+    43.33727777777778
+   ],
+   "auteurs": [],
+   "debut": 1566,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1566)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BWA": {
+  "principal": {
+   "nom": "Collines de Tsodilo",
+   "type": "nature",
+   "qid": "Q214007",
+   "wikidata": "Tsodilo",
+   "description": "site archéologique au Botswana",
+   "coord": [
+    21.754166666667,
+    -18.771666666667
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BRA": {
+  "principal": {
+   "nom": "Christ Rédempteur",
+   "type": "ouvrage",
+   "note": "image religieuse : l'archidiocèse de Rio revendique des droits",
+   "qid": "Q79961",
+   "wikidata": "statue du Christ Rédempteur",
+   "description": "statue du Christ à Rio de Janeiro",
+   "coord": [
+    -43.21046412278801,
+    -22.951915648887244
+   ],
+   "auteurs": [
+    {
+     "nom": "Albert Caquot",
+     "naissance": 1881,
+     "mort": 1976
+    },
+    {
+     "nom": "Paul Landowski",
+     "naissance": 1875,
+     "mort": 1961
+    },
+    {
+     "nom": "Gheorghe Leonida",
+     "naissance": 1892,
+     "mort": 1942
+    },
+    {
+     "nom": "Carlos Oswald",
+     "naissance": 1882,
+     "mort": 1971
+    }
+   ],
+   "debut": 1920,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2047,
+    "motif": "Albert Caquot mort en 1976"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Pain de Sucre",
+   "type": "nature",
+   "qid": "Q210722",
+   "wikidata": "mont du Pain de Sucre",
+   "description": "montagne brésilienne",
+   "coord": [
+    -43.156666666666666,
+    -22.949444444444445
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "3 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BRN": {
+  "principal": {
+   "nom": "Mosquée Omar Ali Saifuddien",
+   "type": "ouvrage",
+   "qid": "Q842921",
+   "wikidata": "mosquée Omar Ali Saifuddin",
+   "description": "architectural structure",
+   "coord": [
+    114.939136,
+    4.889578
+   ],
+   "auteurs": [],
+   "debut": 1954,
+   "unesco": false,
+   "statut": {
+    "code": "a-verifier",
+    "motif": "ouvrage de 1954, sans auteur dans Wikidata"
+   },
+   "pays": "1 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BGR": {
+  "principal": {
+   "nom": "Cathédrale Alexandre-Nevski de Sofia",
+   "type": "ouvrage",
+   "qid": "Q43282",
+   "wikidata": "cathédrale Alexandre-Nevski de Sofia",
+   "description": "édifice religieux situé à Sofia en Bulgarie",
+   "coord": [
+    23.332969444444,
+    42.695838888889
+   ],
+   "auteurs": [
+    {
+     "nom": "Alexandre Pomerantsev",
+     "naissance": 1849,
+     "mort": 1918
+    }
+   ],
+   "debut": 1882,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1989,
+    "motif": "Alexandre Pomerantsev mort en 1918"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BFA": {
+  "principal": {
+   "nom": "Grande mosquée de Bobo-Dioulasso",
+   "type": "ouvrage",
+   "qid": "Q105708736",
+   "wikidata": "Grande Mosquée de Bobo-Dioulasso",
+   "description": "mosque in Sudano-Sahelian style",
+   "coord": [
+    -4.2959,
+    11.1778
+   ],
+   "auteurs": [],
+   "debut": 1850,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1850)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "BDI": {
+  "principal": {
+   "nom": "Chutes de la Kagera (Karera)",
+   "type": "nature",
+   "qid": "Q5118378",
+   "wikidata": "chutes de Karera",
+   "description": "Series of waterfalls in Burundi",
+   "coord": [
+    30.08,
+    -3.83
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "KHM": {
+  "principal": {
+   "nom": "Angkor Vat",
+   "type": "ouvrage",
+   "qid": "Q43473",
+   "wikidata": "Angkor Vat",
+   "description": "temple initialement Budista du complexe monumental d'Angkor au Cambodge",
+   "coord": [
+    103.86666666667,
+    13.4125
+   ],
+   "auteurs": [
+    {
+     "nom": "Jayavarman II",
+     "naissance": 800,
+     "mort": 900
+    },
+    {
+     "nom": "Empire khmer",
+     "naissance": null,
+     "mort": null
+    }
+   ],
+   "debut": 1200,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1200)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CMR": {
+  "principal": {
+   "nom": "Mont Cameroun",
+   "type": "nature",
+   "qid": "Q190562",
+   "wikidata": "mont Cameroun",
+   "description": "montagne au Cameroun",
+   "coord": [
+    9.1725,
+    4.2166666666667
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CAN": {
+  "principal": {
+   "nom": "Tour CN",
+   "type": "ouvrage",
+   "qid": "Q134883",
+   "wikidata": "tour CN",
+   "description": "tour située dans le centre de Toronto, au Canada",
+   "coord": [
+    -79.387147222222,
+    43.642752777778
+   ],
+   "auteurs": [
+    {
+     "nom": "John Andrews",
+     "naissance": 1933,
+     "mort": 2022
+    }
+   ],
+   "debut": 1976,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2093,
+    "motif": "John Andrews mort en 2022"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Château Frontenac",
+   "type": "ouvrage",
+   "qid": "Q745964",
+   "wikidata": "château Frontenac",
+   "description": "grand hôtel de Québec",
+   "coord": [
+    -71.20538,
+    46.81182
+   ],
+   "auteurs": [
+    {
+     "nom": "Bruce Price",
+     "naissance": 1845,
+     "mort": 1903
+    },
+    {
+     "nom": "Daniel-John Crighton",
+     "naissance": 1868,
+     "mort": 1946
+    }
+   ],
+   "debut": 1893,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 2017,
+    "motif": "Daniel-John Crighton mort en 1946"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CPV": {
+  "principal": {
+   "nom": "Pico do Fogo",
+   "type": "nature",
+   "qid": "Q499108",
+   "wikidata": "Pico do Fogo",
+   "description": "stratovolcan situé sur l'île de Fogo, Cap-Vert",
+   "coord": [
+    -24.340369444444,
+    14.949269444444
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CHL": {
+  "principal": {
+   "nom": "Moaï d'Ahu Tongariki (île de Pâques)",
+   "type": "ouvrage",
+   "qid": "Q3448354",
+   "wikidata": "Ahu Tongariki",
+   "description": "plus grand « ahu » de l'île de Pâques",
+   "coord": [
+    -109.27694444444,
+    -27.125833333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "hors du patch",
+   "cadre": false,
+   "douteux": true
+  },
+  "variante": {
+   "nom": "Torres del Paine",
+   "type": "nature",
+   "qid": "Q124305089",
+   "wikidata": "Torres del Paine",
+   "description": "",
+   "coord": [
+    -72.985,
+    -50.946
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CHN": {
+  "principal": {
+   "nom": "Grande Muraille",
+   "type": "ouvrage",
+   "qid": "Q12501",
+   "wikidata": "Grande Muraille",
+   "description": "ensemble de fortifications militaires construites pour marquer et défendre la frontière nord de la Chine",
+   "coord": [
+    116.56444444444445,
+    40.43138888888889
+   ],
+   "auteurs": [
+    {
+     "nom": "Qin Shi Huang",
+     "naissance": -259,
+     "mort": -210
+    }
+   ],
+   "debut": -700,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": -139,
+    "motif": "Qin Shi Huang mort en 210 av. J.-C."
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CYP": {
+  "principal": {
+   "nom": "Rocher d'Aphrodite",
+   "type": "nature",
+   "qid": "Q2061165",
+   "wikidata": "Pétra tou Romioú",
+   "description": "rocher à Koúklia, la légende fait de ce lieu celui de la naissance d'Aphrodite, Chypre",
+   "coord": [
+    32.62697,
+    34.663517
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "COL": {
+  "principal": {
+   "nom": "Sanctuaire de Las Lajas",
+   "type": "ouvrage",
+   "qid": "Q2227269",
+   "wikidata": "sanctuaire de Las Lajas",
+   "description": "lieu de culte et de pèlerinage de l'Église catholique",
+   "coord": [
+    -77.586,
+    0.8055
+   ],
+   "auteurs": [
+    {
+     "nom": "Lucindo Espinosa",
+     "naissance": 1871,
+     "mort": 1945
+    }
+   ],
+   "debut": 1949,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 2016,
+    "motif": "Lucindo Espinosa mort en 1945"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Château San Felipe de Barajas",
+   "type": "ouvrage",
+   "qid": "Q91110",
+   "wikidata": "château de San Felipe de Barajas",
+   "description": "forteresse située sur la colline de Saint-Lazare à Carthagène des Indes, Colombie",
+   "coord": [
+    -75.53806,
+    10.42222
+   ],
+   "auteurs": [],
+   "debut": 1536,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1536)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "COM": {
+  "principal": {
+   "nom": "Karthala",
+   "type": "nature",
+   "qid": "Q527548",
+   "wikidata": "Karthala",
+   "description": "volcan situé dans l'archipel de Grande île de Comore",
+   "coord": [
+    43.35306,
+    -11.76028
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "COG": {
+  "principal": {
+   "nom": "Basilique Sainte-Anne de Brazzaville",
+   "type": "ouvrage",
+   "qid": "Q2887058",
+   "wikidata": "basilique Sainte-Anne-du-Congo de Brazzaville",
+   "description": "bâtiment en République du Congo",
+   "coord": [
+    15.284511,
+    -4.268455
+   ],
+   "auteurs": [
+    {
+     "nom": "Roger Erell",
+     "naissance": 1907,
+     "mort": 1986
+    }
+   ],
+   "debut": 2010,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2057,
+    "motif": "Roger Erell mort en 1986"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Parc national d'Odzala-Kokoua",
+   "type": "nature",
+   "qid": "Q263883",
+   "wikidata": "parc national d'Odzala",
+   "description": "parc national de la République du Congo",
+   "coord": [
+    14.9,
+    0.8
+   ],
+   "auteurs": [],
+   "debut": 1935,
+   "unesco": true,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "PRK": {
+  "principal": {
+   "nom": "Tour du Juche",
+   "type": "ouvrage",
+   "note": "monument de propagande",
+   "qid": "Q321697",
+   "wikidata": "tour du Juche",
+   "description": "tour à Pyongyang, en Corée du Nord",
+   "coord": [
+    125.76361388889,
+    39.017591666667
+   ],
+   "auteurs": [],
+   "debut": 1982,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "ouvrage de 1982 : son auteur ne peut être mort avant 1956"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Mont Paektu",
+   "type": "nature",
+   "qid": "Q107635",
+   "wikidata": "mont Paektu",
+   "description": "volcan en Corée du Nord et en Chine",
+   "coord": [
+    128.07722222222,
+    41.992777777778
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "KOR": {
+  "principal": {
+   "nom": "Palais Gyeongbokgung",
+   "type": "ouvrage",
+   "qid": "Q482485",
+   "wikidata": "Gyeongbokgung",
+   "description": "palais royal situé à Jongno-gu, Corée du Sud",
+   "coord": [
+    126.9767996,
+    37.5798841
+   ],
+   "auteurs": [],
+   "debut": 1395,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1395)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CRI": {
+  "principal": {
+   "nom": "Volcan Arenal",
+   "type": "nature",
+   "qid": "Q641588",
+   "wikidata": "Arenal",
+   "description": "volcan de subduction de la cordillère de Tilarán, Costa Rica",
+   "coord": [
+    -84.70333333333333,
+    10.4625
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CIV": {
+  "principal": {
+   "nom": "Basilique Notre-Dame-de-la-Paix de Yamoussoukro",
+   "type": "ouvrage",
+   "qid": "Q815584",
+   "wikidata": "basilique Notre-Dame-de-la-Paix de Yamoussoukro",
+   "description": "basilique à Yamoussoukro, en Côte d'Ivoire",
+   "coord": [
+    -5.296944444444445,
+    6.811111111111111
+   ],
+   "auteurs": [
+    {
+     "nom": "Pierre Fakhoury",
+     "naissance": 1943,
+     "mort": null
+    }
+   ],
+   "debut": 1989,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "Pierre Fakhoury : vivant"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Grand-Bassam",
+   "type": "ouvrage",
+   "qid": "Q582922",
+   "wikidata": "Grand-Bassam",
+   "description": "ville de la région Sud-Comoé, Côte d'Ivoire",
+   "coord": [
+    -3.7333333333333,
+    5.2
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "a-verifier",
+    "motif": "sans date ni auteur dans Wikidata"
+   },
+   "pays": "1 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "HRV": {
+  "principal": {
+   "nom": "Remparts de Dubrovnik",
+   "type": "ouvrage",
+   "qid": "Q931733",
+   "wikidata": "murs de Dubrovnik",
+   "description": "defensive wall",
+   "coord": [
+    18.108,
+    42.64
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "1 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CUB": {
+  "principal": {
+   "nom": "Château du Morro (La Havane)",
+   "type": "ouvrage",
+   "qid": "Q635199",
+   "wikidata": "fort El Morro",
+   "description": "Spanish colonial fortification in Havana, Cuba",
+   "coord": [
+    -82.35666667,
+    23.15041667
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "DNK": {
+  "principal": {
+   "nom": "La Petite Sirène",
+   "type": "ouvrage",
+   "note": "les héritiers d'Eriksen font valoir leurs droits",
+   "qid": "Q214619",
+   "wikidata": "La Petite Sirène",
+   "description": "statue dans le port de Copenhague",
+   "coord": [
+    12.59926,
+    55.69286
+   ],
+   "auteurs": [
+    {
+     "nom": "Edvard Eriksen",
+     "naissance": 1876,
+     "mort": 1959
+    }
+   ],
+   "debut": 1913,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2030,
+    "motif": "Edvard Eriksen mort en 1959"
+   },
+   "pays": "0 km au large",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Château de Kronborg",
+   "type": "ouvrage",
+   "qid": "Q189358",
+   "wikidata": "château de Kronborg",
+   "description": "château danois",
+   "coord": [
+    12.621944444444,
+    56.038611111111
+   ],
+   "auteurs": [],
+   "debut": 1585,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1585)"
+   },
+   "pays": "1 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "DJI": {
+  "principal": {
+   "nom": "Lac Assal",
+   "type": "nature",
+   "qid": "Q81239",
+   "wikidata": "lac Assal",
+   "description": "lac de Djibouti",
+   "coord": [
+    42.416667,
+    11.65
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "DMA": {
+  "principal": {
+   "nom": "Boiling Lake",
+   "type": "nature",
+   "qid": "Q891027",
+   "wikidata": "Boiling Lake",
+   "description": "lac de la Dominique",
+   "coord": [
+    -61.294166666667,
+    15.318333333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "EGY": {
+  "principal": {
+   "nom": "Grande pyramide de Gizeh",
+   "type": "ouvrage",
+   "qid": "Q37200",
+   "wikidata": "pyramide de Khéops",
+   "description": "plus ancienne et plus grande des trois pyramides de la nécropole de Gizeh",
+   "coord": [
+    31.13422,
+    29.97915
+   ],
+   "auteurs": [
+    {
+     "nom": "Hémiounou",
+     "naissance": -2500,
+     "mort": -2501
+    }
+   ],
+   "debut": -2560,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": -2430,
+    "motif": "Hémiounou mort en 2501 av. J.-C."
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ARE": {
+  "principal": {
+   "nom": "Burj Khalifa",
+   "type": "ouvrage",
+   "qid": "Q12495",
+   "wikidata": "Burj Khalifa",
+   "description": "gratte-ciel situé à Dubaï, aux Émirats arabes unis",
+   "coord": [
+    55.274166666666666,
+    25.197222222222223
+   ],
+   "auteurs": [
+    {
+     "nom": "Adrian Smith",
+     "naissance": 1944,
+     "mort": null
+    },
+    {
+     "nom": "Marshall Strabala",
+     "naissance": 1961,
+     "mort": null
+    },
+    {
+     "nom": "George J. Efstathiou",
+     "naissance": null,
+     "mort": null
+    },
+    {
+     "nom": "William F. Baker",
+     "naissance": 1953,
+     "mort": null
+    },
+    {
+     "nom": "",
+     "naissance": null,
+     "mort": null
+    }
+   ],
+   "debut": 2004,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "Adrian Smith, Marshall Strabala, William F. Baker : vivant"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Fort Al Fahidi",
+   "type": "ouvrage",
+   "qid": "Q292826",
+   "wikidata": "Al Fahidi Fort",
+   "description": "fort and monument of Dubai, United Arab Emirates",
+   "coord": [
+    55.297184,
+    25.263438
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "0 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ECU": {
+  "principal": {
+   "nom": "Cotopaxi",
+   "type": "nature",
+   "qid": "Q241140",
+   "wikidata": "Cotopaxi",
+   "description": "province de l'Équateur",
+   "coord": [
+    -78.85,
+    -0.8333333333333334
+   ],
+   "auteurs": [],
+   "debut": 1851,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ERI": {
+  "principal": {
+   "nom": "Station Fiat Tagliero (Asmara)",
+   "type": "ouvrage",
+   "qid": "Q1410651",
+   "wikidata": "Fiat Tagliero",
+   "description": "station service à Asmara",
+   "coord": [
+    38.92583333,
+    15.32833333
+   ],
+   "auteurs": [
+    {
+     "nom": "Guido Ferrazza",
+     "naissance": 1887,
+     "mort": 1961
+    }
+   ],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2032,
+    "motif": "Guido Ferrazza mort en 1961"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Qohaito",
+   "type": "ouvrage",
+   "qid": "Q4236500",
+   "wikidata": "Qohaito",
+   "description": "human settlement in Eritrea",
+   "coord": [
+    39.424,
+    14.866
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ESP": {
+  "principal": {
+   "nom": "Sagrada Família",
+   "type": "ouvrage",
+   "note": "Gaudí mort en 1926 ; tours récentes de Jordi Faulí",
+   "qid": "Q48435",
+   "wikidata": "Sagrada Família",
+   "description": "basilique catholique romaine monumentale en construction depuis 1882 situé à Barcelone, Catalogne, Espagne",
+   "coord": [
+    2.17433,
+    41.40369
+   ],
+   "auteurs": [
+    {
+     "nom": "Antoni Gaudí",
+     "naissance": 1852,
+     "mort": 1926
+    },
+    {
+     "nom": "Francisco de Paula del Villar y Lozano",
+     "naissance": 1827,
+     "mort": 1901
+    },
+    {
+     "nom": "Jordi Faulí i Oller",
+     "naissance": 1959,
+     "mort": null
+    }
+   ],
+   "debut": 1882,
+   "unesco": true,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "Jordi Faulí i Oller : vivant"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Alhambra",
+   "type": "ouvrage",
+   "qid": "Q47476",
+   "wikidata": "Alhambra",
+   "description": "château fort espagnol situé dans Grenade",
+   "coord": [
+    -3.58821,
+    37.17634
+   ],
+   "auteurs": [],
+   "debut": 1239,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "EST": {
+  "principal": {
+   "nom": "Hôtel de ville de Tallinn",
+   "type": "ouvrage",
+   "qid": "Q904057",
+   "wikidata": "hôtel de ville de Tallinn",
+   "description": "édifice médiéval d'Estonie",
+   "coord": [
+    24.745309,
+    59.437005
+   ],
+   "auteurs": [],
+   "debut": 1404,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1404)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SWZ": {
+  "principal": {
+   "nom": "Rocher de Sibebe",
+   "type": "nature",
+   "qid": "Q7506963",
+   "wikidata": "Sibebe",
+   "description": "granite mountain in Swaziland, second-largest monolith in the world",
+   "coord": [
+    31.17252,
+    -26.26262
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "USA": {
+  "principal": {
+   "nom": "Statue de la Liberté",
+   "type": "ouvrage",
+   "qid": "Q9202",
+   "wikidata": "statue de la Liberté",
+   "description": "monument de la ville de New York",
+   "coord": [
+    -74.044425277778,
+    40.689209166667
+   ],
+   "auteurs": [
+    {
+     "nom": "Eugène Viollet-le-Duc",
+     "naissance": 1814,
+     "mort": 1879
+    },
+    {
+     "nom": "Auguste Bartholdi",
+     "naissance": 1834,
+     "mort": 1904
+    },
+    {
+     "nom": "Gustave Eiffel",
+     "naissance": 1832,
+     "mort": 1923
+    },
+    {
+     "nom": "Richard Morris Hunt",
+     "naissance": 1827,
+     "mort": 1895
+    }
+   ],
+   "debut": 1886,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1994,
+    "motif": "Gustave Eiffel mort en 1923"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ETH": {
+  "principal": {
+   "nom": "Église Saint-Georges de Lalibela",
+   "type": "ouvrage",
+   "qid": "Q7971367",
+   "wikidata": "Bet Giyorgis",
+   "description": "bâtiment en Afrique",
+   "coord": [
+    39.041147222222,
+    12.031625
+   ],
+   "auteurs": [],
+   "debut": 1200,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1200)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "FJI": {
+  "principal": {
+   "nom": "Levuka",
+   "type": "ouvrage",
+   "qid": "Q26692",
+   "wikidata": "Levuka",
+   "description": "ville",
+   "coord": [
+    178.84012777778,
+    -17.684013888889
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "a-verifier",
+    "motif": "sans date ni auteur dans Wikidata"
+   },
+   "pays": "1 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "FIN": {
+  "principal": {
+   "nom": "Cathédrale d'Helsinki",
+   "type": "ouvrage",
+   "qid": "Q738015",
+   "wikidata": "cathédrale luthérienne d'Helsinki",
+   "description": "cathédrale finlandaise",
+   "coord": [
+    24.95212383,
+    60.17038775
+   ],
+   "auteurs": [
+    {
+     "nom": "Carl Ludwig Engel",
+     "naissance": 1778,
+     "mort": 1840
+    }
+   ],
+   "debut": 1851,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1911,
+    "motif": "Carl Ludwig Engel mort en 1840"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "FRA": {
+  "principal": {
+   "nom": "Tour Eiffel",
+   "type": "ouvrage",
+   "note": "l'éclairage nocturne (1985) est protégé : la modéliser de jour",
+   "qid": "Q243",
+   "wikidata": "tour Eiffel",
+   "description": "tour de fer puddlé de 330 mètres à Paris, France",
+   "coord": [
+    2.294479,
+    48.858296
+   ],
+   "auteurs": [
+    {
+     "nom": "Stéphen Sauvestre",
+     "naissance": 1847,
+     "mort": 1919
+    }
+   ],
+   "debut": 1887,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1990,
+    "motif": "Stéphen Sauvestre mort en 1919"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GAB": {
+  "principal": {
+   "nom": "Parc national de la Lopé",
+   "type": "nature",
+   "qid": "Q9055976",
+   "wikidata": "parc national de la Lopé",
+   "description": "aire protégée, parc national du Gabon",
+   "coord": [
+    11.5428,
+    -0.525334
+   ],
+   "auteurs": [],
+   "debut": 2002,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GMB": {
+  "principal": {
+   "nom": "Arche 22",
+   "type": "ouvrage",
+   "qid": "Q632012",
+   "wikidata": "Arche 22",
+   "description": "triumphal arch in Banjul, the Gambia",
+   "coord": [
+    -16.58227222,
+    13.46029444
+   ],
+   "auteurs": [
+    {
+     "nom": "Pierre Goudiaby Atepa",
+     "naissance": 1947,
+     "mort": null
+    }
+   ],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "Pierre Goudiaby Atepa : vivant"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Île Kunta Kinteh",
+   "type": "ouvrage",
+   "qid": "Q213188",
+   "wikidata": "île James",
+   "description": "île fluviale du fleuve Gambie, en Gambie",
+   "coord": [
+    -16.36144,
+    13.31753
+   ],
+   "auteurs": [
+    {
+     "nom": "Courlander Gambia",
+     "naissance": null,
+     "mort": null
+    }
+   ],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "2 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GEO": {
+  "principal": {
+   "nom": "Église de la Trinité de Guerguéti",
+   "type": "ouvrage",
+   "qid": "Q1511206",
+   "wikidata": "église de la Trinité de Guerguéti",
+   "description": "église du XIVe siècle située près du village de Guerguéti, Géorgie",
+   "coord": [
+    44.620463,
+    42.662426
+   ],
+   "auteurs": [],
+   "debut": 1400,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1400)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GHA": {
+  "principal": {
+   "nom": "Château de Cape Coast",
+   "type": "ouvrage",
+   "qid": "Q1254826",
+   "wikidata": "Fort de Cape Coast",
+   "description": "comptoir colonial fortifié situé au Ghana",
+   "coord": [
+    -1.24125,
+    5.1035833333333
+   ],
+   "auteurs": [],
+   "debut": 1653,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1653)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GRC": {
+  "principal": {
+   "nom": "Parthénon",
+   "type": "ouvrage",
+   "qid": "Q10288",
+   "wikidata": "Parthénon",
+   "description": "ancien temple de l'Acropole d'Athènes, Grèce",
+   "coord": [
+    23.726601,
+    37.971527
+   ],
+   "auteurs": [
+    {
+     "nom": "Ictinos",
+     "naissance": -500,
+     "mort": null
+    },
+    {
+     "nom": "Callicratès",
+     "naissance": -470,
+     "mort": -420
+    },
+    {
+     "nom": "Phidias",
+     "naissance": -500,
+     "mort": -430
+    }
+   ],
+   "debut": -500,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": -349,
+    "motif": "Callicratès mort en 420 av. J.-C."
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GRD": {
+  "principal": {
+   "nom": "Fort George (Saint-Georges)",
+   "type": "ouvrage",
+   "qid": "Q65129375",
+   "wikidata": "fort George",
+   "description": "fort de Saint-Georges, Grenade",
+   "coord": [
+    -61.75388888888889,
+    12.049166666666666
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GTM": {
+  "principal": {
+   "nom": "Temple I de Tikal",
+   "type": "ouvrage",
+   "qid": "Q2185890",
+   "wikidata": "temple du grand jaguar",
+   "description": "ancient site",
+   "coord": [
+    -89.6230584,
+    17.2220533
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GIN": {
+  "principal": {
+   "nom": "Mont Nimba",
+   "type": "nature",
+   "qid": "Q924276",
+   "wikidata": "réserve naturelle intégrale du Mont Nimba",
+   "description": "aire protégée de la Guinée-Conakry",
+   "coord": [
+    -8.391,
+    7.603
+   ],
+   "auteurs": [],
+   "debut": 1944,
+   "unesco": true,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GNQ": {
+  "principal": {
+   "nom": "Pico Basilé",
+   "type": "nature",
+   "note": "sur l'île de Bioko, hors du patch du pays mais dans le cadre",
+   "qid": "Q1518286",
+   "wikidata": "Pico Basilé",
+   "description": "mountain",
+   "coord": [
+    8.7666666666667,
+    3.5833333333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "hors du patch",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GNB": {
+  "principal": {
+   "nom": "Archipel des Bijagos",
+   "type": "nature",
+   "qid": "Q63353195",
+   "wikidata": "Bijagos Archipelago Biosphere Reserve",
+   "description": "protected area in Guinea-Bissau",
+   "coord": [
+    -16.083333333333,
+    11.25
+   ],
+   "auteurs": [],
+   "debut": 1996,
+   "unesco": true,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "5 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GUY": {
+  "principal": {
+   "nom": "Chutes de Kaieteur",
+   "type": "nature",
+   "qid": "Q38120",
+   "wikidata": "chutes de Kaieteur",
+   "description": "chute d'eau au Guyana",
+   "coord": [
+    -59.482277777778,
+    5.1781111111111
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "HTI": {
+  "principal": {
+   "nom": "Citadelle Laferrière",
+   "type": "ouvrage",
+   "qid": "Q206194",
+   "wikidata": "citadelle La Ferrière",
+   "description": "forteresse dans le nord d'Haïti",
+   "coord": [
+    -72.243888888889,
+    19.573611111111
+   ],
+   "auteurs": [],
+   "debut": 1820,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1820)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "HND": {
+  "principal": {
+   "nom": "Copán",
+   "type": "ouvrage",
+   "qid": "Q843984",
+   "wikidata": "Copán",
+   "description": "département du Honduras",
+   "coord": [
+    -88.7781,
+    14.767525
+   ],
+   "auteurs": [],
+   "debut": 1869,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1869)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "HUN": {
+  "principal": {
+   "nom": "Parlement de Budapest",
+   "type": "ouvrage",
+   "qid": "Q11819",
+   "wikidata": "Parlement hongrois",
+   "description": "édifice législatif situé à Budapest en Hongrie",
+   "coord": [
+    19.045555555555556,
+    47.50694444444444
+   ],
+   "auteurs": [
+    {
+     "nom": "Imre Steindl",
+     "naissance": 1839,
+     "mort": 1902
+    }
+   ],
+   "debut": 2000,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1973,
+    "motif": "Imre Steindl mort en 1902"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MUS": {
+  "principal": {
+   "nom": "Le Morne Brabant",
+   "type": "nature",
+   "qid": "Q1129992",
+   "wikidata": "Morne Brabant",
+   "description": "péninsule et montagne à Maurice",
+   "coord": [
+    57.313611111111,
+    -20.460555555556
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MHL": {
+  "principal": {
+   "nom": "Atoll de Bikini",
+   "type": "nature",
+   "qid": "Q152225",
+   "wikidata": "Bikini",
+   "description": "atoll des îles Marshall, ancien site d'essais nucléaires",
+   "coord": [
+    165.4,
+    11.6
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "16 km au large",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Atoll de Majuro",
+   "type": "nature",
+   "qid": "Q12919",
+   "wikidata": "Majuro",
+   "description": "capitale des îles Marshall",
+   "coord": [
+    171.3802,
+    7.0918
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "6 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SLB": {
+  "principal": {
+   "nom": "Lagon de Marovo",
+   "type": "nature",
+   "qid": "Q6772429",
+   "wikidata": "Marovo Lagoon",
+   "description": "lagoon in the Solomon Islands",
+   "coord": [
+    158.07,
+    -8.48
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "4 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "IND": {
+  "principal": {
+   "nom": "Taj Mahal",
+   "type": "ouvrage",
+   "qid": "Q9141",
+   "wikidata": "Taj Mahal",
+   "description": "mausolée de marbre à Agra, État de l'Uttar Pradesh, Inde",
+   "coord": [
+    78.04194444444444,
+    27.175
+   ],
+   "auteurs": [
+    {
+     "nom": "Ustad isa",
+     "naissance": 1580,
+     "mort": 1649
+    }
+   ],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1720,
+    "motif": "Ustad isa mort en 1649"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "IDN": {
+  "principal": {
+   "nom": "Borobudur",
+   "type": "ouvrage",
+   "qid": "Q4119591",
+   "wikidata": "Borobudur",
+   "description": "district in Magelang Regency, Central Java Province, Indonesia",
+   "coord": [
+    110.2,
+    -7.60444
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "IRQ": {
+  "principal": {
+   "nom": "Ziggourat d'Ur",
+   "type": "ouvrage",
+   "qid": "Q202927",
+   "wikidata": "ziggourat d'Ur",
+   "description": "monument religieux sumérien de l’âge du bronze",
+   "coord": [
+    46.1025,
+    30.9625
+   ],
+   "auteurs": [],
+   "debut": -2100,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (2100 av. J.-C.)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "IRN": {
+  "principal": {
+   "nom": "Tour Azadi",
+   "type": "ouvrage",
+   "qid": "Q1140026",
+   "wikidata": "tour Azadi",
+   "description": "tour en Iran",
+   "coord": [
+    51.338055555555556,
+    35.69972222222222
+   ],
+   "auteurs": [
+    {
+     "nom": "Hossein Amanat",
+     "naissance": 1942,
+     "mort": null
+    }
+   ],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "Hossein Amanat : vivant"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Persépolis",
+   "type": "ouvrage",
+   "qid": "Q129072",
+   "wikidata": "Persépolis",
+   "description": "monument historique, palais achéménide, patrimoine national de l'Iran, site du patrimoine mondial de l'UNESCO.",
+   "coord": [
+    52.89,
+    29.935
+   ],
+   "auteurs": [],
+   "debut": -510,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (510 av. J.-C.)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "IRL": {
+  "principal": {
+   "nom": "Falaises de Moher",
+   "type": "nature",
+   "qid": "Q239477",
+   "wikidata": "Falaises de Moher",
+   "description": "falaises dans le comté de Clare en Irlande",
+   "coord": [
+    -9.4708333333333,
+    52.936111111111
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "0 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ISL": {
+  "principal": {
+   "nom": "Hallgrímskirkja",
+   "type": "ouvrage",
+   "qid": "Q271466",
+   "wikidata": "Hallgrímskirkja",
+   "description": "église à Reykjavik",
+   "coord": [
+    -21.926944444444445,
+    64.14194444444445
+   ],
+   "auteurs": [
+    {
+     "nom": "Guðjón Samúelsson",
+     "naissance": 1887,
+     "mort": 1950
+    }
+   ],
+   "debut": 1986,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 2021,
+    "motif": "Guðjón Samúelsson mort en 1950"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ISR": {
+  "principal": {
+   "nom": "Massada",
+   "type": "ouvrage",
+   "qid": "Q186312",
+   "wikidata": "Massada",
+   "description": "forteresse antique",
+   "coord": [
+    35.353888888889,
+    31.315555555556
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ITA": {
+  "principal": {
+   "nom": "Colisée",
+   "type": "ouvrage",
+   "qid": "Q10285",
+   "wikidata": "Colisée",
+   "description": "monument de la ville de Rome",
+   "coord": [
+    12.492222222222,
+    41.890277777778
+   ],
+   "auteurs": [],
+   "debut": 82,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (82)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "JAM": {
+  "principal": {
+   "nom": "Chutes de Dunn's River",
+   "type": "nature",
+   "qid": "Q1266226",
+   "wikidata": "chutes de la Dunn",
+   "description": "chute d'eau en Jamaïque",
+   "coord": [
+    -77.13805555555555,
+    18.41583333333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "0 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "JPN": {
+  "principal": {
+   "nom": "Mont Fuji",
+   "type": "nature",
+   "qid": "Q39231",
+   "wikidata": "mont Fuji",
+   "description": "volcan au sud-ouest de Tokyo au Japon",
+   "coord": [
+    138.7275,
+    35.36055555555556
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "JOR": {
+  "principal": {
+   "nom": "Khazneh de Pétra",
+   "type": "ouvrage",
+   "qid": "Q1259626",
+   "wikidata": "Khazneh",
+   "description": "tombeau nabatéen de la cité antique de Pétra en Jordanie",
+   "coord": [
+    35.45145,
+    30.32206
+   ],
+   "auteurs": [],
+   "debut": 100,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (100)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "KAZ": {
+  "principal": {
+   "nom": "Tour Baïterek",
+   "type": "ouvrage",
+   "qid": "Q804210",
+   "wikidata": "Bayterek",
+   "description": "tour d'Astana au Kazakhstan",
+   "coord": [
+    71.43055555555556,
+    51.12833333333333
+   ],
+   "auteurs": [
+    {
+     "nom": "Norman Foster",
+     "naissance": 1935,
+     "mort": null
+    },
+    {
+     "nom": "Akmyrza Rustembekov",
+     "naissance": 1956,
+     "mort": 2020
+    }
+   ],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "Norman Foster : vivant"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Mausolée de Khoja Ahmed Yasavi",
+   "type": "ouvrage",
+   "qid": "Q46069",
+   "wikidata": "mausolée de Khoja Ahmed Yasavi",
+   "description": "mausolée du Kazakhstan",
+   "coord": [
+    68.2710419,
+    43.2976445
+   ],
+   "auteurs": [],
+   "debut": 1400,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1400)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "KEN": {
+  "principal": {
+   "nom": "Mont Kenya",
+   "type": "nature",
+   "qid": "Q172070",
+   "wikidata": "mont Kenya",
+   "description": "stratovolcan et point culminant du Kenya",
+   "coord": [
+    37.2,
+    -0.1
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "KGZ": {
+  "principal": {
+   "nom": "Tour de Burana",
+   "type": "ouvrage",
+   "qid": "Q852032",
+   "wikidata": "tour Burana",
+   "description": "ancien minaret du kirghizistan",
+   "coord": [
+    75.250382,
+    42.746476
+   ],
+   "auteurs": [],
+   "debut": 1100,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1100)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "KIR": {
+  "principal": {
+   "nom": "Maneaba ni Maungatabu (parlement)",
+   "type": "ouvrage",
+   "qid": "Q1281107",
+   "wikidata": "Maneaba ni Maungatabu",
+   "description": "parlement monocaméral des Kiribati",
+   "coord": [
+    173.038896,
+    1.350248
+   ],
+   "auteurs": [],
+   "debut": 1979,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "ouvrage de 1979 : son auteur ne peut être mort avant 1956"
+   },
+   "pays": "5 km au large",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Atoll de Tarawa",
+   "type": "nature",
+   "qid": "Q2486",
+   "wikidata": "Tarawa",
+   "description": "atoll de la République des Kiribati",
+   "coord": [
+    173,
+    1.4333333333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "5 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "UNK": {
+  "principal": {
+   "nom": "Forteresse de Prizren",
+   "type": "ouvrage",
+   "qid": "Q3078443",
+   "wikidata": "forteresse de Prizren",
+   "description": "forteresse médiévale du Kosovo",
+   "coord": [
+    20.74558,
+    42.20942
+   ],
+   "auteurs": [],
+   "debut": 500,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (500)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "KWT": {
+  "principal": {
+   "nom": "Tours du Koweït",
+   "type": "ouvrage",
+   "qid": "Q1335640",
+   "wikidata": "Kuwait Towers",
+   "description": "group of 3 towers in Kuwait City, standing on a promontory into the Arabian Gulf, inaugurated on 26 February 1977",
+   "coord": [
+    48.003055555555555,
+    29.39
+   ],
+   "auteurs": [
+    {
+     "nom": "Sune Lindström",
+     "naissance": 1906,
+     "mort": 1989
+    },
+    {
+     "nom": "Malene Björn",
+     "naissance": 1914,
+     "mort": 2016
+    }
+   ],
+   "debut": 1977,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2087,
+    "motif": "Malene Björn mort en 2016"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Palais Seif",
+   "type": "ouvrage",
+   "qid": "Q3564897",
+   "wikidata": "palais du Seif",
+   "description": "palais du Koweït",
+   "coord": [
+    47.971111111111,
+    29.380833333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "a-verifier",
+    "motif": "sans date ni auteur dans Wikidata"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "LAO": {
+  "principal": {
+   "nom": "Pha That Luang",
+   "type": "ouvrage",
+   "qid": "Q1059720",
+   "wikidata": "Pha That Luang",
+   "description": "stûpa de Vientiane, monument national du Laos",
+   "coord": [
+    102.63425,
+    17.976167
+   ],
+   "auteurs": [],
+   "debut": 1566,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1566)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "LSO": {
+  "principal": {
+   "nom": "Chutes de Maletsunyane",
+   "type": "nature",
+   "qid": "Q37683",
+   "wikidata": "chutes du Maletsunyane",
+   "description": "waterfall on the Maletsunyane River in Lesotho",
+   "coord": [
+    28.051666666667,
+    -29.868611111111
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "LVA": {
+  "principal": {
+   "nom": "Monument de la Liberté (Riga)",
+   "type": "ouvrage",
+   "qid": "Q337179",
+   "wikidata": "monument de la Liberté",
+   "description": "mémorial situé à Riga, Lettonie",
+   "coord": [
+    24.113222222222,
+    56.951555555556
+   ],
+   "auteurs": [
+    {
+     "nom": "Ernests Štālbergs",
+     "naissance": 1883,
+     "mort": 1958
+    },
+    {
+     "nom": "Kārlis Zāle",
+     "naissance": 1888,
+     "mort": 1942
+    }
+   ],
+   "debut": 1935,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2029,
+    "motif": "Ernests Štālbergs mort en 1958"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "LBN": {
+  "principal": {
+   "nom": "Temple de Bacchus (Baalbek)",
+   "type": "ouvrage",
+   "qid": "Q1991217",
+   "wikidata": "temple de Bacchus",
+   "description": "temple antique à Baalbek, Liban",
+   "coord": [
+    36.203944444444,
+    34.006066666667
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "LBR": {
+  "principal": {
+   "nom": "Parc national de Sapo",
+   "type": "nature",
+   "qid": "Q1969043",
+   "wikidata": "parc national de Sapo",
+   "description": "parc national du Libéria",
+   "coord": [
+    -8.55083333,
+    5.47638889
+   ],
+   "auteurs": [],
+   "debut": 1983,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "LBY": {
+  "principal": {
+   "nom": "Leptis Magna",
+   "type": "ouvrage",
+   "qid": "Q191504",
+   "wikidata": "Leptis Magna",
+   "description": "ville antique de la république de Carthage",
+   "coord": [
+    14.29049645909896,
+    32.638331884068016
+   ],
+   "auteurs": [],
+   "debut": -700,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (700 av. J.-C.)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "LIE": {
+  "principal": {
+   "nom": "Château de Vaduz",
+   "type": "ouvrage",
+   "qid": "Q694782",
+   "wikidata": "château de Vaduz",
+   "description": "résidence officielle du prince de Liechtenstein",
+   "coord": [
+    9.5244444444444,
+    47.139444444444
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "LTU": {
+  "principal": {
+   "nom": "Château de Trakai",
+   "type": "ouvrage",
+   "qid": "Q1482013",
+   "wikidata": "château de Trakai",
+   "description": "island castle in Trakai, Lithuania",
+   "coord": [
+    24.933055555555555,
+    54.6525
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "LUX": {
+  "principal": {
+   "nom": "Pont Adolphe",
+   "type": "ouvrage",
+   "qid": "Q365643",
+   "wikidata": "pont Adolphe",
+   "description": "tram and road stone arch bridge in Luxembourg City, with pedestrian and cycle steel bridge suspended beneath the upper deck",
+   "coord": [
+    6.1270722222222,
+    49.608313888889
+   ],
+   "auteurs": [
+    {
+     "nom": "Paul Séjourné",
+     "naissance": 1851,
+     "mort": 1939
+    }
+   ],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 2010,
+    "motif": "Paul Séjourné mort en 1939"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MKD": {
+  "principal": {
+   "nom": "Église Saint-Jean de Kaneo (Ohrid)",
+   "type": "ouvrage",
+   "qid": "Q164664",
+   "wikidata": "église Saint-Jean de Kaneo",
+   "description": "Macedonian Orthodox church building in Ohrid, North Macedonia",
+   "coord": [
+    20.78865833,
+    41.11108611
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "0 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MDG": {
+  "principal": {
+   "nom": "Allée des baobabs",
+   "type": "nature",
+   "qid": "Q788084",
+   "wikidata": "Allée des baobabs",
+   "description": "groupe de baobabs qui bordent la route de terre entre Morondava et Belon'i Tsiribihina dans la région de Menabe dans l'ouest de Madagascar",
+   "coord": [
+    44.418333333333,
+    -20.250833333333
+   ],
+   "auteurs": [],
+   "debut": 2007,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MYS": {
+  "principal": {
+   "nom": "Tours Petronas",
+   "type": "ouvrage",
+   "qid": "Q83063",
+   "wikidata": "tours Petronas",
+   "description": "gratte-ciel à Kuala Lumpur",
+   "coord": [
+    101.71166666666667,
+    3.1577777777777776
+   ],
+   "auteurs": [
+    {
+     "nom": "César Pelli",
+     "naissance": 1926,
+     "mort": 2019
+    },
+    {
+     "nom": "Adamson Associates",
+     "naissance": null,
+     "mort": null
+    }
+   ],
+   "debut": 1993,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2090,
+    "motif": "César Pelli mort en 2019"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Bâtiment Sultan Abdul Samad",
+   "type": "ouvrage",
+   "qid": "Q615958",
+   "wikidata": "Édifice Sultan Abdul Samad",
+   "description": "historic building in Kuala Lumpur, Malaysia",
+   "coord": [
+    101.69444444444,
+    3.1486111111111
+   ],
+   "auteurs": [
+    {
+     "nom": "Arthur Charles Alfred Norman",
+     "naissance": 1858,
+     "mort": 1944
+    }
+   ],
+   "debut": 1897,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 2015,
+    "motif": "Arthur Charles Alfred Norman mort en 1944"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MWI": {
+  "principal": {
+   "nom": "Lac Malawi",
+   "type": "nature",
+   "qid": "Q1077596",
+   "wikidata": "parc national du lac Malawi",
+   "description": "national park",
+   "coord": [
+    34.883333333333,
+    -14.033333333333
+   ],
+   "auteurs": [],
+   "debut": 1980,
+   "unesco": true,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MDV": {
+  "principal": {
+   "nom": "Mosquée du Vendredi de Malé",
+   "type": "ouvrage",
+   "qid": "Q4385992",
+   "wikidata": "Malé Friday Mosque",
+   "description": "ancient decorated mosque",
+   "coord": [
+    73.5125,
+    4.178055555555556
+   ],
+   "auteurs": [],
+   "debut": 1658,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "1 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MLI": {
+  "principal": {
+   "nom": "Grande mosquée de Djenné",
+   "type": "ouvrage",
+   "qid": "Q683632",
+   "wikidata": "Grande Mosquée de Djenné",
+   "description": "mosquée au Mali",
+   "coord": [
+    -4.5555555555556,
+    13.905277777778
+   ],
+   "auteurs": [],
+   "debut": 1906,
+   "unesco": false,
+   "statut": {
+    "code": "a-verifier",
+    "motif": "ouvrage de 1906, sans auteur dans Wikidata"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MLT": {
+  "principal": {
+   "nom": "Temple de Ħaġar Qim",
+   "type": "ouvrage",
+   "qid": "Q343053",
+   "wikidata": "Ħaġar Qim",
+   "description": "Hagar Qim",
+   "coord": [
+    14.442222222222,
+    35.827777777778
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MAR": {
+  "principal": {
+   "nom": "Mosquée Hassan-II",
+   "type": "ouvrage",
+   "qid": "Q41346",
+   "wikidata": "mosquée Hassan-II",
+   "description": "mosquée à Casablanca, Maroc",
+   "coord": [
+    -7.632561111111111,
+    33.60734166666667
+   ],
+   "auteurs": [
+    {
+     "nom": "Michel Pinseau",
+     "naissance": 1926,
+     "mort": 1999
+    }
+   ],
+   "debut": 1993,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2070,
+    "motif": "Michel Pinseau mort en 1999"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Koutoubia",
+   "type": "ouvrage",
+   "qid": "Q1137533",
+   "wikidata": "mosquée Koutoubia",
+   "description": "site du patrimoine culturel marocain et universel",
+   "coord": [
+    -7.993541,
+    31.624124
+   ],
+   "auteurs": [],
+   "debut": 1147,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1147)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MRT": {
+  "principal": {
+   "nom": "Mosquée de Chinguetti",
+   "type": "ouvrage",
+   "qid": "Q2667425",
+   "wikidata": "Chinguetti Mosque",
+   "description": "bâtiment en Mauritanie",
+   "coord": [
+    -12.36666667,
+    20.46333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MEX": {
+  "principal": {
+   "nom": "Pyramide de Kukulcán (Chichén Itzá)",
+   "type": "ouvrage",
+   "qid": "Q1128327",
+   "wikidata": "pyramide de Kukulcán",
+   "description": "monument précolombien de Chichén Itzá",
+   "coord": [
+    -88.56861111111111,
+    20.68288888888889
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "FSM": {
+  "principal": {
+   "nom": "Nan Madol",
+   "type": "ouvrage",
+   "qid": "Q846967",
+   "wikidata": "Nan Madol",
+   "description": "ville en ruine des États fédérés de Micronésie",
+   "coord": [
+    158.332222,
+    6.841944
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MDA": {
+  "principal": {
+   "nom": "Orheiul Vechi",
+   "type": "ouvrage",
+   "qid": "Q2382751",
+   "wikidata": "Old Orhei",
+   "description": "historical and archaeological complex in Moldova",
+   "coord": [
+    28.9725,
+    47.301388888889
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MCO": {
+  "principal": {
+   "nom": "Casino de Monte-Carlo",
+   "type": "ouvrage",
+   "qid": "Q1779905",
+   "wikidata": "casino de Monte-Carlo",
+   "description": "casino situé à Monaco",
+   "coord": [
+    7.42796,
+    43.73917
+   ],
+   "auteurs": [
+    {
+     "nom": "Charles Garnier",
+     "naissance": 1825,
+     "mort": 1898
+    }
+   ],
+   "debut": 1865,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1969,
+    "motif": "Charles Garnier mort en 1898"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MNG": {
+  "principal": {
+   "nom": "Statue équestre de Gengis Khan",
+   "type": "ouvrage",
+   "qid": "Q1165021",
+   "wikidata": "statue équestre de Gengis Khan",
+   "description": "statut de l'ancien chef mongol Gengis Khan",
+   "coord": [
+    107.52980555556,
+    47.808083333333
+   ],
+   "auteurs": [],
+   "debut": 2008,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "ouvrage de 2008 : son auteur ne peut être mort avant 1956"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Monastère d'Erdene Zuu",
+   "type": "ouvrage",
+   "qid": "Q1058965",
+   "wikidata": "Erdene Zuu",
+   "description": "monastère bouddhiste de l'école Gelugpa situé en Mongolie",
+   "coord": [
+    102.84333333333,
+    47.201666666667
+   ],
+   "auteurs": [],
+   "debut": 1586,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1586)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MNE": {
+  "principal": {
+   "nom": "Notre-Dame-du-Rocher (Perast)",
+   "type": "ouvrage",
+   "qid": "Q1538617",
+   "wikidata": "Notre-Dame-des-Rochers",
+   "description": "îlot artificiel dans la municipalité de Kotor",
+   "coord": [
+    18.688888888889,
+    42.486666666667
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "0 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "MOZ": {
+  "principal": {
+   "nom": "Forteresse São Sebastião (île de Mozambique)",
+   "type": "ouvrage",
+   "qid": "Q1814572",
+   "wikidata": "forteresse de Saint-Sébastien",
+   "description": "bâtiment en Afrique",
+   "coord": [
+    40.743803,
+    -15.028925
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "4 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "NAM": {
+  "principal": {
+   "nom": "Dunes de Sossusvlei",
+   "type": "nature",
+   "qid": "Q1932730",
+   "wikidata": "Sossusvlei",
+   "description": "désert de sel et d'argile dans le désert du Namib",
+   "coord": [
+    15.28765,
+    -24.73983
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "NRU": {
+  "principal": {
+   "nom": "Lagune de Buada",
+   "type": "nature",
+   "qid": "Q997345",
+   "wikidata": "lagune Buada",
+   "description": "lac de Nauru",
+   "coord": [
+    166.92228888889,
+    -0.53506388888889
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "NPL": {
+  "principal": {
+   "nom": "Stupa de Bodnath",
+   "type": "ouvrage",
+   "qid": "Q889902",
+   "wikidata": "Bodnath",
+   "description": "sanctuaire bouddhiste",
+   "coord": [
+    85.361944,
+    27.721389
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "NIC": {
+  "principal": {
+   "nom": "Momotombo",
+   "type": "nature",
+   "qid": "Q575891",
+   "wikidata": "Momotombo",
+   "description": "stratovolcan actif sur la rive nord-ouest du lac Xolotlán (lac de Managua), dans la municipalité de La Paz Centro, département de León, au Nicaragua",
+   "coord": [
+    -86.5384954,
+    12.4247007
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "NER": {
+  "principal": {
+   "nom": "Grande mosquée d'Agadez",
+   "type": "ouvrage",
+   "qid": "Q3440333",
+   "wikidata": "mosquée d'Agadez",
+   "description": "mosquée au Niger",
+   "coord": [
+    7.98836,
+    16.9742
+   ],
+   "auteurs": [],
+   "debut": 1515,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1515)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "NGA": {
+  "principal": {
+   "nom": "Zuma Rock",
+   "type": "nature",
+   "qid": "Q229624",
+   "wikidata": "Zuma Rock",
+   "description": "Monolithe granitique du plateau de Fos, Nigéria",
+   "coord": [
+    7.2339461111111,
+    9.1304161111111
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "NOR": {
+  "principal": {
+   "nom": "Église en bois debout de Borgund",
+   "type": "ouvrage",
+   "qid": "Q755010",
+   "wikidata": "stavkirke de Borgund",
+   "description": "église de Lærdal, Sogn og Fjordane, Norvège",
+   "coord": [
+    7.81224,
+    61.04724
+   ],
+   "auteurs": [],
+   "debut": 1101,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1101)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "NZL": {
+  "principal": {
+   "nom": "Aoraki / mont Cook",
+   "type": "nature",
+   "qid": "Q5059",
+   "wikidata": "Aoraki/Mont Cook",
+   "description": "point culminant de la Nouvelle-Zélande",
+   "coord": [
+    170.14194444444445,
+    -43.595
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "OMN": {
+  "principal": {
+   "nom": "Fort de Nizwa",
+   "type": "ouvrage",
+   "qid": "Q7042280",
+   "wikidata": "Nizwa Fort",
+   "description": "fortress in Oman",
+   "coord": [
+    57.530278,
+    22.933333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "UGA": {
+  "principal": {
+   "nom": "Chutes Murchison",
+   "type": "nature",
+   "qid": "Q495475",
+   "wikidata": "Murchison Falls",
+   "description": "waterfall on the Nile in Uganda",
+   "coord": [
+    31.685555555555556,
+    2.2783333333333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "UZB": {
+  "principal": {
+   "nom": "Registan (Samarcande)",
+   "type": "ouvrage",
+   "qid": "Q1373583",
+   "wikidata": "Régistan",
+   "description": "centre historique de Samarcande",
+   "coord": [
+    66.975555555556,
+    39.654722222222
+   ],
+   "auteurs": [],
+   "debut": 1417,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1417)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "PAK": {
+  "principal": {
+   "nom": "Mosquée Badshahi",
+   "type": "ouvrage",
+   "qid": "Q330872",
+   "wikidata": "mosquée Royale",
+   "description": "mosquée au Pakistan",
+   "coord": [
+    74.30944444444444,
+    31.588055555555556
+   ],
+   "auteurs": [],
+   "debut": 1671,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1671)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "PLW": {
+  "principal": {
+   "nom": "Rock Islands",
+   "type": "nature",
+   "qid": "Q17215490",
+   "wikidata": "Lagon sud des îles Chelbacheb",
+   "description": "lagon des îles Chelbacheb, Palaos",
+   "coord": [
+    134.3525,
+    7.2469
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "PSE": {
+  "principal": {
+   "nom": "Basilique de la Nativité (Bethléem)",
+   "type": "ouvrage",
+   "qid": "Q194504",
+   "wikidata": "basilique de la Nativité de Bethléem",
+   "description": "basilique chrétienne située sur le lieu présumé de naissance du Christ",
+   "coord": [
+    35.20758333333333,
+    31.704305555555557
+   ],
+   "auteurs": [],
+   "debut": 327,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (327)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "PAN": {
+  "principal": {
+   "nom": "Écluses de Miraflores (canal de Panama)",
+   "type": "ouvrage",
+   "qid": "Q6872559",
+   "wikidata": "Miraflores",
+   "description": "lock of the Panama Canal",
+   "coord": [
+    -79.59186944,
+    8.99707611
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "a-verifier",
+    "motif": "sans date ni auteur dans Wikidata"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "PNG": {
+  "principal": {
+   "nom": "Parlement de Port Moresby",
+   "type": "ouvrage",
+   "qid": "Q109236300",
+   "wikidata": "National Parliament House",
+   "description": "siège du parlement de la Papouasie-Nouvelle-Guinée",
+   "coord": [
+    147.19166666666666,
+    -9.428055555555554
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "a-verifier",
+    "motif": "sans date ni auteur dans Wikidata"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Mont Wilhelm",
+   "type": "nature",
+   "qid": "Q277441",
+   "wikidata": "mont Wilhelm",
+   "description": "montagne",
+   "coord": [
+    145.0295844,
+    -5.7799986
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "PRY": {
+  "principal": {
+   "nom": "Mission jésuite de Trinidad",
+   "type": "ouvrage",
+   "qid": "Q15727363",
+   "wikidata": "missions jésuites de la Santísima Trinidad de Paraná et Jesús de Tavarangue",
+   "description": "site inscrit au patrimoine mondial au Paraguay",
+   "coord": [
+    -55.753,
+    -27.056
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "NLD": {
+  "principal": {
+   "nom": "Moulins de Kinderdijk",
+   "type": "ouvrage",
+   "qid": "Q740066",
+   "wikidata": "Kinderdijk",
+   "description": "village néerlandais",
+   "coord": [
+    4.6333333333333,
+    51.883333333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "PER": {
+  "principal": {
+   "nom": "Machu Picchu",
+   "type": "ouvrage",
+   "qid": "Q676203",
+   "wikidata": "Machu Picchu",
+   "description": "ancienne cité inca du XVe siècle au Pérou",
+   "coord": [
+    -72.54555555555555,
+    -13.163333333333334
+   ],
+   "auteurs": [],
+   "debut": 1450,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1450)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "PHL": {
+  "principal": {
+   "nom": "Collines de chocolat",
+   "type": "nature",
+   "qid": "Q977422",
+   "wikidata": "Chocolate Hills",
+   "description": "formation géologique sur l'île de Bohol, aux Philippines",
+   "coord": [
+    124.16666666667,
+    9.9166666666667
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "POL": {
+  "principal": {
+   "nom": "Château du Wawel",
+   "type": "ouvrage",
+   "qid": "Q18820",
+   "wikidata": "château du Wawel",
+   "description": "château situé à Cracovie en Pologne",
+   "coord": [
+    19.9366,
+    50.0544
+   ],
+   "auteurs": [
+    {
+     "nom": "Francesco Fiorentino",
+     "naissance": 1439,
+     "mort": 1516
+    },
+    {
+     "nom": "Benedykt from Sandomierz",
+     "naissance": 1450,
+     "mort": null
+    },
+    {
+     "nom": "Bartolomeo Berecci",
+     "naissance": 1480,
+     "mort": 1537
+    },
+    {
+     "nom": "Mikołaj Castiglione",
+     "naissance": null,
+     "mort": 1545
+    },
+    {
+     "nom": "Giovanni Trevano",
+     "naissance": null,
+     "mort": 1644
+    },
+    {
+     "nom": "Kacper Bażanka",
+     "naissance": 1680,
+     "mort": 1726
+    },
+    {
+     "nom": "Domenico Merlini",
+     "naissance": 1730,
+     "mort": 1797
+    }
+   ],
+   "debut": 1001,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1868,
+    "motif": "Domenico Merlini mort en 1797"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "PRT": {
+  "principal": {
+   "nom": "Tour de Belém",
+   "type": "ouvrage",
+   "qid": "Q215003",
+   "wikidata": "tour de Belém",
+   "description": "bâtiment de Santa Maria de Belém, Lisbonne, au Portugal",
+   "coord": [
+    -9.2158333333333,
+    38.691388888889
+   ],
+   "auteurs": [
+    {
+     "nom": "Francisco de Arruda",
+     "naissance": null,
+     "mort": 1547
+    }
+   ],
+   "debut": 1515,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1618,
+    "motif": "Francisco de Arruda mort en 1547"
+   },
+   "pays": "0 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "QAT": {
+  "principal": {
+   "nom": "Musée d'art islamique de Doha",
+   "type": "ouvrage",
+   "qid": "Q1148353",
+   "wikidata": "musée d’Art islamique de Doha",
+   "description": "musée qatari",
+   "coord": [
+    51.53926544829824,
+    25.295018702642466
+   ],
+   "auteurs": [
+    {
+     "nom": "Ieoh Ming Pei",
+     "naissance": 1917,
+     "mort": 2019
+    },
+    {
+     "nom": "Jean-Michel Wilmotte",
+     "naissance": 1948,
+     "mort": null
+    }
+   ],
+   "debut": 2008,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "Jean-Michel Wilmotte : vivant"
+   },
+   "pays": "0 km au large",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Fort d'Al Zubarah",
+   "type": "ouvrage",
+   "qid": "Q13564665",
+   "wikidata": "fort d'Al Zubarah",
+   "description": "fort au Qatar",
+   "coord": [
+    51.04538888888889,
+    25.97688888888889
+   ],
+   "auteurs": [],
+   "debut": 1938,
+   "unesco": false,
+   "statut": {
+    "code": "a-verifier",
+    "motif": "ouvrage de 1938, sans auteur dans Wikidata"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "COD": {
+  "principal": {
+   "nom": "Nyiragongo",
+   "type": "nature",
+   "qid": "Q214696",
+   "wikidata": "Nyiragongo",
+   "description": "volcan de république démocratique du Congo",
+   "coord": [
+    29.25,
+    -1.5166666666667
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CAF": {
+  "principal": {
+   "nom": "Chutes de Boali",
+   "type": "nature",
+   "qid": "Q22501890",
+   "wikidata": "chutes de Boali",
+   "description": "Relief en RCA",
+   "coord": [
+    18.04753,
+    4.87423
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "DOM": {
+  "principal": {
+   "nom": "Alcázar de Colón",
+   "type": "ouvrage",
+   "qid": "Q668772",
+   "wikidata": "Alcázar de Colón",
+   "description": "first fortified Spanish castle in the Dominican Republic",
+   "coord": [
+    -69.88275,
+    18.4775
+   ],
+   "auteurs": [],
+   "debut": 1511,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1511)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ROU": {
+  "principal": {
+   "nom": "Château de Bran",
+   "type": "ouvrage",
+   "qid": "Q390275",
+   "wikidata": "château de Bran",
+   "description": "château médiéval dans le judet de Braşov, Roumanie",
+   "coord": [
+    25.3671,
+    45.515
+   ],
+   "auteurs": [],
+   "debut": 1289,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1289)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "GBR": {
+  "principal": {
+   "nom": "Big Ben (tour Elizabeth)",
+   "type": "ouvrage",
+   "qid": "Q41225",
+   "wikidata": "Big Ben",
+   "description": "tour horloge du Palais de Westminster à Londres",
+   "coord": [
+    -0.12457,
+    51.50067
+   ],
+   "auteurs": [
+    {
+     "nom": "Augustus Pugin",
+     "naissance": 1812,
+     "mort": 1852
+    },
+    {
+     "nom": "Charles Barry",
+     "naissance": 1795,
+     "mort": 1860
+    }
+   ],
+   "debut": 1843,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1931,
+    "motif": "Charles Barry mort en 1860"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "RUS": {
+  "principal": {
+   "nom": "Cathédrale Saint-Basile",
+   "type": "ouvrage",
+   "qid": "Q129846",
+   "wikidata": "cathédrale Saint-Basile-le-Bienheureux",
+   "description": "cathédrale située à Moscou",
+   "coord": [
+    37.62305555555555,
+    55.7525
+   ],
+   "auteurs": [
+    {
+     "nom": "Postnik Yakovlev",
+     "naissance": 1500,
+     "mort": 1500
+    }
+   ],
+   "debut": 1555,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1571,
+    "motif": "Postnik Yakovlev mort en 1500"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "RWA": {
+  "principal": {
+   "nom": "Mont Karisimbi",
+   "type": "nature",
+   "qid": "Q737859",
+   "wikidata": "mont Karisimbi",
+   "description": "mont au Rwanda",
+   "coord": [
+    29.45,
+    -1.5
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "1 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "KNA": {
+  "principal": {
+   "nom": "Forteresse de Brimstone Hill",
+   "type": "ouvrage",
+   "qid": "Q200521",
+   "wikidata": "parc national de la forteresse de Brimstone Hill",
+   "description": "national park in Saint Kitts",
+   "coord": [
+    -62.836,
+    17.347
+   ],
+   "auteurs": [],
+   "debut": 1987,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SMR": {
+  "principal": {
+   "nom": "Tour Guaita",
+   "type": "ouvrage",
+   "qid": "Q2711604",
+   "wikidata": "Guaita",
+   "description": "mountain peak near in the city of San Marino",
+   "coord": [
+    12.4496,
+    43.9354
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "VCT": {
+  "principal": {
+   "nom": "La Soufrière (Saint-Vincent)",
+   "type": "nature",
+   "qid": "Q26544",
+   "wikidata": "la Soufrière",
+   "description": "volcan à Saint-Vincent-et-les-Grenadines",
+   "coord": [
+    -61.183333333333,
+    13.333333333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "LCA": {
+  "principal": {
+   "nom": "Gros Piton",
+   "type": "nature",
+   "qid": "Q1321979",
+   "wikidata": "Gros Piton",
+   "description": "sommet à Sainte-Lucie",
+   "coord": [
+    -61.066666666667,
+    13.8
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SLV": {
+  "principal": {
+   "nom": "Volcan Izalco",
+   "type": "nature",
+   "qid": "Q1049619",
+   "wikidata": "Izalco",
+   "description": "volcan salvadorien",
+   "coord": [
+    -89.633333333333,
+    13.813055555556
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "WSM": {
+  "principal": {
+   "nom": "To Sua Ocean Trench",
+   "type": "nature",
+   "qid": "Q47483825",
+   "wikidata": "",
+   "description": "lake in Atua, Samoa",
+   "coord": [
+    -171.5623,
+    -14.0439
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "STP": {
+  "principal": {
+   "nom": "Pico Cão Grande",
+   "type": "nature",
+   "qid": "Q2082148",
+   "wikidata": "Pico Cão Grande",
+   "description": "sommet dans le district de Caué, Sao Tomé-et-Principe",
+   "coord": [
+    6.5663888888889,
+    0.11805555555556
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SEN": {
+  "principal": {
+   "nom": "Monument de la Renaissance africaine",
+   "type": "ouvrage",
+   "qid": "Q470763",
+   "wikidata": "monument de la Renaissance africaine",
+   "description": "statue monumentale située à Dakar, Sénégal",
+   "coord": [
+    -17.495,
+    14.722222222222221
+   ],
+   "auteurs": [
+    {
+     "nom": "Pierre Goudiaby Atepa",
+     "naissance": 1947,
+     "mort": null
+    },
+    {
+     "nom": "Mansudae Overseas Projects",
+     "naissance": null,
+     "mort": null
+    }
+   ],
+   "debut": 2008,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "Pierre Goudiaby Atepa : vivant"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Maison des Esclaves (Gorée)",
+   "type": "ouvrage",
+   "qid": "Q691908",
+   "wikidata": "maison des Esclaves",
+   "description": "bâtiment à Gorée, au Sénégal",
+   "coord": [
+    -17.39722222,
+    14.66777778
+   ],
+   "auteurs": [],
+   "debut": 1776,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1776)"
+   },
+   "pays": "4 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SRB": {
+  "principal": {
+   "nom": "Temple de Saint-Sava (Belgrade)",
+   "type": "ouvrage",
+   "qid": "Q330385",
+   "wikidata": "cathédrale Saint-Sava de Belgrade",
+   "description": "church in Belgrade, Serbia",
+   "coord": [
+    20.46855,
+    44.798083333333
+   ],
+   "auteurs": [
+    {
+     "nom": "Aleksandar Deroko",
+     "naissance": 1894,
+     "mort": 1988
+    }
+   ],
+   "debut": 2004,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2059,
+    "motif": "Aleksandar Deroko mort en 1988"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Forteresse de Belgrade",
+   "type": "ouvrage",
+   "qid": "Q1409017",
+   "wikidata": "forteresse de Belgrade",
+   "description": "forteresse à Belgrade, quartier de Kalemegdan, Serbie",
+   "coord": [
+    20.4503,
+    44.8236
+   ],
+   "auteurs": [],
+   "debut": 100,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (100)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SYC": {
+  "principal": {
+   "nom": "Vallée de Mai",
+   "type": "nature",
+   "qid": "Q573558",
+   "wikidata": "vallée de Mai",
+   "description": "vallée des Seychelles",
+   "coord": [
+    55.7375,
+    -4.3291666666667
+   ],
+   "auteurs": [],
+   "debut": 1966,
+   "unesco": true,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SLE": {
+  "principal": {
+   "nom": "Île de Bunce",
+   "type": "ouvrage",
+   "qid": "Q1004939",
+   "wikidata": "île de Bunce",
+   "description": "île du Sierra Leone",
+   "coord": [
+    -13.04026944,
+    8.56987222
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "2 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SGP": {
+  "principal": {
+   "nom": "Merlion",
+   "type": "ouvrage",
+   "note": "marque de l'office du tourisme de Singapour",
+   "qid": "Q208760",
+   "wikidata": "Merlion",
+   "description": "statue fontaine d'un Merlion",
+   "coord": [
+    103.8545,
+    1.2868055555555555
+   ],
+   "auteurs": [
+    {
+     "nom": "Lim Nang Seng",
+     "naissance": 1917,
+     "mort": 1987
+    }
+   ],
+   "debut": 1972,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2058,
+    "motif": "Lim Nang Seng mort en 1987"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Hôtel Raffles",
+   "type": "ouvrage",
+   "qid": "Q1538837",
+   "wikidata": "hôtel Raffles",
+   "description": "hôtel de luxe singapourien",
+   "coord": [
+    103.854483,
+    1.294889
+   ],
+   "auteurs": [
+    {
+     "nom": "Regent Alfred John Bidwell",
+     "naissance": 1869,
+     "mort": 1918
+    }
+   ],
+   "debut": 1887,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1989,
+    "motif": "Regent Alfred John Bidwell mort en 1918"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SVK": {
+  "principal": {
+   "nom": "Château de Spiš",
+   "type": "ouvrage",
+   "qid": "Q205558",
+   "wikidata": "château de Spiš",
+   "description": "château médiéval en Slovaquie",
+   "coord": [
+    20.768333333333,
+    49.000555555556
+   ],
+   "auteurs": [],
+   "debut": 1200,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1200)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SVN": {
+  "principal": {
+   "nom": "Île de Bled",
+   "type": "ouvrage",
+   "qid": "Q2877401",
+   "wikidata": "île de Bled",
+   "description": "île située sur le lac de Bled en Slovénie",
+   "coord": [
+    14.0900418,
+    46.362234373
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SOM": {
+  "principal": {
+   "nom": "Laas Geel",
+   "type": "ouvrage",
+   "qid": "Q1799347",
+   "wikidata": "Laas Geel",
+   "description": "Cave painting in Laas Geel",
+   "coord": [
+    44.443333333333335,
+    9.780277777777778
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SDN": {
+  "principal": {
+   "nom": "Pyramides de Méroé",
+   "type": "ouvrage",
+   "qid": "Q456939",
+   "wikidata": "pyramides de Meroe",
+   "description": "pyramids in Sudan",
+   "coord": [
+    33.74916667,
+    16.93833333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SSD": {
+  "principal": {
+   "nom": "Mont Kinyeti",
+   "type": "nature",
+   "qid": "Q948298",
+   "wikidata": "Kinyeti",
+   "description": "plus haut sommet du Soudan du Sud (3187m)",
+   "coord": [
+    32.908888888889,
+    3.9475
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "LKA": {
+  "principal": {
+   "nom": "Sigiriya",
+   "type": "ouvrage",
+   "qid": "Q272153",
+   "wikidata": "Sigirîya",
+   "description": "ancient rock fortress near Dambulla, Sri Lanka.",
+   "coord": [
+    80.759722222222,
+    7.9569444444444
+   ],
+   "auteurs": [
+    {
+     "nom": "Kassapa Ier",
+     "naissance": 448,
+     "mort": 495
+    }
+   ],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 566,
+    "motif": "Kassapa Ier mort en 495"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SWE": {
+  "principal": {
+   "nom": "Hôtel de ville de Stockholm",
+   "type": "ouvrage",
+   "qid": "Q648483",
+   "wikidata": "hôtel de ville de Stockholm",
+   "description": "bâtiment de la commune de Stockholm, Suède",
+   "coord": [
+    18.054722,
+    59.3275
+   ],
+   "auteurs": [
+    {
+     "nom": "Ragnar Östberg",
+     "naissance": 1866,
+     "mort": 1945
+    }
+   ],
+   "debut": 1923,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 2016,
+    "motif": "Ragnar Östberg mort en 1945"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CHE": {
+  "principal": {
+   "nom": "Cervin",
+   "type": "nature",
+   "qid": "Q6789746",
+   "wikidata": "glacier du Cervin",
+   "description": "glacier in Switzerland",
+   "coord": [
+    7.65833333,
+    45.98361111
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Château de Chillon",
+   "type": "ouvrage",
+   "qid": "Q372647",
+   "wikidata": "château de Chillon",
+   "description": "château sur les rives du Léman à Veytaux, canton de Vaud, Suisse",
+   "coord": [
+    6.9275,
+    46.41416666666667
+   ],
+   "auteurs": [
+    {
+     "nom": "Jacques de Saint-Georges",
+     "naissance": 1230,
+     "mort": 1309
+    }
+   ],
+   "debut": 1160,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1380,
+    "motif": "Jacques de Saint-Georges mort en 1309"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SUR": {
+  "principal": {
+   "nom": "Cathédrale Saints-Pierre-et-Paul de Paramaribo",
+   "type": "ouvrage",
+   "qid": "Q2736107",
+   "wikidata": "Saint Peter and Paul Cathedral",
+   "description": "Roman Catholic cathedral in Paramaribo, Suriname",
+   "coord": [
+    -55.154092,
+    5.828681
+   ],
+   "auteurs": [],
+   "debut": 1883,
+   "unesco": false,
+   "statut": {
+    "code": "a-verifier",
+    "motif": "ouvrage de 1883, sans auteur dans Wikidata"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "SYR": {
+  "principal": {
+   "nom": "Krak des Chevaliers",
+   "type": "ouvrage",
+   "qid": "Q177549",
+   "wikidata": "Krak des Chevaliers",
+   "description": "place fortifiée croisée en Syrie",
+   "coord": [
+    36.29472222222222,
+    34.75694444444444
+   ],
+   "auteurs": [],
+   "debut": 1031,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1031)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TJK": {
+  "principal": {
+   "nom": "Lac Iskanderkoul",
+   "type": "nature",
+   "qid": "Q2478596",
+   "wikidata": "lac Iskanderkoul",
+   "description": "lake in Tajikistan",
+   "coord": [
+    68.368333333333,
+    39.074444444444
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TWN": {
+  "principal": {
+   "nom": "Taipei 101",
+   "type": "ouvrage",
+   "qid": "Q83101",
+   "wikidata": "Taipei 101",
+   "description": "gratte-ciel à Taipei",
+   "coord": [
+    121.56472222222222,
+    25.03361111111111
+   ],
+   "auteurs": [
+    {
+     "nom": "Chu-yuan Lee",
+     "naissance": 1938,
+     "mort": null
+    }
+   ],
+   "debut": 2005,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "Chu-yuan Lee : vivant"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Gorges de Taroko",
+   "type": "nature",
+   "qid": "Q101217786",
+   "wikidata": "Taroko Gorge",
+   "description": "",
+   "coord": [
+    121.5195,
+    24.177
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TZA": {
+  "principal": {
+   "nom": "Kilimandjaro",
+   "type": "nature",
+   "qid": "Q7296",
+   "wikidata": "Kilimanjaro",
+   "description": "volcan de Tanzanie et point culminant de l'Afrique",
+   "coord": [
+    37.359166666667,
+    -3.0666666666667
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TCD": {
+  "principal": {
+   "nom": "Arche d'Aloba (Ennedi)",
+   "type": "nature",
+   "qid": "Q4734098",
+   "wikidata": "Arche d'Aloba",
+   "description": "arche naturelle au Chad",
+   "coord": [
+    22.23943889,
+    16.74175556
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "CZE": {
+  "principal": {
+   "nom": "Pont Charles",
+   "type": "ouvrage",
+   "qid": "Q204871",
+   "wikidata": "pont Charles",
+   "description": "pont situé à Prague, Tchéquie",
+   "coord": [
+    14.411944444444,
+    50.086388888889
+   ],
+   "auteurs": [
+    {
+     "nom": "Peter Parler",
+     "naissance": 1330,
+     "mort": 1399
+    }
+   ],
+   "debut": 1357,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1470,
+    "motif": "Peter Parler mort en 1399"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "THA": {
+  "principal": {
+   "nom": "Wat Arun",
+   "type": "ouvrage",
+   "qid": "Q724970",
+   "wikidata": "Wat Arun",
+   "description": "temple (wat) bouddhiste de Bangkok",
+   "coord": [
+    100.48891944444445,
+    13.743688888888888
+   ],
+   "auteurs": [],
+   "debut": 1656,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1656)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TLS": {
+  "principal": {
+   "nom": "Cristo Rei de Dili",
+   "type": "ouvrage",
+   "qid": "Q680813",
+   "wikidata": "Cristo Rei",
+   "description": "large statue of Christ in Cristo Rei administrative post, Dili, East Timor",
+   "coord": [
+    125.608322,
+    -8.520527
+   ],
+   "auteurs": [],
+   "debut": 1996,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": null,
+    "motif": "ouvrage de 1996 : son auteur ne peut être mort avant 1956"
+   },
+   "pays": "0 km au large",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Mont Ramelau",
+   "type": "nature",
+   "qid": "Q1539961",
+   "wikidata": "mont Ramelau",
+   "description": "montagne de l'île de Timor",
+   "coord": [
+    125.49333333333334,
+    -8.906666666666666
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TGO": {
+  "principal": {
+   "nom": "Koutammakou (takienta)",
+   "type": "ouvrage",
+   "qid": "Q508040",
+   "wikidata": "Koutammakou",
+   "description": "région du Togo et du Bénin qui abrite les Batammariba",
+   "coord": [
+    1.0666666666667,
+    10.1
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TON": {
+  "principal": {
+   "nom": "Trilithe Haʻamonga ʻa Maui",
+   "type": "ouvrage",
+   "qid": "Q1433433",
+   "wikidata": "Ha'amonga 'a Maui",
+   "description": "a stone trilithon located in Tonga",
+   "coord": [
+    -175.04805556,
+    -21.13666667
+   ],
+   "auteurs": [],
+   "debut": 1300,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1300)"
+   },
+   "pays": "0 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TTO": {
+  "principal": {
+   "nom": "Red House (Port-d'Espagne)",
+   "type": "ouvrage",
+   "qid": "Q7759880",
+   "wikidata": "The Red House",
+   "description": "Government building",
+   "coord": [
+    -61.51166667,
+    10.65305556
+   ],
+   "auteurs": [],
+   "debut": 1907,
+   "unesco": false,
+   "statut": {
+    "code": "a-verifier",
+    "motif": "ouvrage de 1907, sans auteur dans Wikidata"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Lac de bitume (Pitch Lake)",
+   "type": "nature",
+   "qid": "Q717351",
+   "wikidata": "lac Pitch",
+   "description": "lac d'hydrocarbure",
+   "coord": [
+    -61.62805556,
+    10.2325
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TUN": {
+  "principal": {
+   "nom": "Amphithéâtre d'El Jem",
+   "type": "ouvrage",
+   "qid": "Q2914326",
+   "wikidata": "amphithéâtre d'El Jem",
+   "description": "amphithéâtre romain en Tunisie",
+   "coord": [
+    10.70694444,
+    35.29638889
+   ],
+   "auteurs": [],
+   "debut": 238,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (238)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TKM": {
+  "principal": {
+   "nom": "Cratère de Darvaza",
+   "type": "nature",
+   "qid": "Q70458",
+   "wikidata": "Porte de l'Enfer",
+   "description": "champ de gaz naturel en feu au Turkménistan",
+   "coord": [
+    58.43939,
+    40.25263
+   ],
+   "auteurs": [],
+   "debut": 1971,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TUR": {
+  "principal": {
+   "nom": "Sainte-Sophie",
+   "type": "ouvrage",
+   "qid": "Q12506",
+   "wikidata": "Sainte-Sophie",
+   "description": "monument byzantin à Istanbul, Turquie",
+   "coord": [
+    28.98,
+    41.00833333333333
+   ],
+   "auteurs": [
+    {
+     "nom": "Isidore de Milet",
+     "naissance": 442,
+     "mort": 537
+    },
+    {
+     "nom": "Anthémius de Tralles",
+     "naissance": 474,
+     "mort": 534
+    }
+   ],
+   "debut": 532,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 608,
+    "motif": "Isidore de Milet mort en 537"
+   },
+   "pays": "1 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "TUV": {
+  "principal": {
+   "nom": "Atoll de Funafuti",
+   "type": "nature",
+   "qid": "Q34126",
+   "wikidata": "Funafuti",
+   "description": "capitale des Tuvalu",
+   "coord": [
+    179.1173611111111,
+    -8.504777777777777
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "8 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "UKR": {
+  "principal": {
+   "nom": "Cathédrale Sainte-Sophie de Kyiv",
+   "type": "ouvrage",
+   "qid": "Q830054",
+   "wikidata": "cathédrale Sainte-Sophie de Kiev",
+   "description": "musée de Kiev",
+   "coord": [
+    30.514444444444,
+    50.452777777778
+   ],
+   "auteurs": [],
+   "debut": 1011,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1011)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "URY": {
+  "principal": {
+   "nom": "Palacio Salvo",
+   "type": "ouvrage",
+   "qid": "Q1519373",
+   "wikidata": "palais Salvo",
+   "description": "bâtiment à Montevideo, Uruguay",
+   "coord": [
+    -56.198308,
+    -34.906725
+   ],
+   "auteurs": [
+    {
+     "nom": "Mario Palanti",
+     "naissance": 1885,
+     "mort": 1978
+    }
+   ],
+   "debut": 1922,
+   "unesco": false,
+   "statut": {
+    "code": "protege",
+    "libreEn": 2049,
+    "motif": "Mario Palanti mort en 1978"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  },
+  "variante": {
+   "nom": "Colonia del Sacramento",
+   "type": "ouvrage",
+   "qid": "Q9643691",
+   "wikidata": "quartier historique de la ville de Colonia del Sacramento",
+   "description": "bien du patrimoine mondial en Uruguay",
+   "coord": [
+    -57.851234,
+    -34.471543
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "0 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "VUT": {
+  "principal": {
+   "nom": "Mont Yasur",
+   "type": "nature",
+   "qid": "Q392766",
+   "wikidata": "Yasur",
+   "description": "volcan de Vanuatu",
+   "coord": [
+    169.44166666667,
+    -19.533333333333
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "VAT": {
+  "principal": {
+   "nom": "Basilique Saint-Pierre",
+   "type": "ouvrage",
+   "qid": "Q12512",
+   "wikidata": "basilique Saint-Pierre",
+   "description": "basilique catholique de la Cité du Vatican",
+   "coord": [
+    12.453416666666667,
+    41.90222222222222
+   ],
+   "auteurs": [
+    {
+     "nom": "Michel-Ange Buronarroti",
+     "naissance": 1475,
+     "mort": 1564
+    },
+    {
+     "nom": "Giuliano da Sangallo",
+     "naissance": 1445,
+     "mort": 1516
+    },
+    {
+     "nom": "Bramante",
+     "naissance": 1444,
+     "mort": 1514
+    },
+    {
+     "nom": "Raphaël",
+     "naissance": 1483,
+     "mort": 1520
+    },
+    {
+     "nom": "Giovanni Giocondo",
+     "naissance": 1433,
+     "mort": 1515
+    },
+    {
+     "nom": "Antonio da Sangallo le Jeune",
+     "naissance": 1484,
+     "mort": 1546
+    },
+    {
+     "nom": "Baldassarre Peruzzi",
+     "naissance": 1481,
+     "mort": 1536
+    },
+    {
+     "nom": "Bernardo Rossellino",
+     "naissance": 1409,
+     "mort": 1464
+    },
+    {
+     "nom": "Giacomo della Porta",
+     "naissance": 1532,
+     "mort": 1602
+    },
+    {
+     "nom": "Jacques Barocius de Vignole",
+     "naissance": 1507,
+     "mort": 1573
+    },
+    {
+     "nom": "Pirro Ligorio",
+     "naissance": 1513,
+     "mort": 1583
+    },
+    {
+     "nom": "Carlo Maderno",
+     "naissance": 1556,
+     "mort": 1629
+    },
+    {
+     "nom": "Le Bernin",
+     "naissance": 1598,
+     "mort": 1680
+    }
+   ],
+   "debut": 1506,
+   "unesco": false,
+   "statut": {
+    "code": "domaine-public",
+    "libreEn": 1751,
+    "motif": "Le Bernin mort en 1680"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "VEN": {
+  "principal": {
+   "nom": "Salto Ángel",
+   "type": "nature",
+   "qid": "Q80299",
+   "wikidata": "Salto Angel",
+   "description": "chute d'eau du Venezuela",
+   "coord": [
+    -62.53622222222222,
+    5.970055555555556
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": false,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "VNM": {
+  "principal": {
+   "nom": "Baie d'Hạ Long",
+   "type": "nature",
+   "qid": "Q190128",
+   "wikidata": "baie d'Along",
+   "description": "baie située au Viêt Nam",
+   "coord": [
+    107.2,
+    20.9
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "7 km au large",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "YEM": {
+  "principal": {
+   "nom": "Shibam (gratte-ciel de terre)",
+   "type": "ouvrage",
+   "qid": "Q192518",
+   "wikidata": "Chibam",
+   "description": "ville yéménite",
+   "coord": [
+    48.626666666666665,
+    15.926944444444445
+   ],
+   "auteurs": [],
+   "debut": 1600,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage ancien (1600)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ZMB": {
+  "principal": {
+   "nom": "Chutes Victoria",
+   "type": "nature",
+   "qid": "Q43278",
+   "wikidata": "chutes Victoria",
+   "description": "Chutes sur le fleuve Zambèze",
+   "coord": [
+    25.858055555556,
+    -17.924777777778
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "nature",
+    "motif": "site naturel, sans auteur"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ },
+ "ZWE": {
+  "principal": {
+   "nom": "Grand Zimbabwe",
+   "type": "ouvrage",
+   "qid": "Q209217",
+   "wikidata": "Monument national du Grand Zimbabwe",
+   "description": "ruines d'une ancienne cité dans le sud du Zimbabwe",
+   "coord": [
+    30.933,
+    -20.27
+   ],
+   "auteurs": [],
+   "debut": null,
+   "unesco": true,
+   "statut": {
+    "code": "domaine-public",
+    "motif": "ouvrage antérieur à 1850 (choix ; date absente ou fausse dans Wikidata)"
+   },
+   "pays": "dedans",
+   "cadre": true,
+   "douteux": false
+  }
+ }
+}

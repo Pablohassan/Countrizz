@@ -40,3 +40,12 @@ export function statut(f: Faits, annee: number): Statut {
   if (inconnus.length > 0) return { code: 'a-verifier', motif: `${inconnus.map((a) => a.nom).join(', ')} : décès inconnu` };
   return { code: 'a-verifier', motif: f.debut === null ? 'sans date ni auteur dans Wikidata' : `ouvrage de ${f.debut}, sans auteur dans Wikidata` };
 }
+
+/**
+ * Élément montré pour un pays (décision de l'utilisateur du 08/11 : les variantes libres) : la variante quand le principal est
+ * protégé et qu'elle est libre ou naturelle ; sinon le principal (protégé sans variante libre : reste à trancher).
+ */
+export function retenir(principal: Statut['code'], variante: Statut['code'] | undefined): 'principal' | 'variante' {
+  const libre = (c: Statut['code'] | undefined) => c === 'domaine-public' || c === 'nature';
+  return principal === 'protege' && libre(variante) ? 'variante' : 'principal';
+}

@@ -20,7 +20,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ZAF": {
   "principal": {
@@ -43,7 +44,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ALB": {
   "principal": {
@@ -66,7 +68,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "DZA": {
   "principal": {
@@ -117,7 +120,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "DEU": {
   "principal": {
@@ -152,7 +156,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "AND": {
   "principal": {
@@ -175,7 +180,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "AGO": {
   "principal": {
@@ -198,7 +204,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ATG": {
   "principal": {
@@ -221,7 +228,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SAU": {
   "principal": {
@@ -244,7 +252,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ARG": {
   "principal": {
@@ -295,7 +304,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ARM": {
   "principal": {
@@ -325,7 +335,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "AUS": {
   "principal": {
@@ -382,7 +393,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "AUT": {
   "principal": {
@@ -417,7 +429,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "AZE": {
   "principal": {
@@ -468,7 +481,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BHS": {
   "principal": {
@@ -491,7 +505,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BHR": {
   "principal": {
@@ -514,7 +529,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BGD": {
   "principal": {
@@ -565,7 +581,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "BRB": {
   "principal": {
@@ -588,7 +605,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BEL": {
   "principal": {
@@ -645,7 +663,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "BLZ": {
   "principal": {
@@ -668,7 +687,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BEN": {
   "principal": {
@@ -691,7 +711,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BTN": {
   "principal": {
@@ -714,7 +735,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BLR": {
   "principal": {
@@ -737,7 +759,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MMR": {
   "principal": {
@@ -767,7 +790,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BOL": {
   "principal": {
@@ -790,7 +814,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BIH": {
   "principal": {
@@ -813,7 +838,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BWA": {
   "principal": {
@@ -836,7 +862,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BRA": {
   "principal": {
@@ -903,7 +930,8 @@
    "pays": "3 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "BRN": {
   "principal": {
@@ -926,7 +954,8 @@
    "pays": "1 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BGR": {
   "principal": {
@@ -956,7 +985,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BFA": {
   "principal": {
@@ -979,7 +1009,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "BDI": {
   "principal": {
@@ -1002,7 +1033,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "KHM": {
   "principal": {
@@ -1036,7 +1068,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "CMR": {
   "principal": {
@@ -1059,7 +1092,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "CAN": {
   "principal": {
@@ -1122,7 +1156,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "CPV": {
   "principal": {
@@ -1145,7 +1180,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "CHL": {
   "principal": {
@@ -1189,7 +1225,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "CHN": {
   "principal": {
@@ -1219,7 +1256,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "CYP": {
   "principal": {
@@ -1242,7 +1280,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "COL": {
   "principal": {
@@ -1293,7 +1332,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "COM": {
   "principal": {
@@ -1316,7 +1356,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "COG": {
   "principal": {
@@ -1367,7 +1408,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "PRK": {
   "principal": {
@@ -1413,7 +1455,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "KOR": {
   "principal": {
@@ -1436,7 +1479,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "CRI": {
   "principal": {
@@ -1459,7 +1503,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "CIV": {
   "principal": {
@@ -1510,7 +1555,8 @@
    "pays": "1 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "HRV": {
   "principal": {
@@ -1533,7 +1579,8 @@
    "pays": "1 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "CUB": {
   "principal": {
@@ -1556,7 +1603,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "DNK": {
   "principal": {
@@ -1608,7 +1656,8 @@
    "pays": "1 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "DJI": {
   "principal": {
@@ -1631,7 +1680,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "DMA": {
   "principal": {
@@ -1654,7 +1704,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "EGY": {
   "principal": {
@@ -1684,7 +1735,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ARE": {
   "principal": {
@@ -1755,7 +1807,8 @@
    "pays": "0 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "ECU": {
   "principal": {
@@ -1778,7 +1831,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ERI": {
   "principal": {
@@ -1829,7 +1883,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "ESP": {
   "principal": {
@@ -1891,7 +1946,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "EST": {
   "principal": {
@@ -1914,7 +1970,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SWZ": {
   "principal": {
@@ -1937,7 +1994,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "USA": {
   "principal": {
@@ -1982,7 +2040,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ETH": {
   "principal": {
@@ -2005,7 +2064,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "FJI": {
   "principal": {
@@ -2028,7 +2088,8 @@
    "pays": "1 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "FIN": {
   "principal": {
@@ -2058,7 +2119,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "FRA": {
   "principal": {
@@ -2089,7 +2151,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "GAB": {
   "principal": {
@@ -2112,7 +2175,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "GMB": {
   "principal": {
@@ -2169,7 +2233,8 @@
    "pays": "2 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "GEO": {
   "principal": {
@@ -2192,7 +2257,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "GHA": {
   "principal": {
@@ -2215,7 +2281,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "GRC": {
   "principal": {
@@ -2255,7 +2322,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "GRD": {
   "principal": {
@@ -2278,7 +2346,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "GTM": {
   "principal": {
@@ -2301,7 +2370,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "GIN": {
   "principal": {
@@ -2324,7 +2394,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "GNQ": {
   "principal": {
@@ -2348,7 +2419,8 @@
    "pays": "hors du patch",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "GNB": {
   "principal": {
@@ -2371,7 +2443,8 @@
    "pays": "5 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "GUY": {
   "principal": {
@@ -2394,7 +2467,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "HTI": {
   "principal": {
@@ -2417,7 +2491,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "HND": {
   "principal": {
@@ -2440,7 +2515,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "HUN": {
   "principal": {
@@ -2470,7 +2546,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MUS": {
   "principal": {
@@ -2493,7 +2570,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MHL": {
   "principal": {
@@ -2537,7 +2615,8 @@
    "pays": "6 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SLB": {
   "principal": {
@@ -2560,7 +2639,8 @@
    "pays": "4 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "IND": {
   "principal": {
@@ -2590,7 +2670,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "IDN": {
   "principal": {
@@ -2613,7 +2694,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "IRQ": {
   "principal": {
@@ -2636,7 +2718,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "IRN": {
   "principal": {
@@ -2687,7 +2770,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "IRL": {
   "principal": {
@@ -2710,7 +2794,8 @@
    "pays": "0 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ISL": {
   "principal": {
@@ -2740,7 +2825,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ISR": {
   "principal": {
@@ -2763,7 +2849,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ITA": {
   "principal": {
@@ -2786,7 +2873,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "JAM": {
   "principal": {
@@ -2809,7 +2897,8 @@
    "pays": "0 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "JPN": {
   "principal": {
@@ -2832,7 +2921,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "JOR": {
   "principal": {
@@ -2855,7 +2945,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "KAZ": {
   "principal": {
@@ -2911,7 +3002,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "KEN": {
   "principal": {
@@ -2934,7 +3026,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "KGZ": {
   "principal": {
@@ -2957,7 +3050,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "KIR": {
   "principal": {
@@ -3002,7 +3096,8 @@
    "pays": "5 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "UNK": {
   "principal": {
@@ -3025,7 +3120,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "KWT": {
   "principal": {
@@ -3081,7 +3177,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "LAO": {
   "principal": {
@@ -3104,7 +3201,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "LSO": {
   "principal": {
@@ -3127,7 +3225,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "LVA": {
   "principal": {
@@ -3162,7 +3261,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "LBN": {
   "principal": {
@@ -3185,7 +3285,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "LBR": {
   "principal": {
@@ -3208,7 +3309,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "LBY": {
   "principal": {
@@ -3231,7 +3333,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "LIE": {
   "principal": {
@@ -3254,7 +3357,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "LTU": {
   "principal": {
@@ -3277,7 +3381,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "LUX": {
   "principal": {
@@ -3307,7 +3412,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MKD": {
   "principal": {
@@ -3330,7 +3436,8 @@
    "pays": "0 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MDG": {
   "principal": {
@@ -3353,7 +3460,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MYS": {
   "principal": {
@@ -3416,7 +3524,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "MWI": {
   "principal": {
@@ -3439,7 +3548,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MDV": {
   "principal": {
@@ -3462,7 +3572,8 @@
    "pays": "1 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MLI": {
   "principal": {
@@ -3485,7 +3596,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MLT": {
   "principal": {
@@ -3508,7 +3620,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MAR": {
   "principal": {
@@ -3559,7 +3672,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "MRT": {
   "principal": {
@@ -3582,7 +3696,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MEX": {
   "principal": {
@@ -3605,7 +3720,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "FSM": {
   "principal": {
@@ -3628,7 +3744,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MDA": {
   "principal": {
@@ -3651,7 +3768,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MCO": {
   "principal": {
@@ -3681,7 +3799,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MNG": {
   "principal": {
@@ -3726,7 +3845,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "MNE": {
   "principal": {
@@ -3749,7 +3869,8 @@
    "pays": "0 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "MOZ": {
   "principal": {
@@ -3772,7 +3893,8 @@
    "pays": "4 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "NAM": {
   "principal": {
@@ -3795,7 +3917,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "NRU": {
   "principal": {
@@ -3818,7 +3941,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "NPL": {
   "principal": {
@@ -3841,7 +3965,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "NIC": {
   "principal": {
@@ -3864,7 +3989,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "NER": {
   "principal": {
@@ -3887,7 +4013,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "NGA": {
   "principal": {
@@ -3910,7 +4037,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "NOR": {
   "principal": {
@@ -3933,7 +4061,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "NZL": {
   "principal": {
@@ -3956,7 +4085,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "OMN": {
   "principal": {
@@ -3979,7 +4109,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "UGA": {
   "principal": {
@@ -4002,7 +4133,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "UZB": {
   "principal": {
@@ -4025,7 +4157,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "PAK": {
   "principal": {
@@ -4048,7 +4181,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "PLW": {
   "principal": {
@@ -4071,7 +4205,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "PSE": {
   "principal": {
@@ -4094,7 +4229,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "PAN": {
   "principal": {
@@ -4117,7 +4253,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "PNG": {
   "principal": {
@@ -4161,7 +4298,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "PRY": {
   "principal": {
@@ -4184,7 +4322,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "NLD": {
   "principal": {
@@ -4207,7 +4346,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "PER": {
   "principal": {
@@ -4230,7 +4370,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "PHL": {
   "principal": {
@@ -4253,7 +4394,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "POL": {
   "principal": {
@@ -4313,7 +4455,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "PRT": {
   "principal": {
@@ -4343,7 +4486,8 @@
    "pays": "0 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "QAT": {
   "principal": {
@@ -4399,7 +4543,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "COD": {
   "principal": {
@@ -4422,7 +4567,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "CAF": {
   "principal": {
@@ -4445,7 +4591,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "DOM": {
   "principal": {
@@ -4468,7 +4615,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ROU": {
   "principal": {
@@ -4491,7 +4639,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "GBR": {
   "principal": {
@@ -4526,7 +4675,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "RUS": {
   "principal": {
@@ -4556,7 +4706,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "RWA": {
   "principal": {
@@ -4579,7 +4730,8 @@
    "pays": "1 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "KNA": {
   "principal": {
@@ -4602,7 +4754,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SMR": {
   "principal": {
@@ -4625,7 +4778,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "VCT": {
   "principal": {
@@ -4648,7 +4802,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "LCA": {
   "principal": {
@@ -4671,7 +4826,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SLV": {
   "principal": {
@@ -4694,7 +4850,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "WSM": {
   "principal": {
@@ -4717,7 +4874,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "STP": {
   "principal": {
@@ -4740,7 +4898,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SEN": {
   "principal": {
@@ -4796,7 +4955,8 @@
    "pays": "4 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "SRB": {
   "principal": {
@@ -4847,7 +5007,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "SYC": {
   "principal": {
@@ -4870,7 +5031,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SLE": {
   "principal": {
@@ -4893,7 +5055,8 @@
    "pays": "2 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SGP": {
   "principal": {
@@ -4952,7 +5115,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "SVK": {
   "principal": {
@@ -4975,7 +5139,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SVN": {
   "principal": {
@@ -4998,7 +5163,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SOM": {
   "principal": {
@@ -5021,7 +5187,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SDN": {
   "principal": {
@@ -5044,7 +5211,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SSD": {
   "principal": {
@@ -5067,7 +5235,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "LKA": {
   "principal": {
@@ -5097,7 +5266,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SWE": {
   "principal": {
@@ -5127,7 +5297,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "CHE": {
   "principal": {
@@ -5178,7 +5349,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SUR": {
   "principal": {
@@ -5201,7 +5373,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "SYR": {
   "principal": {
@@ -5224,7 +5397,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "TJK": {
   "principal": {
@@ -5247,7 +5421,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "TWN": {
   "principal": {
@@ -5298,7 +5473,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "TZA": {
   "principal": {
@@ -5321,7 +5497,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "TCD": {
   "principal": {
@@ -5344,7 +5521,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "CZE": {
   "principal": {
@@ -5374,7 +5552,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "THA": {
   "principal": {
@@ -5397,7 +5576,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "TLS": {
   "principal": {
@@ -5442,7 +5622,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "TGO": {
   "principal": {
@@ -5465,7 +5646,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "TON": {
   "principal": {
@@ -5488,7 +5670,8 @@
    "pays": "0 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "TTO": {
   "principal": {
@@ -5532,7 +5715,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "TUN": {
   "principal": {
@@ -5555,7 +5739,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "TKM": {
   "principal": {
@@ -5578,7 +5763,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "TUR": {
   "principal": {
@@ -5613,7 +5799,8 @@
    "pays": "1 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "TUV": {
   "principal": {
@@ -5636,7 +5823,8 @@
    "pays": "8 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "UKR": {
   "principal": {
@@ -5659,7 +5847,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "URY": {
   "principal": {
@@ -5710,7 +5899,8 @@
    "pays": "0 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "variante"
  },
  "VUT": {
   "principal": {
@@ -5733,7 +5923,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "VAT": {
   "principal": {
@@ -5823,7 +6014,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "VEN": {
   "principal": {
@@ -5846,7 +6038,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "VNM": {
   "principal": {
@@ -5869,7 +6062,8 @@
    "pays": "7 km au large",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "YEM": {
   "principal": {
@@ -5892,7 +6086,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ZMB": {
   "principal": {
@@ -5915,7 +6110,8 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  },
  "ZWE": {
   "principal": {
@@ -5938,6 +6134,7 @@
    "pays": "dedans",
    "cadre": true,
    "douteux": false
-  }
+  },
+  "retenu": "principal"
  }
 }

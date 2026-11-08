@@ -9,12 +9,13 @@ import type { CountryRecord, LngLat } from '../../src/data/types';
 import { EARTH_RADIUS_KM } from '../geodata/config';
 import { samplePatchPng } from '../geodata/lib/patch';
 import { OUT_DIR } from '../geodata/paths';
-import { statut, type Statut } from './lib/statut';
+import { retenir, statut, type Statut } from './lib/statut';
 import { claimIds, coordOf, label, yearOf, type Entite } from './lib/wikidata';
 
 /**
  * Liste des éléments symboliques par pays (08/11/2026) : `choix.json` (choix éditorial, nom et requête Wikidata) →
  * `monuments.json` (coordonnées, auteurs, statut) et `rapport-monuments.md` (la liste à faire valider).
+ * Écrit aussi `src/globe/monuments/lieux.json` : l'élément retenu de chaque pays (`retenir`), sa position, pour le jeu.
  * Usage : `npm run monuments` ; les réponses de Wikidata restent dans `.cache` (supprimer pour relire).
  */
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -101,11 +102,11 @@ async function resoudre(c: CountryRecord, png: PNG, ch: Choix): Promise<Resolu> 
 
 const STATUT = { nature: 'libre (site naturel)', 'domaine-public': 'libre', protege: 'protégé', 'a-verifier': 'à vérifier' } as const;
 const fmt = (p: LngLat | null) => (p ? `${Math.abs(p[1]).toFixed(4)}° ${p[1] >= 0 ? 'N' : 'S'}, ${Math.abs(p[0]).toFixed(4)}° ${p[0] >= 0 ? 'E' : 'O'}` : '—');
-function ligne(pays: string, r: Resolu, variante: boolean): string {
+function ligne(pays: string, r: Resolu, variante: boolean, retenu: boolean): string {
   const st = `${STATUT[r.statut.code]}${r.statut.code === 'protege' ? (r.statut.libreEn ? ` jusqu'en ${r.statut.libreEn}` : ', sans date de fin connue') : ''} : ${r.statut.motif}${r.note ? ` ; ${r.note}` : ''}`;
   const lieu = `${r.pays}${r.cadre === false ? ', hors du cadre' : ''}`;
   const wd = `[${r.qid}](https://www.wikidata.org/wiki/${r.qid}) ${r.wikidata}${r.douteux ? ' ⚠︎' : ''}`;
-  return `| ${variante ? '↳ variante' : pays} | ${r.nom}${r.unesco ? ' (Unesco)' : ''} | ${fmt(r.coord)} | ${lieu} | ${st} | ${wd} |`;
+  return `| ${variante ? '↳ variante' : pays} | ${retenu ? '**' : ''}${r.nom}${r.unesco ? ' (Unesco)' : ''}${retenu ? '**' : ''} | ${fmt(r.coord)} | ${lieu} | ${st} | ${wd} |`;
 }
 
 async function main(): Promise<void> {
@@ -114,23 +115,27 @@ async function main(): Promise<void> {
   const all = JSON.parse(readFileSync(path.join(OUT_DIR, 'countries.json'), 'utf8')) as CountryRecord[];
   const manquants = all.filter((c) => !choix[c.cca3]).map((c) => c.cca3);
   if (manquants.length) throw new Error(`sans élément : ${manquants.join(', ')}`);
-  const out: Record<string, { principal: Resolu; variante?: Resolu }> = {};
+  const out: Record<string, { principal: Resolu; variante?: Resolu; retenu: 'principal' | 'variante' }> = {};
   const echecs: string[] = [];
   const essai = (c: CountryRecord, png: PNG, ch: Choix) => resoudre(c, png, ch).catch((e: Error) => { echecs.push(e.message); return null; });
   for (const c of [...all].sort((a, b) => a.name.fr.localeCompare(b.name.fr, 'fr'))) {
     const png = PNG.sync.read(readFileSync(path.join(OUT_DIR, c.patch.sdf)));
     const ch = choix[c.cca3]!;
     const principal = await essai(c, png, ch), variante = ch.alt ? await essai(c, png, ch.alt) : null;
-    if (principal) out[c.cca3] = { principal, ...(variante ? { variante } : {}) };
+    if (principal) out[c.cca3] = { principal, ...(variante ? { variante } : {}), retenu: retenir(principal.statut.code, variante?.statut.code) };
   }
   if (echecs.length) throw new Error(`${echecs.length} échecs :\n${echecs.join('\n')}`);
   writeFileSync(path.join(here, 'monuments.json'), `${JSON.stringify(out, null, 1)}\n`);
+  const garde = (o: (typeof out)[string]) => (o.retenu === 'variante' ? o.variante! : o.principal);
+  const lieux = Object.fromEntries(Object.entries(out).sort(([a], [b]) => a.localeCompare(b)).map(([k, o]) => [k, { nom: garde(o).nom, type: garde(o).type, coord: garde(o).coord }]));
+  writeFileSync(path.join(here, '../../src/globe/monuments/lieux.json'), `${JSON.stringify(lieux)}\n`);
 
   const ps = Object.values(out).map((o) => o.principal);
+  const rs = Object.values(out).map(garde);
   const compte = (f: (r: Resolu) => boolean) => ps.filter(f).length;
   const lignes = all.slice().sort((a, b) => a.name.fr.localeCompare(b.name.fr, 'fr')).flatMap((c) => {
     const o = out[c.cca3]!;
-    return [ligne(c.name.fr, o.principal, false), ...(o.variante ? [ligne(c.name.fr, o.variante, true)] : [])];
+    return [ligne(c.name.fr, o.principal, false, o.retenu === 'principal'), ...(o.variante ? [ligne(c.name.fr, o.variante, true, o.retenu === 'variante')] : [])];
   });
   const md = [
     '# Éléments symboliques par pays — liste à valider',
@@ -138,6 +143,8 @@ async function main(): Promise<void> {
     `Produit par \`npm run monuments\` (\`scripts/monuments/fetch-monuments.ts\`) depuis \`choix.json\` et Wikidata, le ${new Date().toISOString().slice(0, 10)}.`,
     '',
     `Éléments principaux : ${ps.length} ; libres ${compte((r) => r.statut.code === 'domaine-public')}, sites naturels ${compte((r) => r.statut.code === 'nature')}, protégés ${compte((r) => r.statut.code === 'protege')}, à vérifier ${compte((r) => r.statut.code === 'a-verifier')} ; hors du pays (> ${MAX_LARGE_KM} km) ${compte((r) => r.pays !== 'dedans' && !(r.pays.endsWith('au large') && parseInt(r.pays, 10) <= MAX_LARGE_KM))} ; hors du cadre d'arrivée (téléphone) ${compte((r) => r.cadre === false)}.`,
+    '',
+    `Éléments retenus (en gras ; la variante quand le principal est protégé et qu'elle est libre, décision du 08/11) : libres ${rs.filter((r) => r.statut.code === 'domaine-public').length}, sites naturels ${rs.filter((r) => r.statut.code === 'nature').length}, protégés ${rs.filter((r) => r.statut.code === 'protege').length}, à vérifier ${rs.filter((r) => r.statut.code === 'a-verifier').length}.`,
     '',
     '**Statut** : droit d\'auteur français, règle simplifiée — libre 70 ans après l\'année de décès du dernier auteur (au 1er janvier suivant), hors prorogations de guerre ; auteurs lus dans Wikidata (architecte P84, créateur P170, conçu par P287). « À vérifier » : Wikidata ne nomme pas d\'auteur pour un ouvrage de moins de 150 ans. La liberté de panorama française ne couvre que l\'usage non commercial par des particuliers.',
     '**Lieu** : position dans le pays selon son patch (≤ 25 km au large accepté, comme les capitales) ; « hors du cadre » : invisible à l\'arrivée de la caméra sur téléphone (390 × 844).',

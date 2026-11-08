@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { statut } from '../../lib/statut';
+import { retenir, statut } from '../../lib/statut';
 
 // droit d'auteur français : 70 ans après l'année du décès, libre au 1er janvier suivant (CPI L123-1) ; en 2026, décès ≤ 1955
 describe('statut juridique d\'un élément (droit d\'auteur, règle simplifiée)', () => {
@@ -63,5 +63,22 @@ describe('statut juridique d\'un élément (droit d\'auteur, règle simplifiée)
 
   it('ouvrage déclaré ancien par le choix (date absente de Wikidata ou fausse) : domaine public', () => {
     expect(statut({ type: 'ouvrage', auteurs: [], debut: 1987, ancien: true }, 2026).code).toBe('domaine-public');
+  });
+});
+
+describe('élément retenu pour un pays (décision de l\'utilisateur du 08/11 : les variantes libres)', () => {
+  it('principal libre ou naturel : le principal', () => {
+    expect(retenir('domaine-public', 'nature')).toBe('principal');
+    expect(retenir('nature', undefined)).toBe('principal');
+  });
+
+  it('principal protégé, variante libre ou naturelle : la variante', () => {
+    expect(retenir('protege', 'domaine-public')).toBe('variante');
+    expect(retenir('protege', 'nature')).toBe('variante');
+  });
+
+  it('principal protégé sans variante libre (Lettonie ; variante à vérifier) : le principal, à trancher', () => {
+    expect(retenir('protege', undefined)).toBe('principal');
+    expect(retenir('protege', 'a-verifier')).toBe('principal');
   });
 });

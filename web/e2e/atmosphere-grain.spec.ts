@@ -8,6 +8,9 @@ import { shoot } from './probe-page';
  * garde que le bruit de la marche. Format du Pixel 9 à la densité 2,5, frontières affichées. Relevés du 07/11 (GPU du Mac),
  * vol puis pays : 24 pas 1,65 et 2,16 ; 48 pas, losanges encore devinés, 0,82 et 1,06 ; 64 pas 0,63 et 0,80.
  */
+// trois chargements de la sonde à 1030 × 2288, dont une marche de 256 pas : ≈ 50 s seul, 66 s en tête de la suite
+// complète (08/11 : démarrage à froid du serveur de dev), au-delà des 60 s par défaut
+test.slow();
 const SIZE = { width: 1030, height: 2288 };
 const SCENES = {
   vol: { query: 'mode=game&tier=haute&at=10,40&alt=1.6&post&borders&ecran=2.625', max: 0.7 },

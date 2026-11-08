@@ -5,6 +5,8 @@ import { shoot } from './probe-page';
  * Reflet de la mer (spec océan §1.2 bis et ter, 07/11), format du Pixel 9 à la densité 2,5 ; chaque mesure a son leurre
  * (l'ancien rendu, paramètres de la sonde) dans la même passe.
  */
+// quatre à huit captures à 1030 × 2288 par test : 53 et 54 s dans la suite complète du 08/11, au ras des 60 s par défaut
+test.slow();
 const SIZE = { width: 1030, height: 2288 };
 const lum = (d: Uint8Array, i: number) => 0.2126 * d[i]! + 0.7152 * d[i + 1]! + 0.0722 * d[i + 2]!;
 

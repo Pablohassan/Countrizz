@@ -1,13 +1,17 @@
 import type * as THREE from 'three/webgpu';
 import type { FramePose } from '../camera/director';
 import type { Viewport } from '../camera/framing';
+import type { SafeArea } from '../camera/safeArea';
 import type { Vec3 } from '../geo/vec';
 
 /**
  * Données d'une image pour un accessoire : horloge, pose de la caméra, direction du soleil (ombre portée), vue entière (px
- * CSS, champ vertical : l'avion de l'accueil y calcule ce qui est à l'écran, plan 2A-6).
+ * CSS, champ vertical : l'avion de l'accueil y calcule ce qui est à l'écran, plan 2A-6) ; `safe` : bandes occupées par
+ * l'interface (les maquettes des monuments s'en écartent) ; `evite` : un calque DOM à ne pas couvrir.
  */
-export interface AccessoryFrame { nowMs: number; pose: FramePose; sun: Vec3; viewport: Viewport }
+export interface AccessoryFrame { nowMs: number; pose: FramePose; sun: Vec3; viewport: Viewport; safe?: SafeArea | null; evite?: ScreenRect | null }
+/** Rectangle à l'écran (px CSS) qu'un accessoire doit laisser libre : l'étiquette de la révélation (GlobeHandle.eviter). */
+export interface ScreenRect { x: number; y: number; w: number; h: number }
 export interface AccessoryInstance { object: THREE.Object3D; update?(f: AccessoryFrame): void; dispose(): void }
 /**
  * Ce que le globe prête à un accessoire à sa création : `unveil` met un matériau à l'abri du voile de l'atmosphère

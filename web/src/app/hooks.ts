@@ -9,10 +9,15 @@ export function hooksEnabled(dev: boolean, storage: KeyValueStorage | null): boo
   try { return storage?.getItem(E2E_FLAG) === '1'; } catch { return false; }
 }
 
-/** `?partie=3000` : partie courte (1 000 à 60 000 ms nettes) ; `?graine=42` : tirage rejouable. Le reste est ignoré. */
-export function e2eOverrides(search: string): { gameMs?: number; seed?: number } {
+/**
+ * `?partie=3000` : partie courte (1 000 à 60 000 ms nettes) ; `?graine=42` : tirage rejouable ; `?revelation=8000` :
+ * révélation allongée (1 500 à 20 000 ms ; captures des maquettes sous SwiftShader, pilote du 08/11). Le reste est ignoré.
+ */
+export function e2eOverrides(search: string): { gameMs?: number; seed?: number; revealMs?: number } {
   const q = new URLSearchParams(search);
-  const out: { gameMs?: number; seed?: number } = {};
+  const out: { gameMs?: number; seed?: number; revealMs?: number } = {};
+  const rv = Number(q.get('revelation'));
+  if (q.get('revelation') && Number.isInteger(rv) && rv >= 1500 && rv <= 20_000) out.revealMs = rv;
   const ms = Number(q.get('partie'));
   if (q.get('partie') && Number.isInteger(ms) && ms >= 1000 && ms <= 60_000) out.gameMs = ms;
   const seed = Number(q.get('graine'));

@@ -21,6 +21,12 @@ describe('crochets des e2e du jeu', () => {
     expect(e2eOverrides('?partie=abc&graine=')).toEqual({});
   });
 
+  it('?revelation= : révélation allongée, entier de 1 500 à 20 000 ms (captures des maquettes, pilote du 08/11)', () => {
+    expect(e2eOverrides('?revelation=8000')).toEqual({ revealMs: 8000 });
+    expect(e2eOverrides('?revelation=1499')).toEqual({});
+    expect(e2eOverrides('?revelation=20001')).toEqual({});
+  });
+
   it('graine : celle du crochet, sinon un entier aléatoire sur 32 bits', () => {
     expect(newSeed(7)).toBe(7);
     const s = newSeed();

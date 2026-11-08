@@ -13,7 +13,7 @@ import { visibleHalfAngle } from '../camera/framing';
 import { createPatchCache } from './patchCache';
 import { disposePatchTexture, loadPatchTexture } from './patchTexture';
 import { screenPoint, type ScreenPoint } from './project';
-import type { Accessory } from './accessories';
+import type { Accessory, ScreenRect } from './accessories';
 import type { RevealTimeline } from './reveal';
 
 /** Fondu d'apparition de la première photo du pays, arrivée en cours de route. */
@@ -40,6 +40,7 @@ export class GlobeController {
   private viewport: Viewport;
   private fullViewport: Viewport;
   private safeArea: SafeArea | null = null;
+  private eviteRect: ScreenRect | null = null;
   private framing: FramingParams;
   private readonly cache = createPatchCache((sdf: string) => loadPatchTexture(`${this.baseUrl}data/${sdf}`), disposePatchTexture);
   private imagery: ImageryIndex | null = null;
@@ -135,6 +136,13 @@ export class GlobeController {
     this.safeArea = a;
     this.layout();
   }
+
+  /** Bandes occupées par l'interface (`setSafeArea`) : les accessoires s'en écartent (maquettes des monuments). */
+  safe(): SafeArea | null { return this.safeArea; }
+
+  /** Calque DOM que les accessoires laissent libre (étiquette de la révélation, GlobeHandle.eviter). */
+  setEvite(r: ScreenRect | null): void { this.eviteRect = r; }
+  evite(): ScreenRect | null { return this.eviteRect; }
 
   /** Viewport de cadrage (zone libre) pour le directeur et la balise ; l'axe optique suit le milieu de la zone. */
   private layout(): void {

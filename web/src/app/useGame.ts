@@ -28,6 +28,8 @@ export interface GameOptions {
   rotated: boolean;
   /** Durée nette d'une partie (crochet `?partie=` ; 60 s sinon). */
   gameMs?: number;
+  /** Durée de la révélation (crochet `?revelation=` ; `REVEAL_MS` sinon). */
+  revealMs?: number;
   /** Rotation de l'accueil, rendue au globe en sortie de partie. */
   homeSpin: number;
   hooks: boolean;
@@ -100,7 +102,7 @@ export function useGame(o: GameOptions) {
     const next = drawNext(opts.current.countries, state);
     const rec = next && records.get(next.question.cca3);
     if (rec) opts.current.globe.current?.prefetch(rec);
-    const t = setTimeout(() => dispatch({ type: 'REVEAL_DONE', now: now() }), REVEAL_MS);
+    const t = setTimeout(() => dispatch({ type: 'REVEAL_DONE', now: now() }), opts.current.revealMs ?? REVEAL_MS);
     return () => clearTimeout(t);
   }, [state.screen, state.asked.length]); // eslint-disable-line react-hooks/exhaustive-deps -- une fois par révélation
 

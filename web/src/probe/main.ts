@@ -21,6 +21,7 @@ import { imagePatchUrl } from '../data/imagery';
 import { sunDirection } from '../camera/sun';
 import { createAccessoryHost } from '../globe/accessories';
 import { createHomePlane } from '../globe/plane/plane';
+import { createMonument } from '../globe/monuments/monument';
 
 /** API exposée aux contrôles Playwright (e2e/). */
 export interface ProbeApi {
@@ -57,6 +58,7 @@ declare global { interface Window { __probe?: ProbeApi } }
  *   `ecran=x` : densité de l'écran (1 par défaut ; le SMAA s'arrête à 2) ;
  * - `aa` : renderer antialiasé (canvas multi-échantillonné ; le jeu n'en a pas) ;
  * - `avion=e` (mode jeu) : avion de l'accueil figé à la progression e de son trajet (0 = Rabat ; plan 2A-6) ;
+ * - `monument` (avec `cca3`, mode jeu) : maquette du pilote du 08/11, dépliée ; `monument=a` : figée à a degrés ;
  * - `debit=N` (WebGPU) : ms par image sur N images enchaînées, GPU saturé (lancer Chrome sans vsync) ;
  * - `bench=N` (avec `post`, WebGPU) : N images de plus, chacune attendue jusqu'à la fin du travail du GPU ; médiane dans
  *   `__probe.benchMs` (coût des effets, analyse du flou sur téléphone du 21/10).
@@ -146,10 +148,15 @@ const scene = new THREE.Scene();
 // le ciel du jeu : la nuit de la vidéo (GlobeView, nuit.ts) ; `noir` : fond noir, pour mesurer un halo sans le fond
 if (mode === 'game' && !q.has('noir')) scene.background = new THREE.Color().setRGB(...fondNuit(sky?.calibration.whiteBalance), THREE.LinearSRGBColorSpace);
 scene.add(globe.root);
-if (q.has('avion') && mode === 'game') {
+const accessoires = [
+  ...(q.has('avion') ? [createHomePlane({ still: Number(q.get('avion')) })] : []),
+  ...(q.has('monument') && rec ? [createMonument(rec.cca3, { still: (Number(q.get('monument') || 70) * Math.PI) / 180 })].filter((a) => a !== null) : []),
+];
+if (accessoires.length && mode === 'game') {
   const host = createAccessoryHost(scene, { unveil: (m) => setKeep(m, float(1)) });
-  host.sync([createHomePlane({ still: Number(q.get('avion')) })]);
-  host.update({ nowMs: 0, pose, sun: sun ? toVec(sun) : sunDirection(pose), viewport: { width, height, fovYDeg: FOV_Y_DEG } });
+  host.sync(accessoires);
+  const bandes = lngLat(q.get('safe'));
+  host.update({ nowMs: 0, pose, sun: sun ? toVec(sun) : sunDirection(pose), viewport: { width, height, fovYDeg: FOV_Y_DEG }, safe: bandes ? { top: bandes[0], bottom: bandes[1] } : null });
 }
 let benchMs: number | null = null, debitMs: number | null = null;
 // atmosphère physique : ses tables se calculent après le premier rendu qui les lit (physicalSky.ts) ; on les attend

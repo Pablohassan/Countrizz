@@ -12,7 +12,7 @@ import type { Messages } from '../i18n';
 import { fr } from '../i18n/fr';
 import { GlobeController } from './controller';
 import { Globe } from './globe';
-import { createAccessoryHost, type Accessory } from './accessories';
+import { createAccessoryHost, type Accessory, type ScreenRect } from './accessories';
 import { ImageryCredit, type CreditPlacement } from './credits';
 import { LoadErrorCard } from './LoadErrorCard';
 import { MeasureOverlay } from './MeasureOverlay';
@@ -40,6 +40,7 @@ extend(THREE as unknown as Parameters<typeof extend>[0]);
  * morceaux de plus, chargés pendant l'intro (Fast 4G de 1112 à 1259 ms, 21/10).
  */
 export { createHomePlane, ESCALES, markGeometry } from './plane/plane';
+export { createMonument } from './monuments/monument';
 
 export interface GlobeHandle {
   /** Vole vers le pays : `durationMs` (le 3-2-1 s'y règle) ; `arrived` à true à l'arrivée, false si remplacé. */
@@ -64,6 +65,8 @@ export interface GlobeHandle {
   retry(): void;
   /** Objet de scène (avion de l'accueil, 2A-6), recréé avec le renderer. Rend le retrait. */
   mount(a: Accessory): () => void;
+  /** Rectangle d'un calque DOM que les accessoires laissent libre (étiquette de la révélation) ; `null` : aucun. */
+  eviter(r: ScreenRect | null): void;
 }
 
 /** Crochets de test (dev, ou drapeau des e2e) : backend, recréations du renderer, projection écran, perte simulée du GPU. */
@@ -217,6 +220,7 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
     onFrame: (cb) => controller.onFrame(cb),
     retry,
     mount: (a) => controller.mount(a),
+    eviter: (r) => controller.setEvite(r),
   }), [controller]); // eslint-disable-line react-hooks/exhaustive-deps -- retry ne touche que des setters stables
 
   return (
@@ -474,7 +478,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     globe.setLook(lookAt(controller.timeline, now));
     globe.setTime(now / 1000);
     globe.applyPose(pose, camera);
-    host.update({ nowMs: now, pose, sun: sunDirection(pose), viewport: { width: size.width, height: size.height, fovYDeg: FOV_Y_DEG } });
+    host.update({ nowMs: now, pose, sun: sunDirection(pose), viewport: { width: size.width, height: size.height, fovYDeg: FOV_Y_DEG }, safe: controller.safe(), evite: controller.evite() });
     controller.notePose(pose);
     if (pose.cut) onCut();
     if (window.__globe && renderer.info.frame === lastFrame.current) window.__globe.staleFrames++;

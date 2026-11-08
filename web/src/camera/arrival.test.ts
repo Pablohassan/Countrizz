@@ -23,8 +23,8 @@ describe('cadrage à l’arrivée (spec zoom §2)', () => {
     expect(sizeFactor(1e3, a)).toBeGreaterThan(sizeFactor(1e4, a));
   });
 
-  it('table du spec sur téléphone 390 × 844 (part B → part visée)', () => {
-    const rows: [string, number, number][] = [['RUS', 1.13, 0.8], ['USA', 0.742, 0.8], ['FRA', 0.329, 0.48], ['BEL', 0.144, 0.258], ['LUX', 0.042, 0.1], ['VAT', 0.001, 0.1]];
+  it('table du spec sur téléphone 390 × 844 (part B → part visée ; plancher à 30 % depuis le 08/11)', () => {
+    const rows: [string, number, number][] = [['RUS', 1.13, 0.8], ['USA', 0.742, 0.8], ['FRA', 0.329, 0.48], ['BEL', 0.144, 0.3], ['LUX', 0.042, 0.3], ['VAT', 0.001, 0.3]];
     for (const [cca3, b, target] of rows) {
       const r = by(cca3);
       expect(capShare(r.cap.radiusDeg, frameAltitude(r.cap.radiusDeg, phone, FRAMING), phone), `${cca3} part B`).toBeCloseTo(b, 2);
@@ -34,10 +34,10 @@ describe('cadrage à l’arrivée (spec zoom §2)', () => {
   });
 
   for (const [name, v] of [['téléphone', phone], ['bureau', desk]] as const) {
-    it(`${name} : les 197 pays entre 10 % et 80 %, et l’altitude rend exactement la part visée`, () => {
+    it(`${name} : les 197 pays entre 30 % et 80 %, et l’altitude rend exactement la part visée`, () => {
       for (const c of countries) {
         const s = arrivalShare(c, v, FRAMING);
-        expect(s, c.cca3).toBeGreaterThanOrEqual(0.1);
+        expect(s, c.cca3).toBeGreaterThanOrEqual(0.3);
         expect(s, c.cca3).toBeLessThanOrEqual(0.8);
         const alt = arrivalAltitude(c, v, FRAMING);
         expect(alt, `${c.cca3} au plancher`).toBeGreaterThan(FRAMING.floor);

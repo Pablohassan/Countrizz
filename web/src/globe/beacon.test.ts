@@ -23,11 +23,12 @@ describe('balise des micro-États et des archipels', () => {
   });
 });
 
-describe('balise au cadrage serré (spec zoom §2, listes du 19/10)', () => {
+describe('balise au cadrage serré (spec zoom §2, listes du 19/10, téléphone revu le 08/11)', () => {
   const countries = JSON.parse(readFileSync('public/data/countries.json', 'utf8')) as CountryRecord[];
   const list = (v: { width: number; height: number; fovYDeg: number }) => countries.filter((c) => needsBeacon(c, v, FRAMING)).map((c) => c.cca3).sort();
-  it('téléphone 390 × 844 : 19 pays (archipels et quelques petits États), sans le Vatican', () => {
-    expect(list({ width: 390, height: 844, fovYDeg: 50 })).toEqual(['ATG', 'BHR', 'COM', 'FSM', 'GRD', 'KIR', 'KNA', 'LIE', 'MCO', 'MDV', 'MHL', 'MLT', 'PLW', 'SGP', 'STP', 'SYC', 'TON', 'TUV', 'VCT']);
+  // plancher à 30 % depuis le 08/11 : les petits États (Monaco, Singapour, Malte…) n'en ont plus besoin, 19 pays au 19/10
+  it('téléphone 390 × 844 : 9 archipels, plus aucun petit État', () => {
+    expect(list({ width: 390, height: 844, fovYDeg: 50 })).toEqual(['FSM', 'KIR', 'MDV', 'MHL', 'PLW', 'STP', 'SYC', 'TON', 'TUV']);
   });
   it('bureau 1440 × 900 : 5 archipels', () => {
     expect(list({ width: 1440, height: 900, fovYDeg: 50 })).toEqual(['FSM', 'MDV', 'MHL', 'SYC', 'TUV']);

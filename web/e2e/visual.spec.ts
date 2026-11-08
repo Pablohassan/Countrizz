@@ -13,7 +13,8 @@ const PLANS = {
   nuit: 'mode=game&at=10,45&alt=1.4&sun=-170,-45',
   question: 'mode=game&cca3=FRA',
   'bonne-reponse': 'mode=game&cca3=JPN&state=correct&t=1',
-  'micro-etat': 'mode=game&cca3=VAT&beacon=12.4533,41.9029',
+  // Tuvalu et sa balise (08/11) : depuis le plancher à 30 %, le Vatican arrive sous la hauteur de l'épingle et n'a plus de balise
+  'micro-etat': 'mode=game&cca3=TUV&beacon=178.6744,-7.4726',
   'lever-de-soleil': 'mode=game&at=0,0&alt=4&sun=180,16.86',
   // avion A2 de l'accueil figé entre Paris et Athènes (plan 2A-6) : papier toon, contours, perles, ombre portée
   'accueil-avion': 'mode=game&home&avion=0.0814',

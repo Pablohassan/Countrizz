@@ -255,3 +255,18 @@ Recalculés le 15/10 en écrivant ce spec, ils remplacent ceux annoncés en séa
 - Stockage 2048 : 156 120 067 octets au lieu de 148 278 420.
 - La vue d'ensemble restait annoncée comme borne haute de l'altitude : elle aurait laissé la Russie à 113 % sur
   téléphone. Elle ne borne plus l'arrivée (§2).
+
+## 11. Amendement du 08/11/2026 : plancher à 30 %
+
+Sur le Pixel 9 (412 px de large), le plancher de 10 % laissait 18 pays à 41 px (Andorre, Antigua-et-Barbuda, Bahreïn,
+Barbade, Dominique, Grenade, Saint-Christophe-et-Niévès, Sainte-Lucie, Liechtenstein, Luxembourg, Monaco, Malte, Maurice,
+Nauru, Singapour, Saint-Marin, Vatican, Saint-Vincent-et-les-Grenadines). L'utilisateur : « beaucoup de petits pays restent
+trop loin », puis « ok passer le minimum de 10 % à 30 % ». Le §1 (« jamais en dessous de 10 % ») est amendé en ce sens.
+
+- `FRAMING.arrival.share.min` = 0,3. La règle se lit sur le petit côté : elle vaut pour tous les écrans (le bureau aussi).
+- Simulation du 08/11 sur `countries.json` (Pixel 9, 412 × 915) : 48 pays au plancher ; chaîne de 247 niveaux au lieu de 219,
+  ≈ 142 Mo en 2048 au lieu de ≈ 126. Le Vatican demande 3,9 m par texel à son niveau le plus fin, sous les 10 m de
+  Sentinel-2 : il reste un peu flou de près (source plus fine : hors de cet amendement).
+- Balise sur téléphone 390 × 844 : 9 archipels (FSM KIR MDV MHL PLW STP SYC TON TUV) au lieu de 19 pays ; bureau inchangé.
+- Les noms des fichiers ne changent pas ; les photos dont l'empreinte change sont retirées du cache au démarrage
+  (`purgeStale`, `src/pwa/cache.ts`).

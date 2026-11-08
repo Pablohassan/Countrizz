@@ -63,7 +63,11 @@ declare global { interface Window { __probe?: ProbeApi } }
  */
 const q = new URLSearchParams(location.search);
 const num = (name: string, fallback: number) => (q.has(name) ? Number(q.get(name)) : fallback);
-const framing = { ...FRAMING, k: num('k', FRAMING.k), margin: num('margin', FRAMING.margin), minContextDeg: num('ctx', FRAMING.minContextDeg ?? 0) };
+// `smin` : plancher de la part d'écran à l'arrivée (calibrate.html le nomme ainsi) ; rejoue un cadrage passé (10 % avant le 08/11)
+const framing = {
+  ...FRAMING, k: num('k', FRAMING.k), margin: num('margin', FRAMING.margin), minContextDeg: num('ctx', FRAMING.minContextDeg ?? 0),
+  arrival: { ...FRAMING.arrival!, share: { ...FRAMING.arrival!.share, min: num('smin', FRAMING.arrival!.share.min) } },
+};
 const lngLat = (s: string | null): LngLat | null => (s ? (s.split(',').map(Number) as LngLat) : null);
 const width = Number(q.get('w') ?? 960), height = Number(q.get('h') ?? 600);
 const canvas = document.createElement('canvas');

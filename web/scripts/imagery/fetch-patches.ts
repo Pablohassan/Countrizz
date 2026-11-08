@@ -17,7 +17,8 @@ import { IMG_CACHE_DIR, IMG_INDEX_PATH, IMG_OUT_DIR } from './paths';
  * - `npm run imagery:fetch -- --pack` : fabrique les archives à publier (scripts/imagery/.cache/release) depuis les patchs
  *   locaux, après contrôle.
  */
-export const RELEASE = { repo: 'Pablohassan/Countrizz', tag: 'imagerie-2025-niveaux' } as const;
+// tag par chaîne de photos : `imagerie-2025-niveaux` (19/10, plancher de 10 %) reste pour les anciens imagery.json
+export const RELEASE = { repo: 'Pablohassan/Countrizz', tag: 'imagerie-2025-niveaux-30' } as const;
 export const assetName = (size: number) => `patchs-img-niveaux-${size}.tar`;
 const assetUrl = (size: number) => `https://github.com/${RELEASE.repo}/releases/download/${RELEASE.tag}/${assetName(size)}`;
 

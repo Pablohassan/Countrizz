@@ -41,14 +41,15 @@ async function arrive(page: Page, cca3: string) {
 }
 
 for (const cca3 of ['VAT', 'MCO', 'FRA', 'RUS']) {
-  test(`${cca3} à l’arrivée sur téléphone : entre 10 % et 80 % de la largeur, à la part visée`, async ({ page }) => {
+  test(`${cca3} à l’arrivée sur téléphone : entre 30 % et 80 % de la largeur, à la part visée`, async ({ page }) => {
     await arrive(page, cca3);
     const s = await measuredShare(page, by(cca3));
     console.log(cca3, 'part mesurée', s.toFixed(4), 'visée', arrivalShare(by(cca3), { ...PHONE, fovYDeg: 50 }, FRAMING).toFixed(4));
-    expect(s).toBeGreaterThanOrEqual(0.09);
+    expect(s).toBeGreaterThanOrEqual(0.29);
     expect(s).toBeLessThanOrEqual(0.81);
     expect(Math.abs(s - arrivalShare(by(cca3), { ...PHONE, fovYDeg: 50 }, FRAMING))).toBeLessThan(0.01);
-    expect(await page.evaluate(() => window.__globe!.beacon())).toBe(cca3 === 'MCO');   // spec zoom §2 : Monaco garde la sienne
+    // plancher à 30 % (08/11) : Monaco perd la balise qu'il gardait à 10 % (spec zoom §2)
+    expect(await page.evaluate(() => window.__globe!.beacon())).toBe(false);
   });
 }
 
@@ -87,7 +88,9 @@ test.describe('sonde (sans émulation mobile : la page de sonde n’a pas de bal
   test('de près, le relief 4K ne pose plus d’ombre en bloc (Monaco, sans photo : 19/10, un quart de la vue assombri)', async ({ page }) => {
     // le relief se lit sur une texture 4K (≈ 10 km par texel) : à l'arrivée sur Monaco, un texel couvre une bonne part de
     // l'écran, et sa pente exagérée assombrissait la moitié droite du haut de la vue de 26 % (38,0 contre 51,6 de luminance)
-    const s = await shoot(page, 'webgpu', 'mode=game&cca3=MCO&tier=haute', PHONE);
+    // au cadrage du 19/10 (plancher de 10 %) : à 30 % (08/11), les deux bandes couvrent un autre terrain, plus sombre à droite
+    // (montagne de la texture globale floue, sans bloc : 0,848), et le relief y est effacé a fortiori (grossissement plus fort)
+    const s = await shoot(page, 'webgpu', 'mode=game&cca3=MCO&tier=haute&smin=0.1', PHONE);
     const L = (x: number, y: number) => { const i = (y * s.png.width + x) * 4; return 0.2126 * s.png.data[i]! + 0.7152 * s.png.data[i + 1]! + 0.0722 * s.png.data[i + 2]!; };
     const band = (x0: number, x1: number) => { let t = 0, n = 0; for (let x = x0; x < x1; x++) for (let y = 20; y < 300; y++) { t += L(x, y); n++; } return t / n; };
     const [left, right] = [band(40, 160), band(220, 340)];

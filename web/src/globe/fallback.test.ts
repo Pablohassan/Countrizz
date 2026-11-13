@@ -32,4 +32,10 @@ describe('repli en cours de partie (spec zoom §5 bis)', () => {
     expect(measureLines({ backend: 'webgpu', tier: 'haute', degradation: 'standard', maxTexture2D: 16384, format: THREE.RGBA_ETC2_EAC_Format, dpr: 1.25, medianMs: 18.34, events: [{ step: 'standard', atS: 42.4, reason: 'lenteur' }] }))
       .toEqual(['Moteur : WebGPU', 'Qualité : standard (repli)', 'Textures max : 16384', 'Format : ETC2 RGBA', 'Densité : 1,25', 'Image : 18,3 ms (médiane)', 'Replis : standard à 42 s (lenteur)']);
   });
+
+  it('encart : les erreurs du GPU, s\'il y en a', () => {
+    const m = { backend: 'webgpu' as const, tier: 'haute' as const, degradation: 'aucune' as const, maxTexture2D: 8192, format: null, dpr: 2, medianMs: null, events: [] };
+    expect(measureLines(m).some((l) => l.startsWith('Erreurs GPU'))).toBe(false);
+    expect(measureLines({ ...m, gpuErrors: { n: 2, first: 'GPUValidationError: pipeline invalide' } }).at(-1)).toBe('Erreurs GPU : 2 (GPUValidationError: pipeline invalide)');
+  });
 });

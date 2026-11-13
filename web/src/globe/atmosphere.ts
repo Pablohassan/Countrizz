@@ -5,12 +5,14 @@ import type { Vec3 } from '../geo/vec';
 
 /**
  * Atmosphère physique (spec atmosphère §1) : unité du monde = rayon terrestre ; épaisseur exagérée `thickness` fois
- * (hauteurs d'échelle et sommet), coefficients divisés d'autant : même épaisseur optique, donc mêmes couleurs.
+ * (hauteurs d'échelle et sommet), coefficients divisés d'autant : même épaisseur optique, donc mêmes couleurs. Puis
+ * `density` (13/11) : l'utilisateur trouve le voile un peu trop épais, il gêne la lecture du pays révélé et de ses voisins ;
+ * les coefficients sont multipliés par elle (même hauteur, épaisseur optique réduite d'autant).
  */
-export const ATMOSPHERE = { thickness: 10, earthM: 6_371_000 } as const;
+export const ATMOSPHERE = { thickness: 10, density: 0.7, earthM: 6_371_000 } as const;
 
 /** Paramètres de @takram/three-atmosphere ramenés au globe unité (la bibliothèque les suppose en mètres du monde). */
-export function atmosphereParameters(thickness: number = ATMOSPHERE.thickness): AtmosphereParameters {
+export function atmosphereParameters(thickness: number = ATMOSPHERE.thickness, density: number = ATMOSPHERE.density): AtmosphereParameters {
   const p = new AtmosphereParameters();
   const len = thickness / ATMOSPHERE.earthM, inv = 1 / len;   // mètres → rayons terrestres, exagérés
   const top = p.topRadius - p.bottomRadius;
@@ -20,7 +22,7 @@ export function atmosphereParameters(thickness: number = ATMOSPHERE.thickness): 
   for (const d of [p.rayleighDensity, p.mieDensity, p.absorptionDensity]) {
     for (const l of d.layers) { l.width *= len; l.expScale *= inv; l.linearTerm *= inv; }
   }
-  for (const v of [p.rayleighScattering, p.mieScattering, p.mieExtinction, p.absorptionExtinction]) v.multiplyScalar(inv);
+  for (const v of [p.rayleighScattering, p.mieScattering, p.mieExtinction, p.absorptionExtinction]) v.multiplyScalar(inv * density);
   return p;
 }
 

@@ -29,4 +29,14 @@ describe('mesure sur téléphone (?mesure) : fenêtre d’images et rapport', ()
   it('encart : une ligne lisible', () => {
     expect(windowLine(frameWindow(intervals, js)!)).toBe('Images : 16,7 ms (p90 70,0 ; max 70) ; à-coups 2 ; calcul 7,0 ms');
   });
+
+  it('erreurs du GPU (13/11, globe invisible sur iPhone) : leur nombre et la première, coupée à 200 caractères', () => {
+    const w = frameWindow(intervals, js)!;
+    const m = { backend: 'webgpu' as const, tier: 'haute' as const, degradation: 'aucune' as const, maxTexture2D: 8192, format: null, dpr: 2, medianMs: 16.7, events: [] };
+    const x = { t: 1, longTasks: 0, longMs: 0, gpu: 'apple/apple', vue: 'jeu', w: 390, h: 844, ecran: 3 };
+    expect(new URLSearchParams(reportQuery(w, m, x)).has('err')).toBe(false);
+    const q = new URLSearchParams(reportQuery(w, { ...m, gpuErrors: { n: 3, first: 'GPUValidationError: ' + 'x'.repeat(300) } }, x));
+    expect(q.get('err')).toBe('3');
+    expect(q.get('errmsg')).toBe(('GPUValidationError: ' + 'x'.repeat(300)).slice(0, 200));
+  });
 });

@@ -32,6 +32,7 @@ import { playerName } from './finish';
 import { e2eOverrides, hooksEnabled, newSeed } from './hooks';
 import { useGame } from './useGame';
 import { useMonument } from './useMonument';
+import { MAQUETTES } from '../globe/monuments/catalogue';
 
 const storage = ((): KeyValueStorage | null => { try { return localStorage; } catch { return null; } })();
 declare global { interface Window { __plane?: HomePlane } }
@@ -108,11 +109,12 @@ export function App() {
   const [haptics] = useState(() => createHaptics(browserEngine(), vibrationsOn(readPref(storage, PREF_KEYS.vibrations))));
   const [book] = useState(() => openScoreBook(storage));
   const shownName = playerName(name, m.home.defaultName);
-  const game = useGame({ countries, lang, globe, haptics, book, name, rotated, gameMs: overrides.gameMs, revealMs: overrides.revealMs, homeSpin: HOME_SPIN_DEG_PER_S, hooks });
+  // pilote des monuments (08/11) : maquette en papier à la révélation, seulement avec `?monuments` ; les dix pays du
+  // pilote sont demandés d'abord (13/11 : sur 197 pays, une partie pouvait n'en croiser aucun)
+  const [pilote] = useState(() => (new URLSearchParams(location.search).has('monuments') ? new Set(Object.keys(MAQUETTES)) : undefined));
+  const game = useGame({ countries, lang, globe, haptics, book, name, rotated, gameMs: overrides.gameMs, revealMs: overrides.revealMs, first: pilote, homeSpin: HOME_SPIN_DEG_PER_S, hooks });
   const s = game.state;
-  // pilote des monuments (08/11) : maquette en papier à la révélation, seulement avec `?monuments`
-  const [monuments] = useState(() => new URLSearchParams(location.search).has('monuments'));
-  useMonument(globe, s, monuments);
+  useMonument(globe, s, !!pilote);
   const inGame = s.screen === 'flight' || s.screen === 'question' || s.screen === 'reveal';
   // dès le fondu : il n'a lieu que le globe prêt (un « Jouer » grisé jusqu'à la fin du fondu s'allumait sèchement, 24/10)
   const canPlay = phase !== 'intro' && globeReady && countries.length > 0 && !globeError;

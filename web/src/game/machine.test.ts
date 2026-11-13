@@ -162,4 +162,16 @@ describe('manche suivante connue dès la révélation (préchargement des photos
   it('hors de la révélation : rien', () => {
     expect(drawNext(countries, run(toQuestion))).toBeNull();
   });
+
+  it('pays d\'abord (pilote des monuments) : première manche et manche suivante prises dans la liste', () => {
+    const first = new Set(['EGY', 'IND']);
+    const r = createGame(countries, undefined, first);
+    let s = toQuestion.reduce(r, initialState('fr'));
+    expect(first.has(s.question!.cca3)).toBe(true);
+    s = r(s, { type: 'ANSWER', index: s.question!.answer, now: 5_000 });
+    const next = drawNext(countries, s, first)!;
+    expect(first.has(next.question.cca3)).toBe(true);
+    expect(next.question.cca3).not.toBe(s.question!.cca3);
+    expect(r(s, { type: 'REVEAL_DONE', now: 6_500 }).question!.cca3).toBe(next.question.cca3);
+  });
 });

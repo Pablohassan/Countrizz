@@ -37,12 +37,15 @@ function shuffled<T>(list: readonly T[], rng: Rng): T[] {
 /**
  * Prochaine manche : un pays jamais demandé, au hasard ; trois mauvaises réponses prises au niveau de difficulté de la
  * série en cours, élargi d'un cran (voisins → région → monde) tant qu'il en manque ; quatre libellés distincts dans la
- * langue jouée ; en mode Drapeau, jamais deux drapeaux jumeaux. `null` : plus aucun pays à demander.
+ * langue jouée ; en mode Drapeau, jamais deux drapeaux jumeaux. `null` : plus aucun pays à demander. `first` : pays demandés
+ * d'abord, tant qu'il en reste (pilote des monuments, `?monuments`) ; les mauvaises réponses restent tirées partout.
  */
-export function drawQuestion(all: DrawCountry[], asked: ReadonlySet<string>, streak: number, mode: Mode, lang: Lang, rng: Rng): Question | null {
+export function drawQuestion(all: DrawCountry[], asked: ReadonlySet<string>, streak: number, mode: Mode, lang: Lang, rng: Rng, first?: ReadonlySet<string>): Question | null {
   const fresh = all.filter((c) => !asked.has(c.cca3));
   if (fresh.length === 0) return null;
-  const target = fresh[Math.floor(rng.next() * fresh.length)]!;
+  const ahead = first ? fresh.filter((c) => first.has(c.cca3)) : [];
+  const from = ahead.length ? ahead : fresh;
+  const target = from[Math.floor(rng.next() * from.length)]!;
   const levels: Level[] = ['near', 'region', 'world'];
   const chosen: DrawCountry[] = [];
   const labels = new Set([labelOf(target, mode, lang)]);

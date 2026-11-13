@@ -36,6 +36,8 @@ export interface MeasureState {
   dpr: number; medianMs: number | null; events: { step: Degradation; atS: number; reason: 'lenteur' | 'format' }[];
   /** `?mesure` : intervalle (ms) et calcul (ms) de chaque image depuis la dernière lecture ; l'encart les vide (frameReport.ts). */
   log?: { intervals: number[]; js: number[] };
+  /** Erreurs du GPU non captées (`renderer.onError`) : leur nombre et la première (13/11 : globe invisible sur un iPhone 12). */
+  gpuErrors?: { n: number; first: string };
 }
 
 const STEP: Record<Degradation, string> = { aucune: 'aucun', standard: 'standard' };
@@ -51,5 +53,6 @@ export function measureLines(m: MeasureState): string[] {
     `Densité : ${num(m.dpr, 2)}`,
     `Image : ${m.medianMs === null ? '—' : `${num(m.medianMs, 1)} ms (médiane)`}`,
     `Replis : ${m.events.length ? m.events.map((e) => `${STEP[e.step]} à ${Math.round(e.atS)} s (${e.reason})`).join(' ; ') : 'aucun'}`,
+    ...(m.gpuErrors?.n ? [`Erreurs GPU : ${m.gpuErrors.n} (${m.gpuErrors.first})`] : []),
   ];
 }

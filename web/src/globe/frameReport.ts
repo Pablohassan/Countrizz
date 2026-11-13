@@ -30,6 +30,7 @@ export function reportQuery(w: FrameWindow, m: MeasureState, x: ReportExtra): st
     js: w.jsMed.toFixed(1), jsmax: String(Math.round(w.jsMax)), lt: String(x.longTasks), ltms: String(Math.round(x.longMs)),
     dpr: String(m.dpr), tier: m.tier, deg: m.degradation, be: m.backend, tex: String(m.maxTexture2D), gpu: x.gpu,
     w: String(x.w), h: String(x.h), ecran: String(x.ecran),
+    ...(m.gpuErrors?.n ? { err: String(m.gpuErrors.n), errmsg: m.gpuErrors.first.slice(0, 200) } : {}),
   }).toString();
 }
 

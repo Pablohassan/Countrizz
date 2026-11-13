@@ -11,7 +11,7 @@ import { atmosphereParameters } from './atmosphere';
  * Atmosphère physique (spec atmosphère §2) : @takram/three-atmosphere (Bruneton + diffusion multiple de Hillaire), sur le
  * backend WebGPU seulement — le repli WebGL 2 garde le halo approché d'atmosphere.ts (tickets #108, #114, #116 de la
  * bibliothèque : erreurs de shader, éclairage faux et erreur au démarrage sous ANGLE). Avec la marche du rayon (sans elle,
- * presque pas de voile bleu), décalée par un bruit généré ici (`jitterVolume`) au lieu du bruit bleu de NVIDIA (#117).
+ * presque pas de voile bleu), sans décalage des échantillons (`jitterVolume`) au lieu du bruit bleu de NVIDIA (#117).
  *
  * Exposition et balance des blancs tirées des paramètres (`skyCalibration`) : la lumière du soleil au sommet de
  * l'atmosphère y vaut (1,91 ; 1,71 ; 1,68) — plus forte et plus rouge que l'ancien soleil directionnel blanc d'intensité 3
@@ -64,27 +64,24 @@ export const keepNode = nodeObject(new KeepNode()) as unknown as Node<'float'>;
 export function setKeep(material: THREE.Material, coverage: Node<'float'>): void { keepByMaterial.set(material, coverage); }
 
 /**
- * Décalage des échantillons de la marche du rayon, au format de la bibliothèque (128 × 128 × 64 octets) : bruit à gradient
- * entrelacé de Jimenez (« Next Generation Post Processing in Call of Duty: Advanced Warfare », SIGGRAPH 2014), le même pour
- * les 64 images (pas de scintillement sans TRAA). Remplace la texture STBN que la bibliothèque télécharge de GitHub
- * (1 Mo, hors ligne impossible, licence NVIDIA discutée : ticket #117).
+ * Décalage des échantillons de la marche du rayon, au format de la bibliothèque (128 × 128 × 64 octets) : le même partout,
+ * au milieu de chaque pas. Remplace la texture STBN que la bibliothèque télécharge de GitHub (1 Mo, hors ligne impossible,
+ * licence NVIDIA discutée : ticket #117). Un bruit de Jimenez (bruit à gradient entrelacé) l'a remplacée jusqu'au 13/11 :
+ * sans TRAA pour le moyenner, et étiré par le calcul au seizième des pixels (`SKY_RESOLUTION`), il traçait un damier de
+ * losanges sur la mer, encore vu sur PC à 64 pas. Sans décalage, à 64 pas : pas de motif ; écart moyen à une marche de 256
+ * pas 0,197 sur 255 contre 0,565 avec le bruit (Botswana révélé, 1440 × 900, SwiftShader, 13/11).
  */
 export function jitterVolume(w = 128, h = 128, d = 64): Uint8Array {
-  const out = new Uint8Array(w * h * d);
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    const f = 52.9829189 * ((0.06711056 * x + 0.00583715 * y) % 1);
-    const v = Math.min(255, Math.floor((f % 1) * 256));
-    for (let z = 0; z < d; z++) out[(z * h + y) * w + x] = v;
-  }
-  return out;
+  return new Uint8Array(w * h * d).fill(128);
 }
 const jitterUrl = () => URL.createObjectURL(new Blob([jitterVolume() as Uint8Array<ArrayBuffer>]));
 
 /** Contexte d'atmosphère du renderer, posé avant toute compilation de matériau ; à appeler une fois par renderer. */
-export function installPhysicalSky(renderer: THREE.WebGPURenderer): PhysicalSky {
+/** `densite` : celle de l'air (`ATMOSPHERE.density` par défaut ; essais de la sonde). */
+export function installPhysicalSky(renderer: THREE.WebGPURenderer, o: { densite?: number } = {}): PhysicalSky {
   const existing = skies.get(renderer);
   if (existing) return existing;
-  const ctx = new AtmosphereContext(atmosphereParameters());
+  const ctx = new AtmosphereContext(atmosphereParameters(undefined, o.densite));
   ctx.ellipsoid = new Ellipsoid(1, 1, 1);
   ctx.correctAltitude = false;
   // marche du rayon (défaut de la bibliothèque) : sans elle, la lecture des tables ne donne presque pas de voile bleu sur

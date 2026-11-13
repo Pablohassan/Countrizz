@@ -238,7 +238,16 @@ export function GlobeView({ ref, framing, onReady, startAtHome = false, active =
             const tier = qualityTier({ backend: info.backend, maxTexture2D: info.maxTexture2D });
             // Perte du GPU : on recrée le renderer (nouveau Canvas) ; le contrôleur garde la partie.
             info.renderer.onDeviceLost = () => { recreating.current = true; signals.current.onLost?.(); regenerate(); };
-            Object.assign(info.renderer, { userData: { backend: info.backend, tier, maxTexture2D: info.maxTexture2D } });
+            // erreurs du GPU non captées : comptées pour `?mesure` (13/11 : globe invisible sur un iPhone 12), puis journalisées comme avant
+            const gpuErrors = { n: 0, first: '' };
+            const logError = info.renderer.onError.bind(info.renderer);
+            // (les types de three annoncent une chaîne ; three r18x passe un objet { api, type, message })
+            info.renderer.onError = (e) => {
+              const o = e as unknown as string | { type?: string; message?: string };
+              if (gpuErrors.n++ === 0) gpuErrors.first = typeof o === 'string' ? o : `${o.type ?? '?'}: ${o.message ?? ''}`;
+              logError(e);
+            };
+            Object.assign(info.renderer, { userData: { backend: info.backend, tier, maxTexture2D: info.maxTexture2D, gpuErrors } });
             // atmosphère physique sur WebGPU (spec atmosphère §2), avant toute compilation ; `?atmo=approchee` garde l'ancienne
             if (info.backend === 'webgpu' && new URLSearchParams(location.search).get('atmo') !== 'approchee') installPhysicalSky(info.renderer);
             return info.renderer;
@@ -271,7 +280,7 @@ interface SceneProps {
 }
 
 function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading, onError, onCut, onDpr, degradation, onDegrade, events, measure }: SceneProps) {
-  const renderer = useThree((s) => s.gl) as unknown as THREE.WebGPURenderer & { userData: { backend: Backend; tier: QualityTier; maxTexture2D: number } };
+  const renderer = useThree((s) => s.gl) as unknown as THREE.WebGPURenderer & { userData: { backend: Backend; tier: QualityTier; maxTexture2D: number; gpuErrors: { n: number; first: string } } };
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const scene = useThree((s) => s.scene) as unknown as THREE.Scene;
   const size = useThree((s) => s.size);
@@ -471,6 +480,7 @@ function GlobeScene({ controller, generation, active, warmUp, onReady, onLoading
     measure.current = {
       backend: renderer.userData.backend, tier: renderer.userData.tier, degradation: q.degradation, maxTexture2D: renderer.userData.maxTexture2D,
       format: builtRef.current?.textures.day.format ?? null, dpr: renderer.getPixelRatio(), medianMs: governor.lastMedianMs, events: events.current, log: frameLog.current ?? undefined,
+      gpuErrors: renderer.userData.gpuErrors,
     };
     if (!globe) return;
     const now = performance.now();

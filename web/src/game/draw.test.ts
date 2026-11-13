@@ -92,4 +92,18 @@ describe('drawQuestion', () => {
     expect(q.cca3).toBe('AUS');
     expect(new Set(q.options).size).toBe(4);
   });
+
+  it('pays d\'abord : la cible vient de la liste tant qu\'il en reste, puis du monde ; les mauvaises réponses restent tirées partout', () => {
+    const first = new Set(['FRA', 'JPN', 'BRA']);
+    const rng = createRng(3), asked = new Set<string>(), cibles: string[] = [], autres = new Set<string>();
+    for (let i = 0; i < 6; i++) {
+      const q = drawQuestion(all, asked, 0, 'country', 'fr', rng, first)!;
+      cibles.push(q.cca3);
+      asked.add(q.cca3);
+      for (const o of q.options) if (o !== q.cca3) autres.add(o);
+    }
+    expect(new Set(cibles.slice(0, 3))).toEqual(first);
+    for (const c of cibles.slice(3)) expect(first.has(c)).toBe(false);
+    expect([...autres].some((o) => !first.has(o))).toBe(true);
+  });
 });

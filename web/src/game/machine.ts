@@ -58,22 +58,25 @@ const IN_GAME: readonly Screen[] = ['flight', 'question', 'reveal'];
  * Manche suivante, telle que `REVEAL_DONE` la tirera : connue dès la révélation (la réponse a fixé la série), ce qui laisse
  * précharger ses photos pendant la révélation et le vol (19/10). `null` hors révélation, ou s'il ne reste aucun pays.
  */
-export function drawNext(countries: DrawCountry[], s: GameState): { question: Question; rngState: number } | null {
+export function drawNext(countries: DrawCountry[], s: GameState, first?: ReadonlySet<string>): { question: Question; rngState: number } | null {
   if (s.screen !== 'reveal' || !s.mode) return null;
   const rng = createRng(s.rngState);
-  const question = drawQuestion(countries, new Set(s.asked), s.streak, s.mode, s.lang, rng);
+  const question = drawQuestion(countries, new Set(s.asked), s.streak, s.mode, s.lang, rng, first);
   return question ? { question, rngState: rng.state } : null;
 }
 
-/** `gameMs` : durée nette d'une partie (60 s ; plus courte seulement par le crochet `?partie=` des e2e). */
-export function createGame(countries: DrawCountry[], gameMs: number = GAME_MS): (s: GameState, e: GameEvent) => GameState {
+/**
+ * `gameMs` : durée nette d'une partie (60 s ; plus courte seulement par le crochet `?partie=` des e2e) ; `first` : pays
+ * demandés d'abord (`drawQuestion`).
+ */
+export function createGame(countries: DrawCountry[], gameMs: number = GAME_MS, first?: ReadonlySet<string>): (s: GameState, e: GameEvent) => GameState {
   /**
    * Nouvelle partie : première manche tirée, son vol part tout de suite ; il tient lieu de 3-2-1 (retiré le 24/10 : il
    * doublait le vol, chacun sur son horloge). Chrono pas encore lancé, en pause « vol » : il démarre à l'arrivée.
    */
   function newGame(s: GameState, mode: Mode, seed: number): GameState {
     const rng = createRng(seed);
-    const question = drawQuestion(countries, new Set(), 0, mode, s.lang, rng);
+    const question = drawQuestion(countries, new Set(), 0, mode, s.lang, rng, first);
     if (!question) throw new Error('jeu : aucun pays à demander');
     return {
       ...s, screen: 'flight', mode, seed, rngState: rng.state, asked: [question.cca3], question, streak: 0,
@@ -114,7 +117,7 @@ export function createGame(countries: DrawCountry[], gameMs: number = GAME_MS): 
       }
       case 'REVEAL_DONE': {
         if (s.screen !== 'reveal' || !s.mode) return s;
-        const next = drawNext(countries, s);
+        const next = drawNext(countries, s, first);
         const resumed = resumeClock(s.clock, 'reveal', e.now);
         if (!next) return { ...s, screen: 'end', clock: resumed, picked: null, question: null };
         const { question, rngState } = next;

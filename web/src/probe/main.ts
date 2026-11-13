@@ -86,7 +86,8 @@ const textures = mode === 'game' ? await loadGlobeTextures(renderer, q.get('tier
 if (textures && q.get('vent') === 'bandes') { textures.wind?.dispose(); textures.wind = null; }
 const borders = q.has('borders') ? ((await (await fetch('/data/borders.json')).json()) as LngLat[][]) : undefined;
 // atmosphère physique : WebGPU en mode jeu, sauf `atmo=approchee` (planches avant/après)
-const sky = mode === 'game' && backend === 'webgpu' && q.get('atmo') !== 'approchee' ? installPhysicalSky(renderer) : null;
+// `densite=x` : densité de l'air (ATMOSPHERE.density)
+const sky = mode === 'game' && backend === 'webgpu' && q.get('atmo') !== 'approchee' ? installPhysicalSky(renderer, q.has('densite') ? { densite: Number(q.get('densite')) } : {}) : null;
 // `pas=n` : pas de la marche du rayon de l'atmosphère (SKY_STEPS)
 if (sky && q.has('pas')) sky.context.scatteringSampleCount.value.set(Number(q.get('pas')), Number(q.get('pas')));
 // `reflet=fixe` : reflet du ciel sur la mer en bleu fixe (avant le 07/11)

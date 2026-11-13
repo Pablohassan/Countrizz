@@ -30,6 +30,8 @@ export interface GameOptions {
   gameMs?: number;
   /** Durée de la révélation (crochet `?revelation=` ; `REVEAL_MS` sinon). */
   revealMs?: number;
+  /** Pays demandés d'abord (pilote des monuments, `?monuments`). */
+  first?: ReadonlySet<string>;
   /** Rotation de l'accueil, rendue au globe en sortie de partie. */
   homeSpin: number;
   hooks: boolean;
@@ -41,7 +43,7 @@ export interface GameOptions {
  * `ARRIVED` seulement sur `true`), l'haptique et l'enregistrement du score à l'entrée en fin (une fois par partie).
  */
 export function useGame(o: GameOptions) {
-  const reduce = useMemo(() => createGame(o.countries, o.gameMs), [o.countries, o.gameMs]);
+  const reduce = useMemo(() => createGame(o.countries, o.gameMs, o.first), [o.countries, o.gameMs, o.first]);
   const [state, dispatch] = useReducer(reduce, o.lang, initialState);
   const records = useMemo(() => new Map(o.countries.map((c) => [c.cca3, c])), [o.countries]);
   const [result, setResult] = useState<{ flight: number; value: GameResult } | null>(null);
@@ -99,7 +101,7 @@ export function useGame(o: GameOptions) {
   // partaient qu'au décollage, et l'arrivée sur un petit pays restait floue le temps de les charger sur téléphone)
   useEffect(() => {
     if (state.screen !== 'reveal') return;
-    const next = drawNext(opts.current.countries, state);
+    const next = drawNext(opts.current.countries, state, opts.current.first);
     const rec = next && records.get(next.question.cca3);
     if (rec) opts.current.globe.current?.prefetch(rec);
     const t = setTimeout(() => dispatch({ type: 'REVEAL_DONE', now: now() }), opts.current.revealMs ?? REVEAL_MS);

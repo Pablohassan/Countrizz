@@ -6,15 +6,17 @@ import { shoot } from './probe-page';
  * ses 24 pas en losanges réguliers sur la mer et dans le voile (vu sur le Pixel 9 et sur le Mac ; les références visuelles,
  * à 20 pixels près, ne le voyaient pas). Mesure : écart quadratique moyen de l'image à une marche fine de 256 pas, qui ne
  * garde que le bruit de la marche. Format du Pixel 9 à la densité 2,5, frontières affichées. Relevés du 07/11 (GPU du Mac),
- * vol puis pays : 24 pas 1,65 et 2,16 ; 48 pas, losanges encore devinés, 0,82 et 1,06 ; 64 pas 0,63 et 0,80.
+ * vol puis pays : 24 pas 1,65 et 2,16 ; 48 pas, losanges encore devinés, 0,82 et 1,06 ; 64 pas 0,63 et 0,80. Puis 13/11 :
+ * l'utilisateur voyait encore le damier sur PC (et la référence visuelle « question » le portait) ; marche sans décalage,
+ * 64 pas : 0,190 et 0,235 (SwiftShader). Seuils resserrés : le décalage d'avant (0,63 et 0,80) n'y passerait plus.
  */
 // trois chargements de la sonde à 1030 × 2288, dont une marche de 256 pas : ≈ 50 s seul, 66 s en tête de la suite
 // complète (08/11 : démarrage à froid du serveur de dev), au-delà des 60 s par défaut
 test.slow();
 const SIZE = { width: 1030, height: 2288 };
 const SCENES = {
-  vol: { query: 'mode=game&tier=haute&at=10,40&alt=1.6&post&borders&ecran=2.625', max: 0.7 },
-  pays: { query: 'mode=game&tier=haute&cca3=FRA&img&post&borders&ecran=2.625', max: 0.9 },
+  vol: { query: 'mode=game&tier=haute&at=10,40&alt=1.6&post&borders&ecran=2.625', max: 0.4 },
+  pays: { query: 'mode=game&tier=haute&cca3=FRA&img&post&borders&ecran=2.625', max: 0.45 },
 } as const;
 
 for (const [scene, { query, max }] of Object.entries(SCENES)) {

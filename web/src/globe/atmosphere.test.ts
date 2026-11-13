@@ -6,7 +6,7 @@ const EARTH_M = 6_371_000;
 
 describe('atmosphère à l’échelle du globe (spec atmosphère §1)', () => {
   const ref = new AtmosphereParameters();
-  const p = atmosphereParameters();
+  const p = atmosphereParameters(ATMOSPHERE.thickness, 1);
   const k = ATMOSPHERE.thickness;
 
   it('unité du monde = rayon terrestre : bas de l’atmosphère sur la sphère unité, sommet exagéré', () => {
@@ -26,6 +26,17 @@ describe('atmosphère à l’échelle du globe (spec atmosphère §1)', () => {
     expect(b.rayleigh).toBeCloseTo(a.rayleigh, 9);
     expect(b.mie).toBeCloseTo(a.mie, 9);
     expect(b.ozone).toBeCloseTo(a.ozone, 9);
+  });
+
+  it('densité (13/11 : voile jugé trop épais) : même hauteur, épaisseur optique multipliée par ATMOSPHERE.density', () => {
+    expect(ATMOSPHERE.density).toBeGreaterThan(0.5);
+    expect(ATMOSPHERE.density).toBeLessThan(1);
+    const pleine = atmosphereParameters(k, 1), d = atmosphereParameters();
+    expect(d.topRadius).toBe(pleine.topRadius);
+    expect(d.rayleighDensity.layers[1].expScale).toBe(pleine.rayleighDensity.layers[1].expScale);
+    for (const key of ['rayleighScattering', 'mieScattering', 'mieExtinction', 'absorptionExtinction'] as const) {
+      expect(d[key].y / pleine[key].y).toBeCloseTo(ATMOSPHERE.density, 12);
+    }
   });
 
   it('le relief soulevé (Everest × 10) reste dans l’atmosphère', () => {
@@ -52,14 +63,10 @@ describe('branchement de la bibliothèque (spec atmosphère §2)', () => {
     const vertical = (p.topRadius - 1) * p.worldToUnit, rasant = Math.sqrt(p.topRadius ** 2 - 1) * p.worldToUnit;
     expect([pas(vertical), pas(rasant)]).toEqual([64, 64]);
   });
-  it('décalage de la marche du rayon : format de la bibliothèque, mêmes valeurs à chaque image, bien réparti', async () => {
+  it('décalage de la marche du rayon : format de la bibliothèque, le même pour tous les pixels (13/11 : le bruit de Jimenez, étiré par le calcul au seizième des pixels, traçait un damier sur la mer, vu sur PC)', async () => {
     const { jitterVolume } = await import('./physicalSky');
     const v = jitterVolume();
     expect(v.length).toBe(128 * 128 * 64);
-    const slice = 128 * 128;
-    expect(v.subarray(0, slice)).toEqual(v.subarray(63 * slice, 64 * slice));
-    const hist = new Array<number>(8).fill(0);
-    for (let i = 0; i < slice; i++) hist[v[i]! >> 5]! += 1;
-    for (const h of hist) expect(Math.abs(h / slice - 1 / 8)).toBeLessThan(0.02);
+    expect(new Set(v)).toEqual(new Set([128]));
   });
 });
